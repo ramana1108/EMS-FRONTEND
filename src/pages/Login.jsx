@@ -2,7 +2,7 @@ import React, { useState } from "react";//import react & usestate for s,u
 import { Link, useNavigate } from "react-router-dom";// fornavigation b/w pages  
 import { Briefcase, User, Shield, Lock, Eye, EyeOff, CheckCircle, AlertCircle } from "lucide-react";//import the icond from lu...
 
-function Login() {//loin fn
+function Login() {//login fn
     const [role, setRole] = useState("employee");//set role emp
     const [username, setUsername] = useState("");//set username
     const [password, setPassword] = useState("");// set passw..
