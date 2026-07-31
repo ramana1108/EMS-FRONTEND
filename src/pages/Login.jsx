@@ -134,7 +134,7 @@ function Login() {//login fn
     <input
         type="text"
         className="form-input"
-        placeholder="e.g. name@gmail.com"
+        placeholder="Enter your email"
         value={username}
         onChange={(e) => setUsername(e.target.value)}
     />
@@ -153,7 +153,7 @@ function Login() {//login fn
     <input
             type={showPassword ? "text" : "password"}
             className="form-input"
-            placeholder="Enter password"
+            placeholder="Enter your password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             style={{ paddingRight: "2.75rem" }}
