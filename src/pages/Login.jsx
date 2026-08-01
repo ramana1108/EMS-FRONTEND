@@ -1,9 +1,8 @@
 import React, { useState } from "react";//import react & usestate for s,u
 import { Link, useNavigate } from "react-router-dom";// fornavigation b/w pages  
-import { Briefcase, User, Shield, Lock, Eye, EyeOff, CheckCircle, AlertCircle } from "lucide-react";//import the icond from lu...
+import { User, Lock, Eye, EyeOff, CheckCircle, AlertCircle, Briefcase } from "lucide-react";//import the icond from lu...
 
 function Login() {//login fn
-    const [role, setRole] = useState("employee");//set role emp
     const [username, setUsername] = useState("");//set username
     const [password, setPassword] = useState("");// set passw..
     const [showPassword, setShowPassword] = useState(false);//decide whether to show pass
@@ -23,12 +22,13 @@ function Login() {//login fn
 
         const registeredUsers = JSON.parse(localStorage.getItem("registered_users") || "[]");//retrieve user reg in local storage
 
+        // no more role filtering - match on email across all registered users
         const matchedUser = registeredUsers.find(
-            (u) => u.role === role && u.email.toLowerCase() === username.toLowerCase()//search the user entered email in the local storage
+            (u) => u.email.toLowerCase() === username.toLowerCase()
         );
 
-        const isEmployeeDummy = role === "employee" && username.toLowerCase() === "employee@gmail.com" && password === "password";//checks role ,username and pass
-        const isAdminDummy = role === "admin" && username.toLowerCase() === "admin@gmail.com" && password === "password";
+        const isEmployeeDummy = username.toLowerCase() === "employee@gmail.com" && password === "password";
+        const isAdminDummy = username.toLowerCase() === "admin@gmail.com" && password === "password";
 
         if (matchedUser && matchedUser.password === password) {
             setSuccess(`Sign in successful! Welcome back, ${matchedUser.fullName}.`);//condition true show success msg
@@ -40,230 +40,151 @@ function Login() {//login fn
             setSuccess("Sign in successful! Welcome back, Demo Admin.");//check admin?
 
         } else {
-            setError(`Invalid credentials. Try using ${role === "admin" ? "admin@gmail.com" : "employee@gmail.com"} / password, or register a new card account.`);
-        }//others shoe error
+            setError("Invalid credentials. Try using admin@gmail.com or employee@gmail.com / password, or register a new account.");
+        }//others show error
     };
 
     return (
-        <div className="login-split-container fade-in">
-            <div className="login-left-panel" style={{ backgroundImage: "url('/office_bg.png')" }}>
-                <div className="login-left-branding">
-                    <Briefcase size={24} style={{ color: "var(--accent)" }} />
-                    <span style={{ fontSize: "1.1rem", fontWeight: 700, letterSpacing: "0.5px" }}>EMS Portal</span>
-                </div>
+    <div className="login-split-container fade-in">
+    <div className="login-left-panel" style={{ backgroundImage: "url('/office_bg.png')" }}>
+    <div className="login-left-branding">
+    <Briefcase size={24} style={{ color: "var(--accent)" }} />
+        <span style={{ fontSize: "1.1rem", fontWeight: 700, letterSpacing: "0.5px" }}>EMS Portal</span>
+    </div>
+    <div className="login-left-content">
+        <h1 className="login-left-title">EMPLOYMENT MANAGEMENT SYSTEM</h1>
+        <p className="login-left-desc">
+         A unified, modern solution for workplace scheduling, role configuration, access control, and employee records management.
+        </p>
+    </div>
+    <div style={{ color: "rgba(255, 255, 255, 0.6)", fontSize: "0.85rem" }}>
+         &copy; {new Date().getFullYear()}  EMS. Version 0.0.1
+    </div>
+    </div>
+    
+    {/* Right side panel (Login card) */}
+    <div className="login-right-panel">
+    <div className="login-right-inner">
+    {/* Mobile Display Branding Header (Visible on Mobile only) */}
+    <div className="login-mobile-header" style={{ width: "100%", textAlign: "center", marginBottom: "2rem" }}>
+    <div style={{
+                display: "inline-flex",
+                alignItems: "center",
+                justifyContent: "center",
+                padding: "0.3rem",
+                background: "var(--accent-bg)",
+                borderRadius: "50%",
+                marginBottom: "0.5rem"
+                }}>
+    <Briefcase size={28} style={{ color: "var(--accent)" }} />
+    </div>
+    <h2 style={{ fontSize: "1.5rem", fontWeight: 800, margin: 0 }}>Sign In to EMS</h2>
+    <p style={{ fontSize: "0.85rem", color: "var(--text)" }}>Enter your credentials to access your workspace.</p>
+    </div>
 
-                <div className="login-left-content">
-                    <h1 className="login-left-title">EMPLOYMENT MANAGEMENT SYSTEM</h1>
-                    <p className="login-left-desc">
-                        A unified, modern solution for workplace scheduling, role configuration, access control, and employee records management.
-                    </p>
-                </div>
+    {/* Core Sign-In Card */}
+    <div className="card" style={{ width: "100%", padding: "1rem 2rem", margin: 0 }}>
 
-                <div style={{ color: "rgba(255, 255, 255, 0.6)", fontSize: "0.85rem" }}>
-                    &copy; {new Date().getFullYear()}  EMS. Version 2.0.1
-                </div>
-            </div>
+        {error && (
+        <div style={{
+            display: "flex",
+            alignItems: "center",
+            gap: "0.5rem",
+            padding: "0.75rem 1rem",
+            background: "rgba(239, 68, 68, 0.1)",
+            border: "1px solid rgba(239, 68, 68, 0.2)",
+            borderRadius: "8px",
+            color: "#ef4444",
+            fontSize: "0.85rem",
+            marginBottom: "1.25rem",
+            textAlign: "left"
+            }}>
+    <AlertCircle size={16} style={{ flexShrink: 0 }} />
+    <span>{error}</span>
+    </div>
+            )}
 
-            {/* Right side panel (Login cards) */}
-            <div className="login-right-panel">
-                <div className="login-right-inner">
+    {success && (
+    <div style={{
+            display: "flex",
+            alignItems: "center",
+            gap: "0.5rem",
+            padding: "0.75rem 1rem",
+            background: "rgba(16, 185, 129, 0.1)",
+            border: "1px solid rgba(16, 185, 129, 0.2)",
+            borderRadius: "8px",
+            color: "var(--accent)",
+            fontSize: "0.85rem",
+            marginBottom: "1.25rem",
+            textAlign: "left"
+                }}>
+    <CheckCircle size={16} style={{ flexShrink: 0 }} />
+    <span>{success}</span>
+    </div>
+                )}
 
-                    {/* Mobile Display Branding Header (Visible on Mobile only) */}
-                    <div className="login-mobile-header" style={{ width: "100%", textAlign: "center", marginBottom: "2rem" }}>
-                        <div style={{
-                            display: "inline-flex",
-                            alignItems: "center",
-                            justifyContent: "center",
-                            padding: "0.3rem",
-                            background: "var(--accent-bg)",
-                            borderRadius: "50%",
-                            marginBottom: "0.5rem"
-                        }}>
-                            <Briefcase size={28} style={{ color: "var(--accent)" }} />
-                        </div>
-                        <h2 style={{ fontSize: "1.5rem", fontWeight: 800, margin: 0 }}>Sign In to EMS</h2>
-                        <p style={{ fontSize: "0.85rem", color: "var(--text)" }}>Enter your credentials to access your workspace.</p>
-                    </div>
-
-                    {/* Core Sign-In Card */}
-                    <div className="card" style={{ width: "100%", padding: "1rem 2rem", margin: 0 }}>
-                        <div style={{ textAlign: "center", marginBottom: "1.5rem" }}>
-                            <h3 style={{ margin: 0, fontSize: "1.25rem" }}></h3>
-                            <p style={{ fontSize: "0.85rem", color: "var(--text)", marginTop: "0.25rem" }}>
-                            </p>
-                        </div>
-
-                        {/* Role Tab selection */}
-                        <div style={{
-                            display: "flex",
-                            background: "var(--accent-bg)",
-                            borderRadius: "8px",
-                            padding: "0.25rem",
-                            marginBottom: "1.5rem"
-                        }}>
-                            <button
-                                type="button"
-                                onClick={() => {
-                                    setRole("employee");
-                                    setError("");
-                                    setSuccess("");
-                                }}
-                                style={{
-                                    flex: 1,
-                                    padding: "0.5rem",
-                                    borderRadius: "6px",
-                                    border: "none",
-                                    background: role === "employee" ? "var(--card-bg)" : "transparent",
-                                    color: "var(--text-h)",
-                                    fontWeight: role === "employee" ? "700" : "500",
-                                    cursor: "pointer",
-                                    transition: "all 0.2s"
-                                }}
-                            >
-                                Employee
-                            </button>
-                            <button
-                                type="button"
-                                onClick={() => {
-                                    setRole("admin");
-                                    setError("");
-                                    setSuccess("");
-                                }}
-                                style={{
-                                    flex: 1,
-                                    padding: "0.5rem",
-                                    borderRadius: "6px",
-                                    border: "none",
-                                    background: role === "admin" ? "var(--card-bg)" : "transparent",
-                                    color: "var(--text-h)",
-                                    fontWeight: role === "admin" ? "700" : "500",
-                                    cursor: "pointer",
-                                    transition: "all 0.2s"
-                                }}
-                            >
-                                Admin
-                            </button>
-                        </div>
-
-                        {error && (
-                            <div style={{
-                                display: "flex",
-                                alignItems: "center",
-                                gap: "0.5rem",
-                                padding: "0.75rem 1rem",
-                                background: "rgba(239, 68, 68, 0.1)",
-                                border: "1px solid rgba(239, 68, 68, 0.2)",
-                                borderRadius: "8px",
-                                color: "#ef4444",
-                                fontSize: "0.85rem",
-                                marginBottom: "1.25rem",
-                                textAlign: "left"
-                            }}>
-                                <AlertCircle size={16} style={{ flexShrink: 0 }} />
-                                <span>{error}</span>
-                            </div>
-                        )}
-
-                        {success && (
-                            <div style={{
-                                display: "flex",
-                                alignItems: "center",
-                                gap: "0.5rem",
-                                padding: "0.75rem 1rem",
-                                background: "rgba(16, 185, 129, 0.1)",
-                                border: "1px solid rgba(16, 185, 129, 0.2)",
-                                borderRadius: "8px",
-                                color: "var(--accent)",
-                                fontSize: "0.85rem",
-                                marginBottom: "1.25rem",
-                                textAlign: "left"
-                            }}>
-                                <CheckCircle size={16} style={{ flexShrink: 0 }} />
-                                <span>{success}</span>
-                            </div>
-                        )}
-
-                        <form onSubmit={handleLogin}>
-                            {/* ID Input */}
-                            <div className="form-group">
-                                <label className="form-label">
-                                    {role === "admin" ? " Admin Email" : "Employee Email"}
-                                </label>
-                                <div className="input-container">
-                                    <span className="input-icon">
-                                        {role === "admin" ? <Shield size={18} /> : <User size={18} />}
-                                    </span>
-                                    <input
-                                        type="text"
-                                        className="form-input"
-                                        placeholder={role === "admin" ? "e.g. admin@gmail.com" : "e.g. employee@gmail.com"}
-                                        value={username}
-                                        onChange={(e) => setUsername(e.target.value)}
-                                    />
-                                </div>
-                            </div>
-
-                            {/* Password Input */}
-                            <div className="form-group" style={{ marginBottom: "1.75rem" }}>
-                                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "0.5rem" }}>
-                                    <label className="form-label" style={{ marginBottom: 0 }}>Password</label>
-                                    <a href="#" style={{ fontSize: "0.75rem", color: "var(--text)" }}>Forgot password?</a>
-                                </div>
-                                <div className="input-container">
-                                    <span className="input-icon">
-                                        <Lock size={18} />
-                                    </span>
-                                    <input
-                                        type={showPassword ? "text" : "password"}
-                                        className="form-input"
-                                        placeholder="Enter password"
-                                        value={password}
-                                        onChange={(e) => setPassword(e.target.value)}
-                                        style={{ paddingRight: "2.75rem" }}
-                                    />
-                                    <button
-                                        type="button"
-                                        onClick={() => setShowPassword(!showPassword)}
-                                        style={{
-                                            position: "absolute",
-                                            right: "1rem",
-                                            background: "none",
-                                            border: "none",
-                                            cursor: "pointer",
-                                            color: "var(--text)",
-                                            opacity: 0.7,
-                                            display: "flex",
-                                            alignItems: "center"
-                                        }}
-                                    >
-                                        {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
-                                    </button>
-                                </div>
-                            </div>
-
-                            {/* Sign In CTA */}
-                            <button type="submit" className="btn btn-primary" style={{ marginBottom: "1.25rem" }}>
-                                Sign In
-                            </button>
-                        </form>
-
-                        <div style={{
-                            textAlign: "center",
-                            fontSize: "0.85rem",
-                            color: "var(--text)",
-                            paddingTop: "1rem",
-                            borderTop: "1px solid var(--border)"
-                        }}>
-                            <Link to={`/register?role=${role}`} style={{ fontWeight: 600, color: "var(--accent)" }}></Link>
-                        </div>
-                    </div>
-
-                    {/* Dynamic Demo Credentials Helper */}
-
-
-                </div>
-            </div>
-        </div>
+    <form onSubmit={handleLogin}>
+    {/* Email Input */}
+    <div className="form-group">
+    <label className="form-label">Email</label>
+    <div className="input-container">
+    <span className="input-icon">
+    <User size={18} />
+    </span>
+    <input
+        type="text"
+        className="form-input"
+        placeholder="Enter your email"
+        value={username}
+        onChange={(e) => setUsername(e.target.value)}
+    />
+    </div>
+    </div>
+    {/* Password Input */}
+    <div className="form-group" style={{ marginBottom: "1.75rem" }}>
+    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "0.5rem" }}>
+    <label className="form-label" style={{ marginBottom: 0 }}>Password</label>
+    <a href="#" style={{ fontSize: "0.75rem", color: "var(--text)" }}>Forgot password?</a>
+    </div>
+    <div className="input-container">
+    <span className="input-icon">
+           <Lock size={18} />
+    </span>
+    <input
+            type={showPassword ? "text" : "password"}
+            className="form-input"
+            placeholder="Enter your password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            style={{ paddingRight: "2.75rem" }}
+        />
+        <button
+            type="button"
+            onClick={() => setShowPassword(!showPassword)}
+            style={{
+                position: "absolute",
+                right: "1rem",
+                background: "none",
+                border: "none",
+                cursor: "pointer",
+                color: "var(--text)",
+                opacity: 0.7,
+                display: "flex",
+                alignItems: "center"
+                    }}>
+              {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+        </button>
+    </div>
+    </div>
+    {/* Sign In CTA */}
+    <button type="submit" className="btn btn-primary" style={{ marginBottom: "1.25rem" }}>
+         Sign In
+    </button>
+    </form>
+    </div>
+    </div>
+    </div>
+    </div>
     );
 }
 
