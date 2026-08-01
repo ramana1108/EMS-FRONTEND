@@ -1,47 +1,74 @@
-import React, { useState } from "react";//import react & usestate for s,u
-import { Link, useNavigate } from "react-router-dom";// fornavigation b/w pages  
-import { User, Lock, Eye, EyeOff, CheckCircle, AlertCircle, Briefcase } from "lucide-react";//import the icond from lu...
+import React, { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { User, Lock, Eye, EyeOff, CheckCircle, AlertCircle, Briefcase } from "lucide-react";
 
-function Login() {//login fn
-    const [username, setUsername] = useState("");//set username
-    const [password, setPassword] = useState("");// set passw..
-    const [showPassword, setShowPassword] = useState(false);//decide whether to show pass
-    const [error, setError] = useState("");//set err if fail login
-    const [success, setSuccess] = useState("");//set success if login in done
-    const navigate = useNavigate();//nav to other pgs
+// Use a Vite-friendly env var and proxy it to the backend during development.
+const API_BASE_URL = import.meta.env.VITE_API_URL || "/api";
 
-    const handleLogin = (e) => {//fn run when signin clicked
+function Login() {
+    const [username, setUsername] = useState("");
+    const [password, setPassword] = useState("");
+    const [showPassword, setShowPassword] = useState(false);
+    const [error, setError] = useState("");
+    const [success, setSuccess] = useState("");
+    const [loading, setLoading] = useState(false);
+    const navigate = useNavigate();
+
+    const handleLogin = async (e) => {
         e.preventDefault();
         setError("");
         setSuccess("");
 
         if (!username || !password) {
-            setError("Please fill in all fields.");//if field not filled show err
+            setError("Please fill in all fields.");
             return;
         }
 
-        const registeredUsers = JSON.parse(localStorage.getItem("registered_users") || "[]");//retrieve user reg in local storage
+        setLoading(true);
 
-        // no more role filtering - match on email across all registered users
-        const matchedUser = registeredUsers.find(
-            (u) => u.email.toLowerCase() === username.toLowerCase()
-        );
+        try {
+            const res = await fetch(`${API_BASE_URL}/auth/login`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    email: username,
+                    password
+                })
+            });
 
-        const isEmployeeDummy = username.toLowerCase() === "employee@gmail.com" && password === "password";
-        const isAdminDummy = username.toLowerCase() === "admin@gmail.com" && password === "password";
+            const data = await res.json();
 
-        if (matchedUser && matchedUser.password === password) {
-            setSuccess(`Sign in successful! Welcome back, ${matchedUser.fullName}.`);//condition true show success msg
+            if (!res.ok || !data.success) {
+                // Matches your backend's messages: "Email not found",
+                // "Incorrect Password", "Please enter a valid email address", etc.
+                setError(data.message || "Invalid credentials.");
+                setLoading(false);
+                return;
+            }
 
-        } else if (isEmployeeDummy) {
-            setSuccess("Sign in successful! Welcome back, Demo Employee.");//check employee?
+            setSuccess(`Sign in successful! Welcome back, ${data.user.name}.`);
 
-        } else if (isAdminDummy) {
-            setSuccess("Sign in successful! Welcome back, Demo Admin.");//check admin?
+            // Persist auth so protected routes / axios calls can use it later
+            localStorage.setItem("token", data.token);
+            localStorage.setItem("user", JSON.stringify(data.user));
 
-        } else {
-            setError("Invalid credentials. Try using admin@gmail.com or employee@gmail.com / password, or register a new account.");
-        }//others show error
+            // Route based on role from the backend (matches your Role model's `name`)
+            setTimeout(() => {
+                if (data.user.role === "Admin") {
+                    navigate("/admin/dashboard");
+                } else {
+                    navigate("/employee/dashboard");
+                }
+            }, 800);
+
+        } catch (err) {
+            console.error("Login request failed:", err);
+            setError("Unable to reach server. Please check your connection and try again.");
+        } finally {
+            setLoading(false);
+        }
     };
 
     return (
@@ -61,7 +88,7 @@ function Login() {//login fn
          &copy; {new Date().getFullYear()}  EMS. Version 0.0.1
     </div>
     </div>
-    
+
     {/* Right side panel (Login card) */}
     <div className="login-right-panel">
     <div className="login-right-inner">
@@ -177,8 +204,8 @@ function Login() {//login fn
     </div>
     </div>
     {/* Sign In CTA */}
-    <button type="submit" className="btn btn-primary" style={{ marginBottom: "1.25rem" }}>
-         Sign In
+    <button type="submit" className="btn btn-primary" style={{ marginBottom: "1.25rem" }} disabled={loading}>
+         {loading ? "Signing In..." : "Sign In"}
     </button>
     </form>
     </div>
