@@ -2,6 +2,7 @@ import React from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 
 import Login from "./pages/Login";
+import Dashboard from "./pages/Dashboard";
 
 
 function App() {
@@ -14,8 +15,11 @@ function App() {
         <Route path="/login/employee" element={<Login />} />
         <Route path="/login/admin" element={<Login />} />
 
+        {/* Admin Dashboard */}
+        <Route path="/admin/dashboard" element={<Dashboard />} />
+
         {/* Unified Registration Page */}
-        
+
 
       </Routes>
     </BrowserRouter>
