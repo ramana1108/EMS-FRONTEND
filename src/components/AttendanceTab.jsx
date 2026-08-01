@@ -1,16 +1,58 @@
+<<<<<<< HEAD
 import React, { useState } from "react";
 import { motion } from "framer-motion";
 import { Clock, CheckCircle, AlertTriangle, UserCheck, Play, Square } from "lucide-react";
+=======
+import React, { useEffect, useState } from "react";
+import { motion } from "framer-motion";
+import { Clock, AlertTriangle, UserCheck, Play, Square } from "lucide-react";
+
+const fallbackLogs = [];
+>>>>>>> dcc57df32a52b92dd6d69c2e9df329c4a799a36c
 
 export default function AttendanceTab() {
     const [isClockedIn, setIsClockedIn] = useState(false);
     const [clockInTime, setClockInTime] = useState(null);
+<<<<<<< HEAD
     const [logs, setLogs] = useState([
         { date: "2026-08-01", checkIn: "08:58 AM", checkOut: "05:30 PM", hours: "8.5 hrs", status: "On Time" },
         { date: "2026-07-31", checkIn: "09:12 AM", checkOut: "06:00 PM", hours: "8.8 hrs", status: "Late Check-in" },
         { date: "2026-07-30", checkIn: "08:52 AM", checkOut: "05:30 PM", hours: "8.6 hrs", status: "On Time" },
         { date: "2026-07-29", checkIn: "09:05 AM", checkOut: "05:40 PM", hours: "8.5 hrs", status: "On Time" }
     ]);
+=======
+    const [logs, setLogs] = useState(fallbackLogs);
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        const loadAttendance = async () => {
+            try {
+                const response = await fetch("/api/attendance");
+                if (!response.ok) throw new Error("Failed to load attendance");
+                const data = await response.json();
+                if (Array.isArray(data.attendance)) {
+                    const normalized = data.attendance.map((item) => ({
+                        _id: item._id,
+                        attendanceDate: item.attendanceDate ? item.attendanceDate.split("T")[0] : "",
+                        checkInTime: item.checkInTime || "--",
+                        checkOutTime: item.checkOutTime || "--",
+                        workedHours: item.workedHours ?? 0,
+                        status: item.status,
+                        employeeName: item.employeeName || "Unknown",
+                    }));
+                    setLogs(normalized);
+                }
+            } catch (err) {
+                console.warn("Attendance API unavailable, showing fallback data:", err);
+                setLogs(fallbackLogs);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        loadAttendance();
+    }, []);
+>>>>>>> dcc57df32a52b92dd6d69c2e9df329c4a799a36c
 
     const handleClockToggle = () => {
         const now = new Date();
@@ -23,17 +65,33 @@ export default function AttendanceTab() {
         } else {
             setIsClockedIn(false);
             const newLog = {
+<<<<<<< HEAD
                 date: dateStr,
                 checkIn: clockInTime,
                 checkOut: timeStr,
                 hours: "8.0 hrs",
                 status: "On Time"
+=======
+                _id: `local-${Date.now()}`,
+                attendanceDate: dateStr,
+                checkInTime: clockInTime,
+                checkOutTime: timeStr,
+                workedHours: 8,
+                status: "Present",
+                employeeName: "You"
+>>>>>>> dcc57df32a52b92dd6d69c2e9df329c4a799a36c
             };
             setLogs([newLog, ...logs]);
             setClockInTime(null);
         }
     };
 
+<<<<<<< HEAD
+=======
+    const presentDays = logs.filter((log) => log.status === "Present").length;
+    const lateCheckIns = logs.filter((log) => log.status === "Absent").length;
+
+>>>>>>> dcc57df32a52b92dd6d69c2e9df329c4a799a36c
     return (
         <motion.div
             initial={{ opacity: 0, y: 15 }}
@@ -43,7 +101,11 @@ export default function AttendanceTab() {
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                 <div>
                     <h1 className="text-3xl font-extrabold text-slate-900 dark:text-white tracking-tight">Attendance Logs</h1>
+<<<<<<< HEAD
                     <p className="text-sm text-slate-500 dark:text-slate-400 mt-1 font-medium">Verify login-logout audit stamps and simulate check-in active states.</p>
+=======
+                    <p className="text-sm text-slate-500 dark:text-slate-400 mt-1 font-medium">View live attendance records from your database and clock in/out locally.</p>
+>>>>>>> dcc57df32a52b92dd6d69c2e9df329c4a799a36c
                 </div>
 
                 <button
@@ -87,7 +149,11 @@ export default function AttendanceTab() {
                     </div>
                     <div>
                         <span className="text-[10px] uppercase font-black tracking-wider text-slate-400 dark:text-slate-505">Present Days</span>
+<<<<<<< HEAD
                         <p className="text-lg font-black text-slate-800 dark:text-white mt-1">18 Days <span className="text-xs text-emerald-500 font-semibold">(94%)</span></p>
+=======
+                        <p className="text-lg font-black text-slate-800 dark:text-white mt-1">{presentDays} Days <span className="text-xs text-emerald-500 font-semibold">({Math.round((presentDays / Math.max(logs.length, 1)) * 100)}%)</span></p>
+>>>>>>> dcc57df32a52b92dd6d69c2e9df329c4a799a36c
                     </div>
                 </div>
 
@@ -97,7 +163,11 @@ export default function AttendanceTab() {
                     </div>
                     <div>
                         <span className="text-[10px] uppercase font-black tracking-wider text-slate-400 dark:text-slate-505">Late Check-ins</span>
+<<<<<<< HEAD
                         <p className="text-lg font-black text-slate-800 dark:text-white mt-1">1 Incident</p>
+=======
+                        <p className="text-lg font-black text-slate-800 dark:text-white mt-1">{lateCheckIns} Incident{lateCheckIns === 1 ? "" : "s"}</p>
+>>>>>>> dcc57df32a52b92dd6d69c2e9df329c4a799a36c
                     </div>
                 </div>
             </div>
@@ -108,6 +178,10 @@ export default function AttendanceTab() {
                     <table className="w-full text-left border-collapse">
                         <thead>
                             <tr className="bg-slate-50/50 dark:bg-slate-900/50 text-slate-500 dark:text-slate-400 uppercase text-[10px] font-black tracking-widest border-b border-slate-100 dark:border-slate-800/60">
+<<<<<<< HEAD
+=======
+                                <th className="px-6 py-4">Employee</th>
+>>>>>>> dcc57df32a52b92dd6d69c2e9df329c4a799a36c
                                 <th className="px-6 py-4">Session Date</th>
                                 <th className="px-6 py-4">Check In</th>
                                 <th className="px-6 py-4">Check Out</th>
@@ -116,6 +190,7 @@ export default function AttendanceTab() {
                             </tr>
                         </thead>
                         <tbody className="divide-y divide-slate-100 dark:divide-slate-800/40">
+<<<<<<< HEAD
                             {logs.map((log, index) => (
                                 <tr key={index} className="hover:bg-slate-50/30 dark:hover:bg-slate-800/10 transition-colors">
                                     <td className="px-6 py-4 text-xs font-bold font-mono text-slate-700 dark:text-slate-350">{log.date}</td>
@@ -124,6 +199,21 @@ export default function AttendanceTab() {
                                     <td className="px-6 py-4 text-xs font-semibold text-slate-700 dark:text-slate-350">{log.hours}</td>
                                     <td className="px-6 py-4">
                                         <span className={`inline-flex items-center gap-1 px-2.5 py-0.5 rounded border text-[10px] font-black uppercase tracking-wider ${log.status === "On Time"
+=======
+                            {loading ? (
+                                <tr><td colSpan="6" className="px-6 py-8 text-center text-sm text-slate-500">Loading attendance data...</td></tr>
+                            ) : logs.length === 0 ? (
+                                <tr><td colSpan="6" className="px-6 py-8 text-center text-sm text-slate-500">No attendance records found in the database yet.</td></tr>
+                            ) : logs.map((log) => (
+                                <tr key={log._id} className="hover:bg-slate-50/30 dark:hover:bg-slate-800/10 transition-colors">
+                                    <td className="px-6 py-4 text-xs font-bold text-slate-700 dark:text-slate-300">{log.employeeName}</td>
+                                    <td className="px-6 py-4 text-xs font-bold font-mono text-slate-700 dark:text-slate-350">{log.attendanceDate}</td>
+                                    <td className="px-6 py-4 text-xs font-bold text-slate-800 dark:text-slate-200">{log.checkInTime || "--"}</td>
+                                    <td className="px-6 py-4 text-xs font-bold text-slate-800 dark:text-slate-200">{log.checkOutTime || "--"}</td>
+                                    <td className="px-6 py-4 text-xs font-semibold text-slate-700 dark:text-slate-350">{log.workedHours ? `${log.workedHours} hrs` : "--"}</td>
+                                    <td className="px-6 py-4">
+                                        <span className={`inline-flex items-center gap-1 px-2.5 py-0.5 rounded border text-[10px] font-black uppercase tracking-wider ${log.status === "Present"
+>>>>>>> dcc57df32a52b92dd6d69c2e9df329c4a799a36c
                                                 ? "bg-emerald-50 dark:bg-emerald-950/40 border-emerald-200 dark:border-emerald-900/40 text-emerald-700 dark:text-emerald-300"
                                                 : "bg-amber-50 dark:bg-amber-950/40 border-amber-200 dark:border-amber-900/40 text-amber-700 dark:text-amber-300"
                                             }`}>

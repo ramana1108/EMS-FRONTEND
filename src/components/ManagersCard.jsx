@@ -1,5 +1,8 @@
 import React from "react";
+<<<<<<< HEAD
 import { motion } from "framer-motion";
+=======
+>>>>>>> dcc57df32a52b92dd6d69c2e9df329c4a799a36c
 
 const managers = [
     {
@@ -38,10 +41,14 @@ const managers = [
 
 export default function ManagersCard() {
     return (
+<<<<<<< HEAD
         <motion.div
             initial={{ opacity: 0, y: 25 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.4, delay: 0.2 }}
+=======
+        <div
+>>>>>>> dcc57df32a52b92dd6d69c2e9df329c4a799a36c
             className="bg-white/70 dark:bg-slate-900/70 backdrop-blur-lg border border-slate-200/60 dark:border-slate-800/60 rounded-2xl p-6 shadow-lg shadow-emerald-950/[0.02] flex flex-col h-[400px] overflow-hidden"
         >
             <div className="flex items-center justify-between pb-4 border-b border-slate-150 dark:border-slate-800/60 flex-shrink-0">
@@ -80,6 +87,10 @@ export default function ManagersCard() {
                     </div>
                 ))}
             </div>
+<<<<<<< HEAD
         </motion.div>
+=======
+        </div>
+>>>>>>> dcc57df32a52b92dd6d69c2e9df329c4a799a36c
     );
 }

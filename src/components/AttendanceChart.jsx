@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import React, { useState } from "react";
 import { motion } from "framer-motion";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from "recharts";
@@ -74,6 +75,13 @@ const departmentData = {
         { name: "Dec", Present: 48, Absent: 4 },
     ],
 };
+=======
+import React, { useEffect, useMemo, useState } from "react";
+import { motion } from "framer-motion";
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from "recharts";
+
+const fallbackMonthlyData = [];
+>>>>>>> dcc57df32a52b92dd6d69c2e9df329c4a799a36c
 
 // Custom Glassmorphic Tooltip Component
 const CustomTooltip = ({ active, payload, label }) => {
@@ -101,7 +109,55 @@ const CustomTooltip = ({ active, payload, label }) => {
 
 export default function AttendanceChart() {
     const [selectedDept, setSelectedDept] = useState("All Departments");
+<<<<<<< HEAD
     const data = departmentData[selectedDept];
+=======
+    const [monthlyData, setMonthlyData] = useState(fallbackMonthlyData);
+    const [departmentOptions, setDepartmentOptions] = useState(["All Departments"]);
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        const loadSummary = async () => {
+            try {
+                const response = await fetch("/api/attendance/summary");
+                if (!response.ok) throw new Error("Failed to load summary");
+                const data = await response.json();
+
+                if (Array.isArray(data.monthlyStats) && data.monthlyStats.length > 0) {
+                    const normalized = data.monthlyStats.map((entry) => ({
+                        name: entry.name,
+                        Present: entry.Present || 0,
+                        Absent: entry.Absent || 0,
+                        Leave: entry.Leave || 0,
+                        "Half Day": entry["Half Day"] || 0,
+                    }));
+                    setMonthlyData(normalized);
+                }
+
+                if (Array.isArray(data.departmentStats)) {
+                    const depts = data.departmentStats.map((entry) => entry.name).filter(Boolean);
+                    setDepartmentOptions(["All Departments", ...depts]);
+                }
+            } catch (err) {
+                console.warn("Attendance summary unavailable, using fallback data:", err);
+                setMonthlyData(fallbackMonthlyData);
+                setDepartmentOptions(["All Departments", "Production", "Sales", "IT", "HR/Admin"]);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        loadSummary();
+    }, []);
+
+    const data = useMemo(() => {
+        if (selectedDept === "All Departments") {
+            return monthlyData;
+        }
+
+        return monthlyData.map((entry) => ({ ...entry }));
+    }, [monthlyData, selectedDept]);
+>>>>>>> dcc57df32a52b92dd6d69c2e9df329c4a799a36c
 
     return (
         <motion.div
@@ -123,15 +179,29 @@ export default function AttendanceChart() {
                     onChange={(e) => setSelectedDept(e.target.value)}
                     className="bg-white/90 dark:bg-slate-850 text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-slate-800 px-3.5 py-1.5 rounded-xl text-xs font-bold outline-none focus:border-emerald-600 focus:ring-2 focus:ring-emerald-650/15 hover:border-slate-300 dark:hover:border-slate-750 transition-all cursor-pointer shadow-sm"
                 >
+<<<<<<< HEAD
                     <option value="All Departments">All Departments</option>
                     <option value="Production">Production</option>
                     <option value="Sales">Sales</option>
                     <option value="IT">IT</option>
                     <option value="HR/Admin">HR/Admin</option>
+=======
+                    {departmentOptions.map((option) => (
+                        <option key={option} value={option}>{option}</option>
+                    ))}
+>>>>>>> dcc57df32a52b92dd6d69c2e9df329c4a799a36c
                 </select>
             </div>
 
             <div className="flex-1 w-full text-xs font-semibold relative z-10">
+<<<<<<< HEAD
+=======
+                {loading ? (
+                    <div className="flex h-full items-center justify-center text-sm text-slate-500">Loading attendance analytics...</div>
+                ) : data.length === 0 ? (
+                    <div className="flex h-full items-center justify-center text-sm text-slate-500">No attendance analytics data is available yet.</div>
+                ) : (
+>>>>>>> dcc57df32a52b92dd6d69c2e9df329c4a799a36c
                 <ResponsiveContainer width="100%" height="100%">
                     <BarChart data={data} margin={{ top: 5, right: 5, left: -20, bottom: 5 }}>
                         <defs>
@@ -189,6 +259,10 @@ export default function AttendanceChart() {
                         />
                     </BarChart>
                 </ResponsiveContainer>
+<<<<<<< HEAD
+=======
+                )}
+>>>>>>> dcc57df32a52b92dd6d69c2e9df329c4a799a36c
             </div>
         </motion.div>
     );

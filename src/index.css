@@ -120,6 +120,8 @@ a:hover {
   animation: fadeIn 0.4s ease forwards;
 }
 
+@import "tailwindcss";
+
 /* Common UI layouts and classes */
 .card {
   background: var(--card-bg);
