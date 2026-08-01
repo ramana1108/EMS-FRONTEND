@@ -1,0 +1,157 @@
+import React from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { motion } from "framer-motion";
+import {
+    LayoutDashboard,
+    Building2,
+    Award,
+    Users,
+    Fingerprint,
+    Clock,
+    CalendarDays,
+    Wallet,
+    Megaphone,
+    BarChart3,
+    Settings,
+    Briefcase,
+    LogOut,
+    X,
+    PieChart
+} from "lucide-react";
+
+const menuItems = [
+    { name: "Dashboard", icon: LayoutDashboard },
+    { name: "Departments", icon: Building2 },
+    { name: "Designations", icon: Award },
+    { name: "Employees", icon: Users },
+    { name: "Roles", icon: Fingerprint },
+    { name: "Attendance", icon: Clock },
+    { name: "Leave Management", icon: CalendarDays },
+    { name: "Payroll", icon: Wallet },
+];
+
+export default function Sidebar({ activeTab, setActiveTab, isOpen, setIsOpen }) {
+    const navigate = useNavigate();
+
+    const handleLogout = () => {
+        // Navigate back to login screen
+        navigate("/");
+    };
+
+    return (
+        <>
+            {/* Mobile Overlay */}
+            {isOpen && (
+                <div
+                    className="fixed inset-0 z-45 bg-[#022c22]/40 backdrop-blur-sm lg:hidden transition-opacity duration-300"
+                    onClick={() => setIsOpen(false)}
+                />
+            )}
+
+            {/* Sidebar Panel */}
+            <aside
+                className={`fixed top-0 left-0 bottom-0 z-50 w-[260px] bg-gradient-to-b from-[#064E3B] to-[#022C22] text-white flex flex-col transition-all duration-300 ease-in-out border-r border-[#065F46]/50 shadow-2xl ${isOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"
+                    }`}
+            >
+                {/* Sidebar Header */}
+                <div className="h-[72px] px-6 border-b border-[#065f46]/40 flex items-center justify-between flex-shrink-0">
+                    <div className="flex items-center gap-3">
+                        <div className="p-2 bg-emerald-500/10 rounded-xl border border-emerald-500/20 text-emerald-400">
+                            <Briefcase size={20} />
+                        </div>
+                        <span className="text-xl font-bold tracking-tight text-white">EMS Portal</span>
+                    </div>
+                    {/* Close button for Mobile */}
+                    <button
+                        onClick={() => setIsOpen(false)}
+                        className="lg:hidden p-1.5 hover:bg-emerald-800/30 rounded-lg text-emerald-300 hover:text-white transition-colors"
+                    >
+                        <X size={20} />
+                    </button>
+                </div>
+
+                {/* Sidebar Navigation */}
+                <nav className="flex-1 overflow-y-auto px-4 py-6 space-y-1.5 scrollbar-thin scrollbar-thumb-emerald-800/40">
+                    {menuItems.map((item) => {
+                        const Icon = item.icon;
+                        const isActive = activeTab === item.name;
+
+                        return (
+                            <button
+                                key={item.name}
+                                onClick={() => {
+                                    setActiveTab(item.name);
+                                    setIsOpen(false);
+                                }}
+                                className={`w-full flex items-center gap-3.5 px-4 py-3 rounded-xl text-sm font-semibold transition-all duration-150 relative group ${isActive
+                                    ? "bg-gradient-to-r from-emerald-600 to-emerald-500 text-white shadow-md shadow-emerald-950/20"
+                                    : "text-emerald-100/70 hover:bg-[#065F46]/30 hover:text-white"
+                                    }`}
+                            >
+                                {/* Glow ring on active */}
+                                {isActive && (
+                                    <span className="absolute -left-1.5 top-1/4 bottom-1/4 w-1 bg-emerald-300 rounded-full" />
+                                )}
+                                <Icon
+                                    size={18}
+                                    className={`transition-colors duration-150-all ${isActive ? "text-white" : "text-emerald-300/60 group-hover:text-emerald-200"
+                                        }`}
+                                />
+                                <span>{item.name}</span>
+                            </button>
+                        );
+                    })}
+                </nav>
+
+                {/* Sidebar Bottom Widget: Employees by Department */}
+                <div className="px-5 py-4 bg-[#033B2B]/40 border-t border-[#065f46]/40 text-left">
+                    <p className="text-[10px] font-bold tracking-wider text-emerald-300/60 uppercase mb-2.5">
+                        Employees by Dept
+                    </p>
+                    <div className="space-y-1.5">
+                        {[
+                            { name: "Production", color: "bg-[#065F46]", val: "83" },
+                            { name: "Sales", color: "bg-[#059669]", val: "50" },
+                            { name: "IT", color: "bg-[#34D399]", val: "50" },
+                            { name: "HR/Admin", color: "bg-[#0D9488]", val: "25" },
+                        ].map((d) => (
+                            <div key={d.name} className="flex items-center justify-between text-xs text-emerald-100/80">
+                                <div className="flex items-center gap-2">
+                                    <span className={`w-2 h-2 rounded-full ${d.color}`} />
+                                    <span className="font-semibold">{d.name}</span>
+                                </div>
+                                <span className="font-mono font-bold opacity-75">{d.val}</span>
+                            </div>
+                        ))}
+                    </div>
+                </div>
+
+                {/* Sidebar Footer Profile */}
+                <div className="p-4 border-t border-[#065f46]/40 bg-[#033B2B]/60 flex items-center justify-between gap-3 text-left">
+                    <div className="flex items-center gap-2.5">
+                        <div className="relative">
+                            <img
+                                src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&h=100&fit=crop&crop=faces&q=80"
+                                alt="Admin Avatar"
+                                className="w-10 h-10 rounded-full border border-emerald-500/20 object-cover"
+                            />
+                            <span className="absolute bottom-0 right-0 w-2.5 h-2.5 rounded-full border-2 border-[#033B2B] bg-emerald-400" />
+                        </div>
+                        <div>
+                            <p className="text-xs font-bold text-white line-clamp-1">Prasanna Ramana</p>
+                            <p className="text-[10px] font-black text-emerald-300 uppercase tracking-widest leading-none mt-0.5">Admin</p>
+                        </div>
+                    </div>
+
+                    <button
+                        onClick={handleLogout}
+                        title="Log Out"
+                        className="p-2 hover:bg-emerald-800/30 rounded-xl text-emerald-300 hover:text-white transition-colors"
+                    >
+                        <LogOut size={16} />
+                    </button>
+                </div>
+            </aside>
+        </>
+    );
+}
