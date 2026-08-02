@@ -1,9 +1,5 @@
 import React, { useState } from "react";
 import { Users, Building2, UserCheck, Wallet, Construction } from "lucide-react";
-<<<<<<< HEAD
-import { motion } from "framer-motion";
-=======
->>>>>>> dcc57df32a52b92dd6d69c2e9df329c4a799a36c
 
 // Import components
 import AdminLayout from "../components/AdminLayout";
@@ -141,16 +137,8 @@ export default function Dashboard() {
                 return <SettingsTab />;
             default:
                 return (
-<<<<<<< HEAD
-                    <motion.div
-                        key={activeTab}
-                        initial={{ opacity: 0, scale: 0.95 }}
-                        animate={{ opacity: 1, scale: 1 }}
-                        transition={{ duration: 0.3 }}
-=======
                     <div
                         key={activeTab}
->>>>>>> dcc57df32a52b92dd6d69c2e9df329c4a799a36c
                         className="bg-white/70 dark:bg-slate-900/70 backdrop-blur-lg border border-slate-205 dark:border-slate-800 rounded-2xl p-10 text-center max-w-2xl mx-auto my-12 shadow-xl shadow-emerald-950/[0.01]"
                     >
                         <div className="w-16 h-16 bg-emerald-50 dark:bg-emerald-955/40 text-[#059669] dark:text-[#10b981] rounded-2xl flex items-center justify-center mx-auto mb-6 border border-emerald-100 dark:border-emerald-900/30 shadow-inner">
@@ -166,11 +154,7 @@ export default function Dashboard() {
                         >
                             Return to Dashboard
                         </button>
-<<<<<<< HEAD
-                    </motion.div>
-=======
                     </div>
->>>>>>> dcc57df32a52b92dd6d69c2e9df329c4a799a36c
                 );
         }
     };

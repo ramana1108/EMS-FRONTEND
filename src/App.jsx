@@ -3,6 +3,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 
 import Login from "./pages/Login";
 import Dashboard from "./pages/Dashboard";
+import DepartmentEmployees from "./pages/DepartmentEmployees";
 
 
 function App() {
@@ -17,6 +18,11 @@ function App() {
 
         {/* Admin Dashboard */}
         <Route path="/admin/dashboard" element={<Dashboard />} />
+
+        <Route
+    path="/departments/:id"
+    element={<DepartmentEmployees />}
+/>
 
         {/* Unified Registration Page */}
 

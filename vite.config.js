@@ -4,12 +4,7 @@ import tailwindcss from '@tailwindcss/vite'
 
 // https://vite.dev/config/
 export default defineConfig({
-<<<<<<< HEAD
-<<<<<<< HEAD
-  plugins: [react()],
-=======
   plugins: [react(), tailwindcss()],
->>>>>>> dcc57df32a52b92dd6d69c2e9df329c4a799a36c
   server: {
     proxy: {
       '/api': {
@@ -19,7 +14,4 @@ export default defineConfig({
       }
     }
   }
-=======
-  plugins: [react(), tailwindcss()],
->>>>>>> 62509eb (admin-view)
 })
