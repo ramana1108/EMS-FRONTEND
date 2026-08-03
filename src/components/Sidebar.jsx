@@ -16,26 +16,41 @@ import {
 } from "lucide-react";
 
 const menuItems = [
-    { name: "Dashboard", icon: LayoutDashboard, permission: "dashboard" },
-    { name: "Departments", icon: Building2, permission: "department" },
-    { name: "Designations", icon: Award, permission: "designation" },
-    { name: "Employees", icon: Users, permission: "employee" },
-    { name: "Roles", icon: Fingerprint, permission: "role" },
-    { name: "Attendance", icon: Clock, permission: "attendance" },
-    { name: "Payroll", icon: Wallet, permission: "payroll" },
-    { name: "Notices", icon: Megaphone, permission: "notice" },
+    { name: "Dashboard", icon: LayoutDashboard, permission: "dashboard", path: "/admin/dashboard" },
+    { name: "Departments", icon: Building2, permission: "department", path: "/admin/departments" },
+    { name: "Designations", icon: Award, permission: "designation", path: "/admin/designations" },
+    { name: "Employees", icon: Users, permission: "employee", path: "/admin/employee" },
+    { name: "Roles", icon: Fingerprint, permission: "role", path: "/admin/roles" },
+    { name: "Attendance", icon: Clock, permission: "attendance", path: "/admin/attendance" },
+    { name: "Payroll", icon: Wallet, permission: "payroll", path: "/admin/payroll" },
+    { name: "Notices", icon: Megaphone, permission: "notice", path: "/admin/notices" },
 ];
 
 export default function Sidebar({ activeTab, setActiveTab, isOpen, setIsOpen }) {
     const navigate = useNavigate();
     const user = typeof window !== "undefined" ? JSON.parse(localStorage.getItem("user") || "{}") : {};
     const permissions = Array.isArray(user.permissions) ? user.permissions : [];
-    const visibleMenuItems = menuItems.filter((item) => item.permission ? permissions.includes(item.permission) : true);
+    const userName = user.name || "User";
+    const userRole = user.role || "ADMIN";
+    
+    // Show all items if no permissions are set (for development), otherwise filter by permissions
+    const visibleMenuItems = permissions.length === 0 
+        ? menuItems 
+        : menuItems.filter((item) => !item.permission || permissions.includes(item.permission));
 
     const handleLogout = () => {
         localStorage.removeItem("token");
         localStorage.removeItem("user");
         navigate("/");
+    };
+
+    const getInitials = (name) => {
+        if (!name) return "U";
+        const parts = name.split(" ");
+        if (parts.length > 1) {
+            return (parts[0][0] + parts[1][0]).toUpperCase();
+        }
+        return name.slice(0, 2).toUpperCase();
     };
 
     return (
@@ -85,6 +100,7 @@ export default function Sidebar({ activeTab, setActiveTab, isOpen, setIsOpen }) 
                                 key={item.name}
                                 onClick={() => {
                                     setActiveTab(item.name);
+                                    navigate(item.path);
                                     setIsOpen(false);
                                 }}
                                 className={`w-full flex items-center gap-3.5 px-4 py-3 rounded-xl text-sm font-semibold transition-all duration-150 relative group ${isActive
@@ -133,17 +149,12 @@ export default function Sidebar({ activeTab, setActiveTab, isOpen, setIsOpen }) 
                 {/* Sidebar Footer Profile */}
                 <div className="p-4 border-t border-[#065f46]/40 bg-[#033B2B]/60 flex items-center justify-between gap-3 text-left">
                     <div className="flex items-center gap-2.5">
-                        <div className="relative">
-                            <img
-                                src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&h=100&fit=crop&crop=faces&q=80"
-                                alt="Admin Avatar"
-                                className="w-10 h-10 rounded-full border border-emerald-500/20 object-cover"
-                            />
-                            <span className="absolute bottom-0 right-0 w-2.5 h-2.5 rounded-full border-2 border-[#033B2B] bg-emerald-400" />
+                        <div className="w-10 h-10 rounded-full bg-emerald-600 border border-emerald-500/20 flex items-center justify-center flex-shrink-0">
+                            <span className="text-xs font-bold text-white">{getInitials(userName)}</span>
                         </div>
                         <div>
-                            <p className="text-xs font-bold text-white line-clamp-1">Prasanna Ramana</p>
-                            <p className="text-[10px] font-black text-emerald-300 uppercase tracking-widest leading-none mt-0.5">Admin</p>
+                            <p className="text-xs font-bold text-white line-clamp-1">{userName}</p>
+                            <p className="text-[10px] font-black text-emerald-300 uppercase tracking-widest leading-none mt-0.5">{userRole}</p>
                         </div>
                     </div>
 
