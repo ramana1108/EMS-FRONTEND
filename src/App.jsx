@@ -1,9 +1,10 @@
 import React from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+// import "./admin/Dashboard.css";
 
-import Login from "./pages/Login";
-import Dashboard from "./pages/Dashboard";
-
+import Login from "./auth/Login";
+import AdminDashboard from "./admin/Dashboard";
+import EmployeeDashboard from "./employee/Dashboard";
 
 function App() {
   return (
@@ -15,10 +16,9 @@ function App() {
         <Route path="/login/employee" element={<Login />} />
         <Route path="/login/admin" element={<Login />} />
 
-        {/* Admin Dashboard */}
-        <Route path="/admin/dashboard" element={<Dashboard />} />
-
-        {/* Unified Registration Page */}
+        {/* Dashboards */}
+        <Route path="/admin/dashboard" element={<AdminDashboard />} />
+        <Route path="/employee/dashboard" element={<EmployeeDashboard />} />
 
 
       </Routes>

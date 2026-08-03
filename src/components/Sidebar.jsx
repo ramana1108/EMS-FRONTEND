@@ -1,6 +1,5 @@
 import React from "react";
-import { Link, useNavigate } from "react-router-dom";
-import { motion } from "framer-motion";
+import { useNavigate } from "react-router-dom";
 import {
     LayoutDashboard,
     Building2,
@@ -11,30 +10,31 @@ import {
     CalendarDays,
     Wallet,
     Megaphone,
-    BarChart3,
-    Settings,
     Briefcase,
     LogOut,
-    X,
-    PieChart
+    X
 } from "lucide-react";
 
 const menuItems = [
-    { name: "Dashboard", icon: LayoutDashboard },
-    { name: "Departments", icon: Building2 },
-    { name: "Designations", icon: Award },
-    { name: "Employees", icon: Users },
-    { name: "Roles", icon: Fingerprint },
-    { name: "Attendance", icon: Clock },
-    { name: "Leave Management", icon: CalendarDays },
-    { name: "Payroll", icon: Wallet },
+    { name: "Dashboard", icon: LayoutDashboard, permission: "dashboard" },
+    { name: "Departments", icon: Building2, permission: "department" },
+    { name: "Designations", icon: Award, permission: "designation" },
+    { name: "Employees", icon: Users, permission: "employee" },
+    { name: "Roles", icon: Fingerprint, permission: "role" },
+    { name: "Attendance", icon: Clock, permission: "attendance" },
+    { name: "Payroll", icon: Wallet, permission: "payroll" },
+    { name: "Notices", icon: Megaphone, permission: "notice" },
 ];
 
 export default function Sidebar({ activeTab, setActiveTab, isOpen, setIsOpen }) {
     const navigate = useNavigate();
+    const user = typeof window !== "undefined" ? JSON.parse(localStorage.getItem("user") || "{}") : {};
+    const permissions = Array.isArray(user.permissions) ? user.permissions : [];
+    const visibleMenuItems = menuItems.filter((item) => item.permission ? permissions.includes(item.permission) : true);
 
     const handleLogout = () => {
-        // Navigate back to login screen
+        localStorage.removeItem("token");
+        localStorage.removeItem("user");
         navigate("/");
     };
 
@@ -72,7 +72,11 @@ export default function Sidebar({ activeTab, setActiveTab, isOpen, setIsOpen }) 
 
                 {/* Sidebar Navigation */}
                 <nav className="flex-1 overflow-y-auto px-4 py-6 space-y-1.5 scrollbar-thin scrollbar-thumb-emerald-800/40">
-                    {menuItems.map((item) => {
+                    {visibleMenuItems.length === 0 ? (
+                        <div className="rounded-2xl border border-emerald-800/20 bg-emerald-950/10 p-4 text-sm text-emerald-100">
+                            You do not have permissions for any menu items.
+                        </div>
+                    ) : visibleMenuItems.map((item) => {
                         const Icon = item.icon;
                         const isActive = activeTab === item.name;
 
