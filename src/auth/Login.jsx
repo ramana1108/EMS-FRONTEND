@@ -47,17 +47,20 @@ function Login() {
 
             setSuccess(`Sign in successful! Welcome back, ${data.user.name}.`);
 
+            const normalizedUser = {
+                ...data.user,
+                permissions: Array.isArray(data.user.permissions) ? data.user.permissions : []
+            };
+
             localStorage.setItem("token", data.token);
-            localStorage.setItem("user", JSON.stringify(data.user));
+            localStorage.setItem("user", JSON.stringify(normalizedUser));
+
+            const roleName = normalizedUser.role?.toLowerCase?.() || "";
+            const destination = roleName === "admin" ? "/admin/dashboard" : "/employee/dashboard";
 
             setTimeout(() => {
-                const roleName = data.user.role?.toLowerCase?.() || "";
-                if (roleName === "admin") {
-                    navigate("/admin/dashboard");
-                } else {
-                    navigate("/employee/dashboard");
-                }
-            }, 800);
+                navigate(destination);
+            }, 500);
         } catch (err) {
             console.error("Login request failed:", err);
             setError("Unable to reach server. Please check your connection and try again.");
@@ -90,7 +93,9 @@ function Login() {
                             <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-emerald-100 text-emerald-600">
                                 <Briefcase size={28} />
                             </div>
-                            <h2 className="text-2xl font-semibold text-slate-900">Sign In to EMS</h2>
+                            <h2 className="text-2xl font-semibold text-slate-900" style={{ color: "#0f172a" }}>
+                                Sign In to EMS
+                            </h2>
                             <p className="mt-2 text-sm text-slate-500">Enter your credentials to access your workspace.</p>
                         </div>
 

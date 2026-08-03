@@ -1,27 +1,27 @@
 import React, { useState } from "react";
+import { Menu } from "lucide-react";
 import Sidebar from "./Sidebar";
-import TopNavbar from "./TopNavbar";
 
-export default function AdminLayout({ children, activeTab, setActiveTab }) {
-    const [sidebarOpen, setSidebarOpen] = useState(false);
+export default function AdminLayout({ activeTab, setActiveTab, children }) {
+    const [isOpen, setIsOpen] = useState(false);
 
     return (
-        <div className="min-h-screen bg-[#F8FAFC] dark:bg-[#0b0f19] flex w-full">
-            {/* Sidebar Panel */}
-            <Sidebar
-                activeTab={activeTab}
-                setActiveTab={setActiveTab}
-                isOpen={sidebarOpen}
-                setIsOpen={setSidebarOpen}
-            />
+        <div className="min-h-screen bg-slate-100 text-slate-900">
+            <Sidebar activeTab={activeTab} setActiveTab={setActiveTab} isOpen={isOpen} setIsOpen={setIsOpen} />
 
-            {/* Main Panel Content Container */}
-            <div className="flex-1 flex flex-col min-w-0 lg:pl-[260px] transition-all duration-300">
-                {/* Top Header Navbar */}
-                <TopNavbar onMenuClick={() => setSidebarOpen(true)} />
+            <div className="lg:pl-[260px]">
+                <div className="sticky top-0 z-30 flex items-center justify-between border-b border-slate-200/80 bg-white/95 px-4 py-3 backdrop-blur-xl lg:hidden">
+                    <button
+                        onClick={() => setIsOpen(true)}
+                        className="inline-flex h-11 w-11 items-center justify-center rounded-2xl bg-slate-900 text-white shadow-sm shadow-slate-900/10"
+                        aria-label="Open sidebar"
+                    >
+                        <Menu size={20} />
+                    </button>
+                    <div className="text-sm font-semibold text-slate-900">Admin Dashboard</div>
+                </div>
 
-                {/* Content Pane */}
-                <main className="flex-1 p-6 md:p-8 max-w-[1450px] w-full mx-auto">
+                <main className="min-h-screen bg-slate-100 px-4 py-6 sm:px-6 lg:px-8">
                     {children}
                 </main>
             </div>

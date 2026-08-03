@@ -1,6 +1,5 @@
 import React from "react";
-import { Link, useNavigate } from "react-router-dom";
-import { motion } from "framer-motion";
+import { useNavigate } from "react-router-dom";
 import {
     LayoutDashboard,
     Building2,
@@ -11,31 +10,62 @@ import {
     CalendarDays,
     Wallet,
     Megaphone,
-    BarChart3,
-    Settings,
     Briefcase,
     LogOut,
-    X,
-    PieChart
+    X
 } from "lucide-react";
 
 const menuItems = [
-    { name: "Dashboard", icon: LayoutDashboard },
-    { name: "Departments", icon: Building2 },
-    { name: "Designations", icon: Award },
-    { name: "Employees", icon: Users },
-    { name: "Roles", icon: Fingerprint },
-    { name: "Attendance", icon: Clock },
-    { name: "Leave Management", icon: CalendarDays },
-    { name: "Payroll", icon: Wallet },
+    { name: "Dashboard", icon: LayoutDashboard, permission: "dashboard", path: "/admin/dashboard" },
+    { name: "Departments", icon: Building2, permission: "department", path: "/admin/departments" },
+    { name: "Designations", icon: Award, permission: "designation", path: "/admin/designations" },
+    { name: "Employees", icon: Users, permission: "employee", path: "/admin/employee" },
+    { name: "Roles", icon: Fingerprint, permission: "role", path: "/admin/roles" },
+    { name: "Attendance", icon: Clock, permission: "attendance", path: "/admin/attendance" },
+    { name: "Payroll", icon: Wallet, permission: "payroll", path: "/admin/payroll" },
+    { name: "Notices", icon: Megaphone, permission: "notice", path: "/admin/notices" },
 ];
 
 export default function Sidebar({ activeTab, setActiveTab, isOpen, setIsOpen }) {
     const navigate = useNavigate();
+    const user = typeof window !== "undefined" ? JSON.parse(localStorage.getItem("user") || "{}") : {};
+    const userName = user.name || "User";
+    const userRole = user.role || "ADMIN";
+    const roleName = typeof user.role === "string"
+        ? user.role.trim().toLowerCase()
+        : typeof user.role === "object" && user.role !== null && user.role.name
+            ? String(user.role.name).trim().toLowerCase()
+            : "";
+    const rawPermissions = Array.isArray(user.permissions)
+        ? user.permissions
+        : typeof user.permissions === "string"
+            ? user.permissions.split(",").map((perm) => perm.trim()).filter(Boolean)
+            : [];
+    const defaultPermissions = roleName === "admin"
+        ? menuItems.map((item) => item.permission)
+        : roleName === "hr"
+            ? ["dashboard", "department", "designation", "employee", "attendance", "payroll", "notice"]
+            : roleName === "manager"
+                ? ["dashboard", "employee", "attendance", "notice"]
+                : roleName === "employee"
+                    ? ["dashboard", "attendance", "notice"]
+                    : ["dashboard"];
+    const permissions = rawPermissions.length > 0 ? rawPermissions : defaultPermissions;
+    const visibleMenuItems = menuItems.filter((item) => item.permission ? permissions.includes(item.permission) : true);
 
     const handleLogout = () => {
-        // Navigate back to login screen
+        localStorage.removeItem("token");
+        localStorage.removeItem("user");
         navigate("/");
+    };
+
+    const getInitials = (name) => {
+        if (!name) return "U";
+        const parts = name.split(" ");
+        if (parts.length > 1) {
+            return (parts[0][0] + parts[1][0]).toUpperCase();
+        }
+        return name.slice(0, 2).toUpperCase();
     };
 
     return (
@@ -72,7 +102,11 @@ export default function Sidebar({ activeTab, setActiveTab, isOpen, setIsOpen }) 
 
                 {/* Sidebar Navigation */}
                 <nav className="flex-1 overflow-y-auto px-4 py-6 space-y-1.5 scrollbar-thin scrollbar-thumb-emerald-800/40">
-                    {menuItems.map((item) => {
+                    {visibleMenuItems.length === 0 ? (
+                        <div className="rounded-2xl border border-emerald-800/20 bg-emerald-950/10 p-4 text-sm text-emerald-100">
+                            You do not have permissions for any menu items.
+                        </div>
+                    ) : visibleMenuItems.map((item) => {
                         const Icon = item.icon;
                         const isActive = activeTab === item.name;
 
@@ -81,6 +115,7 @@ export default function Sidebar({ activeTab, setActiveTab, isOpen, setIsOpen }) 
                                 key={item.name}
                                 onClick={() => {
                                     setActiveTab(item.name);
+                                    navigate(item.path);
                                     setIsOpen(false);
                                 }}
                                 className={`w-full flex items-center gap-3.5 px-4 py-3 rounded-xl text-sm font-semibold transition-all duration-150 relative group ${isActive
@@ -129,17 +164,12 @@ export default function Sidebar({ activeTab, setActiveTab, isOpen, setIsOpen }) 
                 {/* Sidebar Footer Profile */}
                 <div className="p-4 border-t border-[#065f46]/40 bg-[#033B2B]/60 flex items-center justify-between gap-3 text-left">
                     <div className="flex items-center gap-2.5">
-                        <div className="relative">
-                            <img
-                                src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&h=100&fit=crop&crop=faces&q=80"
-                                alt="Admin Avatar"
-                                className="w-10 h-10 rounded-full border border-emerald-500/20 object-cover"
-                            />
-                            <span className="absolute bottom-0 right-0 w-2.5 h-2.5 rounded-full border-2 border-[#033B2B] bg-emerald-400" />
+                        <div className="w-10 h-10 rounded-full bg-emerald-600 border border-emerald-500/20 flex items-center justify-center flex-shrink-0">
+                            <span className="text-xs font-bold text-white">{getInitials(userName)}</span>
                         </div>
                         <div>
-                            <p className="text-xs font-bold text-white line-clamp-1">Prasanna Ramana</p>
-                            <p className="text-[10px] font-black text-emerald-300 uppercase tracking-widest leading-none mt-0.5">Admin</p>
+                            <p className="text-xs font-bold text-white line-clamp-1">{userName}</p>
+                            <p className="text-[10px] font-black text-emerald-300 uppercase tracking-widest leading-none mt-0.5">{userRole}</p>
                         </div>
                     </div>
 
