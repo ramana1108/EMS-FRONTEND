@@ -5,6 +5,7 @@ import Login from "./auth/Login";
 import AdminLayout from "./components/AdminLayout";
 import AdminDashboard from "./admin/Dashboard";
 import AdminEmployee from "./admin/Employee";
+import Department from "./admin/Department";
 import EmployeeDashboard from "./employee/Dashboard";
 import DepartmentEmployees from "./auth/DepartmentEmployees";
 
@@ -71,7 +72,7 @@ function AppContent() {
         path="/admin/departments"
         element={
           <AdminLayout activeTab={activeTab} setActiveTab={setActiveTab}>
-            <AdminPlaceholder title="Departments" />
+            <Department />
           </AdminLayout>
         }
       />
