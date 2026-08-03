@@ -29,7 +29,26 @@ const menuItems = [
 export default function Sidebar({ activeTab, setActiveTab, isOpen, setIsOpen }) {
     const navigate = useNavigate();
     const user = typeof window !== "undefined" ? JSON.parse(localStorage.getItem("user") || "{}") : {};
-    const permissions = Array.isArray(user.permissions) ? user.permissions : [];
+    const roleName = typeof user.role === "string"
+        ? user.role.trim().toLowerCase()
+        : typeof user.role === "object" && user.role !== null && user.role.name
+            ? String(user.role.name).trim().toLowerCase()
+            : "";
+    const rawPermissions = Array.isArray(user.permissions)
+        ? user.permissions
+        : typeof user.permissions === "string"
+            ? user.permissions.split(",").map((perm) => perm.trim()).filter(Boolean)
+            : [];
+    const defaultPermissions = roleName === "admin"
+        ? menuItems.map((item) => item.permission)
+        : roleName === "hr"
+            ? ["dashboard", "department", "designation", "employee", "attendance", "payroll", "notice"]
+            : roleName === "manager"
+                ? ["dashboard", "employee", "attendance", "notice"]
+                : roleName === "employee"
+                    ? ["dashboard", "attendance", "notice"]
+                    : ["dashboard"];
+    const permissions = rawPermissions.length > 0 ? rawPermissions : defaultPermissions;
     const visibleMenuItems = menuItems.filter((item) => item.permission ? permissions.includes(item.permission) : true);
 
     const handleLogout = () => {
