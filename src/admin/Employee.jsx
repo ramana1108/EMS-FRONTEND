@@ -28,6 +28,12 @@ export default function Employee() {
     const [searchTerm, setSearchTerm] = useState("");
     const [statusFilter, setStatusFilter] = useState("All Statuses");
     const [deptFilter, setDeptFilter] = useState("All Departments");
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [isViewModalOpen, setIsViewModalOpen] = useState(false);
+    const [editingId, setEditingId] = useState(null);
+    const [viewingEmployee, setViewingEmployee] = useState(null);
+    const [formError, setFormError] = useState("");
+    const [formErrors, setFormErrors] = useState({});
     const [currentUser] = useState(() => {
         const stored = localStorage.getItem("user");
         if (stored) {
@@ -53,11 +59,11 @@ export default function Employee() {
         firstName: "",
         lastName: "",
         email: "",
-        username: "",
         password: "",
         confirmPassword: "",
         phone: "",
         gender: "Male",
+        role: "employee",
         dob: "",
         address: "",
         joiningDate: "",
@@ -154,11 +160,11 @@ export default function Employee() {
             firstName: "",
             lastName: "",
             email: "",
-            username: "",
             password: "",
             confirmPassword: "",
             phone: "",
             gender: "Male",
+            role: "employee",
             dob: "",
             address: "",
             joiningDate: new Date().toISOString().split("T")[0],
@@ -182,11 +188,11 @@ export default function Employee() {
             firstName: emp.firstName || emp.name?.split(" ")[0] || "",
             lastName: emp.lastName || emp.name?.split(" ").slice(1).join(" ") || "",
             email: emp.email || "",
-            username: emp.name || "",
             password: "",
             confirmPassword: "",
             phone: emp.phone || "",
             gender: emp.gender || "Male",
+            role: emp.role || "employee",
             dob: emp.dob || "",
             address: emp.address || "",
             joiningDate: emp.joiningDate || "",
@@ -237,6 +243,7 @@ export default function Employee() {
         if (!formData.email) errors.email = "Email is required";
         if (!formData.phone) errors.phone = "Phone Number is required";
         if (!formData.gender) errors.gender = "Gender is required";
+        if (!formData.role) errors.role = "Role is required";
         if (!formData.dob) errors.dob = "Date of Birth is required";
         if (!formData.address) errors.address = "Address is required";
         if (!formData.joiningDate) errors.joiningDate = "Joining Date is required";
@@ -269,9 +276,8 @@ export default function Employee() {
             }
         }
 
-        // When creating (not editing), require username and password fields
+        // When creating (not editing), require password fields for user account creation
         if (!editingId) {
-            if (!formData.username) errors.username = "Username is required";
             const pwd = formData.password || "";
             const confirm = formData.confirmPassword || "";
             const pwdRe = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
@@ -301,7 +307,6 @@ export default function Employee() {
                     const updatePayload = { ...formData };
                     delete updatePayload.password;
                     delete updatePayload.confirmPassword;
-                    delete updatePayload.username;
                     const updateRes = await api.updateEmployee(editingId, updatePayload);
                     console.debug("[Employee] update response =>", updateRes);
                     if (updateRes && updateRes.employee) {
@@ -324,10 +329,10 @@ export default function Employee() {
                 let registerRes = null;
                 try {
                     registerRes = await api.registerUser({
-                        name: formData.username || `${formData.firstName} ${formData.lastName}`.trim(),
+                        name: `${formData.firstName} ${formData.lastName}`.trim(),
                         email: formData.email,
                         password: formData.password,
-                        role: "Employee"
+                        role: formData.role
                     });
                 } catch (err) {
                     console.warn("Auth register failed:", err);
@@ -343,7 +348,6 @@ export default function Employee() {
                 const employeePayload = { ...formData };
                 delete employeePayload.password;
                 delete employeePayload.confirmPassword;
-                delete employeePayload.username;
 
                 const createRes = await api.createEmployee(employeePayload);
                 console.log("Backend Response:", createRes);
@@ -734,19 +738,22 @@ export default function Employee() {
                             </div>
 
                             {/* Grid Row 4: Gender & Date of Birth */}
-                            {/* Grid Row 3.5: Username & Password */}
                             <div className="form-grid-2">
                                 <div className="form-group">
-                                    <label>Username <span className="req">*</span></label>
-                                    <input
-                                        type="text"
-                                        name="username"
-                                        value={formData.username}
+                                    <label>Role <span className="req">*</span></label>
+                                    <select
+                                        name="role"
+                                        value={formData.role}
                                         onChange={handleInputChange}
-                                        className={formErrors.username ? 'input-error' : ''}
-                                        placeholder="unique username or display name"
-                                    />
-                                    {formErrors.username && <div className="field-error">{formErrors.username}</div>}
+                                        className={formErrors.role ? 'input-error' : ''}
+                                        required
+                                    >
+                                        <option value="employee">Employee</option>
+                                        <option value="manager">Manager</option>
+                                        <option value="hr">HR</option>
+                                        <option value="admin">Admin</option>
+                                    </select>
+                                    {formErrors.role && <div className="field-error">{formErrors.role}</div>}
                                 </div>
                                 <div className="form-group">
                                     <label>Password <span className="req">*</span></label>

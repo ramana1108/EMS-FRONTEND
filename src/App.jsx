@@ -12,6 +12,7 @@ import Designations from "./admin/Designations";
 import Notice from "./admin/Notice";
 import Payroll from "./admin/Payroll";
 import Attendance from "./admin/Attendance";
+import Settings from "./admin/Settings";
 import DepartmentEmployees from "./auth/DepartmentEmployees";
 
 // Placeholder components for other admin sections
@@ -26,7 +27,7 @@ function AppContent() {
   const [activeTab, setActiveTab] = useState("Dashboard");
   const location = useLocation();
 
-  
+
   const routeToTab = useMemo(() => ({
     "/admin/dashboard": "Dashboard",
     "/admin/departments": "Departments",
@@ -36,6 +37,7 @@ function AppContent() {
     "/admin/attendance": "Attendance",
     "/admin/payroll": "Payroll",
     "/admin/notices": "Notices",
+    "/admin/settings": "Settings",
   }), []);
 
   React.useEffect(() => {
@@ -77,7 +79,6 @@ function AppContent() {
         path="/admin/departments"
         element={
           <AdminLayout activeTab={activeTab} setActiveTab={setActiveTab}>
-            <Designations />
             <Department />
           </AdminLayout>
         }
@@ -129,6 +130,16 @@ function AppContent() {
         element={
           <AdminLayout activeTab={activeTab} setActiveTab={setActiveTab}>
             <Notice />
+          </AdminLayout>
+        }
+      />
+
+      {/* Admin Settings */}
+      <Route
+        path="/admin/settings"
+        element={
+          <AdminLayout activeTab={activeTab} setActiveTab={setActiveTab}>
+            <Settings />
           </AdminLayout>
         }
       />
