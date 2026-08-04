@@ -66,6 +66,15 @@ export default function Employee() {
     const [searchTerm, setSearchTerm] = useState("");
     const [statusFilter, setStatusFilter] = useState("All Statuses");
     const [deptFilter, setDeptFilter] = useState("All Departments");
+    const [showEnrollForm, setShowEnrollForm] = useState(false);
+    const [formData, setFormData] = useState({
+        name: "",
+        email: "",
+        department: "",
+        role: "",
+        status: "Active",
+        joiningDate: ""
+    });
     const [currentUser] = useState(() => {
         const stored = localStorage.getItem("user");
         if (stored) {
@@ -122,6 +131,37 @@ export default function Employee() {
         localStorage.removeItem("token");
         localStorage.removeItem("user");
         navigate("/");
+    };
+
+    const handleInputChange = (e) => {
+        const { name, value } = e.target;
+        setFormData(prev => ({
+            ...prev,
+            [name]: value
+        }));
+    };
+
+    const handleSubmitEmployee = async (e) => {
+        e.preventDefault();
+        try {
+            const res = await api.createEmployee(formData);
+            if (res && res.success) {
+                setEmployees(prev => [...prev, { ...formData, employeeId: `EMP-${Date.now()}` }]);
+                setFormData({
+                    name: "",
+                    email: "",
+                    department: "",
+                    role: "",
+                    status: "Active",
+                    joiningDate: ""
+                });
+                setShowEnrollForm(false);
+                alert("Employee enrolled successfully!");
+            }
+        } catch (err) {
+            console.error("Failed to enroll employee:", err);
+            alert("Failed to enroll employee");
+        }
     };
 
     const getInitials = (name) => {
@@ -189,8 +229,12 @@ export default function Employee() {
                     <h1 className="dashboard-title">Employee Directory</h1>
                     <p className="dashboard-subtitle">Manage workforce records, roles, statuses and enroll new employees.</p>
                 </div>
-                <button className="btn-enroll-employee" style={{ backgroundColor: "#059669", color: "#ffffff", display: "flex", alignItems: "center", gap: "8px" }}>
-                    <Plus size={16} />
+                <button 
+                    onClick={() => setShowEnrollForm(true)}
+                    className="btn-enroll-employee" 
+                    style={{ backgroundColor: "#059669", color: "#ffffff", display: "flex", alignItems: "center", gap: "8px" }}
+                >
+                    <Plus size={18} />
                     <span>Enroll Employee</span>
                 </button>
             </div>
