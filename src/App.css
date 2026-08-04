@@ -285,6 +285,23 @@
   border-color: #059669; box-shadow: 0 0 0 3px rgba(5, 150, 105, 0.15);
 }
 
+/* Input error styling for enroll form */
+.input-error {
+  border-color: #ef4444 !important;
+  box-shadow: 0 0 0 4px rgba(254, 226, 226, 0.6) !important;
+}
+
+.field-error {
+  background-color: #fff1f2;
+  border: 1px solid #fecaca;
+  color: #7f1d1d;
+  padding: 8px 12px;
+  border-radius: 8px;
+  margin-top: 8px;
+  font-size: 13px;
+  font-weight: 700;
+}
+
 .modal-actions {
   display: flex; justify-content: flex-end; gap: 12px; margin-top: 12px;
   padding-top: 16px; border-top: 1px solid #f1f5f9;
@@ -673,8 +690,8 @@
 .btn-action {
   width: 100%;
   padding: 12px;
-  background-color: #10b981;
-  color: #ffffff;
+  background-color: #0fde99;
+  color: #131010;
   border: none;
   border-radius: 12px;
   font-size: 14px;
@@ -688,7 +705,7 @@
 }
 
 .btn-action:hover {
-  background-color: #059669;
+  background-color: #9ec7ba;
 }
 
 /* Managers List */
@@ -1765,6 +1782,27 @@
 }
 .btn-action.edit:hover { background-color: #eff6ff; border-color: #bfdbfe; }
 .btn-action.delete:hover { background-color: #fef2f2; border-color: #fecaca; }
+
+/* Quick Actions override — make dashboard quick-action buttons full-width
+   and avoid conflicting with small inline action buttons used elsewhere */
+.card-box .action-buttons-stack .btn-action {
+  width: 100%;
+  height: auto;
+  padding: 12px;
+  border-radius: 12px;
+  border: none;
+  background-color: oklch(0.6 0.13 163.22);
+  color: #131010;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin-left: 0;
+  transition: background-color 0.2s;
+}
+.card-box .action-buttons-stack .btn-action:hover {
+  background-color: #42e496;
+}
 
 /* Modal Dialog */
 .modal-backdrop {

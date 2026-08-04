@@ -35,6 +35,7 @@ export default function Employee() {
     const [viewingEmployee, setViewingEmployee] = useState(null);
     const [editingId, setEditingId] = useState(null);
     const [formError, setFormError] = useState("");
+    const [formErrors, setFormErrors] = useState({});
 
     const [currentUser] = useState(() => {
         const stored = localStorage.getItem("user");
@@ -61,6 +62,9 @@ export default function Employee() {
         firstName: "",
         lastName: "",
         email: "",
+        username: "",
+        password: "",
+        confirmPassword: "",
         phone: "",
         gender: "Male",
         dob: "",
@@ -147,11 +151,15 @@ export default function Employee() {
     const handleOpenEnrollModal = () => {
         setEditingId(null);
         setFormError("");
+        setFormErrors({});
         setFormData({
             employeeId: `EMP-${1001 + employees.length}`,
             firstName: "",
             lastName: "",
             email: "",
+            username: "",
+            password: "",
+            confirmPassword: "",
             phone: "",
             gender: "Male",
             dob: "",
@@ -171,11 +179,15 @@ export default function Employee() {
     const handleEditClick = (emp) => {
         setEditingId(emp._id || emp.employeeId);
         setFormError("");
+        setFormErrors({});
         setFormData({
             employeeId: emp.employeeId || "",
             firstName: emp.firstName || emp.name?.split(" ")[0] || "",
             lastName: emp.lastName || emp.name?.split(" ").slice(1).join(" ") || "",
             email: emp.email || "",
+            username: emp.name || "",
+            password: "",
+            confirmPassword: "",
             phone: emp.phone || "",
             gender: emp.gender || "Male",
             dob: emp.dob || "",
@@ -204,6 +216,13 @@ export default function Employee() {
             ...prev,
             [name]: value
         }));
+        // clear per-field error when user edits the field
+        setFormErrors(prev => {
+            if (!prev || !prev[name]) return prev;
+            const copy = { ...prev };
+            delete copy[name];
+            return copy;
+        });
     };
 
     // Submit Employee Enrollment Form (Validates backend requirements)
@@ -211,22 +230,65 @@ export default function Employee() {
         console.log("Form Submitted");
         e.preventDefault();
         setFormError("");
+        setFormErrors({});
 
-        // Field Validations matching employeeController.js
-        if (!formData.employeeId) return setFormError("Employee ID is required");
-        if (!formData.firstName) return setFormError("First Name is required");
-        if (!formData.lastName) return setFormError("Last Name is required");
-        if (!formData.email) return setFormError("Email is required");
-        if (!formData.phone) return setFormError("Phone Number is required");
-        if (!formData.gender) return setFormError("Gender is required");
-        if (!formData.dob) return setFormError("Date of Birth is required");
-        if (!formData.address) return setFormError("Address is required");
-        if (!formData.joiningDate) return setFormError("Joining Date is required");
-        if (!formData.departmentId) return setFormError("Department is required");
-        if (!formData.salary) return setFormError("Salary is required");
-        if (!formData.employmentType) return setFormError("Employment Type is required");
-        if (!formData.status) return setFormError("Status is required");
-        if (!formData.createdBy) return setFormError("Created By is required");
+        // Client-side field validations and duplicate checks
+        const errors = {};
+        if (!formData.employeeId) errors.employeeId = "Employee ID is required";
+        if (!formData.firstName) errors.firstName = "First Name is required";
+        if (!formData.lastName) errors.lastName = "Last Name is required";
+        if (!formData.email) errors.email = "Email is required";
+        if (!formData.phone) errors.phone = "Phone Number is required";
+        if (!formData.gender) errors.gender = "Gender is required";
+        if (!formData.dob) errors.dob = "Date of Birth is required";
+        if (!formData.address) errors.address = "Address is required";
+        if (!formData.joiningDate) errors.joiningDate = "Joining Date is required";
+        if (!formData.departmentId) errors.departmentId = "Department is required";
+        if (!formData.salary && formData.salary !== 0) errors.salary = "Salary is required";
+        if (!formData.employmentType) errors.employmentType = "Employment Type is required";
+        if (!formData.status) errors.status = "Status is required";
+        if (!formData.createdBy) errors.createdBy = "Created By is required";
+
+        // Duplicate checks against loaded employees (allow same value when editing the same record)
+        if (formData.email) {
+            const emailLower = formData.email.toLowerCase();
+            const found = employees.find(emp => emp.email && emp.email.toLowerCase() === emailLower);
+            if (found && !(editingId && (found._id === editingId || found.employeeId === editingId))) {
+                errors.email = "An account with this email already exists.";
+            }
+        }
+        if (formData.employeeId) {
+            const foundId = employees.find(emp => emp.employeeId && emp.employeeId === formData.employeeId);
+            if (foundId && !(editingId && (foundId._id === editingId || foundId.employeeId === editingId))) {
+                errors.employeeId = "Employee ID already exists.";
+            }
+        }
+
+        // Phone validation (simple numeric + optional +, spaces, dashes)
+        if (formData.phone) {
+            const phoneRe = /^\+?[0-9\s-]{7,20}$/;
+            if (!phoneRe.test(formData.phone)) {
+                errors.phone = "Please enter a valid phone number (digits, optional +, 7-20 chars).";
+            }
+        }
+
+        // When creating (not editing), require username and password fields
+        if (!editingId) {
+            if (!formData.username) errors.username = "Username is required";
+            const pwd = formData.password || "";
+            const confirm = formData.confirmPassword || "";
+            const pwdRe = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+            if (!pwd) errors.password = "Password is required";
+            else if (!pwdRe.test(pwd)) errors.password = "Password must be 8+ chars including upper, lower, number, special";
+            if (!confirm) errors.confirmPassword = "Confirm your password";
+            else if (pwd && confirm && pwd !== confirm) errors.confirmPassword = "Passwords do not match";
+        }
+
+        if (Object.keys(errors).length > 0) {
+            setFormErrors(errors);
+            setFormError("Please fix the highlighted errors and try again.");
+            return;
+        }
 
         const newEmployeeRecord = {
             ...formData,
@@ -239,7 +301,11 @@ export default function Employee() {
         if (editingId) {
             try {
                 if (api.updateEmployee) {
-                    const updateRes = await api.updateEmployee(editingId, formData);
+                    const updatePayload = { ...formData };
+                    delete updatePayload.password;
+                    delete updatePayload.confirmPassword;
+                    delete updatePayload.username;
+                    const updateRes = await api.updateEmployee(editingId, updatePayload);
                     console.debug("[Employee] update response =>", updateRes);
                     if (updateRes && updateRes.employee) {
                         // ok
@@ -257,7 +323,32 @@ export default function Employee() {
             try {
                 console.log("Sending Data:", formData);
 
-                const createRes = await api.createEmployee(formData);
+                // Register user account first (auth)
+                let registerRes = null;
+                try {
+                    registerRes = await api.registerUser({
+                        name: formData.username || `${formData.firstName} ${formData.lastName}`.trim(),
+                        email: formData.email,
+                        password: formData.password,
+                        role: "Employee"
+                    });
+                } catch (err) {
+                    console.warn("Auth register failed:", err);
+                }
+
+                if (registerRes && registerRes.success === false) {
+                    setFormError(registerRes.message || "Failed to create user account");
+                    setFormErrors({ general: registerRes.message || "Failed to create user account" });
+                    return;
+                }
+
+                // Prepare employee payload without auth fields
+                const employeePayload = { ...formData };
+                delete employeePayload.password;
+                delete employeePayload.confirmPassword;
+                delete employeePayload.username;
+
+                const createRes = await api.createEmployee(employeePayload);
                 console.log("Backend Response:", createRes);
                 if (createRes && createRes.employee) {
                     setEmployees(prev => [createRes.employee, ...prev]);
@@ -272,6 +363,8 @@ export default function Employee() {
             }
         }
 
+        setFormError("");
+        setFormErrors({});
         setIsModalOpen(false);
     };
 
@@ -545,7 +638,7 @@ export default function Employee() {
                                 <h2>{editingId ? "Edit Employee Record" : "Enroll New Employee"}</h2>
                                 <p className="modal-subtitle">Fill in all required fields matching Employee Controller backend.</p>
                             </div>
-                            <button className="btn-close" onClick={() => setIsModalOpen(false)}>
+                            <button className="btn-close" onClick={() => { setIsModalOpen(false); setFormError(""); setFormErrors({}); }}>
                                 <X size={20} />
                             </button>
                         </div>
@@ -562,9 +655,11 @@ export default function Employee() {
                                         name="employeeId"
                                         value={formData.employeeId}
                                         onChange={handleInputChange}
+                                        className={formErrors.employeeId ? 'input-error' : ''}
                                         placeholder="e.g. EMP-1005"
                                         required
                                     />
+                                    {formErrors.employeeId && <div className="field-error">{formErrors.employeeId}</div>}
                                 </div>
                                 <div className="form-group">
                                     <label>Created By <span className="req">*</span></label>
@@ -573,9 +668,11 @@ export default function Employee() {
                                         name="createdBy"
                                         value={formData.createdBy}
                                         onChange={handleInputChange}
+                                        className={formErrors.createdBy ? 'input-error' : ''}
                                         placeholder="Admin Name"
                                         required
                                     />
+                                    {formErrors.createdBy && <div className="field-error">{formErrors.createdBy}</div>}
                                 </div>
                             </div>
 
@@ -588,9 +685,11 @@ export default function Employee() {
                                         name="firstName"
                                         value={formData.firstName}
                                         onChange={handleInputChange}
+                                        className={formErrors.firstName ? 'input-error' : ''}
                                         placeholder="e.g. John"
                                         required
                                     />
+                                    {formErrors.firstName && <div className="field-error">{formErrors.firstName}</div>}
                                 </div>
                                 <div className="form-group">
                                     <label>Last Name <span className="req">*</span></label>
@@ -599,9 +698,11 @@ export default function Employee() {
                                         name="lastName"
                                         value={formData.lastName}
                                         onChange={handleInputChange}
+                                        className={formErrors.lastName ? 'input-error' : ''}
                                         placeholder="e.g. Doe"
                                         required
                                     />
+                                    {formErrors.lastName && <div className="field-error">{formErrors.lastName}</div>}
                                 </div>
                             </div>
 
@@ -614,9 +715,11 @@ export default function Employee() {
                                         name="email"
                                         value={formData.email}
                                         onChange={handleInputChange}
+                                        className={formErrors.email ? 'input-error' : ''}
                                         placeholder="john.doe@company.com"
                                         required
                                     />
+                                    {formErrors.email && <div className="field-error">{formErrors.email}</div>}
                                 </div>
                                 <div className="form-group">
                                     <label>Phone Number <span className="req">*</span></label>
@@ -625,13 +728,56 @@ export default function Employee() {
                                         name="phone"
                                         value={formData.phone}
                                         onChange={handleInputChange}
+                                        className={formErrors.phone ? 'input-error' : ''}
                                         placeholder="+1 555-0199"
                                         required
                                     />
+                                    {formErrors.phone && <div className="field-error">{formErrors.phone}</div>}
                                 </div>
                             </div>
 
                             {/* Grid Row 4: Gender & Date of Birth */}
+                            {/* Grid Row 3.5: Username & Password */}
+                            <div className="form-grid-2">
+                                <div className="form-group">
+                                    <label>Username <span className="req">*</span></label>
+                                    <input
+                                        type="text"
+                                        name="username"
+                                        value={formData.username}
+                                        onChange={handleInputChange}
+                                        className={formErrors.username ? 'input-error' : ''}
+                                        placeholder="unique username or display name"
+                                    />
+                                    {formErrors.username && <div className="field-error">{formErrors.username}</div>}
+                                </div>
+                                <div className="form-group">
+                                    <label>Password <span className="req">*</span></label>
+                                    <input
+                                        type="password"
+                                        name="password"
+                                        value={formData.password}
+                                        onChange={handleInputChange}
+                                        className={formErrors.password ? 'input-error' : ''}
+                                        placeholder="Min 8 chars, upper, lower, number, special"
+                                    />
+                                    {formErrors.password && <div className="field-error">{formErrors.password}</div>}
+                                </div>
+                            </div>
+
+                            <div className="form-group">
+                                <label>Confirm Password <span className="req">*</span></label>
+                                <input
+                                    type="password"
+                                    name="confirmPassword"
+                                    value={formData.confirmPassword}
+                                    onChange={handleInputChange}
+                                    className={formErrors.confirmPassword ? 'input-error' : ''}
+                                    placeholder="Re-enter password"
+                                />
+                                {formErrors.confirmPassword && <div className="field-error">{formErrors.confirmPassword}</div>}
+                            </div>
+
                             <div className="form-grid-2">
                                 <div className="form-group">
                                     <label>Gender <span className="req">*</span></label>
@@ -639,12 +785,14 @@ export default function Employee() {
                                         name="gender"
                                         value={formData.gender}
                                         onChange={handleInputChange}
+                                        className={formErrors.gender ? 'input-error' : ''}
                                         required
                                     >
                                         <option value="Male">Male</option>
                                         <option value="Female">Female</option>
                                         <option value="Other">Other</option>
                                     </select>
+                                    {formErrors.gender && <div className="field-error">{formErrors.gender}</div>}
                                 </div>
                                 <div className="form-group">
                                     <label>Date of Birth <span className="req">*</span></label>
@@ -653,8 +801,10 @@ export default function Employee() {
                                         name="dob"
                                         value={formData.dob}
                                         onChange={handleInputChange}
+                                        className={formErrors.dob ? 'input-error' : ''}
                                         required
                                     />
+                                    {formErrors.dob && <div className="field-error">{formErrors.dob}</div>}
                                 </div>
                             </div>
 
@@ -666,6 +816,7 @@ export default function Employee() {
                                         name="departmentId"
                                         value={formData.departmentId}
                                         onChange={handleInputChange}
+                                        className={formErrors.departmentId ? 'input-error' : ''}
                                         required
                                     >
                                         <option value="">Select department</option>
@@ -683,6 +834,7 @@ export default function Employee() {
                                             </>
                                         )}
                                     </select>
+                                    {formErrors.departmentId && <div className="field-error">{formErrors.departmentId}</div>}
                                     <label style={{ marginTop: 8 }}>Designation</label>
                                     <select
                                         name="designationId"
@@ -712,9 +864,11 @@ export default function Employee() {
                                         name="salary"
                                         value={formData.salary}
                                         onChange={handleInputChange}
+                                        className={formErrors.salary ? 'input-error' : ''}
                                         placeholder="e.g. 65000"
                                         required
                                     />
+                                    {formErrors.salary && <div className="field-error">{formErrors.salary}</div>}
                                 </div>
                             </div>
 
@@ -727,8 +881,10 @@ export default function Employee() {
                                         name="joiningDate"
                                         value={formData.joiningDate}
                                         onChange={handleInputChange}
+                                        className={formErrors.joiningDate ? 'input-error' : ''}
                                         required
                                     />
+                                    {formErrors.joiningDate && <div className="field-error">{formErrors.joiningDate}</div>}
                                 </div>
                                 <div className="form-group">
                                     <label>Employment Type <span className="req">*</span></label>
@@ -736,6 +892,7 @@ export default function Employee() {
                                         name="employmentType"
                                         value={formData.employmentType}
                                         onChange={handleInputChange}
+                                        className={formErrors.employmentType ? 'input-error' : ''}
                                         required
                                     >
                                         <option value="Full-time">Full-time</option>
@@ -743,6 +900,7 @@ export default function Employee() {
                                         <option value="Contract">Contract</option>
                                         <option value="Internship">Internship</option>
                                     </select>
+                                    {formErrors.employmentType && <div className="field-error">{formErrors.employmentType}</div>}
                                 </div>
                                 <div className="form-group">
                                     <label>Status <span className="req">*</span></label>
@@ -750,12 +908,14 @@ export default function Employee() {
                                         name="status"
                                         value={formData.status}
                                         onChange={handleInputChange}
+                                        className={formErrors.status ? 'input-error' : ''}
                                         required
                                     >
                                         <option value="Active">Active</option>
                                         <option value="Inactive">Inactive</option>
                                         <option value="On Leave">On Leave</option>
                                     </select>
+                                    {formErrors.status && <div className="field-error">{formErrors.status}</div>}
                                 </div>
                             </div>
 
@@ -767,9 +927,11 @@ export default function Employee() {
                                     rows="2"
                                     value={formData.address}
                                     onChange={handleInputChange}
+                                    className={formErrors.address ? 'input-error' : ''}
                                     placeholder="Full home or residential address..."
                                     required
                                 />
+                                {formErrors.address && <div className="field-error">{formErrors.address}</div>}
                             </div>
 
                             {/* Modal Action Buttons */}
@@ -777,7 +939,7 @@ export default function Employee() {
                                 <button
                                     type="button"
                                     className="btn-cancel"
-                                    onClick={() => setIsModalOpen(false)}
+                                    onClick={() => { setIsModalOpen(false); setFormError(""); setFormErrors({}); }}
                                 >
                                     Cancel
                                 </button>
