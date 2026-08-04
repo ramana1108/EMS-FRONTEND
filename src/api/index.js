@@ -61,6 +61,20 @@ export async function deleteEmployee(id) {
   return res.json();
 }
 
+export async function getDepartments() {
+  const res = await fetch(`${API_BASE_URL}/departments`, {
+    headers: authHeaders(),
+  });
+  return res.json();
+}
+
+export async function getDesignations() {
+  const res = await fetch(`${API_BASE_URL}/designations`, {
+    headers: authHeaders(),
+  });
+  return res.json();
+}
+
 export default {
   getAdminDashboard,
   getEmployeeDashboard,
@@ -69,4 +83,6 @@ export default {
   createEmployee,
   updateEmployee,
   deleteEmployee,
+  getDepartments,
+  getDesignations,
 };

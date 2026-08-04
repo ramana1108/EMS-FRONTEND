@@ -115,19 +115,17 @@ export default function Employee() {
     // Fetch departments and designations for form selects
     const fetchDepartmentsAndDesignations = async () => {
         try {
-            const depsRes = await fetch("http://localhost:5000/departments");
-            const depsData = depsRes.ok ? await depsRes.json() : null;
-            console.debug("[Employee] fetched /departments =>", depsData);
-            if (depsData) setDepartmentsOptions(depsData.departments || []);
+            const deps = await api.getDepartments();
+            console.debug("[Employee] fetched /departments =>", deps);
+            if (deps) setDepartmentsOptions(deps.departments || deps.data || deps || []);
         } catch (e) {
             console.warn("Failed to load departments for form", e);
         }
 
         try {
-            const desRes = await fetch("http://localhost:5000/designations");
-            const desData = desRes.ok ? await desRes.json() : null;
-            console.debug("[Employee] fetched /designations =>", desData);
-            if (desData) setDesignationsOptions(desData.designations || desData.designationsList || desData || []);
+            const des = await api.getDesignations();
+            console.debug("[Employee] fetched /designations =>", des);
+            if (des) setDesignationsOptions(des.designations || des.data || des || []);
         } catch (e) {
             console.warn("Failed to load designations for form", e);
         }
@@ -161,10 +159,10 @@ export default function Employee() {
             dob: "",
             address: "",
             joiningDate: new Date().toISOString().split("T")[0],
-            departmentId: departmentsOptions[0]?._id || departmentsList[0] || "IT",
+            departmentId: departmentsOptions[0]?._id || departmentsOptions[0]?.departmentName || "",
             designationId: designationsOptions[0]?._id || "",
             salary: "",
-            employmentType: "Full-time",
+            employmentType: "Permanent",
             status: "Active",
             createdBy: currentUser.id || "admin-01"
         });
@@ -188,7 +186,7 @@ export default function Employee() {
             departmentId: emp.departmentId || emp.department || "",
             designationId: emp.designationId || emp.designationId || "",
             salary: emp.salary || "",
-            employmentType: emp.employmentType || emp.role || "Full-time",
+            employmentType: emp.employmentType || emp.role || "Permanent",
             status: emp.status || "Active",
             createdBy: emp.createdBy?._id || emp.createdBy || currentUser.id || "admin-01"
         });
@@ -212,6 +210,7 @@ export default function Employee() {
 
     // Submit Employee Enrollment Form (Validates backend requirements)
     const handleFormSubmit = async (e) => {
+        console.log("Form Submitted");
         e.preventDefault();
         setFormError("");
 
@@ -240,40 +239,39 @@ export default function Employee() {
         };
 
         if (editingId) {
-          try {
-              if (api.updateEmployee) {
-                                    const updateRes = await api.updateEmployee(editingId, formData);
-                                    console.debug("[Employee] update response =>", updateRes);
-                                    if (updateRes && updateRes.employee) {
-                                        // ok
-                                    } else if (updateRes && updateRes.message) {
-                                        setFormError(updateRes.message);
-                                    }
-              }
-          } catch (err) {
-              console.warn("API update failed, updating state locally", err);
-          }
-          // Refresh list from backend to ensure consistency
-          await fetchEmployees();
-          setEmployees(prev => prev.map(emp => (emp._id === editingId || emp.employeeId === editingId) ? newEmployeeRecord : emp));
+            try {
+                if (api.updateEmployee) {
+                    const updateRes = await api.updateEmployee(editingId, formData);
+                    console.debug("[Employee] update response =>", updateRes);
+                    if (updateRes && updateRes.employee) {
+                        // ok
+                    } else if (updateRes && updateRes.message) {
+                        setFormError(updateRes.message);
+                    }
+                }
+            } catch (err) {
+                console.warn("API update failed, updating state locally", err);
+            }
+
+            await fetchEmployees();
+            setEmployees(prev => prev.map(emp => (emp._id === editingId || emp.employeeId === editingId) ? newEmployeeRecord : emp));
         } else {
-          try {
-              if (api.createEmployee) {
-                                    const createRes = await api.createEmployee(formData);
-                                    console.debug("[Employee] create response =>", createRes);
-                                    if (createRes && createRes.employee) {
-                                        // created successfully
-                                    } else if (createRes && createRes.message && !createRes.employee) {
-                                        // backend returned an error message
-                                        setFormError(createRes.message || "Failed to create employee");
-                                    }
-              }
-          } catch (err) {
-              console.warn("API create failed, adding state locally", err);
-          }
-                    // Refresh list from backend so new record (with real _id) appears
-                    await fetchEmployees();
+            try {
+                console.log("Sending Data:", formData);
+
+                const createRes = await api.createEmployee(formData);
+                console.log("Backend Response:", createRes);
+                if (createRes && createRes.employee) {
+                    setEmployees(prev => [createRes.employee, ...prev]);
+                } else {
                     setEmployees(prev => [newEmployeeRecord, ...prev]);
+                }
+
+                await fetchEmployees();
+            } catch (err) {
+                console.log(err);
+                setFormError(err?.message || "Failed to create employee");
+            }
         }
 
         setIsModalOpen(false);
@@ -698,7 +696,15 @@ export default function Employee() {
                                             designationsOptions.map((ds) => (
                                                 <option key={ds._id} value={ds._id}>{ds.designationName}</option>
                                             ))
-                                        ) : null}
+                                        ) : (
+                                            <>
+                                                <option value="IT">Software Engineer</option>
+                                                <option value="Sales">HR Manager</option>
+                                                <option value="Production">Project Manager</option>
+                                                <option value="Admin">Senior Software Engineer</option>
+                                                <option value="HR">Accountant</option>
+                                            </>
+                                        )}
                                     </select>
                                 </div>
                                 <div className="form-group">
