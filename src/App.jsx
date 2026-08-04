@@ -26,7 +26,7 @@ function AppContent() {
   const [activeTab, setActiveTab] = useState("Dashboard");
   const location = useLocation();
 
-  // Determine activeTab based on current route
+  
   const routeToTab = useMemo(() => ({
     "/admin/dashboard": "Dashboard",
     "/admin/departments": "Departments",
