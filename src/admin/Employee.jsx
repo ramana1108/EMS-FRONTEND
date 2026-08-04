@@ -19,8 +19,6 @@ import { useNavigate } from "react-router-dom";
 // Fallback when backend returns no employees
 const defaultEmployees = [];
 
-
-
 export default function Employee() {
     const navigate = useNavigate();
     const [employees, setEmployees] = useState([]);
