@@ -24,6 +24,7 @@ const menuItems = [
     { name: "Attendance", icon: Clock, permission: "attendance", path: "/admin/attendance" },
     { name: "Payroll", icon: Wallet, permission: "payroll", path: "/admin/payroll" },
     { name: "Notices", icon: Megaphone, permission: "notice", path: "/admin/notices" },
+    { name: "Settings", icon: Briefcase, permission: "settings", path: "/admin/settings" },
 ];
 
 export default function Sidebar({ activeTab, setActiveTab, isOpen, setIsOpen }) {
