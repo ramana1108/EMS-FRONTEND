@@ -5,12 +5,15 @@ import Login from "./auth/Login";
 import AdminLayout from "./components/AdminLayout";
 import AdminDashboard from "./admin/Dashboard";
 import AdminEmployee from "./admin/Employee";
+import Department from "./admin/Department";
 import EmployeeDashboard from "./employee/Dashboard";
 import Roles from "./admin/Roles";
 import Designations from "./admin/Designations";
 import Notice from "./admin/Notice";
 import Payroll from "./admin/Payroll";
 import Attendance from "./admin/Attendance";
+import Settings from "./admin/Settings";
+import DepartmentEmployees from "./auth/DepartmentEmployees";
 import EmployeeAnnouncements from "./employee/Announcements";
 import EmployeeAttendance from "./employee/Attendance";
 import EmployeeLeavemanagement from "./employee/Leavemanagement";
@@ -64,17 +67,20 @@ function AppContent() {
   const [activeTab, setActiveTab] = useState("Dashboard");
   const location = useLocation();
 
-  // Determine activeTab based on current route
-  const routeToTab = useMemo(() => ({
-    "/admin/dashboard": "Dashboard",
-    "/admin/departments": "Departments",
-    "/admin/designations": "Designations",
-    "/admin/employee": "Employees",
-    "/admin/roles": "Roles",
-    "/admin/attendance": "Attendance",
-    "/admin/payroll": "Payroll",
-    "/admin/notices": "Notices",
-  }), []);
+  const routeToTab = useMemo(
+    () => ({
+      "/admin/dashboard": "Dashboard",
+      "/admin/departments": "Departments",
+      "/admin/designations": "Designations",
+      "/admin/employee": "Employees",
+      "/admin/roles": "Roles",
+      "/admin/attendance": "Attendance",
+      "/admin/payroll": "Payroll",
+      "/admin/notices": "Notices",
+      "/admin/settings": "Settings",
+    }),
+    []
+  );
 
   React.useEffect(() => {
     const tab = routeToTab[location.pathname];
@@ -120,7 +126,7 @@ function AppContent() {
         element={
           <RequireRole allowedRoles={["admin"]}>
             <AdminLayout activeTab={activeTab} setActiveTab={setActiveTab}>
-              <Designations />
+              <Department />
             </AdminLayout>
           </RequireRole>
         }
@@ -185,6 +191,21 @@ function AppContent() {
           </RequireRole>
         }
       />
+
+      {/* Admin Settings */}
+      <Route
+        path="/admin/settings"
+        element={
+          <RequireRole allowedRoles={["admin"]}>
+            <AdminLayout activeTab={activeTab} setActiveTab={setActiveTab}>
+              <Settings />
+            </AdminLayout>
+          </RequireRole>
+        }
+      />
+
+      {/* Department Employees */}
+      <Route path="/departments/:id" element={<DepartmentEmployees />} />
 
       {/* Employee Dashboard */}
       <Route
