@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { User, Lock, Eye, EyeOff, CheckCircle, AlertCircle, Briefcase } from "lucide-react";
 
@@ -13,6 +13,23 @@ function Login() {
     const [success, setSuccess] = useState("");
     const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
+
+    useEffect(() => {
+        const storedUser = localStorage.getItem("user");
+        if (storedUser) {
+            try {
+                const user = JSON.parse(storedUser);
+                const role = String(user.role || "").toLowerCase();
+                if (role === "admin") {
+                    navigate("/admin/dashboard", { replace: true });
+                } else if (role) {
+                    navigate("/employee/dashboard", { replace: true });
+                }
+            } catch (err) {
+                console.error("Invalid user stored in localStorage", err);
+            }
+        }
+    }, [navigate]);
 
     const handleLogin = async (e) => {
         e.preventDefault();

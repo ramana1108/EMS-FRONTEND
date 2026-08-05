@@ -26,22 +26,27 @@ const menuItems = [
     { name: "Notices", icon: Megaphone, permission: "notice", path: "/admin/notices" },
 ];
 
+const employeeMenuItems = [
+    { name: "Dashboard", icon: LayoutDashboard, path: "/employee/dashboard" },
+    { name: "Leave Management", icon: CalendarDays, permission: "leave", path: "/employee/leave" },
+    { name: "Attendance", icon: Clock, permission: "attendance", path: "/employee/attendance" },
+    { name: "Payrolls", icon: Wallet, permission: "payroll", path: "/employee/payroll" },
+    { name: "Announcements", icon: Megaphone, permission: "notice", path: "/employee/announcements" },
+    { name: "Profile", icon: Users, path: "/employee/profile" },
+];
+
 export default function Sidebar({ activeTab, setActiveTab, isOpen, setIsOpen }) {
     const navigate = useNavigate();
     const user = typeof window !== "undefined" ? JSON.parse(localStorage.getItem("user") || "{}") : {};
     const permissions = Array.isArray(user.permissions) ? user.permissions : [];
     const userName = user.name || "User";
-    const userRole = user.role || "ADMIN";
+    const userRole = String(user.role || "ADMIN").toLowerCase();
 
-    const visibleMenuItems = userRole === "EMPLOYEE"
-        ? [
-            { name: "Dashboard", icon: LayoutDashboard, path: "/employee/dashboard" },
-            { name: "Leave Management", icon: CalendarDays, path: "/employee/leave" },
-            { name: "Attendance", icon: Clock, path: "/employee/attendance" },
-            { name: "Payrolls", icon: Wallet, path: "/employee/payroll" },
-            { name: "Announcements", icon: Megaphone, path: "/employee/announcements" },
-            { name: "Profile", icon: Users, path: "/employee/profile" },
-        ]
+    const isEmployeeRole = ["employee", "manager", "hr"].includes(userRole);
+    const visibleMenuItems = isEmployeeRole
+        ? (permissions.length === 0
+            ? employeeMenuItems
+            : employeeMenuItems.filter((item) => !item.permission || permissions.includes(item.permission)))
         : (permissions.length === 0
             ? menuItems
             : menuItems.filter((item) => !item.permission || permissions.includes(item.permission)));

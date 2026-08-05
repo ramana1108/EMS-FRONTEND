@@ -1,5 +1,5 @@
 import React, { useState, useMemo } from "react";
-import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate, useLocation } from "react-router-dom";
 
 import Login from "./auth/Login";
 import AdminLayout from "./components/AdminLayout";
@@ -24,6 +24,41 @@ const AdminPlaceholder = ({ title }) => (
     <p className="text-gray-600 mt-2">Coming soon...</p>
   </div>
 );
+
+function getStoredUser() {
+  if (typeof window === "undefined") return null;
+  try {
+    const rawUser = localStorage.getItem("user");
+    return rawUser ? JSON.parse(rawUser) : null;
+  } catch {
+    return null;
+  }
+}
+
+function normalizeRole(role) {
+  return typeof role === "string" ? role.toLowerCase() : "";
+}
+
+function defaultRouteForUser(user) {
+  const role = normalizeRole(user?.role);
+  if (role === "admin") return "/admin/dashboard";
+  if (["employee", "manager", "hr"].includes(role)) return "/employee/dashboard";
+  return "/";
+}
+
+function isAllowedRole(user, allowedRoles = []) {
+  const role = normalizeRole(user?.role);
+  return allowedRoles.map(normalizeRole).includes(role);
+}
+
+function RequireRole({ allowedRoles = [], children }) {
+  const user = getStoredUser();
+  if (!user) return <Navigate to="/" replace />;
+  if (!isAllowedRole(user, allowedRoles)) {
+    return <Navigate to={defaultRouteForUser(user)} replace />;
+  }
+  return children;
+}
 
 function AppContent() {
   const [activeTab, setActiveTab] = useState("Dashboard");
@@ -59,9 +94,11 @@ function AppContent() {
       <Route
         path="/admin/dashboard"
         element={
-          <AdminLayout activeTab={activeTab} setActiveTab={setActiveTab}>
-            <AdminDashboard />
-          </AdminLayout>
+          <RequireRole allowedRoles={["admin"]}>
+            <AdminLayout activeTab={activeTab} setActiveTab={setActiveTab}>
+              <AdminDashboard />
+            </AdminLayout>
+          </RequireRole>
         }
       />
 
@@ -69,9 +106,11 @@ function AppContent() {
       <Route
         path="/admin/employee"
         element={
-          <AdminLayout activeTab={activeTab} setActiveTab={setActiveTab}>
-            <AdminEmployee />
-          </AdminLayout>
+          <RequireRole allowedRoles={["admin"]}>
+            <AdminLayout activeTab={activeTab} setActiveTab={setActiveTab}>
+              <AdminEmployee />
+            </AdminLayout>
+          </RequireRole>
         }
       />
 
@@ -79,9 +118,11 @@ function AppContent() {
       <Route
         path="/admin/departments"
         element={
-          <AdminLayout activeTab={activeTab} setActiveTab={setActiveTab}>
-            <Designations />
-          </AdminLayout>
+          <RequireRole allowedRoles={["admin"]}>
+            <AdminLayout activeTab={activeTab} setActiveTab={setActiveTab}>
+              <Designations />
+            </AdminLayout>
+          </RequireRole>
         }
       />
 
@@ -89,9 +130,11 @@ function AppContent() {
       <Route
         path="/admin/designations"
         element={
-          <AdminLayout activeTab={activeTab} setActiveTab={setActiveTab}>
-            <Designations />
-          </AdminLayout>
+          <RequireRole allowedRoles={["admin"]}>
+            <AdminLayout activeTab={activeTab} setActiveTab={setActiveTab}>
+              <Designations />
+            </AdminLayout>
+          </RequireRole>
         }
       />
 
@@ -99,9 +142,11 @@ function AppContent() {
       <Route
         path="/admin/roles"
         element={
-          <AdminLayout activeTab={activeTab} setActiveTab={setActiveTab}>
-            <Roles />
-          </AdminLayout>
+          <RequireRole allowedRoles={["admin"]}>
+            <AdminLayout activeTab={activeTab} setActiveTab={setActiveTab}>
+              <Roles />
+            </AdminLayout>
+          </RequireRole>
         }
       />
 
@@ -109,9 +154,11 @@ function AppContent() {
       <Route
         path="/admin/attendance"
         element={
-          <AdminLayout activeTab={activeTab} setActiveTab={setActiveTab}>
-            <Attendance />
-          </AdminLayout>
+          <RequireRole allowedRoles={["admin"]}>
+            <AdminLayout activeTab={activeTab} setActiveTab={setActiveTab}>
+              <Attendance />
+            </AdminLayout>
+          </RequireRole>
         }
       />
 
@@ -119,9 +166,11 @@ function AppContent() {
       <Route
         path="/admin/payroll"
         element={
-          <AdminLayout activeTab={activeTab} setActiveTab={setActiveTab}>
-            <Payroll />
-          </AdminLayout>
+          <RequireRole allowedRoles={["admin"]}>
+            <AdminLayout activeTab={activeTab} setActiveTab={setActiveTab}>
+              <Payroll />
+            </AdminLayout>
+          </RequireRole>
         }
       />
 
@@ -129,29 +178,82 @@ function AppContent() {
       <Route
         path="/admin/notices"
         element={
-          <AdminLayout activeTab={activeTab} setActiveTab={setActiveTab}>
-            <Notice />
-          </AdminLayout>
+          <RequireRole allowedRoles={["admin"]}>
+            <AdminLayout activeTab={activeTab} setActiveTab={setActiveTab}>
+              <Notice />
+            </AdminLayout>
+          </RequireRole>
         }
       />
 
       {/* Employee Dashboard */}
-      <Route path="/employee/dashboard" element={<EmployeeDashboard />} />
+      <Route
+        path="/employee/dashboard"
+        element={
+          <RequireRole allowedRoles={["employee", "manager", "hr"]}>
+            <EmployeeDashboard />
+          </RequireRole>
+        }
+      />
 
       {/* Employee Announcements */}
-      <Route path="/employee/announcements" element={<EmployeeAnnouncements />} />
+      <Route
+        path="/employee/announcements"
+        element={
+          <RequireRole allowedRoles={["employee", "manager", "hr"]}>
+            <EmployeeAnnouncements />
+          </RequireRole>
+        }
+      />
 
       {/* Employee Attendance */}
-      <Route path="/employee/attendance" element={<EmployeeAttendance />} />
+      <Route
+        path="/employee/attendance"
+        element={
+          <RequireRole allowedRoles={["employee", "manager", "hr"]}>
+            <EmployeeAttendance />
+          </RequireRole>
+        }
+      />
 
       {/* Employee Leave Management */}
-      <Route path="/employee/leave" element={<EmployeeLeavemanagement />} />
+      <Route
+        path="/employee/leave"
+        element={
+          <RequireRole allowedRoles={["employee", "manager", "hr"]}>
+            <EmployeeLeavemanagement />
+          </RequireRole>
+        }
+      />
 
       {/* Employee Payroll */}
-      <Route path="/employee/payroll" element={<EmployeePayrolls />} />
+      <Route
+        path="/employee/payroll"
+        element={
+          <RequireRole allowedRoles={["employee", "manager", "hr"]}>
+            <EmployeePayrolls />
+          </RequireRole>
+        }
+      />
 
       {/* Employee Profile */}
-      <Route path="/employee/profile" element={<EmployeeProfile />} />
+      <Route
+        path="/employee/profile"
+        element={
+          <RequireRole allowedRoles={["employee", "manager", "hr"]}>
+            <EmployeeProfile />
+          </RequireRole>
+        }
+      />
+      <Route
+        path="*"
+        element={
+          <Navigate
+            to={getStoredUser() ? defaultRouteForUser(getStoredUser()) : "/"}
+            replace
+          />
+        }
+      />
     </Routes>
   );
 }

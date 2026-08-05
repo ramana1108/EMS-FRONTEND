@@ -32,7 +32,7 @@ export default function Announcements() {
             setLoading(true);
             try {
                 const res = await api.getNotices();
-                if (res && res.success && Array.isArray(res.notices)) {
+                if (res?.notices && Array.isArray(res.notices)) {
                     setNotices(res.notices);
                     setFilteredNotices(res.notices);
                 } else if (Array.isArray(res)) {
@@ -144,10 +144,10 @@ export default function Announcements() {
     };
 
     return (
-        <div className="emp-dashboard-app">
+        <div className="min-h-screen bg-slate-100 text-slate-900">
             <Sidebar activeTab={activeTab} setActiveTab={setActiveTab} isOpen={isOpen} setIsOpen={setIsOpen} />
 
-            <div className="emp-main-content" style={{ display: "flex", flexDirection: "column", minHeight: "100vh", flex: 1 }}>
+            <div className="lg:pl-[260px] flex flex-col min-h-screen">
 
                 {/* Mobile Header */}
                 <div className="sticky top-0 z-30 flex items-center justify-between border-b border-slate-200/80 bg-white/95 px-4 py-3 backdrop-blur-xl lg:hidden" style={{ minHeight: "60px" }}>

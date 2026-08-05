@@ -21,8 +21,15 @@ export async function getEmployeeDashboard(employeeId) {
   return res.json();
 }
 
+export async function getCurrentEmployeeDashboard() {
+  const res = await fetch(`${API_BASE_URL}/dashboard/employee/me`, {
+    headers: authHeaders(),
+  });
+  return res.json();
+}
+
 export async function getAllEmployees() {
-  const res = await fetch(`${API_BASE_URL}/employee`, {
+  const res = await fetch(`${API_BASE_URL}/employees`, {
     headers: authHeaders(),
   });
   return res.json();
@@ -49,6 +56,13 @@ export async function getAttendance() {
   return res.json();
 }
 
+export async function getMyAttendance() {
+  const res = await fetch(`${API_BASE_URL}/attendance/me`, {
+    headers: authHeaders(),
+  });
+  return res.json();
+}
+
 export async function updateEmployee(id, data) {
   const res = await fetch(`${API_BASE_URL}/employees/${id}`, {
     method: "PUT",
@@ -61,9 +75,11 @@ export async function updateEmployee(id, data) {
 export default {
   getAdminDashboard,
   getEmployeeDashboard,
+  getCurrentEmployeeDashboard,
   getAllEmployees,
   getNotices,
   getPayrolls,
   getAttendance,
+  getMyAttendance,
   updateEmployee,
 };

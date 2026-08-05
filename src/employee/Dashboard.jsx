@@ -10,6 +10,7 @@ import {
   TrendingUp,
   Megaphone
 } from "lucide-react";
+import api from "../api";
 
 export default function EmployeeDashboard() {
   const [activeTab, setActiveTab] = useState("Dashboard");
@@ -22,20 +23,9 @@ export default function EmployeeDashboard() {
     const load = async () => {
       setLoading(true);
       try {
-        const user = JSON.parse(localStorage.getItem("user") || "null");
-        const api = await import("../api");
-
-        // Try to find employee by matching email
-        if (user?.email) {
-          const all = await api.getAllEmployees();
-          const list = Array.isArray(all) ? all : all?.employees || [];
-          if (list && list.length > 0) {
-            const found = list.find((e) => e.email === user.email || e.email === user.email.toLowerCase());
-            if (found) {
-              const res = await api.getEmployeeDashboard(found.employeeId);
-              if (mounted && res && res.success) setDashboard(res.dashboard);
-            }
-          }
+        const res = await api.getCurrentEmployeeDashboard();
+        if (mounted && res?.success) {
+          setDashboard(res.dashboard);
         }
       } catch (err) {
         console.error("Failed to load employee dashboard:", err);
@@ -75,8 +65,16 @@ export default function EmployeeDashboard() {
             </div>
 
             <div className="emp-user-profile-badge">
-              <div className="emp-avatar-circle">S</div>
-              <span>Sara Smith</span>
+              <div className="emp-avatar-circle">
+                {dashboard?.employeeProfile
+                  ? `${dashboard.employeeProfile.firstName?.[0] || ""}${dashboard.employeeProfile.lastName?.[0] || ""}`.toUpperCase()
+                  : "U"}
+              </div>
+              <span>
+                {dashboard?.employeeProfile
+                  ? `${dashboard.employeeProfile.firstName || ""} ${dashboard.employeeProfile.lastName || ""}`.trim()
+                  : "Employee"}
+              </span>
             </div>
           </div>
 
@@ -86,13 +84,15 @@ export default function EmployeeDashboard() {
               <>
                 <div className="emp-stat-card">
                   <div className="emp-stat-top">
-                    <span className="emp-stat-title">Attendance %</span>
+                    <span className="emp-stat-title">Attendance</span>
                     <div className="emp-stat-icon-box">
                       <TrendingUp size={18} />
                     </div>
                   </div>
-                  <p className="emp-stat-value">{dashboard.attendancePercent || "—"}</p>
-                  <span className="emp-stat-subtext">Current month</span>
+                  <p className="emp-stat-value">
+                    {dashboard.todayAttendance?.status || "No record"}
+                  </p>
+                  <span className="emp-stat-subtext">Today&apos;s status</span>
                 </div>
 
                 <div className="emp-stat-card">
@@ -102,7 +102,9 @@ export default function EmployeeDashboard() {
                       <Calendar size={18} />
                     </div>
                   </div>
-                  <p className="emp-stat-value">{dashboard.employeeProfile?.leaveBalance ?? "—"}</p>
+                  <p className="emp-stat-value">
+                    {dashboard.employeeProfile?.leaveBalance ?? "—"}
+                  </p>
                   <span className="emp-stat-subtext">Available</span>
                 </div>
 
@@ -113,55 +115,26 @@ export default function EmployeeDashboard() {
                       <DollarSign size={18} />
                     </div>
                   </div>
-                  <p className="emp-stat-value">{dashboard.employeeProfile?.salary ? `$${dashboard.employeeProfile.salary}` : "—"}</p>
-                  <span className="emp-stat-subtext">Latest payslip</span>
+                  <p className="emp-stat-value">
+                    {dashboard.employeeProfile?.salary ? `$${dashboard.employeeProfile.salary}` : "—"}
+                  </p>
+                  <span className="emp-stat-subtext">Base salary</span>
                 </div>
 
                 <div className="emp-stat-card">
                   <div className="emp-stat-top">
-                    <span className="emp-stat-title">Upcoming Holiday</span>
+                    <span className="emp-stat-title">Recent Alerts</span>
                     <div className="emp-stat-icon-box">
-                      <Gift size={18} />
+                      <Megaphone size={18} />
                     </div>
                   </div>
-                  <p className="emp-stat-value">{dashboard.upcomingHoliday || "—"}</p>
-                  <span className="emp-stat-subtext">Next</span>
+                  <p className="emp-stat-value">
+                    {dashboard.recentNotices?.length ?? 0}
+                  </p>
+                  <span className="emp-stat-subtext">Latest notices</span>
                 </div>
               </>
             )}
-
-            <div className="emp-stat-card">
-              <div className="emp-stat-top">
-                <span className="emp-stat-title">Leave Balance</span>
-                <div className="emp-stat-icon-box">
-                  <Calendar size={18} />
-                </div>
-              </div>
-              <p className="emp-stat-value">14 Days</p>
-              <span className="emp-stat-subtext">Available</span>
-            </div>
-
-            <div className="emp-stat-card">
-              <div className="emp-stat-top">
-                <span className="emp-stat-title">Current Salary</span>
-                <div className="emp-stat-icon-box">
-                  <DollarSign size={18} />
-                </div>
-              </div>
-              <p className="emp-stat-value">$6,500</p>
-              <span className="emp-stat-subtext">✓ Paid on Nov 30</span>
-            </div>
-
-            <div className="emp-stat-card">
-              <div className="emp-stat-top">
-                <span className="emp-stat-title">Upcoming Holiday</span>
-                <div className="emp-stat-icon-box">
-                  <Gift size={18} />
-                </div>
-              </div>
-              <p className="emp-stat-value">Thanksgiving</p>
-              <span className="emp-stat-subtext">Nov 28, 2026</span>
-            </div>
           </div>
 
           <div className="emp-middle-grid">
@@ -208,36 +181,27 @@ export default function EmployeeDashboard() {
             <div className="emp-card-box">
               <h2 className="emp-card-title">Company Announcements</h2>
               <div className="announcement-list">
-                <div className="announcement-item">
-                  <div className="announcement-icon">
-                    <Megaphone size={18} />
-                  </div>
-                  <div>
-                    <p className="announcement-title">Town Hall</p>
-                    <p className="announcement-desc">Town Hall meeting list</p>
-                  </div>
-                  <span className="announcement-date">Dec 5</span>
-                </div>
-                <div className="announcement-item">
-                  <div className="announcement-icon">
-                    <Calendar size={18} />
-                  </div>
-                  <div>
-                    <p className="announcement-title">Q4 Planning</p>
-                    <p className="announcement-desc">Q4 Planning events</p>
-                  </div>
-                  <span className="announcement-date">Nov 30</span>
-                </div>
-                <div className="announcement-item">
-                  <div className="announcement-icon">
-                    <Gift size={18} />
-                  </div>
-                  <div>
-                    <p className="announcement-title">Holiday Party</p>
-                    <p className="announcement-desc">Holiday Party today</p>
-                  </div>
-                  <span className="announcement-date">Dec 15</span>
-                </div>
+                {dashboard?.recentNotices?.length ? (
+                  dashboard.recentNotices.map((notice) => (
+                    <div key={notice._id || notice.title} className="announcement-item">
+                      <div className="announcement-icon">
+                        <Megaphone size={18} />
+                      </div>
+                      <div>
+                        <p className="announcement-title">{notice.title}</p>
+                        <p className="announcement-desc">{notice.description}</p>
+                      </div>
+                      <span className="announcement-date">
+                        {new Date(notice.createdAt).toLocaleDateString("en-US", {
+                          month: "short",
+                          day: "numeric",
+                        })}
+                      </span>
+                    </div>
+                  ))
+                ) : (
+                  <p style={{ color: "#64748b", padding: "16px 0" }}>No announcements available.</p>
+                )}
               </div>
             </div>
 
@@ -245,15 +209,21 @@ export default function EmployeeDashboard() {
               <h2 className="emp-card-title">Profile Summary</h2>
               <div className="profile-card-content">
                 <img
-                  src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=150&auto=format&fit=crop&q=80"
-                  alt="Sara Smith"
+                  src={dashboard?.employeeProfile?.profileImage || "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=150&auto=format&fit=crop&q=80"}
+                  alt={dashboard?.employeeProfile?.firstName || "Employee"}
                   className="profile-avatar-large"
                 />
-                <p className="profile-name">Sara Smith</p>
-                <p className="profile-role">Senior Developer</p>
+                <p className="profile-name">
+                  {dashboard?.employeeProfile
+                    ? `${dashboard.employeeProfile.firstName || ""} ${dashboard.employeeProfile.lastName || ""}`.trim()
+                    : "Employee"}
+                </p>
+                <p className="profile-role">
+                  {dashboard?.employeeProfile?.designationId?.designationName || "Employee"}
+                </p>
                 <div className="profile-dept-info">
                   <span>Department</span>
-                  <span>Engineering</span>
+                  <span>{dashboard?.employeeProfile?.departmentId?.departmentName || "—"}</span>
                 </div>
                 <button className="btn-apply-leave">Apply Leave</button>
                 <button className="btn-download-payslip">Download Payslip</button>
