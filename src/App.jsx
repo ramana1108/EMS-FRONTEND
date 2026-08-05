@@ -11,6 +11,11 @@ import Designations from "./admin/Designations";
 import Notice from "./admin/Notice";
 import Payroll from "./admin/Payroll";
 import Attendance from "./admin/Attendance";
+import EmployeeAnnouncements from "./employee/Announcements";
+import EmployeeAttendance from "./employee/Attendance";
+import EmployeeLeavemanagement from "./employee/Leavemanagement";
+import EmployeePayrolls from "./employee/Payrolls";
+import EmployeeProfile from "./employee/Profile";
 
 // Placeholder components for other admin sections
 const AdminPlaceholder = ({ title }) => (
@@ -132,6 +137,21 @@ function AppContent() {
 
       {/* Employee Dashboard */}
       <Route path="/employee/dashboard" element={<EmployeeDashboard />} />
+
+      {/* Employee Announcements */}
+      <Route path="/employee/announcements" element={<EmployeeAnnouncements />} />
+
+      {/* Employee Attendance */}
+      <Route path="/employee/attendance" element={<EmployeeAttendance />} />
+
+      {/* Employee Leave Management */}
+      <Route path="/employee/leave" element={<EmployeeLeavemanagement />} />
+
+      {/* Employee Payroll */}
+      <Route path="/employee/payroll" element={<EmployeePayrolls />} />
+
+      {/* Employee Profile */}
+      <Route path="/employee/profile" element={<EmployeeProfile />} />
     </Routes>
   );
 }

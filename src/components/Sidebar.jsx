@@ -32,11 +32,19 @@ export default function Sidebar({ activeTab, setActiveTab, isOpen, setIsOpen }) 
     const permissions = Array.isArray(user.permissions) ? user.permissions : [];
     const userName = user.name || "User";
     const userRole = user.role || "ADMIN";
-    
-    // Show all items if no permissions are set (for development), otherwise filter by permissions
-    const visibleMenuItems = permissions.length === 0 
-        ? menuItems 
-        : menuItems.filter((item) => !item.permission || permissions.includes(item.permission));
+
+    const visibleMenuItems = userRole === "EMPLOYEE"
+        ? [
+            { name: "Dashboard", icon: LayoutDashboard, path: "/employee/dashboard" },
+            { name: "Leave Management", icon: CalendarDays, path: "/employee/leave" },
+            { name: "Attendance", icon: Clock, path: "/employee/attendance" },
+            { name: "Payrolls", icon: Wallet, path: "/employee/payroll" },
+            { name: "Announcements", icon: Megaphone, path: "/employee/announcements" },
+            { name: "Profile", icon: Users, path: "/employee/profile" },
+        ]
+        : (permissions.length === 0
+            ? menuItems
+            : menuItems.filter((item) => !item.permission || permissions.includes(item.permission)));
 
     const handleLogout = () => {
         localStorage.removeItem("token");

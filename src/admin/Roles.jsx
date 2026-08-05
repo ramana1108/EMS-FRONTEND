@@ -236,14 +236,33 @@ export default function Roles() {
                           {role.name}
                         </span>
                       </td>
-                      <td style={{ padding: "16px" }}>
-                        <div style={{ display: "flex", flexWrap: "wrap", gap: "4px" }}>
-                          {role.permissions && role.permissions.map((p, idx) => (
-                            <span key={idx} style={{ fontSize: "11px", fontWeight: "600", padding: "2px 8px", backgroundColor: "#e2e8f0", color: "#475569", borderRadius: "12px" }}>
-                              {p}
-                            </span>
-                          ))}
-                        </div>
+                      <td style={{ padding: "16px", verticalAlign: "top" }}>
+                        {role.permissions && role.permissions.length > 0 ? (
+                          <div style={{ display: "grid", gap: "8px" }}>
+                            {role.permissions.map((p, idx) => (
+                              <div
+                                key={idx}
+                                style={{
+                                  display: "inline-flex",
+                                  alignItems: "center",
+                                  gap: "8px",
+                                  padding: "8px 12px",
+                                  borderRadius: "12px",
+                                  border: "1px solid #d1d5db",
+                                  backgroundColor: "#f8fafc",
+                                  color: "#334155",
+                                  fontSize: "13px",
+                                  fontWeight: "600"
+                                }}
+                              >
+                                <span style={{ width: "6px", height: "6px", borderRadius: "9999px", backgroundColor: "#0f766e" }} />
+                                <span>{p}</span>
+                              </div>
+                            ))}
+                          </div>
+                        ) : (
+                          <span style={{ color: "#64748b", fontSize: "13px" }}>No permissions configured</span>
+                        )}
                       </td>
                       <td style={{ padding: "16px", textAlign: "center" }}>
                         <span style={{ fontSize: "14px", fontWeight: "700", color: "#0f766e" }}>
