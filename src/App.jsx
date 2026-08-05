@@ -12,10 +12,7 @@ import Designations from "./admin/Designations";
 import Notice from "./admin/Notice";
 import Payroll from "./admin/Payroll";
 import Attendance from "./admin/Attendance";
-<<<<<<< HEAD
-=======
 import Settings from "./admin/Settings";
->>>>>>> 06917f03befe2450fc2c947af9f0956965c58b22
 import DepartmentEmployees from "./auth/DepartmentEmployees";
 
 // Placeholder components for other admin sections
@@ -30,18 +27,20 @@ function AppContent() {
   const [activeTab, setActiveTab] = useState("Dashboard");
   const location = useLocation();
 
-
-  const routeToTab = useMemo(() => ({
-    "/admin/dashboard": "Dashboard",
-    "/admin/departments": "Departments",
-    "/admin/designations": "Designations",
-    "/admin/employee": "Employees",
-    "/admin/roles": "Roles",
-    "/admin/attendance": "Attendance",
-    "/admin/payroll": "Payroll",
-    "/admin/notices": "Notices",
-    "/admin/settings": "Settings",
-  }), []);
+  const routeToTab = useMemo(
+    () => ({
+      "/admin/dashboard": "Dashboard",
+      "/admin/departments": "Departments",
+      "/admin/designations": "Designations",
+      "/admin/employee": "Employees",
+      "/admin/roles": "Roles",
+      "/admin/attendance": "Attendance",
+      "/admin/payroll": "Payroll",
+      "/admin/notices": "Notices",
+      "/admin/settings": "Settings",
+    }),
+    []
+  );
 
   React.useEffect(() => {
     const tab = routeToTab[location.pathname];
@@ -82,10 +81,6 @@ function AppContent() {
         path="/admin/departments"
         element={
           <AdminLayout activeTab={activeTab} setActiveTab={setActiveTab}>
-<<<<<<< HEAD
-            <Designations />
-=======
->>>>>>> 06917f03befe2450fc2c947af9f0956965c58b22
             <Department />
           </AdminLayout>
         }

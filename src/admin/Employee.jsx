@@ -28,21 +28,15 @@ export default function Employee() {
     const [searchTerm, setSearchTerm] = useState("");
     const [statusFilter, setStatusFilter] = useState("All Statuses");
     const [deptFilter, setDeptFilter] = useState("All Departments");
-<<<<<<< HEAD
 
     // Modal Control States
-=======
->>>>>>> 06917f03befe2450fc2c947af9f0956965c58b22
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [isViewModalOpen, setIsViewModalOpen] = useState(false);
     const [editingId, setEditingId] = useState(null);
     const [viewingEmployee, setViewingEmployee] = useState(null);
     const [formError, setFormError] = useState("");
-<<<<<<< HEAD
 
-=======
     const [formErrors, setFormErrors] = useState({});
->>>>>>> 06917f03befe2450fc2c947af9f0956965c58b22
     const [currentUser] = useState(() => {
         const stored = localStorage.getItem("user");
         if (stored) {
@@ -143,16 +137,6 @@ export default function Employee() {
         fetchEmployees();
         fetchDepartmentsAndDesignations();
     }, []);
-<<<<<<< HEAD
-=======
-
-    const handleLogout = () => {
-        localStorage.removeItem("token");
-        localStorage.removeItem("user");
-        navigate("/");
-    };
-
->>>>>>> 06917f03befe2450fc2c947af9f0956965c58b22
     const getInitials = (name) => {
         if (!name) return "A";
         const parts = name.split(" ");
@@ -457,21 +441,12 @@ export default function Employee() {
                     <h1 className="dashboard-title">Employee Directory</h1>
                     <p className="dashboard-subtitle">Manage workforce records, roles, statuses and enroll new employees.</p>
                 </div>
-<<<<<<< HEAD
                 <button
                     className="btn-enroll-employee"
                     onClick={handleOpenEnrollModal}
                     style={{ backgroundColor: "#059669", color: "#ffffff", display: "flex", alignItems: "center", gap: "8px", cursor: "pointer", borderRadius: "9999px", padding: "8px 16px", fontSize: "14px", fontWeight: "500" }}
                 >
                     <Plus size={16} />
-=======
-                <button 
-                    onClick={handleOpenEnrollModal}
-                    className="btn-enroll-employee" 
-                    style={{ backgroundColor: "#059669", color: "#ffffff", display: "flex", alignItems: "center", gap: "8px" }}
-                >
-                    <Plus size={18} />
->>>>>>> 06917f03befe2450fc2c947af9f0956965c58b22
                     <span>Enroll Employee</span>
                 </button>
             </div>
