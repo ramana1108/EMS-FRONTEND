@@ -135,7 +135,6 @@ export default function Employee() {
         fetchEmployees();
         fetchDepartmentsAndDesignations();
     }, []);
-
     const getInitials = (name) => {
         if (!name) return "A";
         const parts = name.split(" ");

@@ -7,6 +7,11 @@ import AdminDashboard from "./admin/Dashboard";
 import AdminEmployee from "./admin/Employee";
 import Department from "./admin/Department";
 import EmployeeDashboard from "./employee/Dashboard";
+import Roles from "./admin/Roles";
+import Designations from "./admin/Designations";
+import Notice from "./admin/Notice";
+import Payroll from "./admin/Payroll";
+import Attendance from "./admin/Attendance";
 import DepartmentEmployees from "./auth/DepartmentEmployees";
 
 // Placeholder components for other admin sections
@@ -72,6 +77,7 @@ function AppContent() {
         path="/admin/departments"
         element={
           <AdminLayout activeTab={activeTab} setActiveTab={setActiveTab}>
+            <Designations />
             <Department />
           </AdminLayout>
         }
@@ -82,7 +88,7 @@ function AppContent() {
         path="/admin/designations"
         element={
           <AdminLayout activeTab={activeTab} setActiveTab={setActiveTab}>
-            <AdminPlaceholder title="Designations" />
+            <Designations />
           </AdminLayout>
         }
       />
@@ -92,7 +98,7 @@ function AppContent() {
         path="/admin/roles"
         element={
           <AdminLayout activeTab={activeTab} setActiveTab={setActiveTab}>
-            <AdminPlaceholder title="Roles" />
+            <Roles />
           </AdminLayout>
         }
       />
@@ -102,7 +108,7 @@ function AppContent() {
         path="/admin/attendance"
         element={
           <AdminLayout activeTab={activeTab} setActiveTab={setActiveTab}>
-            <AdminPlaceholder title="Attendance" />
+            <Attendance />
           </AdminLayout>
         }
       />
@@ -112,7 +118,7 @@ function AppContent() {
         path="/admin/payroll"
         element={
           <AdminLayout activeTab={activeTab} setActiveTab={setActiveTab}>
-            <AdminPlaceholder title="Payroll" />
+            <Payroll />
           </AdminLayout>
         }
       />
@@ -122,7 +128,7 @@ function AppContent() {
         path="/admin/notices"
         element={
           <AdminLayout activeTab={activeTab} setActiveTab={setActiveTab}>
-            <AdminPlaceholder title="Notices" />
+            <Notice />
           </AdminLayout>
         }
       />
