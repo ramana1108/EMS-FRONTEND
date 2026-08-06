@@ -169,9 +169,10 @@ export default function Attendance() {
 
             // Chain requests sequentially or fire in parallel
             const requests = dates.map(dateStr => {
+                const headers = getHeaders();
                 return fetch(`${API_BASE_URL}/attendance`, {
                     method: "POST",
-                    headers: getHeaders(),
+                    headers,
                     body: JSON.stringify({
                         employeeId: leaveEmpId,
                         attendanceDate: dateStr,

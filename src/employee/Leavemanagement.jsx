@@ -8,63 +8,12 @@ import {
     Plus,
     ExternalLink,
     X,
-    Check,
     AlertTriangle,
     Menu
 } from "lucide-react";
+import axios from "axios";
 
-const DEFAULT_LEAVE_REQUESTS = [
-    {
-        id: "1",
-        leaveType: "Casual Leave",
-        fromDate: "2025-05-20",
-        toDate: "2025-05-21",
-        days: 2,
-        status: "Pending",
-        appliedOn: "2025-05-15",
-        reason: "Family function",
-    },
-    {
-        id: "2",
-        leaveType: "Sick Leave",
-        fromDate: "2025-05-05",
-        toDate: "2025-05-05",
-        days: 1,
-        status: "Approved",
-        appliedOn: "2025-05-01",
-        reason: "Fever and cold",
-    },
-    {
-        id: "3",
-        leaveType: "Earned Leave",
-        fromDate: "2025-04-15",
-        toDate: "2025-04-17",
-        days: 3,
-        status: "Approved",
-        appliedOn: "2025-04-10",
-        reason: "Personal work",
-    },
-    {
-        id: "4",
-        leaveType: "Casual Leave",
-        fromDate: "2025-03-28",
-        toDate: "2025-03-28",
-        days: 1,
-        status: "Rejected",
-        appliedOn: "2025-03-25",
-        reason: "Operational exigencies",
-    },
-    {
-        id: "5",
-        leaveType: "Sick Leave",
-        fromDate: "2025-03-12",
-        toDate: "2025-03-13",
-        days: 2,
-        status: "Approved",
-        appliedOn: "2025-03-11",
-        reason: "Dental checkup",
-    },
-];
+const API_URL = "http://localhost:5000/api/leaves";
 
 export default function Leavemanagement() {
     const [activeTab, setActiveTab] = useState("Leave Management");
@@ -87,24 +36,24 @@ export default function Leavemanagement() {
 
     useEffect(() => {
         const loggedInUser = JSON.parse(localStorage.getItem("user") || "null");
+
+        if (!loggedInUser) return;
+
         setUser(loggedInUser);
 
-        // Retrieve storage based on email prefix to isolate users
-        const emailKey = loggedInUser?.email ? `leaves_${loggedInUser.email}` : "leaves_default";
-        const stored = localStorage.getItem(emailKey);
-        if (stored) {
-            setRequests(JSON.parse(stored));
-        } else {
-            setRequests(DEFAULT_LEAVE_REQUESTS);
-            localStorage.setItem(emailKey, JSON.stringify(DEFAULT_LEAVE_REQUESTS));
-        }
+        const employeeId = loggedInUser._id || loggedInUser.id || localStorage.getItem("employeeId");
+        if (employeeId) fetchLeaves(employeeId);
     }, []);
 
-    // Sync state to local storage helper
-    const saveRequests = (updatedList) => {
-        setRequests(updatedList);
-        const emailKey = user?.email ? `leaves_${user.email}` : "leaves_default";
-        localStorage.setItem(emailKey, JSON.stringify(updatedList));
+    const fetchLeaves = async (employeeId) => {
+        try {
+            const token = localStorage.getItem("token");
+            const headers = token ? { Authorization: `Bearer ${token}` } : {};
+            const res = await axios.get(`${API_URL}/employee/${employeeId}`, { headers });
+            setRequests(res.data.leaves || res.data.requests || []);
+        } catch (err) {
+            console.log(err);
+        }
     };
 
     // Stats Counters (matches mockup values precisely if untouched, or adjusts dynamically)
@@ -112,19 +61,16 @@ export default function Leavemanagement() {
         casual: 12,
         sick: 6,
         earned: 18,
-        remaining: 36,
     };
 
-    // Calculate actual dynamically if changes are made:
-    // Let's deduce Remaining leaves
+    // Calculate remaining leave dynamically based on approved requests
     const getDynamicRemaining = () => {
+        const totalAllowance = stats.casual + stats.sick + stats.earned;
         let approvedDays = 0;
         requests.forEach((r) => {
             if (r.status === "Approved") approvedDays += r.days;
         });
-        // Starting total allowance is 36 + approved days in DEFAULT (which totals 6 approved days: Sick 1, Earned 3, Sick 2. Total = 6)
-        // So starting remaining leave is 36.
-        return 36 - approvedDays + 6;
+        return totalAllowance - approvedDays;
     };
 
     const handleApplyClick = () => {
@@ -136,46 +82,74 @@ export default function Leavemanagement() {
         setShowApplyModal(true);
     };
 
-    const handleSubmitLeave = (e) => {
+    const handleSubmitLeave = async (e) => {
         e.preventDefault();
-        if (!fromDate || !toDate || !reason.trim()) {
-            setFormError("All fields are required");
+        console.log("Submitting leave", { fromDate, toDate, leaveType, reason, user });
+
+        if (!fromDate) {
+            setFormError("From Date is required");
+            return;
+        }
+        if (!toDate) {
+            setFormError("To Date is required");
+            return;
+        }
+        if (!reason || !reason.trim()) {
+            setFormError("Reason is required");
             return;
         }
 
-        const start = new Date(fromDate);
-        const end = new Date(toDate);
-
-        if (end < start) {
-            setFormError("To Date cannot be earlier than From Date");
+        const from = new Date(fromDate);
+        const to = new Date(toDate);
+        if (isNaN(from.getTime()) || isNaN(to.getTime())) {
+            setFormError("Invalid date format");
+            return;
+        }
+        if (from > to) {
+            setFormError("From Date cannot be after To Date");
             return;
         }
 
-        // Compute diff in days
-        const diffTime = Math.abs(end - start);
-        const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)) + 1;
+        try {
+            const token = localStorage.getItem("token");
+            const headers = token ? { Authorization: `Bearer ${token}` } : {};
+            await axios.post(API_URL, {
+                employeeId: user?._id || user?.id || localStorage.getItem("employeeId") || undefined,
+                leaveType,
+                fromDate,
+                toDate,
+                reason
+            }, { headers });
 
-        const newRequest = {
-            id: Date.now().toString(),
-            leaveType,
-            fromDate,
-            toDate,
-            days: diffDays,
-            status: "Pending",
-            appliedOn: new Date().toISOString().split("T")[0],
-            reason: reason.trim(),
-        };
+            const employeeId = user?._id || user?.id || localStorage.getItem("employeeId");
+            if (employeeId) await fetchLeaves(employeeId);
 
-        saveRequests([newRequest, ...requests]);
-        setShowApplyModal(false);
+            setShowApplyModal(false);
+
+            setLeaveType("Casual Leave");
+            setFromDate("");
+            setToDate("");
+            setReason("");
+        } catch (err) {
+            setFormError(err.response?.data?.message || "Something went wrong.");
+        }
     };
 
-    const cancelRequest = (id) => {
+    const cancelRequest = async (id) => {
         if (!window.confirm("Are you sure you want to cancel / delete this request?")) return;
-        const updated = requests.filter((r) => r.id !== id);
-        saveRequests(updated);
-        if (selectedLeave && selectedLeave.id === id) {
-            setSelectedLeave(null);
+
+        try {
+            await axios.delete(`${API_URL}/${id}`);
+
+            // Refresh from the backend so state stays in sync with what was actually deleted
+            await fetchLeaves(user._id);
+
+            if (selectedLeave && selectedLeave._id === id) {
+                setSelectedLeave(null);
+            }
+        } catch (err) {
+            console.log(err);
+            setFormError(err.response?.data?.message || "Unable to cancel this request.");
         }
     };
 
@@ -351,7 +325,7 @@ export default function Leavemanagement() {
                                             }
 
                                             return (
-                                                <tr key={req.id} className="employee-row">
+                                                <tr key={req._id} className="employee-row">
                                                     <td style={{ padding: "16px 24px", fontWeight: "700", color: "#0f172a" }}>{req.leaveType}</td>
                                                     <td style={{ padding: "16px 24px", color: "#334155" }}>{formatDateDisplay(req.fromDate)}</td>
                                                     <td style={{ padding: "16px 24px", color: "#334155" }}>{formatDateDisplay(req.toDate)}</td>
@@ -387,7 +361,7 @@ export default function Leavemanagement() {
 
                                                             {req.status === "Pending" && (
                                                                 <button
-                                                                    onClick={() => cancelRequest(req.id)}
+                                                                    onClick={() => cancelRequest(req._id)}
                                                                     className="action-icon-btn delete"
                                                                     title="Cancel Leave Request"
                                                                     style={{ cursor: "pointer" }}
@@ -405,151 +379,148 @@ export default function Leavemanagement() {
                             </table>
                         </div>
                     </div>
-                </div >
+                </div>
 
                 {/* Modal: Apply Leave */}
-                {
-                    showApplyModal && (
-                        <div style={{ position: "fixed", inset: 0, zIndex: 999, display: "flex", alignItems: "center", justifyContent: "center", backgroundColor: "rgba(15, 23, 42, 0.4)", backdropFilter: "blur(4px)" }}>
-                            <div style={{ backgroundColor: "#ffffff", borderRadius: "16px", border: "1px solid #e2e8f0", width: "450px", maxWidth: "90%", padding: "24px", boxShadow: "0 20px 25px -5px rgba(0, 0, 0, 0.1)" }}>
-                                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "16px" }}>
-                                    <h3 style={{ margin: 0, fontSize: "18px", fontWeight: "800", color: "#0f172a" }}>Apply for Leave</h3>
-                                    <button onClick={() => setShowApplyModal(false)} style={{ background: "none", border: "none", cursor: "pointer", color: "#64748b" }}>
-                                        <X size={20} />
-                                    </button>
+                {showApplyModal && (
+                    <div style={{ position: "fixed", inset: 0, zIndex: 999, display: "flex", alignItems: "center", justifyContent: "center", backgroundColor: "rgba(15, 23, 42, 0.4)", backdropFilter: "blur(4px)" }}>
+                        <div style={{ backgroundColor: "#ffffff", borderRadius: "16px", border: "1px solid #e2e8f0", width: "450px", maxWidth: "90%", padding: "24px", boxShadow: "0 20px 25px -5px rgba(0, 0, 0, 0.1)" }}>
+                            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "16px" }}>
+                                <h3 style={{ margin: 0, fontSize: "18px", fontWeight: "800", color: "#0f172a" }}>Apply for Leave</h3>
+                                <button onClick={() => setShowApplyModal(false)} style={{ background: "none", border: "none", cursor: "pointer", color: "#64748b" }}>
+                                    <X size={20} />
+                                </button>
+                            </div>
+
+                            {formError && (
+                                <div style={{ backgroundColor: "#fef2f2", color: "#b91c1c", padding: "10px", borderRadius: "8px", fontSize: "13px", marginBottom: "12px", display: "flex", alignItems: "center", gap: "6px" }}>
+                                    <AlertTriangle size={14} />
+                                    <span>{formError}</span>
+                                </div>
+                            )}
+
+                            <form onSubmit={handleSubmitLeave}>
+                                <div style={{ marginBottom: "12px" }}>
+                                    <label style={{ display: "block", fontSize: "11px", fontWeight: "700", textTransform: "uppercase", color: "#475569", marginBottom: "4px" }}>Leave Type</label>
+                                    <select
+                                        value={leaveType}
+                                        onChange={(e) => setLeaveType(e.target.value)}
+                                        style={{ width: "100%", padding: "8px 12px", borderRadius: "6px", border: "1px solid #cbd5e1", backgroundColor: "#ffffff", outline: "none", fontSize: "14px" }}
+                                    >
+                                        <option value="Casual Leave">Casual Leave</option>
+                                        <option value="Sick Leave">Sick Leave</option>
+                                        <option value="Earned Leave">Earned Leave</option>
+                                    </select>
                                 </div>
 
-                                {formError && (
-                                    <div style={{ backgroundColor: "#fef2f2", color: "#b91c1c", padding: "10px", borderRadius: "8px", fontSize: "13px", marginBottom: "12px", display: "flex", alignItems: "center", gap: "6px" }}>
-                                        <AlertTriangle size={14} />
-                                        <span>{formError}</span>
-                                    </div>
-                                )}
-
-                                <form onSubmit={handleSubmitLeave}>
-                                    <div style={{ marginBottom: "12px" }}>
-                                        <label style={{ display: "block", fontSize: "11px", fontWeight: "700", textTransform: "uppercase", color: "#475569", marginBottom: "4px" }}>Leave Type</label>
-                                        <select
-                                            value={leaveType}
-                                            onChange={(e) => setLeaveType(e.target.value)}
-                                            style={{ width: "100%", padding: "8px 12px", borderRadius: "6px", border: "1px solid #cbd5e1", backgroundColor: "#ffffff", outline: "none", fontSize: "14px" }}
-                                        >
-                                            <option value="Casual Leave">Casual Leave</option>
-                                            <option value="Sick Leave">Sick Leave</option>
-                                            <option value="Earned Leave">Earned Leave</option>
-                                        </select>
-                                    </div>
-
-                                    <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "12px", marginBottom: "12px" }}>
-                                        <div>
-                                            <label style={{ display: "block", fontSize: "11px", fontWeight: "700", textTransform: "uppercase", color: "#475569", marginBottom: "4px" }}>From Date</label>
-                                            <input
-                                                type="date"
-                                                value={fromDate}
-                                                onChange={(e) => setFromDate(e.target.value)}
-                                                style={{ width: "100%", padding: "8px 12px", borderRadius: "6px", border: "1px solid #cbd5e1", outline: "none", fontSize: "14px" }}
-                                            />
-                                        </div>
-                                        <div>
-                                            <label style={{ display: "block", fontSize: "11px", fontWeight: "700", textTransform: "uppercase", color: "#475569", marginBottom: "4px" }}>To Date</label>
-                                            <input
-                                                type="date"
-                                                value={toDate}
-                                                onChange={(e) => setToDate(e.target.value)}
-                                                style={{ width: "100%", padding: "8px 12px", borderRadius: "6px", border: "1px solid #cbd5e1", outline: "none", fontSize: "14px" }}
-                                            />
-                                        </div>
-                                    </div>
-
-                                    <div style={{ marginBottom: "20px" }}>
-                                        <label style={{ display: "block", fontSize: "11px", fontWeight: "700", textTransform: "uppercase", color: "#475569", marginBottom: "4px" }}>Reason / Notes</label>
-                                        <textarea
-                                            value={reason}
-                                            onChange={(e) => setReason(e.target.value)}
-                                            placeholder="Provide details about your leave request..."
-                                            style={{ width: "100%", padding: "8px 12px", borderRadius: "6px", border: "1px solid #cbd5e1", minHeight: "80px", outline: "none", resize: "vertical", fontSize: "14px" }}
+                                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "12px", marginBottom: "12px" }}>
+                                    <div>
+                                        <label style={{ display: "block", fontSize: "11px", fontWeight: "700", textTransform: "uppercase", color: "#475569", marginBottom: "4px" }}>From Date</label>
+                                        <input
+                                            type="date"
+                                            value={fromDate}
+                                            onChange={(e) => setFromDate(e.target.value)}
+                                            style={{ width: "100%", padding: "8px 12px", borderRadius: "6px", border: "1px solid #cbd5e1", outline: "none", fontSize: "14px" }}
                                         />
                                     </div>
-
-                                    <div style={{ display: "flex", justifyContent: "flex-end", gap: "10px" }}>
-                                        <button
-                                            type="button"
-                                            onClick={() => setShowApplyModal(false)}
-                                            style={{ padding: "8px 16px", border: "1px solid #cbd5e1", borderRadius: "6px", background: "#ffffff", fontSize: "13px", fontWeight: "700", cursor: "pointer", color: "#475569" }}
-                                        >
-                                            Cancel
-                                        </button>
-                                        <button
-                                            type="submit"
-                                            style={{ padding: "8px 16px", backgroundColor: "#043e30", color: "#ffffff", border: "none", borderRadius: "6px", fontSize: "13px", fontWeight: "700", cursor: "pointer" }}
-                                        >
-                                            Submit Request
-                                        </button>
-                                    </div>
-                                </form>
-                            </div>
-                        </div>
-                    )
-                }
-
-                {/* Modal: View Leave details */}
-                {
-                    selectedLeave && (
-                        <div style={{ position: "fixed", inset: 0, zIndex: 999, display: "flex", alignItems: "center", justifyContent: "center", backgroundColor: "rgba(15, 23, 42, 0.4)", backdropFilter: "blur(4px)" }}>
-                            <div style={{ backgroundColor: "#ffffff", borderRadius: "16px", border: "1px solid #e2e8f0", width: "420px", maxWidth: "90%", padding: "24px", boxShadow: "0 20px 25px -5px rgba(0, 0, 0, 0.1)" }}>
-                                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "16px", borderBottom: "1px solid #f1f5f9", paddingBottom: "10px" }}>
-                                    <h3 style={{ margin: 0, fontSize: "18px", fontWeight: "800", color: "#0f172a" }}>Leave Details</h3>
-                                    <button onClick={() => setSelectedLeave(null)} style={{ background: "none", border: "none", cursor: "pointer", color: "#64748b" }}>
-                                        <X size={20} />
-                                    </button>
-                                </div>
-
-                                <div style={{ display: "flex", flexDirection: "column", gap: "12px", fontSize: "14px" }}>
-                                    <div style={{ display: "flex", justifyContent: "space-between", borderBottom: "1px solid #f8fafc", paddingBottom: "6px" }}>
-                                        <span style={{ fontWeight: "700", color: "#64748b" }}>Type</span>
-                                        <span style={{ fontWeight: "700", color: "#0f172a" }}>{selectedLeave.leaveType}</span>
-                                    </div>
-                                    <div style={{ display: "flex", justifyContent: "space-between", borderBottom: "1px solid #f8fafc", paddingBottom: "6px" }}>
-                                        <span style={{ fontWeight: "700", color: "#64748b" }}>Duration</span>
-                                        <span style={{ fontWeight: "600", color: "#0f172a" }}>
-                                            {formatDateDisplay(selectedLeave.fromDate)} to {formatDateDisplay(selectedLeave.toDate)} ({selectedLeave.days} days)
-                                        </span>
-                                    </div>
-                                    <div style={{ display: "flex", justifyContent: "space-between", borderBottom: "1px solid #f8fafc", paddingBottom: "6px" }}>
-                                        <span style={{ fontWeight: "700", color: "#64748b" }}>Applied On</span>
-                                        <span style={{ color: "#334155" }}>{formatDateDisplay(selectedLeave.appliedOn)}</span>
-                                    </div>
-                                    <div style={{ display: "flex", justifyContent: "space-between", borderBottom: "1px solid #f8fafc", paddingBottom: "6px" }}>
-                                        <span style={{ fontWeight: "700", color: "#64748b" }}>Status</span>
-                                        <span
-                                            style={{
-                                                fontWeight: "700",
-                                                color: selectedLeave.status === "Approved" ? "#047857" : selectedLeave.status === "Rejected" ? "#b91c1c" : "#ea580c"
-                                            }}
-                                        >
-                                            {selectedLeave.status}
-                                        </span>
-                                    </div>
-                                    <div style={{ display: "flex", flexDirection: "column", gap: "4px" }}>
-                                        <span style={{ fontWeight: "700", color: "#64748b" }}>Reason / Notes</span>
-                                        <p style={{ margin: 0, padding: "10px", backgroundColor: "#f8fafc", borderRadius: "8px", border: "1px solid #e2e8f0", color: "#334155", fontStyle: "italic", minHeight: "50px" }}>
-                                            {selectedLeave.reason}
-                                        </p>
+                                    <div>
+                                        <label style={{ display: "block", fontSize: "11px", fontWeight: "700", textTransform: "uppercase", color: "#475569", marginBottom: "4px" }}>To Date</label>
+                                        <input
+                                            type="date"
+                                            value={toDate}
+                                            onChange={(e) => setToDate(e.target.value)}
+                                            style={{ width: "100%", padding: "8px 12px", borderRadius: "6px", border: "1px solid #cbd5e1", outline: "none", fontSize: "14px" }}
+                                        />
                                     </div>
                                 </div>
 
-                                <div style={{ display: "flex", justifyContent: "flex-end", marginTop: "20px" }}>
+                                <div style={{ marginBottom: "20px" }}>
+                                    <label style={{ display: "block", fontSize: "11px", fontWeight: "700", textTransform: "uppercase", color: "#475569", marginBottom: "4px" }}>Reason / Notes</label>
+                                    <textarea
+                                        value={reason}
+                                        onChange={(e) => setReason(e.target.value)}
+                                        placeholder="Provide details about your leave request..."
+                                        style={{ width: "100%", padding: "8px 12px", borderRadius: "6px", border: "1px solid #cbd5e1", minHeight: "80px", outline: "none", resize: "vertical", fontSize: "14px" }}
+                                    />
+                                </div>
+
+                                <div style={{ display: "flex", justifyContent: "flex-end", gap: "10px" }}>
                                     <button
                                         type="button"
-                                        onClick={() => setSelectedLeave(null)}
+                                        onClick={() => setShowApplyModal(false)}
+                                        style={{ padding: "8px 16px", border: "1px solid #cbd5e1", borderRadius: "6px", background: "#ffffff", fontSize: "13px", fontWeight: "700", cursor: "pointer", color: "#475569" }}
+                                    >
+                                        Cancel
+                                    </button>
+                                    <button
+                                        type="submit"
                                         style={{ padding: "8px 16px", backgroundColor: "#043e30", color: "#ffffff", border: "none", borderRadius: "6px", fontSize: "13px", fontWeight: "700", cursor: "pointer" }}
                                     >
-                                        Close
+                                        Submit Request
                                     </button>
                                 </div>
+                            </form>
+                        </div>
+                    </div>
+                )}
+
+                {/* Modal: View Leave details */}
+                {selectedLeave && (
+                    <div style={{ position: "fixed", inset: 0, zIndex: 999, display: "flex", alignItems: "center", justifyContent: "center", backgroundColor: "rgba(15, 23, 42, 0.4)", backdropFilter: "blur(4px)" }}>
+                        <div style={{ backgroundColor: "#ffffff", borderRadius: "16px", border: "1px solid #e2e8f0", width: "420px", maxWidth: "90%", padding: "24px", boxShadow: "0 20px 25px -5px rgba(0, 0, 0, 0.1)" }}>
+                            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "16px", borderBottom: "1px solid #f1f5f9", paddingBottom: "10px" }}>
+                                <h3 style={{ margin: 0, fontSize: "18px", fontWeight: "800", color: "#0f172a" }}>Leave Details</h3>
+                                <button onClick={() => setSelectedLeave(null)} style={{ background: "none", border: "none", cursor: "pointer", color: "#64748b" }}>
+                                    <X size={20} />
+                                </button>
+                            </div>
+
+                            <div style={{ display: "flex", flexDirection: "column", gap: "12px", fontSize: "14px" }}>
+                                <div style={{ display: "flex", justifyContent: "space-between", borderBottom: "1px solid #f8fafc", paddingBottom: "6px" }}>
+                                    <span style={{ fontWeight: "700", color: "#64748b" }}>Type</span>
+                                    <span style={{ fontWeight: "700", color: "#0f172a" }}>{selectedLeave.leaveType}</span>
+                                </div>
+                                <div style={{ display: "flex", justifyContent: "space-between", borderBottom: "1px solid #f8fafc", paddingBottom: "6px" }}>
+                                    <span style={{ fontWeight: "700", color: "#64748b" }}>Duration</span>
+                                    <span style={{ fontWeight: "600", color: "#0f172a" }}>
+                                        {formatDateDisplay(selectedLeave.fromDate)} to {formatDateDisplay(selectedLeave.toDate)} ({selectedLeave.days} days)
+                                    </span>
+                                </div>
+                                <div style={{ display: "flex", justifyContent: "space-between", borderBottom: "1px solid #f8fafc", paddingBottom: "6px" }}>
+                                    <span style={{ fontWeight: "700", color: "#64748b" }}>Applied On</span>
+                                    <span style={{ color: "#334155" }}>{formatDateDisplay(selectedLeave.appliedOn)}</span>
+                                </div>
+                                <div style={{ display: "flex", justifyContent: "space-between", borderBottom: "1px solid #f8fafc", paddingBottom: "6px" }}>
+                                    <span style={{ fontWeight: "700", color: "#64748b" }}>Status</span>
+                                    <span
+                                        style={{
+                                            fontWeight: "700",
+                                            color: selectedLeave.status === "Approved" ? "#047857" : selectedLeave.status === "Rejected" ? "#b91c1c" : "#ea580c"
+                                        }}
+                                    >
+                                        {selectedLeave.status}
+                                    </span>
+                                </div>
+                                <div style={{ display: "flex", flexDirection: "column", gap: "4px" }}>
+                                    <span style={{ fontWeight: "700", color: "#64748b" }}>Reason / Notes</span>
+                                    <p style={{ margin: 0, padding: "10px", backgroundColor: "#f8fafc", borderRadius: "8px", border: "1px solid #e2e8f0", color: "#334155", fontStyle: "italic", minHeight: "50px" }}>
+                                        {selectedLeave.reason}
+                                    </p>
+                                </div>
+                            </div>
+
+                            <div style={{ display: "flex", justifyContent: "flex-end", marginTop: "20px" }}>
+                                <button
+                                    type="button"
+                                    onClick={() => setSelectedLeave(null)}
+                                    style={{ padding: "8px 16px", backgroundColor: "#043e30", color: "#ffffff", border: "none", borderRadius: "6px", fontSize: "13px", fontWeight: "700", cursor: "pointer" }}
+                                >
+                                    Close
+                                </button>
                             </div>
                         </div>
-                    )}
+                    </div>
+                )}
 
             </div>
         </div>

@@ -41,7 +41,20 @@ export default function Payrolls() {
             try {
                 const res = await api.getPayrolls();
                 const list = Array.isArray(res) ? res : res?.payrolls || [];
-                const userPayrolls = list;
+                // Filter payrolls for the currently logged-in user. Payrolls are populated with `employeeId`.
+                const userPayrolls = list.filter((p) => {
+                    const emp = p.employeeId || {};
+                    const empIdStr = String(emp._id || emp.id || emp.employeeId || "");
+                    const userIdStr = String(loggedInUser?._id || loggedInUser?.id || loggedInUser?.employeeId || loggedInUser?.email || "");
+
+                    // Match by internal Mongo _id, by employeeId field, or by email as fallback
+                    if (!loggedInUser) return false;
+                    if (emp._id && (emp._id === loggedInUser._id || emp._id === loggedInUser.id)) return true;
+                    if (emp.employeeId && emp.employeeId === loggedInUser.employeeId) return true;
+                    if (emp.email && loggedInUser.email && emp.email === loggedInUser.email) return true;
+                    // Fallback string compare
+                    return empIdStr === userIdStr;
+                });
 
                 // Sort by year and month descending (using a simple dictionary map for months)
                 const monthWeight = {

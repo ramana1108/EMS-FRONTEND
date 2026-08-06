@@ -40,37 +40,35 @@ export default function Sidebar({ activeTab, setActiveTab, isOpen, setIsOpen }) 
     const navigate = useNavigate();
     const user = typeof window !== "undefined" ? JSON.parse(localStorage.getItem("user") || "{}") : {};
     const userName = user.name || "User";
-   
-    const roleName = typeof user.role === "string"
-        ? user.role.trim().toLowerCase()
-        : typeof user.role === "object" && user.role !== null && user.role.name
-            ? String(user.role.name).trim().toLowerCase()
-            : "";
+
     const rawPermissions = Array.isArray(user.permissions)
         ? user.permissions
         : typeof user.permissions === "string"
             ? user.permissions.split(",").map((perm) => perm.trim()).filter(Boolean)
             : [];
-    const defaultPermissions = roleName === "admin"
-        ? menuItems.map((item) => item.permission)
-        : roleName === "hr"
-            ? ["dashboard", "department", "designation", "employee", "attendance", "payroll", "notice"]
-            : roleName === "manager"
-                ? ["dashboard", "employee", "attendance", "notice"]
-                : roleName === "employee"
-                    ? ["dashboard", "attendance", "notice"]
-                    : ["dashboard"];
-    const permissions = rawPermissions.length > 0 ? rawPermissions : defaultPermissions;
-    const userRole = String(user.role || "ADMIN").toLowerCase();
+    const userRole = String(user.role || "admin").toLowerCase();
 
-    const isEmployeeRole = ["employee", "manager", "hr"].includes(userRole);
-    const visibleMenuItems = isEmployeeRole
-        ? (permissions.length === 0
-            ? employeeMenuItems
-            : employeeMenuItems.filter((item) => !item.permission || permissions.includes(item.permission)))
-        : (permissions.length === 0
-            ? menuItems
-            : menuItems.filter((item) => !item.permission || permissions.includes(item.permission)));
+    // Role-based defaults (used when explicit permissions are not provided).
+    // hr and manager use the same permission keys as employee since they share
+    // the employee-facing menu/routes (see useEmployeeMenu below).
+    const rolePermissionMap = {
+        admin: menuItems.map((i) => i.permission).filter(Boolean),
+        hr: ["dashboard", "attendance", "notice", "leave", "payroll", "profile"],
+        manager: ["dashboard", "attendance", "notice", "leave", "payroll", "profile"],
+        employee: ["dashboard", "attendance", "notice", "leave", "payroll", "profile"],
+    };
+
+    const effectivePermissions = rawPermissions.length > 0 ? rawPermissions : (rolePermissionMap[userRole] || ["dashboard"]);
+
+    // Determine which menu set to use (employee-facing vs admin-facing).
+    // Manager and HR share the employee-facing menu/pages, not the admin menu -
+    // the admin routes are locked to the "admin" role only, so pointing
+    // manager/hr at /admin/* paths would just bounce them straight back.
+    const useEmployeeMenu = ["employee", "manager", "hr"].includes(userRole);
+
+    const visibleMenuItems = useEmployeeMenu
+        ? employeeMenuItems.filter((item) => !item.permission || effectivePermissions.includes(item.permission))
+        : menuItems.filter((item) => !item.permission || effectivePermissions.includes(item.permission));
 
     const handleLogout = () => {
         localStorage.removeItem("token");

@@ -96,6 +96,54 @@ export async function getPayrolls() {
   return res.json();
 }
 
+export async function getProfiles() {
+  const res = await fetch(`${API_BASE_URL}/profile`, {
+    headers: authHeaders(),
+  });
+  return res.json();
+}
+
+export async function createProfile(payload) {
+  const res = await fetch(`${API_BASE_URL}/profile`, {
+    method: "POST",
+    headers: authHeaders(),
+    body: JSON.stringify(payload),
+  });
+  return res.json();
+}
+
+export async function getProfileByEmployeeId(employeeId) {
+  const res = await fetch(`${API_BASE_URL}/profile/${employeeId}`, {
+    headers: authHeaders(),
+  });
+  return res.json();
+}
+
+export async function getMyProfile() {
+  const res = await fetch(`${API_BASE_URL}/profile/me`, {
+    headers: authHeaders(),
+  });
+  return res.json();
+}
+
+export async function updateMyProfile(payload) {
+  const res = await fetch(`${API_BASE_URL}/profile/me`, {
+    method: "PUT",
+    headers: authHeaders(),
+    body: JSON.stringify(payload),
+  });
+  return res.json();
+}
+
+export async function updateProfile(employeeId, payload) {
+  const res = await fetch(`${API_BASE_URL}/profile/${employeeId}`, {
+    method: "PUT",
+    headers: authHeaders(),
+    body: JSON.stringify(payload),
+  });
+  return res.json();
+}
+
 export async function getAttendance() {
   const res = await fetch(`${API_BASE_URL}/attendance`, {
     headers: authHeaders(),
@@ -105,6 +153,30 @@ export async function getAttendance() {
 
 export async function getMyAttendance() {
   const res = await fetch(`${API_BASE_URL}/attendance/me`, {
+    headers: authHeaders(),
+  });
+  return res.json();
+}
+
+export async function getMyLeaves() {
+  const res = await fetch(`${API_BASE_URL}/api/leaves/me`, {
+    headers: authHeaders(),
+  });
+  return res.json();
+}
+
+export async function applyLeave(payload) {
+  const res = await fetch(`${API_BASE_URL}/api/leaves`, {
+    method: "POST",
+    headers: authHeaders(),
+    body: JSON.stringify(payload),
+  });
+  return res.json();
+}
+
+export async function deleteLeave(id) {
+  const res = await fetch(`${API_BASE_URL}/api/leaves/${id}`, {
+    method: "DELETE",
     headers: authHeaders(),
   });
   return res.json();
@@ -132,7 +204,16 @@ export default {
   getDesignations,
   getNotices,
   getPayrolls,
+  getProfiles,
+  getProfileByEmployeeId,
+  createProfile,
+  updateProfile,
+  getMyProfile,
+  updateMyProfile,
   getAttendance,
   getMyAttendance,
+  getMyLeaves,
+  applyLeave,
+  deleteLeave,
   registerUser,
 };

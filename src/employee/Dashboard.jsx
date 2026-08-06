@@ -1,14 +1,13 @@
-
-import React, { useState, useEffect } from "react";
+﻿import React, { useState, useEffect } from "react";
 import "../App.css";
+import { useNavigate } from "react-router-dom";
 import Sidebar from "../components/Sidebar";
 import {
   Search,
   Calendar,
   DollarSign,
-  Gift,
   TrendingUp,
-  Megaphone
+  Megaphone,
 } from "lucide-react";
 import api from "../api";
 
@@ -17,10 +16,12 @@ export default function EmployeeDashboard() {
   const [isOpen, setIsOpen] = useState(false);
   const [dashboard, setDashboard] = useState(null);
   const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
 
   useEffect(() => {
     let mounted = true;
-    const load = async () => {
+
+    const loadDashboard = async () => {
       setLoading(true);
       try {
         const res = await api.getCurrentEmployeeDashboard();
@@ -30,16 +31,32 @@ export default function EmployeeDashboard() {
       } catch (err) {
         console.error("Failed to load employee dashboard:", err);
       } finally {
-        setLoading(false);
+        if (mounted) setLoading(false);
       }
     };
-    load();
-    return () => (mounted = false);
+
+    loadDashboard();
+
+    return () => {
+      mounted = false;
+    };
   }, []);
+
+  const handleApplyLeave = () => navigate("/employee/leave");
+  const handleDownloadPayslip = () => navigate("/employee/payroll");
+
+  const employeeProfile = dashboard?.employeeProfile || {};
+  const recentNotices = Array.isArray(dashboard?.recentNotices) ? dashboard.recentNotices : [];
+  const attendanceHistory = Array.isArray(dashboard?.attendanceHistory) ? dashboard.attendanceHistory : [];
 
   return (
     <div className="min-h-screen bg-slate-100 text-slate-900">
-      <Sidebar activeTab={activeTab} setActiveTab={setActiveTab} isOpen={isOpen} setIsOpen={setIsOpen} />
+      <Sidebar
+        activeTab={activeTab}
+        setActiveTab={setActiveTab}
+        isOpen={isOpen}
+        setIsOpen={setIsOpen}
+      />
 
       <div className="lg:pl-[260px]">
         <div className="sticky top-0 z-30 flex items-center justify-between border-b border-slate-200/80 bg-white/95 px-4 py-3 backdrop-blur-xl lg:hidden">
@@ -66,13 +83,13 @@ export default function EmployeeDashboard() {
 
             <div className="emp-user-profile-badge">
               <div className="emp-avatar-circle">
-                {dashboard?.employeeProfile
-                  ? `${dashboard.employeeProfile.firstName?.[0] || ""}${dashboard.employeeProfile.lastName?.[0] || ""}`.toUpperCase()
+                {employeeProfile.firstName || employeeProfile.lastName
+                  ? `${employeeProfile.firstName?.[0] || ""}${employeeProfile.lastName?.[0] || ""}`.toUpperCase()
                   : "U"}
               </div>
               <span>
-                {dashboard?.employeeProfile
-                  ? `${dashboard.employeeProfile.firstName || ""} ${dashboard.employeeProfile.lastName || ""}`.trim()
+                {employeeProfile.firstName || employeeProfile.lastName
+                  ? `${employeeProfile.firstName || ""} ${employeeProfile.lastName || ""}`.trim()
                   : "Employee"}
               </span>
             </div>
@@ -103,7 +120,7 @@ export default function EmployeeDashboard() {
                     </div>
                   </div>
                   <p className="emp-stat-value">
-                    {dashboard.employeeProfile?.leaveBalance ?? "—"}
+                    {employeeProfile.leaveBalance != null ? employeeProfile.leaveBalance : "—"}
                   </p>
                   <span className="emp-stat-subtext">Available</span>
                 </div>
@@ -116,7 +133,7 @@ export default function EmployeeDashboard() {
                     </div>
                   </div>
                   <p className="emp-stat-value">
-                    {dashboard.employeeProfile?.salary ? `$${dashboard.employeeProfile.salary}` : "—"}
+                    {employeeProfile.salary ? `$${employeeProfile.salary}` : "—"}
                   </p>
                   <span className="emp-stat-subtext">Base salary</span>
                 </div>
@@ -128,9 +145,7 @@ export default function EmployeeDashboard() {
                       <Megaphone size={18} />
                     </div>
                   </div>
-                  <p className="emp-stat-value">
-                    {dashboard.recentNotices?.length ?? 0}
-                  </p>
+                  <p className="emp-stat-value">{recentNotices.length}</p>
                   <span className="emp-stat-subtext">Latest notices</span>
                 </div>
               </>
@@ -142,7 +157,9 @@ export default function EmployeeDashboard() {
               <h2 className="emp-card-title">Attendance History & Leave Status</h2>
               <div className="current-status-row">
                 <span className="current-status-label">Current status</span>
-                <p className="current-status-value">Present</p>
+                <p className="current-status-value">
+                  {dashboard?.todayAttendance?.status || "Unknown"}
+                </p>
               </div>
 
               <table className="emp-table">
@@ -154,26 +171,31 @@ export default function EmployeeDashboard() {
                   </tr>
                 </thead>
                 <tbody>
-                  <tr>
-                    <td>Nov 5, 2026</td>
-                    <td className="status-present">Present</td>
-                    <td>14 hours</td>
-                  </tr>
-                  <tr>
-                    <td>Dec 5, 2026</td>
-                    <td className="status-present">Present</td>
-                    <td>Two days</td>
-                  </tr>
-                  <tr>
-                    <td>Dec 5, 2026</td>
-                    <td className="status-present">Present</td>
-                    <td>13 day</td>
-                  </tr>
-                  <tr>
-                    <td>Nov 5, 2026</td>
-                    <td className="status-present">Present</td>
-                    <td>13 day</td>
-                  </tr>
+                  {attendanceHistory.length > 0 ? (
+                    attendanceHistory.map((record) => (
+                      <tr key={record._id || record.attendanceDate}>
+                        <td>{new Date(record.attendanceDate).toLocaleDateString()}</td>
+                        <td
+                          className={
+                            record.status === "Present"
+                              ? "status-present"
+                              : record.status === "Absent"
+                              ? "status-absent"
+                              : "status-leave"
+                          }
+                        >
+                          {record.status}
+                        </td>
+                        <td>{record.activity || "—"}</td>
+                      </tr>
+                    ))
+                  ) : (
+                    <tr>
+                      <td colSpan={3} style={{ textAlign: "center", padding: "20px 0" }}>
+                        No attendance history available.
+                      </td>
+                    </tr>
+                  )}
                 </tbody>
               </table>
             </div>
@@ -181,8 +203,8 @@ export default function EmployeeDashboard() {
             <div className="emp-card-box">
               <h2 className="emp-card-title">Company Announcements</h2>
               <div className="announcement-list">
-                {dashboard?.recentNotices?.length ? (
-                  dashboard.recentNotices.map((notice) => (
+                {recentNotices.length > 0 ? (
+                  recentNotices.map((notice) => (
                     <div key={notice._id || notice.title} className="announcement-item">
                       <div className="announcement-icon">
                         <Megaphone size={18} />
@@ -200,7 +222,9 @@ export default function EmployeeDashboard() {
                     </div>
                   ))
                 ) : (
-                  <p style={{ color: "#64748b", padding: "16px 0" }}>No announcements available.</p>
+                  <p style={{ color: "#64748b", padding: "16px 0" }}>
+                    No announcements available.
+                  </p>
                 )}
               </div>
             </div>
@@ -209,84 +233,65 @@ export default function EmployeeDashboard() {
               <h2 className="emp-card-title">Profile Summary</h2>
               <div className="profile-card-content">
                 <img
-                  src={dashboard?.employeeProfile?.profileImage || "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=150&auto=format&fit=crop&q=80"}
-                  alt={dashboard?.employeeProfile?.firstName || "Employee"}
+                  src={employeeProfile.profileImage || "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=150&auto=format&fit=crop&q=80"}
+                  alt={employeeProfile.firstName || "Employee"}
                   className="profile-avatar-large"
                 />
                 <p className="profile-name">
-                  {dashboard?.employeeProfile
-                    ? `${dashboard.employeeProfile.firstName || ""} ${dashboard.employeeProfile.lastName || ""}`.trim()
+                  {employeeProfile.firstName || employeeProfile.lastName
+                    ? `${employeeProfile.firstName || ""} ${employeeProfile.lastName || ""}`.trim()
                     : "Employee"}
                 </p>
-                <p className="profile-role">
-                  {dashboard?.employeeProfile?.designationId?.designationName || "Employee"}
-                </p>
+                <p className="profile-role">{employeeProfile.designationName || "Employee"}</p>
                 <div className="profile-dept-info">
                   <span>Department</span>
-                  <span>{dashboard?.employeeProfile?.departmentId?.departmentName || "—"}</span>
+                  <span>{employeeProfile.departmentName || "—"}</span>
                 </div>
-                <button className="btn-apply-leave">Apply Leave</button>
-                <button className="btn-download-payslip">Download Payslip</button>
+                <button className="btn-apply-leave" onClick={handleApplyLeave}>
+                  Apply Leave
+                </button>
+                <button className="btn-download-payslip" onClick={handleDownloadPayslip}>
+                  Download Payslip
+                </button>
               </div>
             </div>
           </div>
 
           <div className="emp-chart-box">
             <div className="emp-chart-header">
-              <h2 className="emp-card-title" style={{ margin: 0 }}>Monthly Attendance Overview</h2>
-              <span style={{ fontSize: "13px", fontWeight: "bold", color: "#64748b" }}>November 2026</span>
+              <h2 className="emp-card-title" style={{ margin: 0 }}>
+                Monthly Attendance Overview
+              </h2>
+              <span style={{ fontSize: "13px", fontWeight: "bold", color: "#64748b" }}>
+                {new Date().toLocaleDateString("en-US", { month: "long", year: "numeric" })}
+              </span>
             </div>
 
             <div className="emp-chart-metrics">
-              <span>Daily attendance: <span className="metric-highlight">96.5% ↑</span></span>
-              <span>Key metrics: <span className="metric-highlight">391 ↑ 5.8%</span></span>
-              <span>Bars count: <span className="metric-highlight">393</span></span>
+              <span>
+                Attendance %: <span className="metric-highlight">{dashboard?.attendancePercentage ?? 0}%</span>
+              </span>
+              <span>
+                Approved leaves: <span className="metric-highlight">{dashboard?.leaves?.approved ?? 0}</span>
+              </span>
+              <span>
+                Pending leaves: <span className="metric-highlight">{dashboard?.leaves?.pending ?? 0}</span>
+              </span>
             </div>
 
             <div className="emp-chart-bars">
-              <div className="emp-bar-pair">
-                <div className="emp-bar-blue" style={{ height: "85%" }}></div>
-                <div className="emp-bar-light" style={{ height: "50%" }}></div>
-              </div>
-              <div className="emp-bar-pair">
-                <div className="emp-bar-blue" style={{ height: "65%" }}></div>
-                <div className="emp-bar-light" style={{ height: "35%" }}></div>
-              </div>
-              <div className="emp-bar-pair">
-                <div className="emp-bar-blue" style={{ height: "90%" }}></div>
-                <div className="emp-bar-light" style={{ height: "70%" }}></div>
-              </div>
-              <div className="emp-bar-pair">
-                <div className="emp-bar-blue" style={{ height: "50%" }}></div>
-                <div className="emp-bar-light" style={{ height: "30%" }}></div>
-              </div>
-              <div className="emp-bar-pair">
-                <div className="emp-bar-blue" style={{ height: "75%" }}></div>
-                <div className="emp-bar-light" style={{ height: "45%" }}></div>
-              </div>
-              <div className="emp-bar-pair">
-                <div className="emp-bar-blue" style={{ height: "95%" }}></div>
-                <div className="emp-bar-light" style={{ height: "65%" }}></div>
-              </div>
-              <div className="emp-bar-pair">
-                <div className="emp-bar-blue" style={{ height: "80%" }}></div>
-                <div className="emp-bar-light" style={{ height: "30%" }}></div>
-              </div>
-              <div className="emp-bar-pair">
-                <div className="emp-bar-blue" style={{ height: "90%" }}></div>
-                <div className="emp-bar-light" style={{ height: "55%" }}></div>
-              </div>
+              {[...Array(8)].map((_, index) => (
+                <div key={index} className="emp-bar-pair">
+                  <div className="emp-bar-blue" style={{ height: `${50 + index * 5}%` }}></div>
+                  <div className="emp-bar-light" style={{ height: `${30 + index * 3}%` }}></div>
+                </div>
+              ))}
             </div>
 
             <div className="emp-chart-months">
-              <span>Jan</span>
-              <span>Feb</span>
-              <span>Mar</span>
-              <span>Apr</span>
-              <span>May</span>
-              <span>Jun</span>
-              <span>Jul</span>
-              <span>Aug</span>
+              {['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug'].map((month) => (
+                <span key={month}>{month}</span>
+              ))}
             </div>
           </div>
         </main>
@@ -294,4 +299,3 @@ export default function EmployeeDashboard() {
     </div>
   );
 }
-        

@@ -42,7 +42,14 @@ const Settings = () => {
     setFetching(true);
 
     try {
-      const response = await fetch(API_URL);
+      const token = localStorage.getItem("token");
+
+      const response = await fetch(API_URL, {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: token ? `Bearer ${token}` : "",
+        },
+      });
       const data = await response.json();
 
       if (response.ok && data.success) {
@@ -182,10 +189,13 @@ const Settings = () => {
         adminPassword: formData.adminPassword,
       };
 
+      const token = localStorage.getItem("token");
+
       const response = await fetch(url, {
         method,
         headers: {
           "Content-Type": "application/json",
+          Authorization: token ? `Bearer ${token}` : "",
         },
         body: JSON.stringify(payload),
       });
