@@ -81,7 +81,20 @@ export default function EmployeeDashboard() {
               />
             </div>
 
-            <div className="emp-user-profile-badge">
+            <button
+              className="icon-btn"
+              title="View Notices"
+              onClick={() => navigate("/employee/announcements")}
+              style={{ marginRight: "14px" }}
+            >
+              <Megaphone size={18} />
+            </button>
+
+            <div
+              className="emp-user-profile-badge"
+              onClick={() => navigate("/employee/profile")}
+              style={{ cursor: "pointer" }}
+            >
               <div className="emp-avatar-circle">
                 {employeeProfile.firstName || employeeProfile.lastName
                   ? `${employeeProfile.firstName?.[0] || ""}${employeeProfile.lastName?.[0] || ""}`.toUpperCase()

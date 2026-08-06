@@ -1,49 +1,11 @@
 import React, { useState, useEffect } from "react";
-
-//import "./Departments.css";
-
-// Express Backend API URLs
-const API_URL = "http://localhost:5000/departments";
-const DASHBOARD_API = "http://localhost:5000/dashboard/admin";
-
-// Initial Demo Data matching your exact layout
-const INITIAL_DEMO_DATA = [
-  {
-    _id: "65d8a1f2e4b01234567890a1",
-    departmentName: "Production",
-    headName: "Brank Kahter",
-    headDesignation: "Director",
-    description: "Responsible for manufacturing, quality control, and assembly line management.",
-    employeeCount: 83,
-  },
-  {
-    _id: "65d8a1f2e4b01234567890a2",
-    departmentName: "Sales",
-    headName: "Jumn Denner",
-    headDesignation: "Manager",
-    description: "Handles customer acquisition, client partnerships, and revenue growth.",
-    employeeCount: 50,
-  },
-  {
-    _id: "65d8a1f2e4b01234567890a3",
-    departmentName: "IT",
-    headName: "Chris Shanter",
-    headDesignation: "Foster Manager",
-    description: "Maintains IT infrastructure, software systems, network security, and support.",
-    employeeCount: 50,
-  },
-  {
-    _id: "65d8a1f2e4b01234567890a4",
-    departmentName: "HR / Admin",
-    headName: "Mark Rooper",
-    headDesignation: "Phahid Manager",
-    description: "Oversees recruitment, employee relations, payroll support, and HR policies.",
-    employeeCount: 25,
-  },
-];
+import { useNavigate } from "react-router-dom";
+import api from "../api";
 
 const Departments = () => {
-  const [departments, setDepartments] = useState(INITIAL_DEMO_DATA);
+  const navigate = useNavigate();
+  const [departments, setDepartments] = useState([]);
+  const [showProfileInfo, setShowProfileInfo] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingId, setEditingId] = useState(null);
@@ -54,6 +16,7 @@ const Departments = () => {
   const [selectedDepartmentEmployees, setSelectedDepartmentEmployees] = useState([]);
   const [employeesLoading, setEmployeesLoading] = useState(false);
   const [employeesError, setEmployeesError] = useState("");
+  const [loading, setLoading] = useState(false);
 
   // Form State corresponding to departmentController.js fields
   const [formData, setFormData] = useState({
@@ -72,13 +35,10 @@ const Departments = () => {
 
   const fetchDashboardCounts = async () => {
     try {
-      const response = await fetch(DASHBOARD_API);
-      if (response.ok) {
-        const data = await response.json();
-        if (data.dashboard) {
-          setBackendTotalDepartments(data.dashboard.totalDepartments || 0);
-          setBackendTotalEmployees(data.dashboard.totalEmployees || 0);
-        }
+      const res = await api.getAdminDashboard();
+      if (res?.dashboard) {
+        setBackendTotalDepartments(res.dashboard.totalDepartments || 0);
+        setBackendTotalEmployees(res.dashboard.totalEmployees || 0);
       }
     } catch (error) {
       console.warn("Unable to load dashboard totals from backend:", error);
@@ -86,16 +46,18 @@ const Departments = () => {
   };
 
   const fetchDepartments = async () => {
+    setLoading(true);
     try {
-      const response = await fetch(API_URL);
-      if (response.ok) {
-        const data = await response.json();
-        if (data.departments) {
-          setDepartments(data.departments);
-        }
+      const res = await api.getDepartments();
+      if (res?.departments) {
+        setDepartments(res.departments);
+      } else if (Array.isArray(res)) {
+        setDepartments(res);
       }
     } catch (error) {
-      console.warn("Backend API offline. Using local demo state.", error);
+      console.warn("Backend API offline or failed to fetch departments:", error);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -107,12 +69,10 @@ const Departments = () => {
     setSelectedDepartment(department);
 
     try {
-      const response = await fetch(`${API_URL}/department/${department._id}`);
-      if (!response.ok) {
-        throw new Error("Unable to fetch employees for department");
-      }
-      const data = await response.json();
-      setSelectedDepartmentEmployees(data.employees || []);
+      const res = await api.getDepartmentEmployees(department._id);
+      if (res?.employees) setSelectedDepartmentEmployees(res.employees);
+      else if (res?.employees === undefined && Array.isArray(res)) setSelectedDepartmentEmployees(res);
+      else setSelectedDepartmentEmployees(res.employees || []);
     } catch (error) {
       console.warn(error);
       setEmployeesError("Could not load department employees.");
@@ -280,14 +240,50 @@ const Departments = () => {
             onChange={(e) => setSearchQuery(e.target.value)}
           />
         </div>
-        <div className="header-right">
-          <button className="icon-btn" title="Notifications">
+        <div className="header-right" style={{ position: "relative" }}>
+          <button className="icon-btn" title="Notifications" onClick={() => navigate("/admin/notices") }>
             🔔
           </button>
-          <div className="admin-badge">
+          <div
+            className="admin-badge"
+            onClick={() => setShowProfileInfo((prev) => !prev)}
+            style={{ cursor: "pointer" }}
+          >
             <span className="badge-avatar">AB</span>
             <span className="badge-text">admin</span>
           </div>
+          {showProfileInfo && (
+            <div style={{
+              position: "absolute",
+              right: 0,
+              top: "100%",
+              marginTop: "10px",
+              width: "220px",
+              background: "#ffffff",
+              border: "1px solid #e5e7eb",
+              borderRadius: "14px",
+              boxShadow: "0 12px 30px rgba(15, 23, 42, 0.12)",
+              padding: "14px",
+              zIndex: 30
+            }}>
+              <div style={{ display: "flex", alignItems: "center", gap: "10px", marginBottom: "10px" }}>
+                <div style={{ width: "36px", height: "36px", borderRadius: "50%", backgroundColor: "#0f766e", color: "#ffffff", display: "flex", alignItems: "center", justifyContent: "center", fontWeight: 700 }}>AB</div>
+                <div>
+                  <div style={{ fontWeight: 700 }}>Admin</div>
+                  <div style={{ fontSize: "12px", color: "#475569" }}>Administrator</div>
+                </div>
+              </div>
+              <button
+                style={{ width: "100%", border: "none", borderRadius: "10px", padding: "10px", background: "#0f766e", color: "#ffffff", cursor: "pointer" }}
+                onClick={() => {
+                  navigate("/admin/settings");
+                  setShowProfileInfo(false);
+                }}
+              >
+                View Profile Settings
+              </button>
+            </div>
+          )}
           <button className="btn-add-dept" onClick={handleOpenAddModal}>
             + Add Department
           </button>

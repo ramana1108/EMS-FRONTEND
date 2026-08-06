@@ -70,6 +70,11 @@ export default function Roles() {
       setError("Role name is required");
       return;
     }
+    const blocked = ["hr", "manager"];
+    if (blocked.includes(roleName.trim().toLowerCase())) {
+      setError("Creating role 'hr' or 'manager' is not allowed.");
+      return;
+    }
     setError("");
     setSuccess("");
     try {
@@ -120,8 +125,7 @@ export default function Roles() {
   };
 
   const getAdminCount = () => getRoleUserCount("admin");
-  const getHrCount = () => getRoleUserCount("hr");
-  const getManagerCount = () => getRoleUserCount("manager");
+  // HR and Manager roles removed from frontend stats
   const getEmployeeCount = () => getRoleUserCount("employee");
 
   return (
@@ -149,31 +153,7 @@ export default function Roles() {
           <p className="stat-description">System administrators</p>
         </div>
 
-        <div className="stat-card">
-          <div className="stat-header">
-            <div className="stat-icon-box active-staff-icon" style={{ backgroundColor: "#0D9488" }}>
-              <UserCheck size={20} color="#ffffff" />
-            </div>
-            <div>
-              <p className="stat-label">HR Managers</p>
-              <p className="stat-value">{getHrCount()}</p>
-            </div>
-          </div>
-          <p className="stat-description">Human resources staff</p>
-        </div>
-
-        <div className="stat-card">
-          <div className="stat-header">
-            <div className="stat-icon-box inactive-staff-icon" style={{ backgroundColor: "#D97706" }}>
-              <Award size={20} color="#ffffff" />
-            </div>
-            <div>
-              <p className="stat-label">Managers</p>
-              <p className="stat-value">{getManagerCount()}</p>
-            </div>
-          </div>
-          <p className="stat-description">Operational supervisors</p>
-        </div>
+        {/* HR and Manager cards removed per request */}
 
         <div className="stat-card">
           <div className="stat-header">
@@ -315,12 +295,10 @@ export default function Roles() {
               >
                 <option value="">Select a system role...</option>
                 <option value="admin">Admin</option>
-                <option value="hr">HR</option>
-                <option value="manager">Manager</option>
                 <option value="employee">Employee</option>
               </select>
               <p style={{ fontSize: "11px", color: "#64748b", marginTop: "6px", fontStyle: "italic" }}>
-                Note: Supported system roles: admin, hr, manager, employee.
+                Note: Supported system roles: admin, employee.
               </p>
             </div>
 

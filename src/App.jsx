@@ -45,7 +45,7 @@ function normalizeRole(role) {
 function defaultRouteForUser(user) {
   const role = normalizeRole(user?.role);
   if (role === "admin") return "/admin/dashboard";
-  if (["employee", "manager", "hr"].includes(role)) return "/employee/dashboard";
+  if (["employee"].includes(role)) return "/employee/dashboard";
   return "/";
 }
 
@@ -211,7 +211,7 @@ function AppContent() {
       <Route
         path="/employee/dashboard"
         element={
-          <RequireRole allowedRoles={["employee", "manager", "hr"]}>
+          <RequireRole allowedRoles={["employee"]}>
             <EmployeeDashboard />
           </RequireRole>
         }
@@ -221,7 +221,7 @@ function AppContent() {
       <Route
         path="/employee/announcements"
         element={
-          <RequireRole allowedRoles={["employee", "manager", "hr"]}>
+          <RequireRole allowedRoles={["employee"]}>
             <EmployeeAnnouncements />
           </RequireRole>
         }
@@ -231,7 +231,7 @@ function AppContent() {
       <Route
         path="/employee/attendance"
         element={
-          <RequireRole allowedRoles={["employee", "manager", "hr"]}>
+          <RequireRole allowedRoles={["employee"]}>
             <EmployeeAttendance />
           </RequireRole>
         }
@@ -241,7 +241,7 @@ function AppContent() {
       <Route
         path="/employee/leave"
         element={
-          <RequireRole allowedRoles={["employee", "manager", "hr"]}>
+          <RequireRole allowedRoles={["employee"]}>
             <EmployeeLeavemanagement />
           </RequireRole>
         }
@@ -251,7 +251,7 @@ function AppContent() {
       <Route
         path="/employee/payroll"
         element={
-          <RequireRole allowedRoles={["employee", "manager", "hr"]}>
+          <RequireRole allowedRoles={["employee"]}>
             <EmployeePayrolls />
           </RequireRole>
         }
@@ -261,7 +261,7 @@ function AppContent() {
       <Route
         path="/employee/profile"
         element={
-          <RequireRole allowedRoles={["employee", "manager", "hr"]}>
+          <RequireRole allowedRoles={["employee"]}>
             <EmployeeProfile />
           </RequireRole>
         }

@@ -35,6 +35,8 @@ export default function Attendance() {
     const [leaveFrom, setLeaveFrom] = useState("");
     const [leaveTo, setLeaveTo] = useState("");
     const [leaveReason, setLeaveReason] = useState("");
+    const [leaveType, setLeaveType] = useState("Casual Leave");
+    const [leaves, setLeaves] = useState([]);
 
     // Search/Filters
     const [filterEmpId, setFilterEmpId] = useState("");
@@ -80,10 +82,24 @@ export default function Attendance() {
         }
     };
 
+    const fetchLeaves = async () => {
+        try {
+            const res = await fetch(`${API_BASE_URL}/api/leaves`, {
+                headers: getHeaders(),
+            });
+            const data = await res.json();
+            if (res.ok) {
+                setLeaves(data.leaves || []);
+            }
+        } catch (err) {
+            console.error(err);
+        }
+    };
+
     const loadData = async () => {
         setLoading(true);
         setError("");
-        await Promise.all([fetchEmployees(), fetchAttendance()]);
+        await Promise.all([fetchEmployees(), fetchAttendance(), fetchLeaves()]);
         setLoading(false);
     };
 
@@ -143,8 +159,8 @@ export default function Attendance() {
 
     const handleApplyLeave = async (e) => {
         e.preventDefault();
-        if (!leaveEmpId || !leaveFrom || !leaveTo || !leaveReason) {
-            setError("All fields are required to request leave: Employee, Start Date, End Date, Reason");
+        if (!leaveEmpId || !leaveFrom || !leaveTo || !leaveReason || !leaveType) {
+            setError("All fields are required to request leave: Employee, Start Date, End Date, Type, Reason");
             return;
         }
         setError("");
@@ -159,51 +175,78 @@ export default function Attendance() {
 
         try {
             setLoading(true);
-            // Generate individual attendance records for each date in the range
-            const dates = [];
-            let current = new Date(start);
-            while (current <= end) {
-                dates.push(new Date(current));
-                current.setDate(current.getDate() + 1);
-            }
-
-            // Chain requests sequentially or fire in parallel
-            const requests = dates.map(dateStr => {
-                const headers = getHeaders();
-                return fetch(`${API_BASE_URL}/attendance`, {
-                    method: "POST",
-                    headers,
-                    body: JSON.stringify({
-                        employeeId: leaveEmpId,
-                        attendanceDate: dateStr,
-                        status: "Leave",
-                        checkInTime: null,
-                        checkOutTime: null,
-                        workedHours: 0,
-                        notes: `Leave: ${leaveReason}`,
-                    }),
-                });
+            const res = await fetch(`${API_BASE_URL}/api/leaves`, {
+                method: "POST",
+                headers: getHeaders(),
+                body: JSON.stringify({
+                    employeeId: leaveEmpId,
+                    leaveType,
+                    fromDate: leaveFrom,
+                    toDate: leaveTo,
+                    reason: leaveReason,
+                }),
             });
 
-            const results = await Promise.all(requests);
+            const data = await res.json();
             setLoading(false);
-
-            const failedCount = results.filter(r => !r.ok).length;
-            if (failedCount === 0) {
-                setSuccess(`Leave recorded successfully for ${dates.length} day(s)!`);
+            if (res.ok) {
+                setSuccess("Leave request submitted successfully.");
                 setLeaveEmpId("");
                 setLeaveFrom("");
                 setLeaveTo("");
                 setLeaveReason("");
-                fetchAttendance();
+                setLeaveType("Casual Leave");
+                fetchLeaves();
             } else {
-                setError(`Failed to apply leave for some days. Please try again.`);
-                fetchAttendance();
+                setError(data.message || "Failed to submit leave request");
             }
         } catch (err) {
             console.error(err);
             setLoading(false);
-            setError("An error occurred while saving leave logs.");
+            setError("An error occurred while submitting leave request.");
+        }
+    };
+
+    const handleApproveLeave = async (id) => {
+        if (!window.confirm("Approve this leave request?")) return;
+        try {
+            const res = await fetch(`${API_BASE_URL}/api/leaves/${id}`, {
+                method: "PUT",
+                headers: getHeaders(),
+                body: JSON.stringify({ status: "Approved" }),
+            });
+            const data = await res.json();
+            if (res.ok) {
+                setSuccess("Leave approved.");
+                fetchLeaves();
+                fetchAttendance();
+            } else {
+                setError(data.message || "Failed to approve leave");
+            }
+        } catch (err) {
+            console.error(err);
+            setError("Failed to update leave status");
+        }
+    };
+
+    const handleRejectLeave = async (id) => {
+        if (!window.confirm("Reject this leave request?")) return;
+        try {
+            const res = await fetch(`${API_BASE_URL}/api/leaves/${id}`, {
+                method: "PUT",
+                headers: getHeaders(),
+                body: JSON.stringify({ status: "Rejected" }),
+            });
+            const data = await res.json();
+            if (res.ok) {
+                setSuccess("Leave rejected.");
+                fetchLeaves();
+            } else {
+                setError(data.message || "Failed to reject leave");
+            }
+        } catch (err) {
+            console.error(err);
+            setError("Failed to update leave status");
         }
     };
 
@@ -229,9 +272,41 @@ export default function Attendance() {
         }
     };
 
+    const handleDeleteLeave = async (id) => {
+        if (!window.confirm("Are you sure you want to delete this leave request?")) return;
+        setError("");
+        setSuccess("");
+        try {
+            const res = await fetch(`${API_BASE_URL}/api/leaves/${id}`, {
+                method: "DELETE",
+                headers: getHeaders(),
+            });
+            const data = await res.json();
+            if (res.ok) {
+                setSuccess("Leave request deleted successfully.");
+                fetchLeaves();
+            } else {
+                setError(data.message || "Failed to delete leave request");
+            }
+        } catch (err) {
+            console.error(err);
+            setError("Failed to delete leave request");
+        }
+    };
+
     const formatDate = (isoString) => {
         if (!isoString) return "";
         return new Date(isoString).toISOString().split("T")[0];
+    };
+
+    const formatDateDisplay = (dateString) => {
+        if (!dateString) return "";
+        const date = new Date(dateString);
+        return date.toLocaleDateString("en-US", {
+            day: "2-digit",
+            month: "short",
+            year: "numeric",
+        });
     };
 
     // Filters computed logs
@@ -583,15 +658,16 @@ export default function Attendance() {
 
                     {/* Leaves Table */}
                     <div className="employee-directory-card" style={{ padding: "24px" }}>
-                        <h2 className="emp-card-title" style={{ marginBottom: "16px" }}>Leave Logs</h2>
+                        <h2 className="emp-card-title" style={{ marginBottom: "16px" }}>Leave Requests</h2>
 
                         <div className="table-responsive">
                             <table className="employee-table">
                                 <thead>
                                     <tr>
                                         <th style={{ padding: "12px" }}>EMPLOYEE</th>
-                                        <th style={{ padding: "12px", textAlign: "center" }}>LEAVE DATE</th>
-                                        <th style={{ padding: "12px" }}>LEAVE REASON</th>
+                                        <th style={{ padding: "12px", textAlign: "center" }}>DATES</th>
+                                        <th style={{ padding: "12px" }}>REASON</th>
+                                        <th style={{ padding: "12px", textAlign: "center" }}>TYPE</th>
                                         <th style={{ padding: "12px", textAlign: "center" }}>STATUS</th>
                                         <th style={{ padding: "12px", textAlign: "right" }}>ACTIONS</th>
                                     </tr>
@@ -599,26 +675,29 @@ export default function Attendance() {
                                 <tbody>
                                     {loading ? (
                                         <tr>
-                                            <td colSpan="5" style={{ textAlign: "center", padding: "30px 0" }}>Loading leave logs...</td>
+                                            <td colSpan="6" style={{ textAlign: "center", padding: "30px 0" }}>Loading leave requests...</td>
                                         </tr>
-                                    ) : records.filter(r => r.status === "Leave").length === 0 ? (
+                                    ) : leaves.length === 0 ? (
                                         <tr>
-                                            <td colSpan="5" style={{ textAlign: "center", padding: "30px 0" }}>No approved leaves logged.</td>
+                                            <td colSpan="6" style={{ textAlign: "center", padding: "30px 0" }}>No leave requests found.</td>
                                         </tr>
                                     ) : (
-                                        records.filter(r => r.status === "Leave").map((rec) => (
+                                        leaves.map((rec) => (
                                             <tr key={rec._id} className="employee-row">
                                                 <td style={{ padding: "12px" }}>
                                                     <div>
-                                                        <p style={{ fontWeight: "700", color: "#1e293b", fontSize: "14px" }}>{rec.employeeName}</p>
-                                                        <p style={{ fontSize: "11px", color: "#64748b" }}>{rec.employeeCode}</p>
+                                                        <p style={{ fontWeight: "700", color: "#1e293b", fontSize: "14px" }}>{rec.employeeId?.firstName ? `${rec.employeeId.firstName} ${rec.employeeId.lastName}` : "Unknown"}</p>
+                                                        <p style={{ fontSize: "11px", color: "#64748b" }}>{rec.employeeId?.employeeId || "-"}</p>
                                                     </div>
                                                 </td>
                                                 <td style={{ padding: "12px", textAlign: "center" }}>
-                                                    {formatDate(rec.attendanceDate)}
+                                                    {formatDateDisplay(rec.fromDate)} - {formatDateDisplay(rec.toDate)}
                                                 </td>
                                                 <td style={{ padding: "12px", color: "#475569", fontSize: "13px" }}>
-                                                    {rec.notes || "Personal reasons"}
+                                                    {rec.reason}
+                                                </td>
+                                                <td style={{ padding: "12px", textAlign: "center", fontWeight: "600", color: "#1f2937" }}>
+                                                    {rec.leaveType}
                                                 </td>
                                                 <td style={{ padding: "12px", textAlign: "center" }}>
                                                     <span style={{
@@ -627,18 +706,38 @@ export default function Attendance() {
                                                         fontWeight: "750",
                                                         borderRadius: "12px",
                                                         display: "inline-block",
-                                                        backgroundColor: "#ecfdf5",
-                                                        color: "#065f46"
+                                                        backgroundColor:
+                                                            rec.status === "Approved" ? "#ecfdf5" : rec.status === "Rejected" ? "#fef2f2" : "#eff6ff",
+                                                        color:
+                                                            rec.status === "Approved" ? "#065f46" : rec.status === "Rejected" ? "#b91c1c" : "#1d4ed8"
                                                     }}>
-                                                        Approved
+                                                        {rec.status}
                                                     </span>
                                                 </td>
-                                                <td style={{ padding: "12px", textAlign: "right" }}>
+                                                <td style={{ padding: "12px", textAlign: "right", display: "flex", justifyContent: "flex-end", gap: "8px" }}>
+                                                    {rec.status === "Pending" && (
+                                                        <>
+                                                            <button
+                                                                onClick={() => handleApproveLeave(rec._id)}
+                                                                className="action-icon-btn approve"
+                                                                style={{ border: "none", background: "#22c55e", borderRadius: "8px", padding: "6px 10px", color: "#ffffff", cursor: "pointer" }}
+                                                            >
+                                                                Approve
+                                                            </button>
+                                                            <button
+                                                                onClick={() => handleRejectLeave(rec._id)}
+                                                                className="action-icon-btn reject"
+                                                                style={{ border: "none", background: "#ef4444", borderRadius: "8px", padding: "6px 10px", color: "#ffffff", cursor: "pointer" }}
+                                                            >
+                                                                Reject
+                                                            </button>
+                                                        </>
+                                                    )}
                                                     <button
-                                                        onClick={() => handleDeleteRecord(rec._id)}
+                                                        onClick={() => handleDeleteLeave(rec._id)}
                                                         className="action-icon-btn delete"
                                                         style={{ border: "none", background: "none", cursor: "pointer", color: "#b91c1c" }}
-                                                        title="Delete Leave Day"
+                                                        title="Delete Leave Request"
                                                     >
                                                         <Trash2 size={16} />
                                                     </button>
@@ -653,8 +752,8 @@ export default function Attendance() {
 
                     {/* Request / Record Leave Form */}
                     <div className="emp-card-box" style={{ padding: "24px" }}>
-                        <h2 className="emp-card-title" style={{ marginBottom: "8px" }}>Record Leave</h2>
-                        <p style={{ fontSize: "12px", color: "#64748b", marginBottom: "16px" }}>Logs approved leave days for an employee across a specified date range.</p>
+                        <h2 className="emp-card-title" style={{ marginBottom: "8px" }}>Create Leave Request</h2>
+                        <p style={{ fontSize: "12px", color: "#64748b", marginBottom: "16px" }}>Submit a leave request on behalf of an employee, then approve or reject from the leave list.</p>
                         <form onSubmit={handleApplyLeave}>
 
                             <div style={{ marginBottom: "12px" }}>
@@ -670,6 +769,22 @@ export default function Attendance() {
                                             {emp.firstName} {emp.lastName} ({emp.employeeId})
                                         </option>
                                     ))}
+                                </select>
+                            </div>
+
+                            <div style={{ marginBottom: "12px" }}>
+                                <label style={{ display: "block", fontSize: "11px", fontWeight: "700", textTransform: "uppercase", color: "#475569", marginBottom: "4px" }}>Leave Type*</label>
+                                <select
+                                    value={leaveType}
+                                    onChange={(e) => setLeaveType(e.target.value)}
+                                    style={{ width: "100%", padding: "8px 12px", borderRadius: "6px", border: "1px solid #cbd5e1", backgroundColor: "#ffffff" }}
+                                >
+                                    <option value="Casual Leave">Casual Leave</option>
+                                    <option value="Sick Leave">Sick Leave</option>
+                                    <option value="Earned Leave">Earned Leave</option>
+                                    <option value="Maternity Leave">Maternity Leave</option>
+                                    <option value="Paternity Leave">Paternity Leave</option>
+                                    <option value="Emergency Leave">Emergency Leave</option>
                                 </select>
                             </div>
 
@@ -709,7 +824,7 @@ export default function Attendance() {
                                 style={{ width: "100%", padding: "10px", backgroundColor: "#065f46", color: "#ffffff", border: "none", borderRadius: "6px", fontWeight: "600", fontSize: "14px", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", gap: "8px" }}
                             >
                                 <CheckCircle size={16} />
-                                <span>Save Approved Leave</span>
+                                <span>Submit Leave Request</span>
                             </button>
                         </form>
                     </div>

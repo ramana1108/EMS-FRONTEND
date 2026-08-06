@@ -82,6 +82,13 @@ export async function getDesignations() {
   return res.json();
 }
 
+export async function getDepartmentEmployees(departmentId) {
+  const res = await fetch(`${API_BASE_URL}/departments/department/${departmentId}`, {
+    headers: authHeaders(),
+  });
+  return res.json();
+}
+
 export async function getNotices() {
   const res = await fetch(`${API_BASE_URL}/notices`, {
     headers: authHeaders(),
@@ -198,6 +205,7 @@ export default {
   getAllEmployees,
   getEmployeeById,
   createEmployee,
+  getDepartmentEmployees,
   updateEmployee,
   deleteEmployee,
   getDepartments,

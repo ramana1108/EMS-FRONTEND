@@ -637,6 +637,7 @@
   border-radius: 16px;
   border: 1px solid #e2e8f0;
   box-shadow: 0 2px 4px rgba(0,0,0,0.03);
+  position: relative;
 }
 
 .card-header-row {
@@ -651,6 +652,12 @@
   font-weight: 800;
   color: #000000; /* Pure Black */
   margin: 0;
+  position: relative;
+  z-index: 20;
+  background-color: #ffffff; /* ensure title sits above charts */
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 6px;
 }
 
 .view-all-link {
@@ -765,8 +772,15 @@
   align-items: flex-end;
   justify-content: space-around;
   height: 180px;
-  padding-top: 24px;
+  padding-top: 12px;
+  margin-top: 8px;
   border-bottom: 1px solid #e2e8f0;
+  overflow: visible;
+}
+
+.chart-bars-container > div { /* ensure bars are behind the title */
+  position: relative;
+  z-index: 1;
 }
 
 .bar-pair {
@@ -1804,7 +1818,7 @@
   border-radius: 12px;
   border: none;
   background-color: oklch(80.245% 0.18677 156.949);
-  color: #06b053;
+  color: black;
   display: flex;
   align-items: center;
   justify-content: center;

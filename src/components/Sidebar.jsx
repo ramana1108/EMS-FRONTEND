@@ -53,8 +53,6 @@ export default function Sidebar({ activeTab, setActiveTab, isOpen, setIsOpen }) 
     // the employee-facing menu/routes (see useEmployeeMenu below).
     const rolePermissionMap = {
         admin: menuItems.map((i) => i.permission).filter(Boolean),
-        hr: ["dashboard", "attendance", "notice", "leave", "payroll", "profile"],
-        manager: ["dashboard", "attendance", "notice", "leave", "payroll", "profile"],
         employee: ["dashboard", "attendance", "notice", "leave", "payroll", "profile"],
     };
 
@@ -64,7 +62,7 @@ export default function Sidebar({ activeTab, setActiveTab, isOpen, setIsOpen }) 
     // Manager and HR share the employee-facing menu/pages, not the admin menu -
     // the admin routes are locked to the "admin" role only, so pointing
     // manager/hr at /admin/* paths would just bounce them straight back.
-    const useEmployeeMenu = ["employee", "manager", "hr"].includes(userRole);
+    const useEmployeeMenu = ["employee"].includes(userRole);
 
     const visibleMenuItems = useEmployeeMenu
         ? employeeMenuItems.filter((item) => !item.permission || effectivePermissions.includes(item.permission))

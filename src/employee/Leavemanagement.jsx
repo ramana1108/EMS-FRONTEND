@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import "../App.css";
 import Sidebar from "../components/Sidebar";
+import { useLocation } from "react-router-dom";
 import {
     Calendar,
     Briefcase,
@@ -27,6 +28,7 @@ export default function Leavemanagement() {
     const [showApplyModal, setShowApplyModal] = useState(false);
     const [leaveType, setLeaveType] = useState("Casual Leave");
     const [fromDate, setFromDate] = useState("");
+    const location = useLocation();
     const [toDate, setToDate] = useState("");
     const [reason, setReason] = useState("");
     const [formError, setFormError] = useState("");
@@ -40,16 +42,22 @@ export default function Leavemanagement() {
         if (!loggedInUser) return;
 
         setUser(loggedInUser);
-
-        const employeeId = loggedInUser._id || loggedInUser.id || localStorage.getItem("employeeId");
-        if (employeeId) fetchLeaves(employeeId);
+        fetchLeaves();
     }, []);
 
-    const fetchLeaves = async (employeeId) => {
+    useEffect(() => {
+        const params = new URLSearchParams(location.search);
+        const searchParam = params.get("search");
+        if (searchParam) {
+            setSearchTerm(searchParam);
+        }
+    }, [location.search]);
+
+    const fetchLeaves = async () => {
         try {
             const token = localStorage.getItem("token");
             const headers = token ? { Authorization: `Bearer ${token}` } : {};
-            const res = await axios.get(`${API_URL}/employee/${employeeId}`, { headers });
+            const res = await axios.get(`${API_URL}/me`, { headers });
             setRequests(res.data.leaves || res.data.requests || []);
         } catch (err) {
             console.log(err);
