@@ -7,14 +7,38 @@ import {
   Users, 
   UserCheck, 
   Award,
-  AlertCircle
+  AlertCircle,
+  Edit
 } from "lucide-react";
+
+const ALL_PERMISSIONS = [
+  "dashboard",
+  "profile",
+  "department",
+  "designation",
+  "employee",
+  "attendance",
+  "payroll",
+  "notice",
+  "settings",
+  "leave",
+  "user",
+  "role"
+];
+
+const DEFAULT_ROLE_PERMISSIONS = {
+  admin: [...ALL_PERMISSIONS],
+  employee: ["dashboard", "profile", "department", "designation", "attendance", "notice", "leave", "payroll"]
+};
 
 export default function Roles() {
   const [roles, setRoles] = useState([]);
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(false);
   const [roleName, setRoleName] = useState("");
+  const [permissionSearch, setPermissionSearch] = useState("");
+  const [selectedPermissions, setSelectedPermissions] = useState([]);
+  const [editingRoleId, setEditingRoleId] = useState(null);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
 
@@ -64,10 +88,46 @@ export default function Roles() {
     fetchData();
   }, []);
 
+  useEffect(() => {
+    if (!editingRoleId) {
+      setSelectedPermissions(DEFAULT_ROLE_PERMISSIONS[roleName.toLowerCase()] || []);
+    }
+  }, [roleName, editingRoleId]);
+
+  const togglePermission = (permission) => {
+    setSelectedPermissions((prev) =>
+      prev.includes(permission)
+        ? prev.filter((item) => item !== permission)
+        : [...prev, permission]
+    );
+  };
+
+  const handleEditRole = (role) => {
+    setEditingRoleId(role._id);
+    setRoleName(role.name);
+    setSelectedPermissions(Array.isArray(role.permissions) ? role.permissions : []);
+    setPermissionSearch("");
+    setError("");
+    setSuccess("");
+  };
+
+  const handleCancelEdit = () => {
+    setEditingRoleId(null);
+    setRoleName("");
+    setSelectedPermissions([]);
+    setPermissionSearch("");
+    setError("");
+    setSuccess("");
+  };
+
   const handleAddRole = async (e) => {
     e.preventDefault();
     if (!roleName) {
       setError("Role name is required");
+      return;
+    }
+    if (selectedPermissions.length === 0) {
+      setError("Please select at least one permission for this role.");
       return;
     }
     const blocked = ["hr", "manager"];
@@ -78,22 +138,26 @@ export default function Roles() {
     setError("");
     setSuccess("");
     try {
-      const res = await fetch(`${API_BASE_URL}/roles`, {
-        method: "POST",
+      const method = editingRoleId ? "PUT" : "POST";
+      const url = editingRoleId ? `${API_BASE_URL}/roles/${editingRoleId}` : `${API_BASE_URL}/roles`;
+      const res = await fetch(url, {
+        method,
         headers: getHeaders(),
-        body: JSON.stringify({ name: roleName.trim() }),
+        body: JSON.stringify({ name: roleName.trim(), permissions: selectedPermissions }),
       });
       const data = await res.json();
       if (res.ok) {
-        setSuccess("Role added successfully!");
+        setSuccess(editingRoleId ? "Role updated successfully!" : "Role added successfully!");
         setRoleName("");
+        setSelectedPermissions([]);
+        setEditingRoleId(null);
         fetchData();
       } else {
-        setError(data.message || "Failed to create role");
+        setError(data.message || (editingRoleId ? "Failed to update role" : "Failed to create role"));
       }
     } catch (err) {
       console.error(err);
-      setError("An error occurred. Make sure role name exists in permissions.");
+      setError("An error occurred while saving role permissions.");
     }
   };
 
@@ -251,6 +315,14 @@ export default function Roles() {
                       </td>
                       <td style={{ padding: "16px", textAlign: "right" }}>
                         <button
+                          onClick={() => handleEditRole(role)}
+                          className="action-icon-btn edit"
+                          title="Edit Role"
+                          style={{ border: "none", background: "none", cursor: "pointer", color: "#2563eb", marginRight: "12px" }}
+                        >
+                          <Edit size={16} />
+                        </button>
+                        <button
                           onClick={() => handleDeleteRole(role._id)}
                           className="action-icon-btn delete"
                           title="Delete Role"
@@ -302,6 +374,62 @@ export default function Roles() {
               </p>
             </div>
 
+            <div style={{ marginBottom: "16px" }}>
+              <label style={{ display: "block", fontSize: "12px", fontWeight: "700", textTransform: "uppercase", color: "#475569", marginBottom: "6px" }}>
+                Search Permissions
+              </label>
+              <input
+                type="text"
+                value={permissionSearch}
+                onChange={(e) => setPermissionSearch(e.target.value)}
+                placeholder="Search permissions..."
+                style={{
+                  width: "100%",
+                  padding: "10px 12px",
+                  borderRadius: "8px",
+                  border: "1px solid #cbd5e1",
+                  fontSize: "14px",
+                  color: "#1e293b",
+                  backgroundColor: "#ffffff",
+                }}
+              />
+            </div>
+
+            <div style={{ marginBottom: "16px" }}>
+              <label style={{ display: "block", fontSize: "12px", fontWeight: "700", textTransform: "uppercase", color: "#475569", marginBottom: "10px" }}>
+                Permissions
+              </label>
+              <div style={{ display: "flex", flexWrap: "wrap", gap: "8px" }}>
+                {ALL_PERMISSIONS.filter((perm) =>
+                  perm.toLowerCase().includes(permissionSearch.toLowerCase())
+                ).map((permission) => {
+                  const active = selectedPermissions.includes(permission);
+                  return (
+                    <button
+                      key={permission}
+                      type="button"
+                      onClick={() => togglePermission(permission)}
+                      style={{
+                        padding: "10px 14px",
+                        borderRadius: "9999px",
+                        border: active ? "1px solid #059669" : "1px solid #cbd5e1",
+                        backgroundColor: active ? "#e0f2fe" : "#f8fafc",
+                        color: active ? "#034d63" : "#334155",
+                        cursor: "pointer",
+                        fontSize: "13px",
+                        fontWeight: 600,
+                      }}
+                    >
+                      {permission}
+                    </button>
+                  );
+                })}
+              </div>
+              <p style={{ fontSize: "11px", color: "#64748b", marginTop: "8px" }}>
+                Select which permissions should be granted to this role. These permissions control access across the EMS.
+              </p>
+            </div>
+
             <button
               type="submit"
               style={{
@@ -322,11 +450,30 @@ export default function Roles() {
               }}
             >
               <Plus size={16} />
-              <span>Create Role</span>
+              <span>{editingRoleId ? "Update Role" : "Create Role"}</span>
             </button>
+            {editingRoleId && (
+              <button
+                type="button"
+                onClick={handleCancelEdit}
+                style={{
+                  width: "100%",
+                  marginTop: "10px",
+                  padding: "10px",
+                  backgroundColor: "#f8fafc",
+                  color: "#334155",
+                  border: "1px solid #cbd5e1",
+                  borderRadius: "8px",
+                  fontWeight: "600",
+                  fontSize: "14px",
+                  cursor: "pointer"
+                }}
+              >
+                Cancel Edit
+              </button>
+            )}
           </form>
         </div>
-
       </div>
     </div>
   );

@@ -41,6 +41,8 @@ export default function Attendance() {
     // Search/Filters
     const [filterEmpId, setFilterEmpId] = useState("");
     const [filterDate, setFilterDate] = useState("");
+    const [currentPage, setCurrentPage] = useState(1);
+    const itemsPerPage = 10;
 
     const API_BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
 
@@ -316,6 +318,14 @@ export default function Attendance() {
         return matchesEmp && matchesDate;
     });
 
+    const totalPages = Math.max(1, Math.ceil(filteredRecords.length / itemsPerPage));
+    const paginatedRecords = filteredRecords.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
+
+    // Reset paging if filters change
+    useEffect(() => {
+        setCurrentPage(1);
+    }, [filterEmpId, filterDate, records]);
+
     // Calculate statistics
     const totalLeaves = records.filter(r => r.status === "Leave").length;
     const presentCount = records.filter(r => r.status === "Present").length;
@@ -489,7 +499,7 @@ export default function Attendance() {
                                             <td colSpan="8" style={{ textAlign: "center", padding: "30px 0" }}>No records registered matching search criteria.</td>
                                         </tr>
                                     ) : (
-                                        filteredRecords.map((rec) => (
+                                        paginatedRecords.map((rec) => (
                                             <tr key={rec._id} className="employee-row">
                                                 <td style={{ padding: "12px" }}>
                                                     <div>
@@ -546,6 +556,44 @@ export default function Attendance() {
                                     )}
                                 </tbody>
                             </table>
+                        </div>
+                        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginTop: "16px", gap: "12px", flexWrap: "wrap" }}>
+                            <div style={{ fontSize: "13px", color: "#475569" }}>
+                                Showing {paginatedRecords.length} of {filteredRecords.length} record{filteredRecords.length === 1 ? "" : "s"}
+                            </div>
+                            <div style={{ display: "flex", gap: "8px", alignItems: "center" }}>
+                                <button
+                                    onClick={() => setCurrentPage((page) => Math.max(1, page - 1))}
+                                    disabled={currentPage === 1}
+                                    style={{
+                                        padding: "8px 12px",
+                                        borderRadius: "8px",
+                                        border: "1px solid #cbd5e1",
+                                        backgroundColor: currentPage === 1 ? "#f8fafc" : "#ffffff",
+                                        color: currentPage === 1 ? "#94a3b8" : "#0f172a",
+                                        cursor: currentPage === 1 ? "not-allowed" : "pointer"
+                                    }}
+                                >
+                                    Previous
+                                </button>
+                                <span style={{ fontSize: "13px", color: "#475569" }}>
+                                    Page {currentPage} of {totalPages}
+                                </span>
+                                <button
+                                    onClick={() => setCurrentPage((page) => Math.min(totalPages, page + 1))}
+                                    disabled={currentPage === totalPages}
+                                    style={{
+                                        padding: "8px 12px",
+                                        borderRadius: "8px",
+                                        border: "1px solid #cbd5e1",
+                                        backgroundColor: currentPage === totalPages ? "#f8fafc" : "#ffffff",
+                                        color: currentPage === totalPages ? "#94a3b8" : "#0f172a",
+                                        cursor: currentPage === totalPages ? "not-allowed" : "pointer"
+                                    }}
+                                >
+                                    Next
+                                </button>
+                            </div>
                         </div>
                     </div>
 

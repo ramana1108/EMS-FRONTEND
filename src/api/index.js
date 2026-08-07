@@ -89,6 +89,32 @@ export async function getDepartmentEmployees(departmentId) {
   return res.json();
 }
 
+export async function createDepartment(payload) {
+  const res = await fetch(`${API_BASE_URL}/departments`, {
+    method: "POST",
+    headers: authHeaders(),
+    body: JSON.stringify(payload),
+  });
+  return res.json();
+}
+
+export async function updateDepartment(id, payload) {
+  const res = await fetch(`${API_BASE_URL}/departments/${id}`, {
+    method: "PUT",
+    headers: authHeaders(),
+    body: JSON.stringify(payload),
+  });
+  return res.json();
+}
+
+export async function deleteDepartment(id) {
+  const res = await fetch(`${API_BASE_URL}/departments/${id}`, {
+    method: "DELETE",
+    headers: authHeaders(),
+  });
+  return res.json();
+}
+
 export async function getNotices() {
   const res = await fetch(`${API_BASE_URL}/notices`, {
     headers: authHeaders(),
@@ -206,6 +232,9 @@ export default {
   getEmployeeById,
   createEmployee,
   getDepartmentEmployees,
+  createDepartment,
+  updateDepartment,
+  deleteDepartment,
   updateEmployee,
   deleteEmployee,
   getDepartments,
