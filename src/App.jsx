@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useEffect } from "react";
 import { BrowserRouter, Routes, Route, Navigate, useLocation } from "react-router-dom";
 
 import Login from "./auth/Login";
@@ -19,6 +19,7 @@ import EmployeeAttendance from "./employee/Attendance";
 import EmployeeLeavemanagement from "./employee/Leavemanagement";
 import EmployeePayrolls from "./employee/Payrolls";
 import EmployeeProfile from "./employee/Profile";
+import { getCurrentUser } from "./api/index";
 
 // Placeholder components for other admin sections
 const AdminPlaceholder = ({ title }) => (
@@ -42,11 +43,33 @@ function normalizeRole(role) {
   return typeof role === "string" ? role.toLowerCase() : "";
 }
 
+function userHasAdminPermissions(user) {
+  const permissions = getUserPermissions(user);
+  const adminOnlyPermissions = ["department", "designation", "employee", "role", "settings"];
+  return permissions.some((perm) => adminOnlyPermissions.includes(perm));
+}
+
 function defaultRouteForUser(user) {
   const role = normalizeRole(user?.role);
-  if (role === "admin") return "/admin/dashboard";
+  if (role === "admin" || userHasAdminPermissions(user)) return "/admin/dashboard";
   if (["employee"].includes(role)) return "/employee/dashboard";
   return "/";
+}
+
+function getUserPermissions(user) {
+  if (!user) return [];
+  const permissions = Array.isArray(user.permissions)
+    ? user.permissions
+    : typeof user.permissions === "string"
+      ? user.permissions.split(",").map((perm) => perm.trim()).filter(Boolean)
+      : [];
+  return Array.from(new Set(permissions.map((perm) => String(perm).toLowerCase())));
+}
+
+function hasAnyPermission(user, allowedPermissions = []) {
+  if (!user || !allowedPermissions.length) return false;
+  const userPermissions = getUserPermissions(user);
+  return allowedPermissions.some((perm) => userPermissions.includes(String(perm).toLowerCase()));
 }
 
 function isAllowedRole(user, allowedRoles = []) {
@@ -54,13 +77,13 @@ function isAllowedRole(user, allowedRoles = []) {
   return allowedRoles.map(normalizeRole).includes(role);
 }
 
-function RequireRole({ allowedRoles = [], children }) {
+function RequireAccess({ allowedRoles = [], allowedPermissions = [], children }) {
   const user = getStoredUser();
   if (!user) return <Navigate to="/" replace />;
-  if (!isAllowedRole(user, allowedRoles)) {
-    return <Navigate to={defaultRouteForUser(user)} replace />;
+  if (isAllowedRole(user, allowedRoles) || hasAnyPermission(user, allowedPermissions)) {
+    return children;
   }
-  return children;
+  return <Navigate to={defaultRouteForUser(user)} replace />;
 }
 
 function AppContent() {
@@ -78,6 +101,12 @@ function AppContent() {
       "/admin/payroll": "Payroll",
       "/admin/notices": "Notices",
       "/admin/settings": "Settings",
+      "/employee/dashboard": "Dashboard",
+      "/employee/leave": "Leave Management",
+      "/employee/attendance": "Attendance",
+      "/employee/payroll": "Payrolls",
+      "/employee/announcements": "Announcements",
+      "/employee/profile": "Profile",
     }),
     []
   );
@@ -88,6 +117,28 @@ function AppContent() {
       setActiveTab(tab);
     }
   }, [location.pathname, routeToTab]);
+
+  useEffect(() => {
+    const storedUser = getStoredUser();
+    if (!storedUser) return;
+
+    const refreshUser = async () => {
+      try {
+        const data = await getCurrentUser();
+        if (data?.success && data.user) {
+          const normalizedUser = {
+            ...data.user,
+            permissions: Array.isArray(data.user.permissions) ? data.user.permissions : []
+          };
+          localStorage.setItem("user", JSON.stringify(normalizedUser));
+        }
+      } catch (error) {
+        console.error("Unable to refresh current user:", error);
+      }
+    };
+
+    refreshUser();
+  }, []);
 
   return (
     <Routes>
@@ -100,11 +151,11 @@ function AppContent() {
       <Route
         path="/admin/dashboard"
         element={
-          <RequireRole allowedRoles={["admin"]}>
+          <RequireAccess allowedRoles={["admin"]} allowedPermissions={["dashboard"]}>
             <AdminLayout activeTab={activeTab} setActiveTab={setActiveTab}>
               <AdminDashboard />
             </AdminLayout>
-          </RequireRole>
+          </RequireAccess>
         }
       />
 
@@ -112,11 +163,11 @@ function AppContent() {
       <Route
         path="/admin/employee"
         element={
-          <RequireRole allowedRoles={["admin"]}>
+          <RequireAccess allowedRoles={["admin"]} allowedPermissions={["employee"]}>
             <AdminLayout activeTab={activeTab} setActiveTab={setActiveTab}>
               <AdminEmployee />
             </AdminLayout>
-          </RequireRole>
+          </RequireAccess>
         }
       />
 
@@ -124,11 +175,11 @@ function AppContent() {
       <Route
         path="/admin/departments"
         element={
-          <RequireRole allowedRoles={["admin"]}>
+          <RequireAccess allowedRoles={["admin"]} allowedPermissions={["department"]}>
             <AdminLayout activeTab={activeTab} setActiveTab={setActiveTab}>
               <Department />
             </AdminLayout>
-          </RequireRole>
+          </RequireAccess>
         }
       />
 
@@ -136,11 +187,11 @@ function AppContent() {
       <Route
         path="/admin/designations"
         element={
-          <RequireRole allowedRoles={["admin"]}>
+          <RequireAccess allowedRoles={["admin"]} allowedPermissions={["designation"]}>
             <AdminLayout activeTab={activeTab} setActiveTab={setActiveTab}>
               <Designations />
             </AdminLayout>
-          </RequireRole>
+          </RequireAccess>
         }
       />
 
@@ -148,11 +199,11 @@ function AppContent() {
       <Route
         path="/admin/roles"
         element={
-          <RequireRole allowedRoles={["admin"]}>
+          <RequireAccess allowedRoles={["admin"]} allowedPermissions={["role"]}>
             <AdminLayout activeTab={activeTab} setActiveTab={setActiveTab}>
               <Roles />
             </AdminLayout>
-          </RequireRole>
+          </RequireAccess>
         }
       />
 
@@ -160,11 +211,11 @@ function AppContent() {
       <Route
         path="/admin/attendance"
         element={
-          <RequireRole allowedRoles={["admin"]}>
+          <RequireAccess allowedRoles={["admin"]} allowedPermissions={["attendance"]}>
             <AdminLayout activeTab={activeTab} setActiveTab={setActiveTab}>
               <Attendance />
             </AdminLayout>
-          </RequireRole>
+          </RequireAccess>
         }
       />
 
@@ -172,11 +223,11 @@ function AppContent() {
       <Route
         path="/admin/payroll"
         element={
-          <RequireRole allowedRoles={["admin"]}>
+          <RequireAccess allowedRoles={["admin"]} allowedPermissions={["payroll"]}>
             <AdminLayout activeTab={activeTab} setActiveTab={setActiveTab}>
               <Payroll />
             </AdminLayout>
-          </RequireRole>
+          </RequireAccess>
         }
       />
 
@@ -184,11 +235,11 @@ function AppContent() {
       <Route
         path="/admin/notices"
         element={
-          <RequireRole allowedRoles={["admin"]}>
+          <RequireAccess allowedRoles={["admin"]} allowedPermissions={["notice"]}>
             <AdminLayout activeTab={activeTab} setActiveTab={setActiveTab}>
               <Notice />
             </AdminLayout>
-          </RequireRole>
+          </RequireAccess>
         }
       />
 
@@ -196,11 +247,11 @@ function AppContent() {
       <Route
         path="/admin/settings"
         element={
-          <RequireRole allowedRoles={["admin"]}>
+          <RequireAccess allowedRoles={["admin"]} allowedPermissions={["settings"]}>
             <AdminLayout activeTab={activeTab} setActiveTab={setActiveTab}>
               <Settings />
             </AdminLayout>
-          </RequireRole>
+          </RequireAccess>
         }
       />
 
@@ -211,9 +262,9 @@ function AppContent() {
       <Route
         path="/employee/dashboard"
         element={
-          <RequireRole allowedRoles={["employee"]}>
+          <RequireAccess allowedPermissions={["dashboard"]}>
             <EmployeeDashboard />
-          </RequireRole>
+          </RequireAccess>
         }
       />
 
@@ -221,9 +272,9 @@ function AppContent() {
       <Route
         path="/employee/announcements"
         element={
-          <RequireRole allowedRoles={["employee"]}>
+          <RequireAccess allowedPermissions={["notice"]}>
             <EmployeeAnnouncements />
-          </RequireRole>
+          </RequireAccess>
         }
       />
 
@@ -231,9 +282,9 @@ function AppContent() {
       <Route
         path="/employee/attendance"
         element={
-          <RequireRole allowedRoles={["employee"]}>
+          <RequireAccess allowedPermissions={["attendance"]}>
             <EmployeeAttendance />
-          </RequireRole>
+          </RequireAccess>
         }
       />
 
@@ -241,9 +292,9 @@ function AppContent() {
       <Route
         path="/employee/leave"
         element={
-          <RequireRole allowedRoles={["employee"]}>
+          <RequireAccess allowedPermissions={["leave"]}>
             <EmployeeLeavemanagement />
-          </RequireRole>
+          </RequireAccess>
         }
       />
 
@@ -251,9 +302,9 @@ function AppContent() {
       <Route
         path="/employee/payroll"
         element={
-          <RequireRole allowedRoles={["employee"]}>
+          <RequireAccess allowedPermissions={["payroll"]}>
             <EmployeePayrolls />
-          </RequireRole>
+          </RequireAccess>
         }
       />
 
@@ -261,9 +312,9 @@ function AppContent() {
       <Route
         path="/employee/profile"
         element={
-          <RequireRole allowedRoles={["employee"]}>
+          <RequireAccess allowedPermissions={["profile"]}>
             <EmployeeProfile />
-          </RequireRole>
+          </RequireAccess>
         }
       />
       <Route

@@ -28,6 +28,13 @@ export async function getCurrentEmployeeDashboard() {
   return res.json();
 }
 
+export async function getCurrentUser() {
+  const res = await fetch(`${API_BASE_URL}/auth/me`, {
+    headers: authHeaders(),
+  });
+  return res.json();
+}
+
 export async function getAllEmployees() {
   const res = await fetch(`${API_BASE_URL}/employees`, {
     headers: authHeaders(),
@@ -73,6 +80,53 @@ export async function getDepartments() {
     headers: authHeaders(),
   });
   return res.json();
+}
+
+async function parseJsonResponse(res) {
+  const text = await res.text();
+  try {
+    return text ? JSON.parse(text) : {};
+  } catch (error) {
+    return { message: text || "Invalid JSON response" };
+  }
+}
+
+export async function createDepartment(payload) {
+  const res = await fetch(`${API_BASE_URL}/departments`, {
+    method: "POST",
+    headers: authHeaders(),
+    body: JSON.stringify(payload),
+  });
+  const data = await parseJsonResponse(res);
+  if (!res.ok) {
+    throw new Error(data.message || "Failed to create department");
+  }
+  return data;
+}
+
+export async function updateDepartment(id, payload) {
+  const res = await fetch(`${API_BASE_URL}/departments/${id}`, {
+    method: "PUT",
+    headers: authHeaders(),
+    body: JSON.stringify(payload),
+  });
+  const data = await parseJsonResponse(res);
+  if (!res.ok) {
+    throw new Error(data.message || "Failed to update department");
+  }
+  return data;
+}
+
+export async function deleteDepartment(id) {
+  const res = await fetch(`${API_BASE_URL}/departments/${id}`, {
+    method: "DELETE",
+    headers: authHeaders(),
+  });
+  const data = await parseJsonResponse(res);
+  if (!res.ok) {
+    throw new Error(data.message || "Failed to delete department");
+  }
+  return data;
 }
 
 export async function getDesignations() {
@@ -198,6 +252,23 @@ export async function registerUser(payload) {
   return res.json();
 }
 
+export async function getAllUsers(query = "") {
+  const url = `${API_BASE_URL}/auth${query ? `?q=${encodeURIComponent(query)}` : ""}`;
+  const res = await fetch(url, {
+    headers: authHeaders(),
+  });
+  return res.json();
+}
+
+export async function updateUser(id, payload) {
+  const res = await fetch(`${API_BASE_URL}/auth/${id}`, {
+    method: "PUT",
+    headers: authHeaders(),
+    body: JSON.stringify(payload),
+  });
+  return res.json();
+}
+
 export default {
   getAdminDashboard,
   getEmployeeDashboard,
@@ -209,6 +280,9 @@ export default {
   updateEmployee,
   deleteEmployee,
   getDepartments,
+  createDepartment,
+  updateDepartment,
+  deleteDepartment,
   getDesignations,
   getNotices,
   getPayrolls,

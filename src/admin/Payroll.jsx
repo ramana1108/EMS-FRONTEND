@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import "../App.css";
+// styles are loaded globally via src/index.css (Tailwind + custom styles)
 import {
     Wallet,
     Plus,
@@ -340,16 +340,16 @@ export default function Payroll() {
             {/* Header */}
             <div className="page-header">
                 <div>
-                    <h1 className="dashboard-title">Payroll Center</h1>
-                    <p className="dashboard-subtitle">Disburse salaries, calculate taxes, deductions, and log payment records.</p>
+                    <h1 className="text-2xl font-bold">Payroll Center</h1>
+                    <p className="text-sm text-slate-600">Disburse salaries, calculate taxes, deductions, and log payment records.</p>
                 </div>
             </div>
 
             {/* Stats Widget */}
-            <div className="stats-grid" style={{ marginBottom: "24px" }}>
+            <div className="stats-grid mb-6">
                 <div className="stat-card">
                     <div className="stat-header">
-                        <div className="stat-icon-box active-staff-icon" style={{ backgroundColor: "#065f46" }}>
+                        <div className="stat-icon-box bg-emerald-800">
                             <ArrowUpRight size={20} color="#ffffff" />
                         </div>
                         <div>
@@ -362,7 +362,7 @@ export default function Payroll() {
 
                 <div className="stat-card">
                     <div className="stat-header">
-                        <div className="stat-icon-box depts-icon" style={{ backgroundColor: "#d97706" }}>
+                        <div className="stat-icon-box bg-amber-600">
                             <Clock size={20} color="#ffffff" />
                         </div>
                         <div>
@@ -375,7 +375,7 @@ export default function Payroll() {
 
                 <div className="stat-card">
                     <div className="stat-header">
-                        <div className="stat-icon-box total-employees-icon" style={{ backgroundColor: "#0d9488" }}>
+                        <div className="stat-icon-box bg-emerald-700">
                             <Percent size={20} color="#ffffff" />
                         </div>
                         <div>
@@ -388,143 +388,92 @@ export default function Payroll() {
             </div>
 
             {error && (
-                <div style={{ display: "flex", alignItems: "center", gap: "8px", color: "#b91c1c", backgroundColor: "#fef2f2", padding: "12px", borderRadius: "8px", marginBottom: "20px", fontSize: "14px" }}>
+                <div className="flex items-center gap-2 text-rose-700 bg-rose-50 p-3 rounded-md mb-5">
                     <AlertCircle size={16} />
                     <span>{error}</span>
                 </div>
             )}
 
             {success && (
-                <div style={{ color: "#065f46", backgroundColor: "#ecfdf5", padding: "12px", borderRadius: "8px", marginBottom: "20px", fontSize: "14px" }}>
-                    {success}
-                </div>
+                <div className="text-emerald-800 bg-emerald-50 p-3 rounded-md mb-5">{success}</div>
             )}
 
             {/* Main Grid split */}
-            <div className="emp-middle-grid" style={{ display: "grid", gridTemplateColumns: "2.3fr 1fr", gap: "24px", alignItems: "start" }}>
+            <div className="grid lg:grid-cols-[2.3fr_1fr] gap-6 items-start">
 
                 {/* Payroll List */}
-                <div className="employee-directory-card" style={{ padding: "24px" }}>
-                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "16px", flexWrap: "wrap", gap: "10px" }}>
-                        <h2 className="emp-card-title" style={{ margin: 0 }}>Payroll Logs</h2>
+                <div className="bg-white rounded-xl p-6 shadow-sm">
+                    <div className="flex justify-between items-center mb-4 flex-wrap gap-2">
+                        <h2 className="text-lg font-semibold">Payroll Logs</h2>
 
                         {/* Local Filter controls */}
-                        <div style={{ display: "flex", gap: "8px" }}>
-                            <select
-                                value={searchYear}
-                                onChange={(e) => setSearchYear(e.target.value)}
-                                style={{ padding: "6px 12px", borderRadius: "6px", border: "1px solid #cbd5e1", fontSize: "13px", backgroundColor: "#ffffff" }}
-                            >
+                        <div className="flex gap-2">
+                            <select value={searchYear} onChange={(e) => setSearchYear(e.target.value)} className="px-3 py-2 rounded-md border border-slate-300 text-sm bg-white">
                                 <option value="All Years">All Years</option>
                                 <option value="2025">2025</option>
                                 <option value="2026">2026</option>
                                 <option value="2027">2027</option>
                             </select>
-                            <select
-                                value={searchMonth}
-                                onChange={(e) => setSearchMonth(e.target.value)}
-                                style={{ padding: "6px 12px", borderRadius: "6px", border: "1px solid #cbd5e1", fontSize: "13px", backgroundColor: "#ffffff" }}
-                            >
+                            <select value={searchMonth} onChange={(e) => setSearchMonth(e.target.value)} className="px-3 py-2 rounded-md border border-slate-300 text-sm bg-white">
                                 <option value="All Months">All Months</option>
-                                {["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"].map(m => (
+                                {[["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]][0].map(m => (
                                     <option key={m} value={m}>{m}</option>
                                 ))}
                             </select>
                         </div>
                     </div>
 
-                    <div className="table-responsive">
-                        <table className="employee-table">
+                    <div className="overflow-auto rounded-md border border-slate-100">
+                        <table className="min-w-full divide-y">
                             <thead>
                                 <tr>
-                                    <th style={{ padding: "12px" }}>EMPLOYEE</th>
-                                    <th style={{ padding: "12px" }}>PERIOD</th>
-                                    <th style={{ padding: "12px", textAlign: "right" }}>BASIC ($)</th>
-                                    <th style={{ padding: "12px", textAlign: "right" }}>REDUCTION ($)</th>
-                                    <th style={{ padding: "12px", textAlign: "right" }}>TAX ($)</th>
-                                    <th style={{ padding: "12px", textAlign: "right" }}>NET PAID ($)</th>
-                                    <th style={{ padding: "12px", textAlign: "center" }}>STATUS</th>
-                                    <th style={{ padding: "12px", textAlign: "right" }}>ACTIONS</th>
+                                    <th className="px-4 py-3">EMPLOYEE</th>
+                                    <th className="px-4 py-3">PERIOD</th>
+                                    <th className="px-4 py-3 text-right">BASIC ($)</th>
+                                    <th className="px-4 py-3 text-right">REDUCTION ($)</th>
+                                    <th className="px-4 py-3 text-right">TAX ($)</th>
+                                    <th className="px-4 py-3 text-right">NET PAID ($)</th>
+                                    <th className="px-4 py-3 text-center">STATUS</th>
+                                    <th className="px-4 py-3 text-right">ACTIONS</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 {loading ? (
                                     <tr>
-                                        <td colSpan="8" style={{ textAlign: "center", padding: "30px 0" }}>Loading payroll data...</td>
+                                        <td colSpan="8" className="text-center py-8">Loading payroll data...</td>
                                     </tr>
                                 ) : filteredPayrolls.length === 0 ? (
                                     <tr>
-                                        <td colSpan="8" style={{ textAlign: "center", padding: "30px 0" }}>No payroll records found matching filters.</td>
+                                        <td colSpan="8" className="text-center py-8">No payroll records found matching filters.</td>
                                     </tr>
                                 ) : (
                                     filteredPayrolls.map((payroll) => (
-                                        <tr key={payroll._id} className="employee-row">
-                                            <td style={{ padding: "12px" }}>
+                                        <tr key={payroll._id} className="border-b last:border-b-0">
+                                            <td className="px-4 py-3">
                                                 <div>
-                                                    <p style={{ fontWeight: "700", color: "#1e293b", fontSize: "14px" }}>
-                                                        {payroll.employeeId?.firstName} {payroll.employeeId?.lastName}
-                                                    </p>
-                                                    <p style={{ fontSize: "11px", color: "#64748b" }}>{payroll.employeeId?.employeeId}</p>
+                                                    <p className="font-semibold text-slate-900 text-sm">{payroll.employeeId?.firstName} {payroll.employeeId?.lastName}</p>
+                                                    <p className="text-xs text-slate-500">{payroll.employeeId?.employeeId}</p>
                                                 </div>
                                             </td>
-                                            <td style={{ padding: "12px" }}>
-                                                <span style={{ fontSize: "13px", fontWeight: "600", color: "#475569" }}>
-                                                    {payroll.month} {payroll.year}
-                                                </span>
+                                            <td className="px-4 py-3">
+                                                <span className="text-sm font-medium text-slate-600">{payroll.month} {payroll.year}</span>
                                             </td>
-                                            <td style={{ padding: "12px", textAlign: "right", fontWeight: "600" }}>
-                                                {(payroll.basicSalary || 0).toLocaleString()}
-                                            </td>
-                                            <td style={{ padding: "12px", textAlign: "right", color: "#b91c1c" }}>
-                                                -{(payroll.deductions || 0).toLocaleString()}
-                                            </td>
-                                            <td style={{ padding: "12px", textAlign: "right", color: "#b91c1c" }}>
-                                                -{(payroll.tax || 0).toLocaleString()}
-                                            </td>
-                                            <td style={{ padding: "12px", textAlign: "right", fontWeight: "700", color: "#065f46" }}>
-                                                {(payroll.netSalary || 0).toLocaleString("en-US", { minimumFractionDigits: 2 })}
-                                            </td>
-                                            <td style={{ padding: "12px", textAlign: "center" }}>
-                                                <span style={{
-                                                    padding: "2px 8px",
-                                                    fontSize: "11px",
-                                                    fontWeight: "750",
-                                                    borderRadius: "12px",
-                                                    display: "inline-block",
-                                                    backgroundColor: payroll.paymentStatus === "Paid" ? "#ecfdf5" : "#fef2f2",
-                                                    color: payroll.paymentStatus === "Paid" ? "#065f46" : "#b91c1c"
-                                                }}>
+                                            <td className="px-4 py-3 text-right font-semibold">{(payroll.basicSalary || 0).toLocaleString()}</td>
+                                            <td className="px-4 py-3 text-right text-rose-600">-{(payroll.deductions || 0).toLocaleString()}</td>
+                                            <td className="px-4 py-3 text-right text-rose-600">-{(payroll.tax || 0).toLocaleString()}</td>
+                                            <td className="px-4 py-3 text-right font-bold text-emerald-700">{(payroll.netSalary || 0).toLocaleString("en-US", { minimumFractionDigits: 2 })}</td>
+                                            <td className="px-4 py-3 text-center">
+                                                <span className={`inline-block px-2 py-1 text-xs font-semibold rounded-full ${payroll.paymentStatus === 'Paid' ? 'bg-emerald-50 text-emerald-700' : 'bg-rose-50 text-rose-600'}`}>
                                                     {payroll.paymentStatus === "Paid" ? "✓ Paid" : "⚠ Pending"}
                                                 </span>
                                             </td>
-                                            <td style={{ padding: "12px", textAlign: "right" }}>
-                                                <div style={{ display: "flex", gap: "8px", justifyContent: "flex-end" }}>
-                                                    <button
-                                                        onClick={() => handleDownloadPayslip(payroll)}
-                                                        style={{
-                                                            border: "none",
-                                                            backgroundColor: "#e2e8f0",
-                                                            color: "#475569",
-                                                            padding: "4px 8px",
-                                                            borderRadius: "6px",
-                                                            cursor: "pointer",
-                                                            display: "flex",
-                                                            alignItems: "center",
-                                                            gap: "4px",
-                                                            fontSize: "12px",
-                                                            fontWeight: "600"
-                                                        }}
-                                                        title="Print Pay Slip / Save as PDF"
-                                                    >
+                                            <td className="px-4 py-3 text-right">
+                                                <div className="flex gap-2 justify-end">
+                                                    <button onClick={() => handleDownloadPayslip(payroll)} className="px-2 py-1 rounded-md bg-slate-100 text-slate-700 text-sm font-semibold flex items-center gap-2" title="Print Pay Slip / Save as PDF">
                                                         <Download size={14} />
                                                         <span>Slip</span>
                                                     </button>
-                                                    <button
-                                                        onClick={() => handleDeletePayroll(payroll._id)}
-                                                        className="action-icon-btn delete"
-                                                        style={{ border: "none", background: "none", cursor: "pointer", color: "#b91c1c" }}
-                                                        title="Delete Record"
-                                                    >
+                                                    <button onClick={() => handleDeletePayroll(payroll._id)} className="text-rose-600 hover:text-rose-800">
                                                         <Trash2 size={16} />
                                                     </button>
                                                 </div>
@@ -538,142 +487,82 @@ export default function Payroll() {
                 </div>
 
                 {/* Process Salary Form */}
-                <div className="emp-card-box" style={{ padding: "24px" }}>
-                    <h2 className="emp-card-title" style={{ marginBottom: "16px" }}>Process Salary</h2>
+                <div className="bg-white rounded-xl p-6 shadow-sm">
+                    <h2 className="text-lg font-semibold mb-4">Process Salary</h2>
                     <form onSubmit={handleAddPayroll}>
 
-                        <div style={{ marginBottom: "12px" }}>
-                            <label style={{ display: "block", fontSize: "11px", fontWeight: "700", textTransform: "uppercase", color: "#475569", marginBottom: "4px" }}>Employee*</label>
-                            <select
-                                value={selectedEmpId}
-                                onChange={(e) => setSelectedEmpId(e.target.value)}
-                                style={{ width: "100%", padding: "8px 12px", borderRadius: "6px", border: "1px solid #cbd5e1", backgroundColor: "#ffffff" }}
-                            >
+                        <div className="mb-3">
+                            <label className="block text-xs font-semibold uppercase text-slate-600 mb-2">Employee*</label>
+                            <select value={selectedEmpId} onChange={(e) => setSelectedEmpId(e.target.value)} className="w-full px-3 py-2 rounded-md border border-slate-300">
                                 <option value="">Select Employee...</option>
-                                {employees.map(emp => (
-                                    <option key={emp._id} value={emp._id}>
-                                        {emp.firstName} {emp.lastName} ({emp.employeeId})
-                                    </option>
-                                ))}
+                                {employees.map(emp => (<option key={emp._id} value={emp._id}>{emp.firstName} {emp.lastName} ({emp.employeeId})</option>))}
                             </select>
                         </div>
 
-                        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "10px", marginBottom: "12px" }}>
+                        <div className="grid grid-cols-2 gap-2 mb-3">
                             <div>
-                                <label style={{ display: "block", fontSize: "11px", fontWeight: "700", textTransform: "uppercase", color: "#475569", marginBottom: "4px" }}>Month*</label>
-                                <select
-                                    value={month}
-                                    onChange={(e) => setMonth(e.target.value)}
-                                    style={{ width: "100%", padding: "8px 12px", borderRadius: "6px", border: "1px solid #cbd5e1", backgroundColor: "#ffffff" }}
-                                >
+                                <label className="block text-xs font-semibold uppercase text-slate-600 mb-2">Month*</label>
+                                <select value={month} onChange={(e) => setMonth(e.target.value)} className="w-full px-3 py-2 rounded-md border border-slate-300">
                                     <option value="">Month</option>
-                                    {["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"].map(m => (
-                                        <option key={m} value={m}>{m}</option>
-                                    ))}
+                                    {["January","February","March","April","May","June","July","August","September","October","November","December"].map(m=> (<option key={m} value={m}>{m}</option>))}
                                 </select>
                             </div>
                             <div>
-                                <label style={{ display: "block", fontSize: "11px", fontWeight: "700", textTransform: "uppercase", color: "#475569", marginBottom: "4px" }}>Year*</label>
-                                <input
-                                    type="number"
-                                    value={year}
-                                    onChange={(e) => setYear(e.target.value)}
-                                    style={{ width: "100%", padding: "8px 12px", borderRadius: "6px", border: "1px solid #cbd5e1" }}
-                                    placeholder="e.g. 2026"
-                                />
+                                <label className="block text-xs font-semibold uppercase text-slate-600 mb-2">Year*</label>
+                                <input type="number" value={year} onChange={(e)=>setYear(e.target.value)} placeholder="e.g. 2026" className="w-full px-3 py-2 rounded-md border border-slate-300" />
                             </div>
                         </div>
 
-                        <div style={{ marginBottom: "12px" }}>
-                            <label style={{ display: "block", fontSize: "11px", fontWeight: "700", textTransform: "uppercase", color: "#475569", marginBottom: "4px" }}>Basic Salary* ($)</label>
-                            <input
-                                type="number"
-                                value={basicSalary}
-                                onChange={(e) => setBasicSalary(e.target.value)}
-                                style={{ width: "100%", padding: "8px 12px", borderRadius: "6px", border: "1px solid #cbd5e1" }}
-                                placeholder="e.g. 5000"
-                            />
+                        <div className="mb-3">
+                            <label className="block text-xs font-semibold uppercase text-slate-600 mb-2">Basic Salary* ($)</label>
+                            <input type="number" value={basicSalary} onChange={(e)=>setBasicSalary(e.target.value)} placeholder="e.g. 5000" className="w-full px-3 py-2 rounded-md border border-slate-300" />
                         </div>
 
-                        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "10px", marginBottom: "12px" }}>
+                        <div className="grid grid-cols-2 gap-2 mb-3">
                             <div>
-                                <label style={{ display: "block", fontSize: "11px", fontWeight: "700", textTransform: "uppercase", color: "#475569", marginBottom: "4px" }}>Allowance ($)</label>
-                                <input
-                                    type="number"
-                                    value={allowance}
-                                    onChange={(e) => setAllowance(e.target.value)}
-                                    style={{ width: "100%", padding: "8px 12px", borderRadius: "6px", border: "1px solid #cbd5e1" }}
-                                />
+                                <label className="block text-xs font-semibold uppercase text-slate-600 mb-2">Allowance ($)</label>
+                                <input type="number" value={allowance} onChange={(e)=>setAllowance(e.target.value)} className="w-full px-3 py-2 rounded-md border border-slate-300" />
                             </div>
                             <div>
-                                <label style={{ display: "block", fontSize: "11px", fontWeight: "700", textTransform: "uppercase", color: "#475569", marginBottom: "4px" }}>Bonus ($)</label>
-                                <input
-                                    type="number"
-                                    value={bonus}
-                                    onChange={(e) => setBonus(e.target.value)}
-                                    style={{ width: "100%", padding: "8px 12px", borderRadius: "6px", border: "1px solid #cbd5e1" }}
-                                />
+                                <label className="block text-xs font-semibold uppercase text-slate-600 mb-2">Bonus ($)</label>
+                                <input type="number" value={bonus} onChange={(e)=>setBonus(e.target.value)} className="w-full px-3 py-2 rounded-md border border-slate-300" />
                             </div>
                         </div>
 
-                        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "10px", marginBottom: "12px" }}>
+                        <div className="grid grid-cols-2 gap-2 mb-3">
                             <div>
-                                <label style={{ display: "block", fontSize: "11px", fontWeight: "700", textTransform: "uppercase", color: "#475569", marginBottom: "4px" }}>Reductions ($)</label>
-                                <input
-                                    type="number"
-                                    value={deductions}
-                                    onChange={(e) => setDeductions(e.target.value)}
-                                    style={{ width: "100%", padding: "8px 12px", borderRadius: "6px", border: "1px solid #cbd5e1" }}
-                                    placeholder="Deduction/Reduction"
-                                />
+                                <label className="block text-xs font-semibold uppercase text-slate-600 mb-2">Reductions ($)</label>
+                                <input type="number" value={deductions} onChange={(e)=>setDeductions(e.target.value)} placeholder="Deduction/Reduction" className="w-full px-3 py-2 rounded-md border border-slate-300" />
                             </div>
                             <div>
-                                <label style={{ display: "block", fontSize: "11px", fontWeight: "700", textTransform: "uppercase", color: "#475569", marginBottom: "4px" }}>Income Tax ($)</label>
-                                <input
-                                    type="number"
-                                    value={tax}
-                                    onChange={(e) => setTax(e.target.value)}
-                                    style={{ width: "100%", padding: "8px 12px", borderRadius: "6px", border: "1px solid #cbd5e1" }}
-                                    placeholder="Tax"
-                                />
+                                <label className="block text-xs font-semibold uppercase text-slate-600 mb-2">Income Tax ($)</label>
+                                <input type="number" value={tax} onChange={(e)=>setTax(e.target.value)} placeholder="Tax" className="w-full px-3 py-2 rounded-md border border-slate-300" />
                             </div>
                         </div>
 
                         {/* Calculated Net Salary Indicator */}
                         {basicSalary && (
-                            <div style={{ padding: "10px", backgroundColor: "#f0fdf4", border: "1px solid #34d399", borderRadius: "6px", marginBottom: "12px", fontSize: "13px", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                                <span style={{ fontWeight: "700", color: "#065f46" }}>Estimated Net:</span>
-                                <span style={{ fontWeight: "800", color: "#065f46" }}>${getCalculatedNet().toLocaleString("en-US", { minimumFractionDigits: 2 })}</span>
+                            <div className="p-3 bg-emerald-50 border border-emerald-200 rounded-md mb-3 flex justify-between items-center text-sm">
+                                <span className="font-semibold text-emerald-700">Estimated Net:</span>
+                                <span className="font-bold text-emerald-700">${getCalculatedNet().toLocaleString("en-US", { minimumFractionDigits: 2 })}</span>
                             </div>
                         )}
 
-                        <div style={{ display: "grid", gridTemplateColumns: "1fr 1.2fr", gap: "10px", marginBottom: "20px" }}>
+                        <div className="grid grid-cols-[1fr_1.2fr] gap-2 mb-5">
                             <div>
-                                <label style={{ display: "block", fontSize: "11px", fontWeight: "700", textTransform: "uppercase", color: "#475569", marginBottom: "4px" }}>Payment Status*</label>
-                                <select
-                                    value={paymentStatus}
-                                    onChange={(e) => setPaymentStatus(e.target.value)}
-                                    style={{ width: "100%", padding: "8px 12px", borderRadius: "6px", border: "1px solid #cbd5e1", backgroundColor: "#ffffff" }}
-                                >
+                                <label className="block text-xs font-semibold uppercase text-slate-600 mb-2">Payment Status*</label>
+                                <select value={paymentStatus} onChange={(e)=>setPaymentStatus(e.target.value)} className="w-full px-3 py-2 rounded-md border border-slate-300">
                                     <option value="Pending">Pending</option>
                                     <option value="Paid">Paid</option>
                                 </select>
                             </div>
                             <div>
-                                <label style={{ display: "block", fontSize: "11px", fontWeight: "700", textTransform: "uppercase", color: "#475569", marginBottom: "4px" }}>Payment Date</label>
-                                <input
-                                    type="date"
-                                    value={paymentDate}
-                                    onChange={(e) => setPaymentDate(e.target.value)}
-                                    style={{ width: "100%", padding: "8px 12px", borderRadius: "6px", border: "1px solid #cbd5e1" }}
-                                />
+                                <label className="block text-xs font-semibold uppercase text-slate-600 mb-2">Payment Date</label>
+                                <input type="date" value={paymentDate} onChange={(e)=>setPaymentDate(e.target.value)} className="w-full px-3 py-2 rounded-md border border-slate-300" />
                             </div>
                         </div>
 
-                        <button
-                            type="submit"
-                            style={{ width: "100%", padding: "10px", backgroundColor: "#065f46", color: "#ffffff", border: "none", borderRadius: "6px", fontWeight: "600", fontSize: "14px", cursor: "pointer", display: "flex", alignItems: "center", justifyBox: "center", justifyContent: "center", gap: "8px" }}
-                        >
+                        <button type="submit" className="w-full py-2 rounded-md bg-emerald-800 text-white font-semibold flex items-center justify-center gap-2">
                             <Plus size={16} />
                             <span>Process Salary Disbursal</span>
                         </button>
@@ -681,6 +570,6 @@ export default function Payroll() {
                 </div>
 
             </div>
-        </div >
+        </div>
     );
 }

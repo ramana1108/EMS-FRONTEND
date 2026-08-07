@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import "../App.css";
+// styles are loaded globally via src/index.css (Tailwind + custom styles)
 import Sidebar from "../components/Sidebar";
 import { useLocation } from "react-router-dom";
 import {

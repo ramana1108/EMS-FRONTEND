@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo } from "react";
-import "../App.css";
+// styles are loaded globally via src/index.css (Tailwind + custom styles)
 
 import api from "../api";
 import {
@@ -486,50 +486,29 @@ export default function Employee() {
                     />
                 </div>
 
-                <div className="header-right" style={{ position: "relative" }}>
+                                <div className="header-right relative">
                     <button className="icon-btn" onClick={() => navigate("/admin/notices") }>
                         <Bell size={18} />
                     </button>
                     <div
                         className="admin-profile-badge"
                         onClick={() => setShowProfileInfo((prev) => !prev)}
-                        style={{ cursor: "pointer" }}
                     >
                         <div className="admin-avatar-small">{getInitials(currentUser.name)}</div>
                         <span>{currentUser.role.toUpperCase()}</span>
                     </div>
                     {showProfileInfo && (
-                      <div style={{
-                        position: "absolute",
-                        right: 0,
-                        top: "100%",
-                        marginTop: "10px",
-                        width: "220px",
-                        background: "#ffffff",
-                        border: "1px solid #e2e8f0",
-                        borderRadius: "14px",
-                        boxShadow: "0 12px 30px rgba(15, 23, 42, 0.12)",
-                        padding: "14px",
-                        zIndex: 30
-                      }}>
-                        <div style={{ display: "flex", alignItems: "center", gap: "10px", marginBottom: "10px" }}>
-                          <div style={{ width: "36px", height: "36px", borderRadius: "50%", backgroundColor: "#0f766e", color: "#fff", display: "flex", alignItems: "center", justifyContent: "center", fontWeight: 700 }}>{getInitials(currentUser.name)}</div>
-                          <div>
-                            <div style={{ fontWeight: 700 }}>{currentUser.name}</div>
-                            <div style={{ fontSize: "12px", color: "#475569" }}>{currentUser.role.toUpperCase()}</div>
-                          </div>
-                        </div>
-                        <div style={{ fontSize: "13px", color: "#334155", marginBottom: "10px" }}><strong>Email:</strong> {currentUser.email || "-"}</div>
-                        <button
-                          style={{ width: "100%", border: "none", borderRadius: "10px", padding: "10px", background: "#0f766e", color: "#ffffff", cursor: "pointer" }}
-                          onClick={() => {
-                            navigate("/admin/settings");
-                            setShowProfileInfo(false);
-                          }}
-                        >
-                          View Profile Settings
-                        </button>
-                      </div>
+                                            <div className="absolute right-0 top-full mt-2 w-56 bg-white border border-slate-200 rounded-lg shadow-lg p-3 z-30">
+                                                <div className="flex items-center gap-3 mb-2">
+                                                    <div className="w-9 h-9 rounded-full bg-emerald-700 text-white flex items-center justify-center font-bold">{getInitials(currentUser.name)}</div>
+                                                    <div>
+                                                        <div className="font-bold">{currentUser.name}</div>
+                                                        <div className="text-xs text-slate-500">{currentUser.role.toUpperCase()}</div>
+                                                    </div>
+                                                </div>
+                                                <div className="text-sm text-slate-700 mb-3"><strong>Email:</strong> {currentUser.email || "-"}</div>
+                                                <button className="w-full rounded-md py-2 bg-emerald-700 text-white" onClick={() => { navigate("/admin/settings"); setShowProfileInfo(false); }}>View Profile Settings</button>
+                                            </div>
                     )}
                 </div>
             </div>
@@ -540,11 +519,7 @@ export default function Employee() {
                     <h1 className="dashboard-title">Employee Directory</h1>
                     <p className="dashboard-subtitle">Manage workforce records, roles, statuses and enroll new employees.</p>
                 </div>
-                <button
-                    className="btn-enroll-employee"
-                    onClick={handleOpenEnrollModal}
-                    style={{ backgroundColor: "#059669", color: "#ffffff", display: "flex", alignItems: "center", gap: "8px", cursor: "pointer", borderRadius: "9999px", padding: "8px 16px", fontSize: "14px", fontWeight: "500" }}
-                >
+                <button className="btn-enroll-employee bg-emerald-700 text-white flex items-center gap-2 rounded-full px-4 py-2 text-sm font-medium" onClick={handleOpenEnrollModal}>
                     <Plus size={16} />
                     <span>Enroll Employee</span>
                 </button>
@@ -649,21 +624,17 @@ export default function Employee() {
                                 <th>DEPARTMENT</th>
                                 <th>ROLE / EMPLOYMENT TYPE</th>
                                 <th>STATUS</th>
-                                <th style={{ textAlign: "right", paddingRight: "24px" }}>ACTIONS</th>
+                                <th className="text-right pr-6">ACTIONS</th>
                             </tr>
                         </thead>
                         <tbody>
                             {loading ? (
                                 <tr>
-                                    <td colSpan="5" style={{ textAlign: "center", padding: "40px 0" }}>
-                                        Loading employee records...
-                                    </td>
+                                    <td colSpan="5" className="text-center py-10">Loading employee records...</td>
                                 </tr>
                             ) : filteredEmployees.length === 0 ? (
                                 <tr>
-                                    <td colSpan="5" style={{ textAlign: "center", padding: "40px 0" }}>
-                                        No coworkers match filter criteria.
-                                    </td>
+                                    <td colSpan="5" className="text-center py-10">No coworkers match filter criteria.</td>
                                 </tr>
                             ) : (
                                 filteredEmployees.map((emp, index) => (
@@ -704,7 +675,7 @@ export default function Employee() {
                                             </span>
                                         </td>
 
-                                        <td style={{ textAlign: "right", paddingRight: "24px" }}>
+                                        <td className="text-right pr-6">
                                             <div className="employee-action-buttons">
                                                 <button className="action-icon-btn" title="View details" onClick={() => handleViewClick(emp)}>
                                                     <Eye size={16} />
@@ -932,7 +903,7 @@ export default function Employee() {
                                         )}
                                     </select>
                                     {formErrors.departmentId && <div className="field-error">{formErrors.departmentId}</div>}
-                                    <label style={{ marginTop: 8 }}>Designation</label>
+                                    <label className="mt-2">Designation</label>
                                     <select
                                         name="designationId"
                                         value={formData.designationId}

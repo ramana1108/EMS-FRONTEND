@@ -1,5 +1,5 @@
 ﻿import React, { useState, useEffect } from "react";
-import "../App.css";
+// styles are loaded globally via src/index.css (Tailwind + custom styles)
 import { useNavigate } from "react-router-dom";
 import Sidebar from "../components/Sidebar";
 import {
@@ -85,16 +85,11 @@ export default function EmployeeDashboard() {
               className="icon-btn"
               title="View Notices"
               onClick={() => navigate("/employee/announcements")}
-              style={{ marginRight: "14px" }}
             >
               <Megaphone size={18} />
             </button>
 
-            <div
-              className="emp-user-profile-badge"
-              onClick={() => navigate("/employee/profile")}
-              style={{ cursor: "pointer" }}
-            >
+            <div className="emp-user-profile-badge cursor-pointer" onClick={() => navigate("/employee/profile") }>
               <div className="emp-avatar-circle">
                 {employeeProfile.firstName || employeeProfile.lastName
                   ? `${employeeProfile.firstName?.[0] || ""}${employeeProfile.lastName?.[0] || ""}`.toUpperCase()
@@ -204,7 +199,7 @@ export default function EmployeeDashboard() {
                     ))
                   ) : (
                     <tr>
-                      <td colSpan={3} style={{ textAlign: "center", padding: "20px 0" }}>
+                      <td colSpan={3} className="text-center py-5">
                         No attendance history available.
                       </td>
                     </tr>
@@ -235,9 +230,7 @@ export default function EmployeeDashboard() {
                     </div>
                   ))
                 ) : (
-                  <p style={{ color: "#64748b", padding: "16px 0" }}>
-                    No announcements available.
-                  </p>
+                  <p className="text-slate-500 py-4">No announcements available.</p>
                 )}
               </div>
             </div>
@@ -272,12 +265,8 @@ export default function EmployeeDashboard() {
 
           <div className="emp-chart-box">
             <div className="emp-chart-header">
-              <h2 className="emp-card-title" style={{ margin: 0 }}>
-                Monthly Attendance Overview
-              </h2>
-              <span style={{ fontSize: "13px", fontWeight: "bold", color: "#64748b" }}>
-                {new Date().toLocaleDateString("en-US", { month: "long", year: "numeric" })}
-              </span>
+              <h2 className="emp-card-title m-0">Monthly Attendance Overview</h2>
+              <span className="text-sm font-bold text-slate-500">{new Date().toLocaleDateString("en-US", { month: "long", year: "numeric" })}</span>
             </div>
 
             <div className="emp-chart-metrics">

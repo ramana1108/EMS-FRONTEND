@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import "../App.css";
+// styles are loaded globally via src/index.css (Tailwind + custom styles)
 import {
     Calendar,
     Clock,
@@ -41,6 +41,9 @@ export default function Attendance() {
     // Search/Filters
     const [filterEmpId, setFilterEmpId] = useState("");
     const [filterDate, setFilterDate] = useState("");
+    // Pagination
+    const [currentPage, setCurrentPage] = useState(1);
+    const [pageSize, setPageSize] = useState(10);
 
     const API_BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
 
@@ -316,6 +319,14 @@ export default function Attendance() {
         return matchesEmp && matchesDate;
     });
 
+    // Reset page when filters change
+    useEffect(() => {
+        setCurrentPage(1);
+    }, [filterEmpId, filterDate, records]);
+
+    const totalPages = Math.max(1, Math.ceil(filteredRecords.length / pageSize));
+    const pagedRecords = filteredRecords.slice((currentPage - 1) * pageSize, currentPage * pageSize);
+
     // Calculate statistics
     const totalLeaves = records.filter(r => r.status === "Leave").length;
     const presentCount = records.filter(r => r.status === "Present").length;
@@ -325,45 +336,23 @@ export default function Attendance() {
     return (
         <div className="p-6">
             {/* Page Header */}
-            <div className="page-header" style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "24px" }}>
+            <div className="flex items-center justify-between mb-6">
                 <div>
-                    <h1 className="dashboard-title">Attendance & Leaves</h1>
-                    <p className="dashboard-subtitle">Track clock-in times, worked hours, and log employee leave requests.</p>
+                    <h1 className="text-2xl font-bold text-slate-900">Attendance & Leaves</h1>
+                    <p className="text-sm text-slate-600">Track clock-in times, worked hours, and log employee leave requests.</p>
                 </div>
 
                 {/* Tab Switcher */}
-                <div style={{ display: "flex", backgroundColor: "#e2e8f0", padding: "4px", borderRadius: "8px", gap: "4px" }}>
+                <div className="flex bg-slate-200 p-1 rounded-md gap-1">
                     <button
                         onClick={() => setActiveTab("attendance")}
-                        style={{
-                            padding: "8px 16px",
-                            borderRadius: "6px",
-                            border: "none",
-                            fontSize: "13px",
-                            fontWeight: "600",
-                            cursor: "pointer",
-                            backgroundColor: activeTab === "attendance" ? "#ffffff" : "transparent",
-                            color: activeTab === "attendance" ? "#0f766e" : "#475569",
-                            boxShadow: activeTab === "attendance" ? "0 1px 3px rgba(0,0,0,0.1)" : "none",
-                            transition: "all 0.15s"
-                        }}
+                        className={`px-4 py-2 text-sm font-semibold rounded-md transition ${activeTab === "attendance" ? 'bg-white text-emerald-700 shadow' : 'text-slate-600'}`}
                     >
                         Attendance Logs
                     </button>
                     <button
                         onClick={() => setActiveTab("leave")}
-                        style={{
-                            padding: "8px 16px",
-                            borderRadius: "6px",
-                            border: "none",
-                            fontSize: "13px",
-                            fontWeight: "600",
-                            cursor: "pointer",
-                            backgroundColor: activeTab === "leave" ? "#ffffff" : "transparent",
-                            color: activeTab === "leave" ? "#0f766e" : "#475569",
-                            boxShadow: activeTab === "leave" ? "0 1px 3px rgba(0,0,0,0.1)" : "none",
-                            transition: "all 0.15s"
-                        }}
+                        className={`px-4 py-2 text-sm font-semibold rounded-md transition ${activeTab === "leave" ? 'bg-white text-emerald-700 shadow' : 'text-slate-600'}`}
                     >
                         Leave Management
                     </button>
@@ -371,173 +360,142 @@ export default function Attendance() {
             </div>
 
             {/* Stats Widgets */}
-            <div className="stats-grid" style={{ marginBottom: "24px" }}>
-                <div className="stat-card">
-                    <div className="stat-header">
-                        <div className="stat-icon-box active-staff-icon" style={{ backgroundColor: "#065f46" }}>
-                            <UserCheck size={20} color="#ffffff" />
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+                <div className="bg-white rounded-xl p-4 shadow-sm">
+                    <div className="flex items-center gap-3">
+                        <div className="p-2 rounded-lg bg-emerald-800">
+                            <UserCheck size={18} color="#ffffff" />
                         </div>
                         <div>
-                            <p className="stat-label">Present Logs</p>
-                            <p className="stat-value">{presentCount}</p>
+                            <p className="text-xs text-slate-500">Present Logs</p>
+                            <p className="text-lg font-bold">{presentCount}</p>
                         </div>
                     </div>
-                    <p className="stat-description">Present status entries</p>
                 </div>
 
-                <div className="stat-card">
-                    <div className="stat-header">
-                        <div className="stat-icon-box depts-icon" style={{ backgroundColor: "#0891b2" }}>
-                            <Clock size={20} color="#ffffff" />
+                <div className="bg-white rounded-xl p-4 shadow-sm">
+                    <div className="flex items-center gap-3">
+                        <div className="p-2 rounded-lg bg-sky-500">
+                            <Clock size={18} color="#ffffff" />
                         </div>
                         <div>
-                            <p className="stat-label">Half Days</p>
-                            <p className="stat-value">{halfDayCount}</p>
+                            <p className="text-xs text-slate-500">Half Days</p>
+                            <p className="text-lg font-bold">{halfDayCount}</p>
                         </div>
                     </div>
-                    <p className="stat-description">Half-day shifts tracked</p>
                 </div>
 
-                <div className="stat-card">
-                    <div className="stat-header">
-                        <div className="stat-icon-box total-employees-icon" style={{ backgroundColor: "#b91c1c" }}>
-                            <AlertCircle size={20} color="#ffffff" />
+                <div className="bg-white rounded-xl p-4 shadow-sm">
+                    <div className="flex items-center gap-3">
+                        <div className="p-2 rounded-lg bg-rose-700">
+                            <AlertCircle size={18} color="#ffffff" />
                         </div>
                         <div>
-                            <p className="stat-label">Absences</p>
-                            <p className="stat-value">{absentCount}</p>
+                            <p className="text-xs text-slate-500">Absences</p>
+                            <p className="text-lg font-bold">{absentCount}</p>
                         </div>
                     </div>
-                    <p className="stat-description">Unexcused absence logs</p>
                 </div>
 
-                <div className="stat-card">
-                    <div className="stat-header">
-                        <div className="stat-icon-box depts-icon" style={{ backgroundColor: "#8b5cf6" }}>
-                            <Calendar size={20} color="#ffffff" />
+                <div className="bg-white rounded-xl p-4 shadow-sm">
+                    <div className="flex items-center gap-3">
+                        <div className="p-2 rounded-lg bg-violet-600">
+                            <Calendar size={18} color="#ffffff" />
                         </div>
                         <div>
-                            <p className="stat-label">Total Leaves Taken</p>
-                            <p className="stat-value">{totalLeaves}</p>
+                            <p className="text-xs text-slate-500">Total Leaves Taken</p>
+                            <p className="text-lg font-bold">{totalLeaves}</p>
                         </div>
                     </div>
-                    <p className="stat-description">Approved leave days</p>
                 </div>
             </div>
 
             {error && (
-                <div style={{ display: "flex", alignItems: "center", gap: "8px", color: "#b91c1c", backgroundColor: "#fef2f2", padding: "12px", borderRadius: "8px", marginBottom: "20px", fontSize: "14px" }}>
+                <div className="flex items-center gap-2 text-red-700 bg-red-50 p-3 rounded-md mb-4 text-sm">
                     <AlertCircle size={16} />
                     <span>{error}</span>
                 </div>
             )}
 
             {success && (
-                <div style={{ color: "#065f46", backgroundColor: "#ecfdf5", padding: "12px", borderRadius: "8px", marginBottom: "20px", fontSize: "14px" }}>
+                <div className="text-emerald-800 bg-emerald-50 p-3 rounded-md mb-4 text-sm">
                     {success}
                 </div>
             )}
 
             {/* Conditional layouts based on active tabs */}
             {activeTab === "attendance" ? (
-                <div className="emp-middle-grid" style={{ display: "grid", gridTemplateColumns: "2.3fr 1fr", gap: "24px", alignItems: "start" }}>
+                <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 items-start">
 
                     {/* Logs View */}
-                    <div className="employee-directory-card" style={{ padding: "24px" }}>
-                        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "10px", marginBottom: "16px" }}>
-                            <h2 className="emp-card-title" style={{ margin: 0 }}>Attendance Log Panel</h2>
+                    <div className="employee-directory-card lg:col-span-2 bg-white rounded-xl p-6 shadow-sm">
+                        <div className="flex items-center justify-between flex-wrap gap-4 mb-4">
+                            <h2 className="text-lg font-semibold m-0">Attendance Log Panel</h2>
 
                             {/* Search Filters */}
-                            <div style={{ display: "flex", gap: "8px" }}>
+                            <div className="flex gap-2">
                                 <input
                                     type="text"
                                     placeholder="Emp ID or Name..."
                                     value={filterEmpId}
                                     onChange={(e) => setFilterEmpId(e.target.value)}
-                                    style={{ padding: "6px 12px", borderRadius: "6px", border: "1px solid #cbd5e1", fontSize: "13px" }}
+                                    className="px-3 py-2 rounded-md border border-slate-300 text-sm"
                                 />
                                 <input
                                     type="date"
                                     value={filterDate}
                                     onChange={(e) => setFilterDate(e.target.value)}
-                                    style={{ padding: "6px 12px", borderRadius: "6px", border: "1px solid #cbd5e1", fontSize: "13px" }}
+                                    className="px-3 py-2 rounded-md border border-slate-300 text-sm"
                                 />
                             </div>
                         </div>
 
-                        <div className="table-responsive">
-                            <table className="employee-table">
+                        <div className="overflow-auto max-h-[520px] rounded-md border border-slate-100">
+                            <table className="min-w-full divide-y">
                                 <thead>
                                     <tr>
-                                        <th style={{ padding: "12px" }}>EMPLOYEE</th>
-                                        <th style={{ padding: "12px" }}>DEPARTMENT</th>
-                                        <th style={{ padding: "12px", textAlign: "center" }}>DATE</th>
-                                        <th style={{ padding: "12px", textAlign: "center" }}>IN</th>
-                                        <th style={{ padding: "12px", textAlign: "center" }}>OUT</th>
-                                        <th style={{ padding: "12px", textAlign: "center" }}>HOURS</th>
-                                        <th style={{ padding: "12px", textAlign: "center" }}>STATUS</th>
-                                        <th style={{ padding: "12px", textAlign: "right" }}>ACTIONS</th>
+                                        <th className="px-3 py-3">EMPLOYEE</th>
+                                        <th className="px-3 py-3">DEPARTMENT</th>
+                                        <th className="px-3 py-3 text-center">DATE</th>
+                                        <th className="px-3 py-3 text-center">IN</th>
+                                        <th className="px-3 py-3 text-center">OUT</th>
+                                        <th className="px-3 py-3 text-center">HOURS</th>
+                                        <th className="px-3 py-3 text-center">STATUS</th>
+                                        <th className="px-3 py-3 text-right">ACTIONS</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     {loading ? (
                                         <tr>
-                                            <td colSpan="8" style={{ textAlign: "center", padding: "30px 0" }}>Loading logs...</td>
+                                            <td colSpan="8" className="text-center py-8">Loading logs...</td>
                                         </tr>
                                     ) : filteredRecords.length === 0 ? (
                                         <tr>
-                                            <td colSpan="8" style={{ textAlign: "center", padding: "30px 0" }}>No records registered matching search criteria.</td>
+                                            <td colSpan="8" className="text-center py-8">No records registered matching search criteria.</td>
                                         </tr>
                                     ) : (
-                                        filteredRecords.map((rec) => (
-                                            <tr key={rec._id} className="employee-row">
-                                                <td style={{ padding: "12px" }}>
+                                        pagedRecords.map((rec) => (
+                                            <tr key={rec._id} className="border-b last:border-b-0">
+                                                <td className="px-4 py-3">
                                                     <div>
-                                                        <p style={{ fontWeight: "700", color: "#1e293b", fontSize: "14px" }}>{rec.employeeName}</p>
-                                                        <p style={{ fontSize: "11px", color: "#64748b" }}>{rec.employeeCode}</p>
+                                                        <p className="font-semibold text-slate-900 text-sm">{rec.employeeName}</p>
+                                                        <p className="text-xs text-slate-500">{rec.employeeCode}</p>
                                                     </div>
                                                 </td>
-                                                <td style={{ padding: "12px" }}>
-                                                    <span style={{ fontSize: "12px", fontWeight: "600", color: "#475569" }}>{rec.departmentName}</span>
+                                                <td className="px-4 py-3">
+                                                    <span className="text-sm font-medium text-slate-600">{rec.departmentName}</span>
                                                 </td>
-                                                <td style={{ padding: "12px", textAlign: "center" }}>
-                                                    {formatDate(rec.attendanceDate)}
-                                                </td>
-                                                <td style={{ padding: "12px", textAlign: "center", fontWeight: "600" }}>
-                                                    {rec.checkInTime || "--:--"}
-                                                </td>
-                                                <td style={{ padding: "12px", textAlign: "center", fontWeight: "600" }}>
-                                                    {rec.checkOutTime || "--:--"}
-                                                </td>
-                                                <td style={{ padding: "12px", textAlign: "center", fontWeight: "700", color: "#0f766e" }}>
-                                                    {rec.workedHours || 0}
-                                                </td>
-                                                <td style={{ padding: "12px", textAlign: "center" }}>
-                                                    <span style={{
-                                                        padding: "2px 8px",
-                                                        fontSize: "11px",
-                                                        fontWeight: "750",
-                                                        borderRadius: "12px",
-                                                        display: "inline-block",
-                                                        backgroundColor:
-                                                            rec.status === "Present" ? "#ecfdf5" :
-                                                                rec.status === "Half Day" ? "#eff6ff" :
-                                                                    rec.status === "Leave" ? "#f5f3ff" : "#fef2f2",
-                                                        color:
-                                                            rec.status === "Present" ? "#065f46" :
-                                                                rec.status === "Half Day" ? "#1d4ed8" :
-                                                                    rec.status === "Leave" ? "#6d28d9" : "#b91c1c"
-                                                    }}>
+                                                <td className="px-4 py-3 text-center">{formatDate(rec.attendanceDate)}</td>
+                                                <td className="px-4 py-3 text-center font-semibold">{rec.checkInTime || "--:--"}</td>
+                                                <td className="px-4 py-3 text-center font-semibold">{rec.checkOutTime || "--:--"}</td>
+                                                <td className="px-4 py-3 text-center font-bold text-emerald-700">{rec.workedHours || 0}</td>
+                                                <td className="px-4 py-3 text-center">
+                                                    <span className={`inline-block px-2 py-1 text-xs font-semibold rounded-full ${rec.status === 'Present' ? 'bg-emerald-50 text-emerald-700' : rec.status === 'Half Day' ? 'bg-sky-50 text-sky-700' : rec.status === 'Leave' ? 'bg-violet-50 text-violet-700' : 'bg-rose-50 text-rose-700'}`}>
                                                         {rec.status}
                                                     </span>
                                                 </td>
-                                                <td style={{ padding: "12px", textAlign: "right" }}>
-                                                    <button
-                                                        onClick={() => handleDeleteRecord(rec._id)}
-                                                        className="action-icon-btn delete"
-                                                        style={{ border: "none", background: "none", cursor: "pointer", color: "#b91c1c" }}
-                                                        title="Delete Record"
-                                                    >
+                                                <td className="px-4 py-3 text-right">
+                                                    <button onClick={() => handleDeleteRecord(rec._id)} title="Delete Record" className="text-rose-600 hover:text-rose-800">
                                                         <Trash2 size={16} />
                                                     </button>
                                                 </td>
@@ -547,46 +505,53 @@ export default function Attendance() {
                                 </tbody>
                             </table>
                         </div>
+                        {/* Pagination Controls */}
+                        <div className="flex items-center justify-between mt-3">
+                            <div className="flex items-center gap-2">
+                                <button onClick={() => setCurrentPage((p) => Math.max(1, p - 1))} disabled={currentPage === 1} className="px-3 py-1 rounded-md border bg-white disabled:opacity-60">
+                                    Previous
+                                </button>
+                                <button onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))} disabled={currentPage === totalPages} className="px-3 py-1 rounded-md border bg-white disabled:opacity-60">
+                                    Next
+                                </button>
+                                <span className="text-sm text-slate-600">Page {currentPage} of {totalPages}</span>
+                            </div>
+
+                            <div className="flex items-center gap-2">
+                                <label className="text-sm text-slate-600">Rows per page:</label>
+                                <select value={pageSize} onChange={(e) => { setPageSize(Number(e.target.value)); setCurrentPage(1); }} className="px-2 py-1 rounded-md border">
+                                    <option value={5}>5</option>
+                                    <option value={10}>10</option>
+                                    <option value={20}>20</option>
+                                    <option value={50}>50</option>
+                                </select>
+                            </div>
+                        </div>
                     </div>
 
                     {/* Record Attendance Form */}
-                    <div className="emp-card-box" style={{ padding: "24px" }}>
-                        <h2 className="emp-card-title" style={{ marginBottom: "16px" }}>Log Attendance</h2>
+                    <div className="emp-card-box bg-white rounded-xl p-6 shadow-sm">
+                        <h2 className="text-lg font-semibold mb-4">Log Attendance</h2>
                         <form onSubmit={handleAddAttendance}>
 
-                            <div style={{ marginBottom: "12px" }}>
-                                <label style={{ display: "block", fontSize: "11px", fontWeight: "700", textTransform: "uppercase", color: "#475569", marginBottom: "4px" }}>Employee*</label>
-                                <select
-                                    value={selectedEmpId}
-                                    onChange={(e) => setSelectedEmpId(e.target.value)}
-                                    style={{ width: "100%", padding: "8px 12px", borderRadius: "6px", border: "1px solid #cbd5e1", backgroundColor: "#ffffff" }}
-                                >
+                            <div className="mb-3">
+                                <label className="block text-xs font-semibold uppercase text-slate-600 mb-1">Employee*</label>
+                                <select value={selectedEmpId} onChange={(e) => setSelectedEmpId(e.target.value)} className="w-full px-3 py-2 rounded-md border border-slate-300 bg-white">
                                     <option value="">Select Employee...</option>
                                     {employees.map(emp => (
-                                        <option key={emp._id} value={emp._id}>
-                                            {emp.firstName} {emp.lastName} ({emp.employeeId})
-                                        </option>
+                                        <option key={emp._id} value={emp._id}>{emp.firstName} {emp.lastName} ({emp.employeeId})</option>
                                     ))}
                                 </select>
                             </div>
 
-                            <div style={{ marginBottom: "12px" }}>
-                                <label style={{ display: "block", fontSize: "11px", fontWeight: "700", textTransform: "uppercase", color: "#475569", marginBottom: "4px" }}>Attendance Date*</label>
-                                <input
-                                    type="date"
-                                    value={attendanceDate}
-                                    onChange={(e) => setAttendanceDate(e.target.value)}
-                                    style={{ width: "100%", padding: "8px 12px", borderRadius: "6px", border: "1px solid #cbd5e1" }}
-                                />
+                            <div className="mb-3">
+                                <label className="block text-xs font-semibold uppercase text-slate-600 mb-1">Attendance Date*</label>
+                                <input type="date" value={attendanceDate} onChange={(e) => setAttendanceDate(e.target.value)} className="w-full px-3 py-2 rounded-md border border-slate-300" />
                             </div>
 
-                            <div style={{ marginBottom: "12px" }}>
-                                <label style={{ display: "block", fontSize: "11px", fontWeight: "700", textTransform: "uppercase", color: "#475569", marginBottom: "4px" }}>Shift Status*</label>
-                                <select
-                                    value={status}
-                                    onChange={(e) => setStatus(e.target.value)}
-                                    style={{ width: "100%", padding: "8px 12px", borderRadius: "6px", border: "1px solid #cbd5e1", backgroundColor: "#ffffff" }}
-                                >
+                            <div className="mb-3">
+                                <label className="block text-xs font-semibold uppercase text-slate-600 mb-1">Shift Status*</label>
+                                <select value={status} onChange={(e) => setStatus(e.target.value)} className="w-full px-3 py-2 rounded-md border border-slate-300 bg-white">
                                     <option value="Present">Present</option>
                                     <option value="Half Day">Half Day</option>
                                     <option value="Absent">Absent</option>
@@ -596,55 +561,30 @@ export default function Attendance() {
 
                             {(status === "Present" || status === "Half Day") && (
                                 <>
-                                    <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "10px", marginBottom: "12px" }}>
+                                    <div className="grid grid-cols-2 gap-2 mb-3">
                                         <div>
-                                            <label style={{ display: "block", fontSize: "11px", fontWeight: "700", textTransform: "uppercase", color: "#475569", marginBottom: "4px" }}>In Time</label>
-                                            <input
-                                                type="time"
-                                                value={checkInTime}
-                                                onChange={(e) => setCheckInTime(e.target.value)}
-                                                style={{ width: "100%", padding: "8px 12px", borderRadius: "6px", border: "1px solid #cbd5e1" }}
-                                            />
+                                            <label className="block text-xs font-semibold uppercase text-slate-600 mb-1">In Time</label>
+                                            <input type="time" value={checkInTime} onChange={(e) => setCheckInTime(e.target.value)} className="w-full px-3 py-2 rounded-md border border-slate-300" />
                                         </div>
                                         <div>
-                                            <label style={{ display: "block", fontSize: "11px", fontWeight: "700", textTransform: "uppercase", color: "#475569", marginBottom: "4px" }}>Out Time</label>
-                                            <input
-                                                type="time"
-                                                value={checkOutTime}
-                                                onChange={(e) => setCheckOutTime(e.target.value)}
-                                                style={{ width: "100%", padding: "8px 12px", borderRadius: "6px", border: "1px solid #cbd5e1" }}
-                                            />
+                                            <label className="block text-xs font-semibold uppercase text-slate-600 mb-1">Out Time</label>
+                                            <input type="time" value={checkOutTime} onChange={(e) => setCheckOutTime(e.target.value)} className="w-full px-3 py-2 rounded-md border border-slate-300" />
                                         </div>
                                     </div>
 
-                                    <div style={{ marginBottom: "12px" }}>
-                                        <label style={{ display: "block", fontSize: "11px", fontWeight: "700", textTransform: "uppercase", color: "#475569", marginBottom: "4px" }}>Worked Hours</label>
-                                        <input
-                                            type="number"
-                                            step="0.1"
-                                            value={workedHours}
-                                            onChange={(e) => setWorkedHours(e.target.value)}
-                                            style={{ width: "100%", padding: "8px 12px", borderRadius: "6px", border: "1px solid #cbd5e1" }}
-                                        />
+                                    <div className="mb-3">
+                                        <label className="block text-xs font-semibold uppercase text-slate-600 mb-1">Worked Hours</label>
+                                        <input type="number" step="0.1" value={workedHours} onChange={(e) => setWorkedHours(e.target.value)} className="w-full px-3 py-2 rounded-md border border-slate-300" />
                                     </div>
                                 </>
                             )}
 
-                            <div style={{ marginBottom: "20px" }}>
-                                <label style={{ display: "block", fontSize: "11px", fontWeight: "700", textTransform: "uppercase", color: "#475569", marginBottom: "4px" }}>Administrator Notes</label>
-                                <input
-                                    type="text"
-                                    value={notes}
-                                    onChange={(e) => setNotes(e.target.value)}
-                                    style={{ width: "100%", padding: "8px 12px", borderRadius: "6px", border: "1px solid #cbd5e1" }}
-                                    placeholder="e.g. Cleared by HR"
-                                />
+                            <div className="mb-4">
+                                <label className="block text-xs font-semibold uppercase text-slate-600 mb-1">Administrator Notes</label>
+                                <input type="text" value={notes} onChange={(e) => setNotes(e.target.value)} className="w-full px-3 py-2 rounded-md border border-slate-300" placeholder="e.g. Cleared by HR" />
                             </div>
 
-                            <button
-                                type="submit"
-                                style={{ width: "100%", padding: "10px", backgroundColor: "#065f46", color: "#ffffff", border: "none", borderRadius: "6px", fontWeight: "600", fontSize: "14px", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", gap: "8px" }}
-                            >
+                            <button type="submit" className="w-full px-4 py-2 bg-emerald-700 text-white rounded-md font-semibold flex items-center justify-center gap-2">
                                 <Plus size={16} />
                                 <span>Log Attendance</span>
                             </button>

@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-import "../App.css";
+// styles are loaded globally via src/index.css (Tailwind + custom styles)
 import Sidebar from "../components/Sidebar";
 import {
     Mail,
@@ -239,11 +239,10 @@ export default function Profile() {
             <div className="lg:pl-[260px] flex flex-col min-h-screen">
 
                 {/* Mobile Header */}
-                <div className="sticky top-0 z-30 flex items-center justify-between border-b border-slate-200/80 bg-white/95 px-4 py-3 backdrop-blur-xl lg:hidden" style={{ minHeight: "60px" }}>
+                <div className="sticky top-0 z-30 flex items-center justify-between border-b border-slate-200/80 bg-white/95 px-4 py-3 backdrop-blur-xl lg:hidden min-h-[60px]">
                     <button
                         onClick={() => setIsOpen(true)}
-                        className="inline-flex h-11 w-11 items-center justify-center rounded-2xl bg-[#043e30] text-white shadow-sm shadow-[#043e30]/10"
-                        style={{ border: "none", cursor: "pointer" }}
+                        className="inline-flex h-11 w-11 items-center justify-center rounded-2xl bg-emerald-900 text-white shadow-sm border-0 cursor-pointer"
                         aria-label="Open sidebar"
                     >
                         <Menu size={20} />
@@ -252,30 +251,28 @@ export default function Profile() {
                 </div>
 
                 {/* Top Header Bar */}
-                <div className="emp-top-header" style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "32px", padding: "0 10px" }}>
-                    <div style={{ visibility: "hidden" }}>Placeholder</div>
+                <div className="flex justify-between items-center mb-8 px-2">
+                    <div className="invisible">Placeholder</div>
 
-                    <div className="emp-user-profile-badge" style={{ display: "flex", alignItems: "center", gap: "8px", backgroundColor: "#ffffff", padding: "6px 14px", borderRadius: "12px", border: "1px solid #cbd5e1", fontWeight: "700", color: "#000000" }}>
-                        <div className="emp-avatar-circle" style={{ width: "30px", height: "30px", borderRadius: "50%", backgroundColor: "#043e30", color: "#ffffff", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "12px", fontWeight: "bold" }}>
-                            {getInitials(formData.firstName + " " + formData.lastName)}
-                        </div>
+                    <div className="flex items-center gap-2 bg-white px-3 py-1 rounded-xl border border-slate-200 font-bold text-black">
+                        <div className="w-8 h-8 rounded-full bg-emerald-800 text-white flex items-center justify-center text-xs font-bold">{getInitials(formData.firstName + " " + formData.lastName)}</div>
                         <span>{formData.firstName} {formData.lastName}</span>
                     </div>
                 </div>
 
                 {/* Page Content */}
-                <div style={{ flex: 1, padding: "0 10px" }}>
+                <div className="flex-1 px-2">
 
-                    <div className="page-header" style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "24px" }}>
+                    <div className="page-header flex justify-between items-center mb-6">
                         <div>
-                            <h1 className="dashboard-title" style={{ fontSize: "32px", fontWeight: "800", color: "#000000", margin: 0 }}>My Profile</h1>
-                            <p className="dashboard-subtitle" style={{ fontSize: "14px", color: "#64748b", marginTop: "4px" }}>Manage your personal details and contact settings</p>
+                            <h1 className="text-3xl md:text-4xl font-extrabold text-slate-900 m-0">My Profile</h1>
+                            <p className="text-sm text-slate-500 mt-1">Manage your personal details and contact settings</p>
                         </div>
                     </div>
 
                     {
                         success && (
-                            <div style={{ display: "flex", alignItems: "center", gap: "8px", color: "#065f46", backgroundColor: "#ecfdf5", padding: "12px 16px", borderRadius: "10px", marginBottom: "20px", fontSize: "14px", fontWeight: "600", border: "1px solid #a7f3d0" }}>
+                            <div className="flex items-center gap-2 text-emerald-800 bg-emerald-50 px-4 py-3 rounded-lg mb-5 text-sm font-semibold border border-emerald-100">
                                 <CheckCircle size={16} />
                                 <span>{success}</span>
                             </div>
@@ -284,7 +281,7 @@ export default function Profile() {
 
                     {
                         error && (
-                            <div style={{ display: "flex", alignItems: "center", gap: "8px", color: "#b91c1c", backgroundColor: "#fef2f2", padding: "12px 16px", borderRadius: "10px", marginBottom: "20px", fontSize: "14px", fontWeight: "600", border: "1px solid #fca5a5" }}>
+                            <div className="flex items-center gap-2 text-rose-700 bg-rose-50 px-4 py-3 rounded-lg mb-5 text-sm font-semibold border border-rose-100">
                                 <AlertCircle size={16} />
                                 <span>{error}</span>
                             </div>
@@ -293,36 +290,16 @@ export default function Profile() {
 
                     {
                         loading ? (
-                            <div style={{ textAlign: "center", padding: "50px", color: "#64748b" }}>Loading profile...</div>
+                            <div className="text-center text-slate-500 p-12">Loading profile...</div>
                         ) : (
-                            <div className="emp-middle-grid" style={{ display: "grid", gridTemplateColumns: "1.2fr 2.5fr", gap: "24px", alignItems: "start" }}>
+                            <div className="grid lg:grid-cols-[1.2fr_2.5fr] gap-6 items-start">
 
                                 {/* Left Profile Summary Card Container */}
-                                <div className="emp-card-box" style={{ padding: "24px", display: "flex", flexDirection: "column", alignItems: "center", backgroundColor: "#ffffff" }}>
-                                    <div style={{ position: "relative", marginBottom: "16px" }}>
-                                        <div
-                                            style={{
-                                                width: "100px",
-                                                height: "100px",
-                                                borderRadius: "50%",
-                                                backgroundColor: "#043e30",
-                                                color: "#ffffff",
-                                                fontSize: "36px",
-                                                fontWeight: "800",
-                                                display: "flex",
-                                                alignItems: "center",
-                                                justifyContent: "center",
-                                                border: "4px solid #10b981",
-                                                boxShadow: "0 4px 10px rgba(0,0,0,0.1)",
-                                                overflow: "hidden"
-                                            }}
-                                        >
+                                <div className="bg-white p-6 rounded-xl flex flex-col items-center">
+                                    <div className="relative mb-4">
+                                        <div className="w-[100px] h-[100px] rounded-full bg-emerald-900 text-white text-[36px] font-extrabold flex items-center justify-center border-4 border-emerald-500 shadow-lg overflow-hidden">
                                             {previewImage || employee?.profileImage ? (
-                                                <img
-                                                    src={previewImage || employee.profileImage}
-                                                    alt="Profile"
-                                                    style={{ width: "100%", height: "100%", objectFit: "cover" }}
-                                                />
+                                                <img src={previewImage || employee.profileImage} alt="Profile" className="w-full h-full object-cover" />
                                             ) : (
                                                 getInitials(formData.firstName + " " + formData.lastName)
                                             )}

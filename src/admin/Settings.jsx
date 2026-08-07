@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import "../App.css";
+// styles are loaded globally via src/index.css (Tailwind + custom styles)
 
 const API_URL = "http://localhost:5000/settings";
 
@@ -250,87 +250,74 @@ const Settings = () => {
   };
 
   return (
-    <div className={`settings-page ${darkMode ? "dark-theme" : ""}`}>
-      <main className="main-content">
+    <div className={` ${darkMode ? 'dark' : ''}`}>
+      <main className="p-6">
         <div className="page-header">
           <div>
-            <h1 className="dashboard-title">Company Settings</h1>
-            <p className="dashboard-subtitle">
-              Manage your company information and application settings.
-            </p>
+            <h1 className="text-2xl font-bold">Company Settings</h1>
+            <p className="text-sm text-slate-600">Manage your company information and application settings.</p>
           </div>
         </div>
 
         {alert.show && (
-          <div className={`ems-alert-banner ${alert.type}`}>
-            <i
-              className={`fa-solid ${
-                alert.type === "success"
-                  ? "fa-circle-check"
-                  : "fa-circle-exclamation"
-              }`}
-            ></i>
+          <div className={`mb-4 ${alert.type === 'success' ? 'text-emerald-800 bg-emerald-50' : 'text-rose-700 bg-rose-50'} p-3 rounded-md`}> 
             <span>{alert.message}</span>
           </div>
         )}
 
-        <div className="middle-grid">
-          <div className="table-card">
-            <div className="card-header">
-              <h3 style={{color:"black"}}>Company Information</h3>
+        <div className="grid lg:grid-cols-2 gap-6">
+          <div className="bg-white rounded-xl p-6 shadow-sm">
+            <div className="mb-4">
+              <h3 className="text-base font-semibold text-slate-900">Company Information</h3>
             </div>
 
             {fetching ? (
               <p>Loading...</p>
             ) : settingsData ? (
-              <div className="company-profile">
-                <div className="profile-row">
+              <div className="space-y-3">
+                <div className="flex justify-between">
                   <span>Company Name</span>
                   <strong>{settingsData.companyName}</strong>
                 </div>
 
-                <div className="profile-row">
+                <div className="flex justify-between">
                   <span>Email</span>
                   <strong>{settingsData.companyEmail}</strong>
                 </div>
 
-                <div className="profile-row">
+                <div className="flex justify-between">
                   <span>Phone</span>
                   <strong>{settingsData.companyPhone}</strong>
                 </div>
 
-                <div className="profile-row">
+                <div className="flex justify-between">
                   <span>Address</span>
                   <strong>{settingsData.companyAddress}</strong>
                 </div>
 
-                <div className="profile-row">
+                <div className="flex justify-between">
                   <span>City</span>
                   <strong>{settingsData.city}</strong>
                 </div>
 
-                <div className="profile-row">
+                <div className="flex justify-between">
                   <span>State</span>
                   <strong>{settingsData.state}</strong>
                 </div>
 
-                <div className="profile-row">
+                <div className="flex justify-between">
                   <span>Country</span>
                   <strong>{settingsData.country}</strong>
                 </div>
 
-                <div className="profile-row">
-                  <span>Password</span>
-                  <strong>
-                    {showPassword ? settingsData.adminPassword : "••••••••"}
-                  </strong>
-                  <button
-                    type="button"
-                    className="btn-contact"
-                    onClick={() => setShowPassword(!showPassword)}
-                  >
-                    {showPassword ? "Hide" : "View"}
-                  </button>
+                <div className="flex items-center justify-between">
+                  <div>
+                    <span>Password</span>
+                    <div>
+                      <strong>{showPassword ? settingsData.adminPassword : '••••••••'}</strong>
+                    </div>
+                  </div>
+                  <button type="button" onClick={() => setShowPassword(!showPassword)} className="px-3 py-1 rounded-md bg-slate-100">{showPassword ? 'Hide' : 'View'}</button>
                 </div>
               </div>
             ) : (
@@ -338,162 +325,64 @@ const Settings = () => {
             )}
           </div>
 
-          <div className="card-box">
-            <h3 className="card-title">
-              {settingsId ? "Update Company" : "Create Company"}
-            </h3>
+          <div className="bg-white rounded-xl p-6 shadow-sm">
+            <h3 className="text-lg font-semibold mb-4">{settingsId ? 'Update Company' : 'Create Company'}</h3>
 
             <form onSubmit={handleSubmit}>
-              <div className="form-group">
-                <label>Company Name *</label>
-                <input
-                  type="text"
-                  name="companyName"
-                  value={formData.companyName}
-                  onChange={handleChange}
-                  className="form-control"
-                  placeholder="Enter Company Name"
-                />
-                {errors.companyName && (
-                  <small className="text-danger">{errors.companyName}</small>
-                )}
+              <div className="mb-3">
+                <label className="block text-sm font-medium mb-1">Company Name *</label>
+                <input type="text" name="companyName" value={formData.companyName} onChange={handleChange} placeholder="Enter Company Name" className="w-full px-3 py-2 rounded-md border border-slate-300" />
+                {errors.companyName && <small className="text-rose-600">{errors.companyName}</small>}
               </div>
 
-              <div className="form-group">
-                <label>Company Email *</label>
-                <input
-                  type="email"
-                  name="companyEmail"
-                  value={formData.companyEmail}
-                  onChange={handleChange}
-                  className="form-control"
-                  placeholder="Enter Company Email"
-                />
-                {errors.companyEmail && (
-                  <small className="text-danger">{errors.companyEmail}</small>
-                )}
+              <div className="mb-3">
+                <label className="block text-sm font-medium mb-1">Company Email *</label>
+                <input type="email" name="companyEmail" value={formData.companyEmail} onChange={handleChange} placeholder="Enter Company Email" className="w-full px-3 py-2 rounded-md border border-slate-300" />
+                {errors.companyEmail && <small className="text-rose-600">{errors.companyEmail}</small>}
               </div>
 
-              <div className="form-group">
-                <label>Company Phone *</label>
-                <input
-                  type="text"
-                  name="companyPhone"
-                  maxLength={10}
-                  value={formData.companyPhone}
-                  onChange={handleChange}
-                  className="form-control"
-                  placeholder="Enter Phone Number"
-                />
-                {errors.companyPhone && (
-                  <small className="text-danger">{errors.companyPhone}</small>
-                )}
+              <div className="mb-3">
+                <label className="block text-sm font-medium mb-1">Company Phone *</label>
+                <input type="text" name="companyPhone" maxLength={10} value={formData.companyPhone} onChange={handleChange} placeholder="Enter Phone Number" className="w-full px-3 py-2 rounded-md border border-slate-300" />
+                {errors.companyPhone && <small className="text-rose-600">{errors.companyPhone}</small>}
               </div>
 
-              <div className="form-group">
-                <label>Company Address *</label>
-                <textarea
-                  name="companyAddress"
-                  rows="3"
-                  value={formData.companyAddress}
-                  onChange={handleChange}
-                  className="form-control"
-                  placeholder="Enter Company Address"
-                />
-                {errors.companyAddress && (
-                  <small className="text-danger">
-                    {errors.companyAddress}
-                  </small>
-                )}
+              <div className="mb-3">
+                <label className="block text-sm font-medium mb-1">Company Address *</label>
+                <textarea name="companyAddress" rows="3" value={formData.companyAddress} onChange={handleChange} placeholder="Enter Company Address" className="w-full px-3 py-2 rounded-md border border-slate-300" />
+                {errors.companyAddress && <small className="text-rose-600">{errors.companyAddress}</small>}
               </div>
 
-              <div className="form-group">
-                <label>City *</label>
-                <input
-                  type="text"
-                  name="city"
-                  value={formData.city}
-                  onChange={handleChange}
-                  className="form-control"
-                  placeholder="Enter City"
-                />
-                {errors.city && (
-                  <small className="text-danger">{errors.city}</small>
-                )}
+              <div className="mb-3">
+                <label className="block text-sm font-medium mb-1">City *</label>
+                <input type="text" name="city" value={formData.city} onChange={handleChange} placeholder="Enter City" className="w-full px-3 py-2 rounded-md border border-slate-300" />
+                {errors.city && <small className="text-rose-600">{errors.city}</small>}
               </div>
 
-              <div className="form-group">
-                <label>State *</label>
-                <input
-                  type="text"
-                  name="state"
-                  value={formData.state}
-                  onChange={handleChange}
-                  className="form-control"
-                  placeholder="Enter State"
-                />
-                {errors.state && (
-                  <small className="text-danger">{errors.state}</small>
-                )}
+              <div className="mb-3">
+                <label className="block text-sm font-medium mb-1">State *</label>
+                <input type="text" name="state" value={formData.state} onChange={handleChange} placeholder="Enter State" className="w-full px-3 py-2 rounded-md border border-slate-300" />
+                {errors.state && <small className="text-rose-600">{errors.state}</small>}
               </div>
 
-              <div className="form-group">
-                <label>Country *</label>
-                <input
-                  type="text"
-                  name="country"
-                  value={formData.country}
-                  onChange={handleChange}
-                  className="form-control"
-                  placeholder="Enter Country"
-                />
-                {errors.country && (
-                  <small className="text-danger">{errors.country}</small>
-                )}
+              <div className="mb-3">
+                <label className="block text-sm font-medium mb-1">Country *</label>
+                <input type="text" name="country" value={formData.country} onChange={handleChange} placeholder="Enter Country" className="w-full px-3 py-2 rounded-md border border-slate-300" />
+                {errors.country && <small className="text-rose-600">{errors.country}</small>}
               </div>
 
-              <div className="form-group">
-                <label>Admin Password *</label>
-                <div className="password-box">
-                  <input
-                    type={showPassword ? "text" : "password"}
-                    name="adminPassword"
-                    value={formData.adminPassword}
-                    onChange={handleChange}
-                    className="form-control"
-                    placeholder="Enter Admin Password"
-                  />
-                  <button
-                    type="button"
-                    className="btn-contact"
-                    onClick={() => setShowPassword(!showPassword)}
-                  >
-                    {showPassword ? "Hide" : "View"}
-                  </button>
+              <div className="mb-3">
+                <label className="block text-sm font-medium mb-1">Admin Password *</label>
+                <div className="flex gap-2">
+                  <input type={showPassword ? 'text' : 'password'} name="adminPassword" value={formData.adminPassword} onChange={handleChange} placeholder="Enter Admin Password" className="flex-1 px-3 py-2 rounded-md border border-slate-300" />
+                  <button type="button" onClick={() => setShowPassword(!showPassword)} className="px-3 py-2 rounded-md bg-slate-100">{showPassword ? 'Hide' : 'View'}</button>
                 </div>
-                {errors.adminPassword && (
-                  <small className="text-danger">
-                    {errors.adminPassword}
-                  </small>
-                )}
+                {errors.adminPassword && <small className="text-rose-600">{errors.adminPassword}</small>}
               </div>
 
-              <div className="form-group">
-                <button type="submit" className="btn-submit" disabled={loading}>
-                  {loading ? (
-                    <>
-                      <i className="fa-solid fa-spinner fa-spin"></i> Saving...
-                    </>
-                  ) : settingsId ? (
-                    <>
-                      <i className="fa-solid fa-floppy-disk"></i> Update
-                      Settings
-                    </>
-                  ) : (
-                    <>
-                      <i className="fa-solid fa-plus"></i> Create Settings
-                    </>
-                  )}
+              <div className="mb-3">
+                <button type="submit" className="w-full py-2 rounded-md bg-emerald-700 text-white" disabled={loading}>
+                  {loading ? 'Saving...' : settingsId ? 'Update Settings' : 'Create Settings'}
                 </button>
               </div>
             </form>

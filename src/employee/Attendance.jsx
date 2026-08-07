@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import "../App.css";
+// styles are loaded globally via src/index.css (Tailwind + custom styles)
 import Sidebar from "../components/Sidebar";
 import {
     Calendar,
@@ -138,11 +138,10 @@ export default function Attendance() {
             <div className="lg:pl-[260px] flex flex-col min-h-screen">
 
                 {/* Mobile Header */}
-                <div className="sticky top-0 z-30 flex items-center justify-between border-b border-slate-200/80 bg-white/95 px-4 py-3 backdrop-blur-xl lg:hidden" style={{ minHeight: "60px" }}>
+                <div className="sticky top-0 z-30 flex items-center justify-between border-b border-slate-200/80 bg-white/95 px-4 py-3 backdrop-blur-xl lg:hidden min-h-[60px]">
                     <button
                         onClick={() => setIsOpen(true)}
-                        className="inline-flex h-11 w-11 items-center justify-center rounded-2xl bg-[#043e30] text-white shadow-sm shadow-[#043e30]/10"
-                        style={{ border: "none", cursor: "pointer" }}
+                        className="inline-flex h-11 w-11 items-center justify-center rounded-2xl bg-emerald-900 text-white shadow-sm border-0 cursor-pointer"
                         aria-label="Open sidebar"
                     >
                         <Menu size={20} />
@@ -151,14 +150,14 @@ export default function Attendance() {
                 </div>
 
                 {/* Top Header Bar */}
-                <div className="emp-top-header" style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "32px", padding: "0 10px" }}>
-                    <div className="emp-search-box" style={{ display: "flex", alignItems: "center", gap: "8px", backgroundColor: "#ffffff", padding: "10px 16px", borderRadius: "12px", border: "1px solid #cbd5e1", width: "320px", visibility: "hidden" }}>
+                <div className="flex justify-between items-center mb-8 px-2">
+                    <div className="flex items-center gap-2 bg-white px-4 py-2 rounded-xl border border-slate-200 w-[320px] hidden">
                         <Search size={18} color="#64748b" />
-                        <input type="text" placeholder="Search..." className="emp-search-input" style={{ border: "none", outline: "none", background: "transparent", width: "100%" }} />
+                        <input type="text" placeholder="Search..." className="border-none outline-none bg-transparent w-full" />
                     </div>
 
-                    <div className="emp-user-profile-badge" style={{ display: "flex", alignItems: "center", gap: "8px", backgroundColor: "#ffffff", padding: "6px 14px", borderRadius: "12px", border: "1px solid #cbd5e1", fontWeight: "700", color: "#000000" }}>
-                        <div className="emp-avatar-circle" style={{ width: "30px", height: "30px", borderRadius: "50%", backgroundColor: "#043e30", color: "#ffffff", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "12px", fontWeight: "bold" }}>
+                    <div className="flex items-center gap-2 bg-white px-3 py-1 rounded-xl border border-slate-200 font-bold text-black">
+                        <div className="w-8 h-8 rounded-full bg-emerald-800 text-white flex items-center justify-center text-xs font-bold">
                             {getInitials(user?.name || "Akshaya Mehta")}
                         </div>
                         <span>{user?.name || "Akshaya Mehta"}</span>
@@ -166,69 +165,59 @@ export default function Attendance() {
                 </div>
 
                 {/* Page Content */}
-                <div style={{ flex: 1, padding: "0 10px" }}>
-                    <div className="page-header" style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "24px" }}>
+                <div className="flex-1 px-2">
+                    <div className="page-header flex justify-between items-center mb-6">
                         <div>
-                            <h1 className="dashboard-title" style={{ fontSize: "32px", fontWeight: "800", color: "#000000", margin: 0 }}>Attendance</h1>
-                            <p className="dashboard-subtitle" style={{ fontSize: "14px", color: "#64748b", marginTop: "4px" }}>Track your daily attendance and work hours</p>
+                            <h1 className="text-3xl md:text-4xl font-extrabold text-slate-900 m-0">Attendance</h1>
+                            <p className="text-sm text-slate-500 mt-1">Track your daily attendance and work hours</p>
                         </div>
                     </div>
 
                     {/* Stats Grid */}
-                    <div className="emp-stats-grid" style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))", gap: "20px", marginBottom: "32px" }}>
-                        {/* Present */}
-                        <div className="emp-stat-card" style={{ backgroundColor: "#ffffff", padding: "20px", borderRadius: "16px", border: "1px solid #e2e8f0" }}>
-                            <div className="emp-stat-top" style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "8px" }}>
-                                <span className="emp-stat-title" style={{ fontSize: "14px", fontWeight: "700", color: "#64748b" }}>Present</span>
-                                <div className="emp-stat-icon-box" style={{ backgroundColor: "#ecfdf5", color: "#10b981", padding: "8px", borderRadius: "10px" }}>
-                                    <CheckSquare size={20} />
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 mb-8">
+                        <div className="bg-white p-5 rounded-lg border border-slate-200">
+                            <div className="flex justify-between items-center mb-2">
+                                <span className="text-sm font-semibold text-slate-500">Present</span>
+                                <div className="bg-emerald-50 text-emerald-700 px-2 py-1 rounded-md">
+                                    <CheckSquare size={18} />
                                 </div>
                             </div>
-                            <p className="emp-stat-value" style={{ fontSize: "28px", fontWeight: "800", color: "#000000", margin: 0 }}>
-                                {stats.present} <span style={{ fontSize: "14px", fontWeight: "500", color: "#64748b" }}>Days</span>
-                            </p>
+                            <p className="text-2xl font-extrabold text-slate-900 m-0">{stats.present} <span className="text-sm font-medium text-slate-500">Days</span></p>
                         </div>
 
-                        {/* Absent */}
-                        <div className="emp-stat-card" style={{ backgroundColor: "#ffffff", padding: "20px", borderRadius: "16px", border: "1px solid #e2e8f0" }}>
-                            <div className="emp-stat-top" style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "8px" }}>
-                                <span className="emp-stat-title" style={{ fontSize: "14px", fontWeight: "700", color: "#64748b" }}>Absent</span>
-                                <div className="emp-stat-icon-box" style={{ backgroundColor: "#fef2f2", color: "#ef4444", padding: "8px", borderRadius: "10px" }}>
-                                    <XSquare size={20} />
+                        <div className="bg-white p-5 rounded-lg border border-slate-200">
+                            <div className="flex justify-between items-center mb-2">
+                                <span className="text-sm font-semibold text-slate-500">Absent</span>
+                                <div className="bg-rose-50 text-rose-700 px-2 py-1 rounded-md">
+                                    <XSquare size={18} />
                                 </div>
                             </div>
-                            <p className="emp-stat-value" style={{ fontSize: "28px", fontWeight: "800", color: "#000000", margin: 0 }}>
-                                {stats.absent} <span style={{ fontSize: "14px", fontWeight: "500", color: "#64748b" }}>Days</span>
-                            </p>
+                            <p className="text-2xl font-extrabold text-slate-900 m-0">{stats.absent} <span className="text-sm font-medium text-slate-500">Days</span></p>
                         </div>
 
-                        {/* Leave */}
-                        <div className="emp-stat-card" style={{ backgroundColor: "#ffffff", padding: "20px", borderRadius: "16px", border: "1px solid #e2e8f0" }}>
-                            <div className="emp-stat-top" style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "8px" }}>
-                                <span className="emp-stat-title" style={{ fontSize: "14px", fontWeight: "700", color: "#64748b" }}>Leave</span>
-                                <div className="emp-stat-icon-box" style={{ backgroundColor: "#eff6ff", color: "#3b82f6", padding: "8px", borderRadius: "10px" }}>
-                                    <Plane size={20} />
+                        <div className="bg-white p-5 rounded-lg border border-slate-200">
+                            <div className="flex justify-between items-center mb-2">
+                                <span className="text-sm font-semibold text-slate-500">Leave</span>
+                                <div className="bg-sky-50 text-sky-700 px-2 py-1 rounded-md">
+                                    <Plane size={18} />
                                 </div>
                             </div>
-                            <p className="emp-stat-value" style={{ fontSize: "28px", fontWeight: "800", color: "#000000", margin: 0 }}>
-                                {stats.leave} <span style={{ fontSize: "14px", fontWeight: "500", color: "#64748b" }}>Days</span>
-                            </p>
+                            <p className="text-2xl font-extrabold text-slate-900 m-0">{stats.leave} <span className="text-sm font-medium text-slate-500">Days</span></p>
                         </div>
                     </div>
 
                     {/* Attendance Records Box */}
-                    <div className="employee-directory-card" style={{ backgroundColor: "#ffffff", borderRadius: "16px", border: "1px solid #e2e8f0" }}>
+                    <div className="bg-white rounded-xl border border-slate-200">
 
                         {/* Header controls bar */}
-                        <div className="filters-row" style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "20px 24px", borderBottom: "1px solid #f1f5f9" }}>
-                            <h2 className="emp-card-title" style={{ margin: 0, fontSize: "18px", fontWeight: "800", color: "#000000" }}>Attendance Records</h2>
+                        <div className="flex justify-between items-center p-5 border-b border-slate-100">
+                            <h2 className="m-0 text-lg font-extrabold text-slate-900">Attendance Records</h2>
 
-                            <div style={{ display: "flex", gap: "12px", alignItems: "center" }}>
+                            <div className="flex gap-3 items-center">
                                 <select
                                     value={selectedMonthYear}
                                     onChange={(e) => setSelectedMonthYear(e.target.value)}
-                                    className="filter-select"
-                                    style={{ border: "1px solid #cbd5e1", borderRadius: "10px", padding: "8px 16px", fontSize: "13px", fontWeight: "700", color: "#0f172a", outline: "none", cursor: "pointer", backgroundColor: "#ffffff" }}
+                                    className="border border-slate-200 rounded-lg px-4 py-2 text-sm font-bold text-slate-900 outline-none cursor-pointer bg-white"
                                 >
                                     {monthYearOptions.map((opt) => (
                                         <option key={opt} value={opt}>{opt}</option>
@@ -236,8 +225,7 @@ export default function Attendance() {
                                 </select>
 
                                 <button
-                                    className="action-icon-btn"
-                                    style={{ display: "flex", alignItems: "center", gap: "6px", backgroundColor: "#ffffff", border: "1px solid #cbd5e1", borderRadius: "10px", padding: "8px 16px", fontSize: "13px", fontWeight: "700", color: "#475569", cursor: "pointer" }}
+                                    className="flex items-center gap-2 bg-white border border-slate-200 rounded-lg px-4 py-2 text-sm font-bold text-slate-700 cursor-pointer"
                                 >
                                     <Filter size={14} />
                                     <span>Filter</span>
@@ -247,15 +235,15 @@ export default function Attendance() {
 
                         {/* Table */}
                         <div className="table-responsive">
-                            <table className="employee-table" style={{ width: "100%", borderCollapse: "collapse" }}>
+                            <table className="min-w-full table-auto">
                                 <thead>
-                                    <tr style={{ borderBottom: "1px solid #e2e8f0" }}>
-                                        <th style={{ padding: "14px 24px", textAlign: "left", fontSize: "11px", fontWeight: "700", color: "#64748b", textTransform: "uppercase" }}>Date</th>
-                                        <th style={{ padding: "14px 24px", textAlign: "left", fontSize: "11px", fontWeight: "700", color: "#64748b", textTransform: "uppercase" }}>Day</th>
-                                        <th style={{ padding: "14px 24px", textAlign: "left", fontSize: "11px", fontWeight: "700", color: "#64748b", textTransform: "uppercase" }}>Status</th>
-                                        <th style={{ padding: "14px 24px", textAlign: "left", fontSize: "11px", fontWeight: "700", color: "#64748b", textTransform: "uppercase" }}>Clock In</th>
-                                        <th style={{ padding: "14px 24px", textAlign: "left", fontSize: "11px", fontWeight: "700", color: "#64748b", textTransform: "uppercase" }}>Clock Out</th>
-                                        <th style={{ padding: "14px 24px", textAlign: "left", fontSize: "11px", fontWeight: "700", color: "#64748b", textTransform: "uppercase" }}>Worked Hours</th>
+                                    <tr className="border-b border-slate-200">
+                                        <th className="px-6 py-3 text-left text-xs font-bold text-slate-500 uppercase">Date</th>
+                                        <th className="px-6 py-3 text-left text-xs font-bold text-slate-500 uppercase">Day</th>
+                                        <th className="px-6 py-3 text-left text-xs font-bold text-slate-500 uppercase">Status</th>
+                                        <th className="px-6 py-3 text-left text-xs font-bold text-slate-500 uppercase">Clock In</th>
+                                        <th className="px-6 py-3 text-left text-xs font-bold text-slate-500 uppercase">Clock Out</th>
+                                        <th className="px-6 py-3 text-left text-xs font-bold text-slate-500 uppercase">Worked Hours</th>
                                     </tr>
                                 </thead>
                                 <tbody>
