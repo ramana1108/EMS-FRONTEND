@@ -155,58 +155,34 @@ const Departments = () => {
     }
 
     if (editingId) {
-      // PUT /api/departments/:id
       try {
-        const res = await fetch(`${API_URL}/${editingId}`, {
-          method: "PUT",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(formData),
-        });
+        const data = await api.updateDepartment(editingId, formData);
 
-        if (res.ok) {
-          const data = await res.json();
-          setDepartments((prev) =>
-            prev.map((d) =>
-              d._id === editingId ? data.department || { ...d, ...formData } : d
-            )
-          );
-          fetchDashboardCounts();
+        if (data?.department) {
+          await fetchDepartments();
+          await fetchDashboardCounts();
         } else {
-          setDepartments((prev) =>
-            prev.map((d) => (d._id === editingId ? { ...d, ...formData } : d))
-          );
+          setErrorMsg(data?.message || "Failed to update department.");
+          return;
         }
       } catch (err) {
-        setDepartments((prev) =>
-          prev.map((d) => (d._id === editingId ? { ...d, ...formData } : d))
-        );
+        setErrorMsg(err?.message || "Failed to update department.");
+        return;
       }
     } else {
-      // POST /api/departments
       try {
-        const res = await fetch(API_URL, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(formData),
-        });
+        const data = await api.createDepartment(formData);
 
-        if (res.ok) {
-          const data = await res.json();
-          setDepartments((prev) => [data.department, ...prev]);
-          fetchDashboardCounts();
+        if (data?.department) {
+          await fetchDepartments();
+          await fetchDashboardCounts();
         } else {
-          const newDept = {
-            ...formData,
-            _id: "65d8a" + Math.random().toString(36).substring(2, 9),
-          };
-          setDepartments((prev) => [newDept, ...prev]);
+          setErrorMsg(data?.message || "Failed to create department.");
+          return;
         }
       } catch (err) {
-        const newDept = {
-          ...formData,
-          _id: "65d8a" + Math.random().toString(36).substring(2, 9),
-        };
-        setDepartments((prev) => [newDept, ...prev]);
+        setErrorMsg(err?.message || "Failed to create department.");
+        return;
       }
     }
 
@@ -218,12 +194,11 @@ const Departments = () => {
     if (!window.confirm("Are you sure you want to delete this department?")) return;
 
     try {
-      await fetch(`${API_URL}/${id}`, { method: "DELETE" });
-      fetchDashboardCounts();
+      await api.deleteDepartment(id);
+      await fetchDepartments();
+      await fetchDashboardCounts();
     } catch (err) {
-      console.warn("Offline delete fallback");
-    } finally {
-      setDepartments((prev) => prev.filter((d) => d._id !== id));
+      setErrorMsg(err?.message || "Failed to delete department.");
     }
   };
 
@@ -240,48 +215,24 @@ const Departments = () => {
             onChange={(e) => setSearchQuery(e.target.value)}
           />
         </div>
-        <div className="header-right" style={{ position: "relative" }}>
+        <div className="header-right relative">
           <button className="icon-btn" title="Notifications" onClick={() => navigate("/admin/notices") }>
             🔔
           </button>
-          <div
-            className="admin-badge"
-            onClick={() => setShowProfileInfo((prev) => !prev)}
-            style={{ cursor: "pointer" }}
-          >
+          <div className="admin-badge cursor-pointer flex items-center gap-2" onClick={() => setShowProfileInfo((prev) => !prev)}>
             <span className="badge-avatar">AB</span>
             <span className="badge-text">admin</span>
           </div>
           {showProfileInfo && (
-            <div style={{
-              position: "absolute",
-              right: 0,
-              top: "100%",
-              marginTop: "10px",
-              width: "220px",
-              background: "#ffffff",
-              border: "1px solid #e5e7eb",
-              borderRadius: "14px",
-              boxShadow: "0 12px 30px rgba(15, 23, 42, 0.12)",
-              padding: "14px",
-              zIndex: 30
-            }}>
-              <div style={{ display: "flex", alignItems: "center", gap: "10px", marginBottom: "10px" }}>
-                <div style={{ width: "36px", height: "36px", borderRadius: "50%", backgroundColor: "#0f766e", color: "#ffffff", display: "flex", alignItems: "center", justifyContent: "center", fontWeight: 700 }}>AB</div>
+            <div className="absolute right-0 top-full mt-2 w-56 bg-white border border-slate-200 rounded-lg shadow-lg p-3 z-30">
+              <div className="flex items-center gap-3 mb-2">
+                <div className="w-9 h-9 rounded-full bg-emerald-700 text-white flex items-center justify-center font-bold">AB</div>
                 <div>
-                  <div style={{ fontWeight: 700 }}>Admin</div>
-                  <div style={{ fontSize: "12px", color: "#475569" }}>Administrator</div>
+                  <div className="font-bold">Admin</div>
+                  <div className="text-xs text-slate-500">Administrator</div>
                 </div>
               </div>
-              <button
-                style={{ width: "100%", border: "none", borderRadius: "10px", padding: "10px", background: "#0f766e", color: "#ffffff", cursor: "pointer" }}
-                onClick={() => {
-                  navigate("/admin/settings");
-                  setShowProfileInfo(false);
-                }}
-              >
-                View Profile Settings
-              </button>
+              <button className="w-full rounded-md py-2 bg-emerald-700 text-white" onClick={() => { navigate("/admin/settings"); setShowProfileInfo(false); }}>View Profile Settings</button>
             </div>
           )}
           <button className="btn-add-dept" onClick={handleOpenAddModal}>
