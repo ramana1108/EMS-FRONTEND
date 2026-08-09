@@ -1,6 +1,5 @@
 
 import React, { useState, useEffect } from "react";
-import "../App.css";
 import Sidebar from "../components/Sidebar";
 import {
   Search,
@@ -65,16 +64,8 @@ export default function EmployeeDashboard() {
             </div>
 
             <div className="emp-user-profile-badge">
-              <div className="emp-avatar-circle">
-                {dashboard?.employeeProfile
-                  ? `${dashboard.employeeProfile.firstName?.[0] || ""}${dashboard.employeeProfile.lastName?.[0] || ""}`.toUpperCase()
-                  : "U"}
-              </div>
-              <span>
-                {dashboard?.employeeProfile
-                  ? `${dashboard.employeeProfile.firstName || ""} ${dashboard.employeeProfile.lastName || ""}`.trim()
-                  : "Employee"}
-              </span>
+              <div className="emp-avatar-circle">E</div>
+              <span>Employee</span>
             </div>
           </div>
 
@@ -84,10 +75,10 @@ export default function EmployeeDashboard() {
               <>
                 <div className="emp-stat-card">
                   <div className="emp-stat-top">
-                    <span className="emp-stat-title">Attendance</span>
                     <div className="emp-stat-icon-box">
                       <TrendingUp size={18} />
                     </div>
+                    <span className="emp-stat-title">Attendance</span>
                   </div>
                   <p className="emp-stat-value">
                     {dashboard.todayAttendance?.status || "No record"}
@@ -97,10 +88,10 @@ export default function EmployeeDashboard() {
 
                 <div className="emp-stat-card">
                   <div className="emp-stat-top">
-                    <span className="emp-stat-title">Leave Balance</span>
                     <div className="emp-stat-icon-box">
                       <Calendar size={18} />
                     </div>
+                    <span className="emp-stat-title">Leave Balance</span>
                   </div>
                   <p className="emp-stat-value">
                     {dashboard.employeeProfile?.leaveBalance ?? "—"}
@@ -110,10 +101,10 @@ export default function EmployeeDashboard() {
 
                 <div className="emp-stat-card">
                   <div className="emp-stat-top">
-                    <span className="emp-stat-title">Current Salary</span>
                     <div className="emp-stat-icon-box">
                       <DollarSign size={18} />
                     </div>
+                    <span className="emp-stat-title">Current Salary</span>
                   </div>
                   <p className="emp-stat-value">
                     {dashboard.employeeProfile?.salary ? `$${dashboard.employeeProfile.salary}` : "—"}
@@ -123,10 +114,10 @@ export default function EmployeeDashboard() {
 
                 <div className="emp-stat-card">
                   <div className="emp-stat-top">
-                    <span className="emp-stat-title">Recent Alerts</span>
                     <div className="emp-stat-icon-box">
                       <Megaphone size={18} />
                     </div>
+                    <span className="emp-stat-title">Recent Alerts</span>
                   </div>
                   <p className="emp-stat-value">
                     {dashboard.recentNotices?.length ?? 0}
@@ -137,47 +128,45 @@ export default function EmployeeDashboard() {
             )}
           </div>
 
-          <div className="emp-middle-grid">
-            <div className="emp-card-box">
-              <h2 className="emp-card-title">Attendance History & Leave Status</h2>
-              <div className="current-status-row">
-                <span className="current-status-label">Current status</span>
-                <p className="current-status-value">Present</p>
+          {!loading && dashboard && (
+            <div className="emp-card-box mb-10">
+              <div className="flex items-center justify-between gap-4 mb-5">
+                <h2 className="emp-card-title">Attendance Summary</h2>
+                <span className="rounded-full bg-slate-100 px-3 py-1 text-xs font-semibold text-slate-700">
+                  {dashboard.todayAttendance?.status || "No record"}
+                </span>
               </div>
 
-              <table className="emp-table">
-                <thead>
-                  <tr>
-                    <th>Date</th>
-                    <th>Status</th>
-                    <th>Activity</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td>Nov 5, 2026</td>
-                    <td className="status-present">Present</td>
-                    <td>14 hours</td>
-                  </tr>
-                  <tr>
-                    <td>Dec 5, 2026</td>
-                    <td className="status-present">Present</td>
-                    <td>Two days</td>
-                  </tr>
-                  <tr>
-                    <td>Dec 5, 2026</td>
-                    <td className="status-present">Present</td>
-                    <td>13 day</td>
-                  </tr>
-                  <tr>
-                    <td>Nov 5, 2026</td>
-                    <td className="status-present">Present</td>
-                    <td>13 day</td>
-                  </tr>
-                </tbody>
-              </table>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
+                  <p className="text-xs uppercase tracking-[0.2em] text-slate-400">Check-in time</p>
+                  <p className="text-xl font-semibold text-slate-900 mt-2">
+                    {dashboard.todayAttendance?.checkInTime || "-"}
+                  </p>
+                </div>
+                <div className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
+                  <p className="text-xs uppercase tracking-[0.2em] text-slate-400">Check-out time</p>
+                  <p className="text-xl font-semibold text-slate-900 mt-2">
+                    {dashboard.todayAttendance?.checkOutTime || "-"}
+                  </p>
+                </div>
+                <div className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
+                  <p className="text-xs uppercase tracking-[0.2em] text-slate-400">Worked hours</p>
+                  <p className="text-xl font-semibold text-slate-900 mt-2">
+                    {dashboard.todayAttendance?.workedHours != null ? `${dashboard.todayAttendance.workedHours} hr` : "-"}
+                  </p>
+                </div>
+                <div className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
+                  <p className="text-xs uppercase tracking-[0.2em] text-slate-400">Notes</p>
+                  <p className="text-sm text-slate-700 mt-2 leading-6">
+                    {dashboard.todayAttendance?.notes || "No additional notes."}
+                  </p>
+                </div>
+              </div>
             </div>
+          )}
 
+          <div className="emp-middle-grid grid grid-cols-1 lg:grid-cols-2 gap-6 mb-10">
             <div className="emp-card-box">
               <h2 className="emp-card-title">Company Announcements</h2>
               <div className="announcement-list">
@@ -207,26 +196,30 @@ export default function EmployeeDashboard() {
 
             <div className="emp-card-box">
               <h2 className="emp-card-title">Profile Summary</h2>
-              <div className="profile-card-content">
+              <div className="profile-card-content space-y-4 flex flex-col items-center">
                 <img
                   src={dashboard?.employeeProfile?.profileImage || "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=150&auto=format&fit=crop&q=80"}
                   alt={dashboard?.employeeProfile?.firstName || "Employee"}
                   className="profile-avatar-large"
                 />
-                <p className="profile-name">
-                  {dashboard?.employeeProfile
-                    ? `${dashboard.employeeProfile.firstName || ""} ${dashboard.employeeProfile.lastName || ""}`.trim()
-                    : "Employee"}
-                </p>
-                <p className="profile-role">
-                  {dashboard?.employeeProfile?.designationId?.designationName || "Employee"}
-                </p>
-                <div className="profile-dept-info">
+                <div>
+                  <p className="profile-name">
+                    {dashboard?.employeeProfile
+                      ? `${dashboard.employeeProfile.firstName || ""} ${dashboard.employeeProfile.lastName || ""}`.trim()
+                      : "Employee"}
+                  </p>
+                  <p className="profile-role">
+                    {dashboard?.employeeProfile?.designationId?.designationName || "Employee"}
+                  </p>
+                </div>
+                <div className="profile-dept-info w-full">
                   <span>Department</span>
                   <span>{dashboard?.employeeProfile?.departmentId?.departmentName || "—"}</span>
                 </div>
-                <button className="btn-apply-leave">Apply Leave</button>
-                <button className="btn-download-payslip">Download Payslip</button>
+                <div className="w-full space-y-3 pt-2">
+                  <button className="btn-apply-leave">Apply Leave</button>
+                  <button className="btn-download-payslip">Download Payslip</button>
+                </div>
               </div>
             </div>
           </div>
@@ -294,4 +287,3 @@ export default function EmployeeDashboard() {
     </div>
   );
 }
-        

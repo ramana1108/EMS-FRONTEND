@@ -1,15 +1,17 @@
 import { useState, useEffect } from "react";
+import api from "../api";
 import { useLocation } from "react-router-dom";
-import "../App.css";
 import {
     Building2,
     Award,
     Plus,
+    Edit,
     Trash2,
     MapPin,
     Users,
     Briefcase,
-    AlertCircle
+    AlertCircle,
+    X
 } from "lucide-react";
 
 export default function Designations() {
@@ -26,6 +28,7 @@ export default function Designations() {
     const [activeView, setActiveView] = useState(getInitialView);
     const [departments, setDepartments] = useState([]);
     const [designations, setDesignations] = useState([]);
+    const [employees, setEmployees] = useState([]);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState("");
     const [success, setSuccess] = useState("");
@@ -39,6 +42,11 @@ export default function Designations() {
     // Designation Form fields
     const [desigName, setDesigName] = useState("");
     const [desigDeptId, setDesigDeptId] = useState("");
+    const [desigEmployeeId, setDesigEmployeeId] = useState("");
+    const [editingId, setEditingId] = useState(null);
+
+    // Modal Control State
+    const [isAddModalOpen, setIsAddModalOpen] = useState(false);
 
     const API_BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
 
@@ -60,13 +68,8 @@ export default function Designations() {
 
     const fetchDepartments = async () => {
         try {
-            const res = await fetch(`${API_BASE_URL}/departments`, {
-                headers: getHeaders(),
-            });
-            const data = await res.json();
-            if (res.ok) {
-                setDepartments(data.departments || []);
-            }
+            const data = await api.getDepartments();
+            if (data) setDepartments(data.departments || data.data || []);
         } catch (err) {
             console.error(err);
         }
@@ -74,22 +77,34 @@ export default function Designations() {
 
     const fetchDesignations = async () => {
         try {
-            const res = await fetch(`${API_BASE_URL}/designations`, {
-                headers: getHeaders(),
-            });
-            const data = await res.json();
-            if (res.ok) {
-                setDesignations(data.designations || []);
-            }
+            const data = await api.getDesignations();
+            if (data) setDesignations(data.designations || data.data || []);
         } catch (err) {
             console.error(err);
+        }
+    };
+
+    const fetchEmployees = async () => {
+        try {
+            const data = await api.getAllEmployees();
+            let list = [];
+            if (Array.isArray(data)) {
+                list = data;
+            } else if (data && Array.isArray(data.employees)) {
+                list = data.employees;
+            } else if (data && data.success && Array.isArray(data.data)) {
+                list = data.data;
+            }
+            setEmployees(list || []);
+        } catch (err) {
+            console.error("Failed to load employees for designation matching:", err);
         }
     };
 
     const loadAll = async () => {
         setLoading(true);
         setError("");
-        await Promise.all([fetchDepartments(), fetchDesignations()]);
+        await Promise.all([fetchDepartments(), fetchDesignations(), fetchEmployees()]);
         setLoading(false);
     };
 
@@ -106,26 +121,22 @@ export default function Designations() {
         setError("");
         setSuccess("");
         try {
-            const res = await fetch(`${API_BASE_URL}/departments`, {
-                method: "POST",
-                headers: getHeaders(),
-                body: JSON.stringify({
-                    departmentName: deptName.trim(),
-                    description: deptDesc.trim(),
-                    headName: deptHead.trim(),
-                    headDesignation: deptHeadDesignation.trim(),
-                }),
+            const data = await api.createDepartment({
+                departmentName: deptName.trim(),
+                description: deptDesc.trim(),
+                headName: deptHead.trim(),
+                headDesignation: deptHeadDesignation.trim(),
             });
-            const data = await res.json();
-            if (res.ok) {
+            if (data && data.department) {
                 setSuccess("Department created successfully!");
                 setDeptName("");
                 setDeptDesc("");
                 setDeptHead("");
                 setDeptHeadDesignation("");
+                setIsAddModalOpen(false);
                 loadAll();
             } else {
-                setError(data.message || "Failed to create department");
+                setError(data?.message || "Failed to create department");
             }
         } catch (err) {
             console.error(err);
@@ -142,27 +153,58 @@ export default function Designations() {
         setError("");
         setSuccess("");
         try {
-            const res = await fetch(`${API_BASE_URL}/designations`, {
-                method: "POST",
-                headers: getHeaders(),
-                body: JSON.stringify({
+            let data;
+            if (editingId) {
+                data = await api.updateDesignation(editingId, {
                     designationName: desigName.trim(),
                     departmentId: desigDeptId,
-                }),
-            });
-            const data = await res.json();
-            if (res.ok) {
-                setSuccess("Designation created successfully!");
+                });
+            } else {
+                data = await api.createDesignation({
+                    designationName: desigName.trim(),
+                    departmentId: desigDeptId,
+                });
+            }
+
+            if (data && data.designation) {
+                const desigId = data.designation._id;
+                // If an employee is selected, assign them this designation
+                if (desigEmployeeId) {
+                    await api.updateEmployee(desigEmployeeId, {
+                        designationId: desigId,
+                        departmentId: desigDeptId
+                    });
+                }
+                setSuccess(editingId ? "Designation updated successfully!" : "Designation created successfully!");
                 setDesigName("");
                 setDesigDeptId("");
+                setDesigEmployeeId("");
+                setEditingId(null);
+                setIsAddModalOpen(false);
                 loadAll();
             } else {
-                setError(data.message || "Failed to create designation");
+                setError(data?.message || `Failed to ${editingId ? 'update' : 'create'} designation`);
             }
         } catch (err) {
             console.error(err);
-            setError("An error occurred while creating designation");
+            setError(`An error occurred while ${editingId ? 'updating' : 'creating'} designation`);
         }
+    };
+
+    const handleEditDesignationClick = (desig) => {
+        setError("");
+        setSuccess("");
+        setEditingId(desig._id);
+        setDesigName(desig.designationName);
+        setDesigDeptId(desig.departmentId?._id || desig.departmentId || "");
+
+        // Find if any employee is assigned to this designation
+        const assignedEmp = employees.find(emp => {
+            const empDesigId = emp.designationId?._id || emp.designationId;
+            return empDesigId === desig._id;
+        });
+        setDesigEmployeeId(assignedEmp ? assignedEmp._id : "");
+        setIsAddModalOpen(true);
     };
 
     const handleDeleteDepartment = async (id) => {
@@ -170,16 +212,12 @@ export default function Designations() {
         setError("");
         setSuccess("");
         try {
-            const res = await fetch(`${API_BASE_URL}/departments/${id}`, {
-                method: "DELETE",
-                headers: getHeaders(),
-            });
-            const data = await res.json();
-            if (res.ok) {
+            const data = await api.deleteDepartment(id);
+            if (data) {
                 setSuccess("Department deleted successfully!");
                 loadAll();
             } else {
-                setError(data.message || "Failed to delete department");
+                setError("Failed to delete department");
             }
         } catch (err) {
             console.error(err);
@@ -192,16 +230,12 @@ export default function Designations() {
         setError("");
         setSuccess("");
         try {
-            const res = await fetch(`${API_BASE_URL}/designations/${id}`, {
-                method: "DELETE",
-                headers: getHeaders(),
-            });
-            const data = await res.json();
-            if (res.ok) {
+            const data = await api.deleteDesignation(id);
+            if (data) {
                 setSuccess("Designation deleted successfully!");
                 loadAll();
             } else {
-                setError(data.message || "Failed to delete designation");
+                setError("Failed to delete designation");
             }
         } catch (err) {
             console.error(err);
@@ -223,6 +257,18 @@ export default function Designations() {
                             : "Manage and assign organizational job designations."}
                     </p>
                 </div>
+                <button
+                    className="btn-enroll-employee"
+                    onClick={() => {
+                        setError("");
+                        setSuccess("");
+                        setIsAddModalOpen(true);
+                    }}
+                    style={{ display: "flex", alignItems: "center", gap: "8px" }}
+                >
+                    <Plus size={16} />
+                    <span>{activeView === "departments" ? "Add Department" : "Add Designation"}</span>
+                </button>
             </div>
 
             {error && (
@@ -238,206 +284,253 @@ export default function Designations() {
                 </div>
             )}
 
-            {/* Main Grid View */}
-            <div className="emp-middle-grid" style={{ display: "grid", gridTemplateColumns: "2.2fr 1fr", gap: "24px", alignItems: "start" }}>
-
+            {/* Full-width container */}
+            <div className="w-full">
                 {/* Render Departments View */}
                 {activeView === "departments" && (
-                    <>
-                        {/* Departments Table */}
-                        <div className="employee-directory-card" style={{ padding: "24px" }}>
-                            <h2 className="emp-card-title" style={{ marginBottom: "16px" }}>Department List</h2>
+                    <div className="employee-directory-card" style={{ padding: "24px" }}>
+                        <h2 className="emp-card-title" style={{ marginBottom: "16px" }}>Department List</h2>
 
-                            <div className="table-responsive">
-                                <table className="employee-table">
-                                    <thead>
+                        <div className="table-responsive">
+                            <table className="employee-table">
+                                <thead>
+                                    <tr>
+                                        <th style={{ padding: "4px 8px" }}>DEPARTMENT NAME</th>
+                                        <th style={{ padding: "4px 8px" }}>DESCRIPTION</th>
+                                        <th style={{ padding: "4px 8px" }}>DEPARTMENT HEAD</th>
+                                        <th style={{ padding: "4px 8px", textAlign: "center" }}>EMPLOYEES</th>
+                                        <th style={{ padding: "4px 8px", textAlign: "right" }}>ACTIONS</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {loading ? (
                                         <tr>
-                                            <th style={{ padding: "12px" }}>DEPARTMENT NAME</th>
-                                            <th style={{ padding: "12px" }}>DESCRIPTION</th>
-                                            <th style={{ padding: "12px" }}>DEPARTMENT HEAD</th>
-                                            <th style={{ padding: "12px", textAlign: "center" }}>EMPLOYEES</th>
-                                            <th style={{ padding: "12px", textAlign: "right" }}>ACTIONS</th>
+                                            <td colSpan="5" style={{ textAlign: "center", padding: "30px 0" }}>Loading departments...</td>
                                         </tr>
-                                    </thead>
-                                    <tbody>
-                                        {loading ? (
-                                            <tr>
-                                                <td colSpan="5" style={{ textAlign: "center", padding: "30px 0" }}>Loading departments...</td>
+                                    ) : departments.length === 0 ? (
+                                        <tr>
+                                            <td colSpan="5" style={{ textAlign: "center", padding: "30px 0" }}>No departments found. Create one.</td>
+                                        </tr>
+                                    ) : (
+                                        departments.map((dept) => (
+                                            <tr key={dept._id} className="employee-row">
+                                                <td style={{ padding: "4px 8px" }}>
+                                                    <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+                                                        <Building2 size={16} color="#0d9488" />
+                                                        <span style={{ fontWeight: "700", color: "#1f2937" }}>{dept.departmentName}</span>
+                                                    </div>
+                                                </td>
+                                                <td style={{ padding: "4px 8px", color: "#64748b", fontSize: "13px", maxWidth: "250px", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+                                                    {dept.description}
+                                                </td>
+                                                <td style={{ padding: "4px 8px" }}>
+                                                    <div>
+                                                        <p style={{ fontWeight: "600", fontSize: "14px", color: "#374151" }}>{dept.headName}</p>
+                                                        <p style={{ fontSize: "12px", color: "#8b5cf6" }}>{dept.headDesignation}</p>
+                                                    </div>
+                                                </td>
+                                                <td style={{ padding: "4px 8px", textAlign: "center" }}>
+                                                    <span style={{ fontWeight: "700", color: "#0f766e" }}>{dept.employeeCount || 0}</span>
+                                                </td>
+                                                <td style={{ padding: "4px 8px", textAlign: "right" }}>
+                                                    <button
+                                                        onClick={() => handleDeleteDepartment(dept._id)}
+                                                        className="action-icon-btn delete"
+                                                        style={{ border: "none", background: "none", cursor: "pointer", color: "#b91c1c" }}
+                                                    >
+                                                        <Trash2 size={16} />
+                                                    </button>
+                                                </td>
                                             </tr>
-                                        ) : departments.length === 0 ? (
-                                            <tr>
-                                                <td colSpan="5" style={{ textAlign: "center", padding: "30px 0" }}>No departments found. Create one.</td>
-                                            </tr>
-                                        ) : (
-                                            departments.map((dept) => (
-                                                <tr key={dept._id} className="employee-row">
-                                                    <td style={{ padding: "16px" }}>
-                                                        <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-                                                            <Building2 size={16} color="#0d9488" />
-                                                            <span style={{ fontWeight: "700", color: "#1f2937" }}>{dept.departmentName}</span>
-                                                        </div>
-                                                    </td>
-                                                    <td style={{ padding: "16px", color: "#64748b", fontSize: "13px", maxWidth: "200px", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
-                                                        {dept.description}
-                                                    </td>
-                                                    <td style={{ padding: "16px" }}>
-                                                        <div>
-                                                            <p style={{ fontWeight: "600", fontSize: "14px", color: "#374151" }}>{dept.headName}</p>
-                                                            <p style={{ fontSize: "12px", color: "#8b5cf6" }}>{dept.headDesignation}</p>
-                                                        </div>
-                                                    </td>
-                                                    <td style={{ padding: "16px", textAlign: "center" }}>
-                                                        <span style={{ fontWeight: "700", color: "#0f766e" }}>{dept.employeeCount || 0}</span>
-                                                    </td>
-                                                    <td style={{ padding: "16px", textAlign: "right" }}>
-                                                        <button
-                                                            onClick={() => handleDeleteDepartment(dept._id)}
-                                                            className="action-icon-btn delete"
-                                                            style={{ border: "none", background: "none", cursor: "pointer", color: "#b91c1c" }}
-                                                        >
-                                                            <Trash2 size={16} />
-                                                        </button>
-                                                    </td>
-                                                </tr>
-                                            ))
-                                        )}
-                                    </tbody>
-                                </table>
-                            </div>
+                                        ))
+                                    )}
+                                </tbody>
+                            </table>
                         </div>
-
-                        {/* Add Department Form */}
-                        <div className="emp-card-box" style={{ padding: "24px" }}>
-                            <h2 className="emp-card-title" style={{ marginBottom: "16px" }}>Add Department</h2>
-                            <form onSubmit={handleAddDepartment}>
-                                <div style={{ marginBottom: "12px" }}>
-                                    <label style={{ display: "block", fontSize: "11px", fontWeight: "700", textTransform: "uppercase", color: "#475569", marginBottom: "4px" }}>Department Name</label>
-                                    <input
-                                        type="text"
-                                        value={deptName}
-                                        onChange={(e) => setDeptName(e.target.value)}
-                                        style={{ width: "100%", padding: "8px 12px", borderRadius: "6px", border: "1px solid #cbd5e1" }}
-                                        placeholder="e.g. Human Resources"
-                                    />
-                                </div>
-                                <div style={{ marginBottom: "12px" }}>
-                                    <label style={{ display: "block", fontSize: "11px", fontWeight: "700", textTransform: "uppercase", color: "#475569", marginBottom: "4px" }}>Description</label>
-                                    <textarea
-                                        value={deptDesc}
-                                        onChange={(e) => setDeptDesc(e.target.value)}
-                                        style={{ width: "100%", padding: "8px 12px", borderRadius: "6px", border: "1px solid #cbd5e1", minHeight: "60px", resize: "vertical" }}
-                                        placeholder="Brief description..."
-                                    />
-                                </div>
-                                <div style={{ marginBottom: "12px" }}>
-                                    <label style={{ display: "block", fontSize: "11px", fontWeight: "700", textTransform: "uppercase", color: "#475569", marginBottom: "4px" }}>Head of Department Name</label>
-                                    <input
-                                        type="text"
-                                        value={deptHead}
-                                        onChange={(e) => setDeptHead(e.target.value)}
-                                        style={{ width: "100%", padding: "8px 12px", borderRadius: "6px", border: "1px solid #cbd5e1" }}
-                                        placeholder="e.g. John Doe"
-                                    />
-                                </div>
-                                <div style={{ marginBottom: "16px" }}>
-                                    <label style={{ display: "block", fontSize: "11px", fontWeight: "700", textTransform: "uppercase", color: "#475569", marginBottom: "4px" }}>Head Designation</label>
-                                    <input
-                                        type="text"
-                                        value={deptHeadDesignation}
-                                        onChange={(e) => setDeptHeadDesignation(e.target.value)}
-                                        style={{ width: "100%", padding: "8px 12px", borderRadius: "6px", border: "1px solid #cbd5e1" }}
-                                        placeholder="e.g. VP, HR Operations"
-                                    />
-                                </div>
-                                <button
-                                    type="submit"
-                                    style={{ width: "100%", padding: "10px", backgroundColor: "#059669", color: "#ffffff", border: "none", borderRadius: "6px", fontWeight: "600", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", gap: "8px" }}
-                                >
-                                    <Plus size={16} />
-                                    <span>Create Department</span>
-                                </button>
-                            </form>
-                        </div>
-                    </>
+                    </div>
                 )}
 
                 {/* Render Designations View */}
                 {activeView === "designations" && (
-                    <>
-                        {/* Designations Table */}
-                        <div className="employee-directory-card" style={{ padding: "24px" }}>
-                            <h2 className="emp-card-title" style={{ marginBottom: "16px" }}>Designation List</h2>
+                    <div className="employee-directory-card" style={{ padding: "24px" }}>
+                        <h2 className="emp-card-title" style={{ marginBottom: "16px" }}>Designation List</h2>
 
-                            <div className="table-responsive">
-                                <table className="employee-table">
-                                    <thead>
+                        <div className="table-responsive">
+                            <table className="employee-table">
+                                <thead>
+                                    <tr>
+                                        <th style={{ padding: "4px 8px" }}>EMPLOYEE NAME(S)</th>
+                                        <th style={{ padding: "4px 8px" }}>DESIGNATION</th>
+                                        <th style={{ padding: "4px 8px" }}>DEPARTMENT</th>
+                                        <th style={{ padding: "4px 8px", textAlign: "right" }}>ACTIONS</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {loading ? (
                                         <tr>
-                                            <th style={{ padding: "12px" }}>DESIGNATION</th>
-                                            <th style={{ padding: "12px" }}>DEPARTMENT</th>
-                                            <th style={{ padding: "12px", textAlign: "right" }}>ACTIONS</th>
+                                            <td colSpan="4" style={{ textAlign: "center", padding: "30px 0" }}>Loading designations...</td>
                                         </tr>
-                                    </thead>
-                                    <tbody>
-                                        {loading ? (
-                                            <tr>
-                                                <td colSpan="3" style={{ textAlign: "center", padding: "30px 0" }}>Loading designations...</td>
-                                            </tr>
-                                        ) : designations.length === 0 ? (
-                                            <tr>
-                                                <td colSpan="3" style={{ textAlign: "center", padding: "30px 0" }}>No designations registered. Create one.</td>
-                                            </tr>
-                                        ) : (
-                                            designations.map((desig) => (
+                                    ) : designations.length === 0 ? (
+                                        <tr>
+                                            <td colSpan="4" style={{ textAlign: "center", padding: "30px 0" }}>No designations registered. Create one.</td>
+                                        </tr>
+                                    ) : (
+                                        designations.map((desig) => {
+                                            const desigEmployees = employees.filter(emp => {
+                                                const empDesigId = emp.designationId?._id || emp.designationId;
+                                                return empDesigId === desig._id;
+                                            });
+                                            const employeeNames = desigEmployees.map(emp => `${emp.firstName || ""} ${emp.lastName || ""}`.trim()).join(", ") || "—";
+                                            return (
                                                 <tr key={desig._id} className="employee-row">
-                                                    <td style={{ padding: "16px" }}>
+                                                    <td style={{ padding: "4px 8px", color: "#475569", fontSize: "13px" }}>
+                                                        {employeeNames}
+                                                    </td>
+                                                    <td style={{ padding: "4px 8px" }}>
                                                         <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
                                                             <Award size={16} color="#8b5cf6" />
                                                             <span style={{ fontWeight: "600", color: "#1e293b" }}>{desig.designationName}</span>
                                                         </div>
                                                     </td>
-                                                    <td style={{ padding: "16px" }}>
+                                                    <td style={{ padding: "4px 8px" }}>
                                                         <span style={{ fontSize: "13px", fontWeight: "600", color: "#374151", padding: "3px 8px", backgroundColor: "#f3f4f6", borderRadius: "12px" }}>
                                                             {desig.departmentId?.departmentName || "Unassigned"}
                                                         </span>
                                                     </td>
-                                                    <td style={{ padding: "16px", textAlign: "right" }}>
-                                                        <button
-                                                            onClick={() => handleDeleteDesignation(desig._id)}
-                                                            className="action-icon-btn delete"
-                                                            style={{ border: "none", background: "none", cursor: "pointer", color: "#b91c1c" }}
-                                                        >
-                                                            <Trash2 size={16} />
-                                                        </button>
+                                                    <td style={{ padding: "4px 8px", textAlign: "right" }}>
+                                                        <div style={{ display: "flex", gap: "8px", justifyContent: "flex-end" }}>
+                                                            <button
+                                                                onClick={() => handleEditDesignationClick(desig)}
+                                                                className="action-icon-btn"
+                                                                style={{ border: "none", background: "none", cursor: "pointer", color: "#4f46e5" }}
+                                                                title="Edit designation"
+                                                            >
+                                                                <Edit size={16} />
+                                                            </button>
+                                                            <button
+                                                                onClick={() => handleDeleteDesignation(desig._id)}
+                                                                className="action-icon-btn delete"
+                                                                style={{ border: "none", background: "none", cursor: "pointer", color: "#b91c1c" }}
+                                                                title="Delete designation"
+                                                            >
+                                                                <Trash2 size={16} />
+                                                            </button>
+                                                        </div>
                                                     </td>
                                                 </tr>
-                                            ))
-                                        )}
-                                    </tbody>
-                                </table>
+                                            );
+                                        })
+                                    )}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                )}
+            </div>
+
+            {/* Modal Dialog Form popup */}
+            {isAddModalOpen && (
+                <div className="modal-backdrop">
+                    <div className="modal-content-card" style={{ maxWidth: "600px" }}>
+                        <div className="modal-header">
+                            <div>
+                                <h2>
+                                    {activeView === "departments"
+                                        ? "Add Department"
+                                        : (editingId ? "Edit Designation" : "Add Designation")}
+                                </h2>
+                                <p className="modal-subtitle">
+                                    {activeView === "departments"
+                                        ? "Provide details to create new department."
+                                        : (editingId ? "Update existing designation details." : "Provide details to create new designation.")}
+                                </p>
                             </div>
+                            <button
+                                className="btn-close"
+                                onClick={() => { setIsAddModalOpen(false); setEditingId(null); setDesigName(""); setDesigDeptId(""); setDesigEmployeeId(""); }}
+                            >
+                                <X size={20} />
+                            </button>
                         </div>
 
-                        {/* Add Designation Form */}
-                        <div className="emp-card-box" style={{ padding: "24px" }}>
-                            <h2 className="emp-card-title" style={{ marginBottom: "16px" }}>Add Designation</h2>
-                            <form onSubmit={handleAddDesignation}>
-                                <div style={{ marginBottom: "12px" }}>
-                                    <label style={{ display: "block", fontSize: "11px", fontWeight: "700", textTransform: "uppercase", color: "#475569", marginBottom: "4px" }}>Designation Name</label>
+                        {activeView === "departments" ? (
+                            <form onSubmit={handleAddDepartment} className="enroll-form">
+                                <div className="form-group">
+                                    <label>Department Name <span className="req">*</span></label>
+                                    <input
+                                        type="text"
+                                        value={deptName}
+                                        onChange={(e) => setDeptName(e.target.value)}
+                                        placeholder="e.g. Human Resources"
+                                        required
+                                    />
+                                </div>
+                                <div className="form-group">
+                                    <label>Description <span className="req">*</span></label>
+                                    <textarea
+                                        value={deptDesc}
+                                        onChange={(e) => setDeptDesc(e.target.value)}
+                                        placeholder="Brief description..."
+                                        style={{ minHeight: "80px", resize: "vertical" }}
+                                        required
+                                    />
+                                </div>
+                                <div className="form-group">
+                                    <label>Head of Department Name <span className="req">*</span></label>
+                                    <input
+                                        type="text"
+                                        value={deptHead}
+                                        onChange={(e) => setDeptHead(e.target.value)}
+                                        placeholder="e.g. John Doe"
+                                        required
+                                    />
+                                </div>
+                                <div className="form-group">
+                                    <label>Head Designation <span className="req">*</span></label>
+                                    <input
+                                        type="text"
+                                        value={deptHeadDesignation}
+                                        onChange={(e) => setDeptHeadDesignation(e.target.value)}
+                                        placeholder="e.g. VP, HR Operations"
+                                        required
+                                    />
+                                </div>
+                                <div className="modal-actions">
+                                    <button
+                                        type="button"
+                                        className="btn-cancel"
+                                        onClick={() => { setIsAddModalOpen(false); setEditingId(null); }}
+                                    >
+                                        Cancel
+                                    </button>
+                                    <button
+                                        type="submit"
+                                        className="btn-save"
+                                    >
+                                        <Plus size={16} />
+                                        <span>Create Department</span>
+                                    </button>
+                                </div>
+                            </form>
+                        ) : (
+                            <form onSubmit={handleAddDesignation} className="enroll-form">
+                                <div className="form-group">
+                                    <label>Designation Name <span className="req">*</span></label>
                                     <input
                                         type="text"
                                         value={desigName}
                                         onChange={(e) => setDesigName(e.target.value)}
-                                        style={{ width: "100%", padding: "8px 12px", borderRadius: "6px", border: "1px solid #cbd5e1" }}
                                         placeholder="e.g. Lead Engineer"
+                                        required
                                     />
                                 </div>
 
-                                <div style={{ marginBottom: "16px" }}>
-                                    <label style={{ display: "block", fontSize: "11px", fontWeight: "700", textTransform: "uppercase", color: "#475569", marginBottom: "4px" }}>Department</label>
+                                <div className="form-group">
+                                    <label>Department <span className="req">*</span></label>
                                     <select
                                         value={desigDeptId}
                                         onChange={(e) => setDesigDeptId(e.target.value)}
-                                        style={{ width: "100%", padding: "8px 12px", borderRadius: "6px", border: "1px solid #cbd5e1", backgroundColor: "#ffffff" }}
+                                        required
                                     >
                                         <option value="">Select Department...</option>
                                         {departments.map((dept) => (
@@ -448,19 +541,41 @@ export default function Designations() {
                                     </select>
                                 </div>
 
-                                <button
-                                    type="submit"
-                                    style={{ width: "100%", padding: "10px", backgroundColor: "#059669", color: "#ffffff", border: "none", borderRadius: "6px", fontWeight: "600", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", gap: "8px" }}
-                                >
-                                    <Plus size={16} />
-                                    <span>Create Designation</span>
-                                </button>
-                            </form>
-                        </div>
-                    </>
-                )}
+                                <div className="form-group">
+                                    <label>Assign Employee (Optional)</label>
+                                    <select
+                                        value={desigEmployeeId}
+                                        onChange={(e) => setDesigEmployeeId(e.target.value)}
+                                    >
+                                        <option value="">Select Employee...</option>
+                                        {employees.map((emp) => (
+                                            <option key={emp._id} value={emp._id}>
+                                                {emp.firstName} {emp.lastName} ({emp.employeeId || emp._id})
+                                            </option>
+                                        ))}
+                                    </select>
+                                </div>
 
-            </div>
+                                <div className="modal-actions">
+                                    <button
+                                        type="button"
+                                        className="btn-cancel"
+                                        onClick={() => { setIsAddModalOpen(false); setEditingId(null); setDesigName(""); setDesigDeptId(""); setDesigEmployeeId(""); }}
+                                    >
+                                        Cancel
+                                    </button>
+                                    <button
+                                        type="submit"
+                                        className="btn-save"
+                                    >
+                                        {editingId ? "Update Designation" : "Create Designation"}
+                                    </button>
+                                </div>
+                            </form>
+                        )}
+                    </div>
+                </div>
+            )}
         </div>
     );
 }

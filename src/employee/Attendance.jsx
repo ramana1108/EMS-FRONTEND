@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import "../App.css";
 import Sidebar from "../components/Sidebar";
 import {
     Calendar,
@@ -151,76 +150,68 @@ export default function Attendance() {
                 </div>
 
                 {/* Top Header Bar */}
-                <div className="emp-top-header" style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "32px", padding: "0 10px" }}>
-                    <div className="emp-search-box" style={{ display: "flex", alignItems: "center", gap: "8px", backgroundColor: "#ffffff", padding: "10px 16px", borderRadius: "12px", border: "1px solid #cbd5e1", width: "320px", visibility: "hidden" }}>
+                <div className="emp-top-header flex justify-between items-center mb-8 px-2.5">
+                    <div className="emp-search-box" style={{ visibility: "hidden" }}>
                         <Search size={18} color="#64748b" />
-                        <input type="text" placeholder="Search..." className="emp-search-input" style={{ border: "none", outline: "none", background: "transparent", width: "100%" }} />
-                    </div>
-
-                    <div className="emp-user-profile-badge" style={{ display: "flex", alignItems: "center", gap: "8px", backgroundColor: "#ffffff", padding: "6px 14px", borderRadius: "12px", border: "1px solid #cbd5e1", fontWeight: "700", color: "#000000" }}>
-                        <div className="emp-avatar-circle" style={{ width: "30px", height: "30px", borderRadius: "50%", backgroundColor: "#043e30", color: "#ffffff", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "12px", fontWeight: "bold" }}>
-                            {getInitials(user?.name || "Akshaya Mehta")}
-                        </div>
-                        <span>{user?.name || "Akshaya Mehta"}</span>
+                        <input type="text" placeholder="Search..." className="emp-search-input" />
                     </div>
                 </div>
 
                 {/* Page Content */}
                 <div style={{ flex: 1, padding: "0 10px" }}>
-                    <div className="page-header" style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "24px" }}>
+                    <div className="page-header flex justify-between items-center mb-6">
                         <div>
-                            <h1 className="dashboard-title" style={{ fontSize: "32px", fontWeight: "800", color: "#000000", margin: 0 }}>Attendance</h1>
-                            <p className="dashboard-subtitle" style={{ fontSize: "14px", color: "#64748b", marginTop: "4px" }}>Track your daily attendance and work hours</p>
+                            <h1 className="dashboard-title text-3xl font-extrabold text-slate-900 dark:text-white m-0">Attendance</h1>
+                            <p className="dashboard-subtitle text-sm text-slate-500 dark:text-slate-400 mt-1">Track your daily attendance and work hours</p>
                         </div>
                     </div>
 
                     {/* Stats Grid */}
-                    <div className="emp-stats-grid" style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))", gap: "20px", marginBottom: "32px" }}>
+                    <div className="emp-stats-grid">
                         {/* Present */}
-                        <div className="emp-stat-card" style={{ backgroundColor: "#ffffff", padding: "20px", borderRadius: "16px", border: "1px solid #e2e8f0" }}>
-                            <div className="emp-stat-top" style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "8px" }}>
-                                <span className="emp-stat-title" style={{ fontSize: "14px", fontWeight: "700", color: "#64748b" }}>Present</span>
-                                <div className="emp-stat-icon-box" style={{ backgroundColor: "#ecfdf5", color: "#10b981", padding: "8px", borderRadius: "10px" }}>
+                        <div className="emp-stat-card">
+                            <div className="emp-stat-top">
+                                <span className="emp-stat-title">Present</span>
+                                <div className="emp-stat-icon-box bg-emerald-50 dark:bg-emerald-950/20 text-[#10b981]">
                                     <CheckSquare size={20} />
                                 </div>
                             </div>
-                            <p className="emp-stat-value" style={{ fontSize: "28px", fontWeight: "800", color: "#000000", margin: 0 }}>
-                                {stats.present} <span style={{ fontSize: "14px", fontWeight: "500", color: "#64748b" }}>Days</span>
+                            <p className="emp-stat-value">
+                                {stats.present} <span className="text-sm font-medium text-slate-500 dark:text-slate-400">Days</span>
                             </p>
                         </div>
 
                         {/* Absent */}
-                        <div className="emp-stat-card" style={{ backgroundColor: "#ffffff", padding: "20px", borderRadius: "16px", border: "1px solid #e2e8f0" }}>
-                            <div className="emp-stat-top" style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "8px" }}>
-                                <span className="emp-stat-title" style={{ fontSize: "14px", fontWeight: "700", color: "#64748b" }}>Absent</span>
-                                <div className="emp-stat-icon-box" style={{ backgroundColor: "#fef2f2", color: "#ef4444", padding: "8px", borderRadius: "10px" }}>
+                        <div className="emp-stat-card">
+                            <div className="emp-stat-top">
+                                <span className="emp-stat-title">Absent</span>
+                                <div className="emp-stat-icon-box bg-red-50 dark:bg-red-950/20 text-[#ef4444]">
                                     <XSquare size={20} />
                                 </div>
                             </div>
-                            <p className="emp-stat-value" style={{ fontSize: "28px", fontWeight: "800", color: "#000000", margin: 0 }}>
-                                {stats.absent} <span style={{ fontSize: "14px", fontWeight: "500", color: "#64748b" }}>Days</span>
+                            <p className="emp-stat-value">
+                                {stats.absent} <span className="text-sm font-medium text-slate-500 dark:text-slate-400">Days</span>
                             </p>
                         </div>
 
                         {/* Leave */}
-                        <div className="emp-stat-card" style={{ backgroundColor: "#ffffff", padding: "20px", borderRadius: "16px", border: "1px solid #e2e8f0" }}>
-                            <div className="emp-stat-top" style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "8px" }}>
-                                <span className="emp-stat-title" style={{ fontSize: "14px", fontWeight: "700", color: "#64748b" }}>Leave</span>
-                                <div className="emp-stat-icon-box" style={{ backgroundColor: "#eff6ff", color: "#3b82f6", padding: "8px", borderRadius: "10px" }}>
+                        <div className="emp-stat-card">
+                            <div className="emp-stat-top">
+                                <span className="emp-stat-title">Leave</span>
+                                <div className="emp-stat-icon-box bg-blue-50 dark:bg-blue-950/20 text-[#3b82f6]">
                                     <Plane size={20} />
                                 </div>
                             </div>
-                            <p className="emp-stat-value" style={{ fontSize: "28px", fontWeight: "800", color: "#000000", margin: 0 }}>
-                                {stats.leave} <span style={{ fontSize: "14px", fontWeight: "500", color: "#64748b" }}>Days</span>
+                            <p className="emp-stat-value">
+                                {stats.leave} <span className="text-sm font-medium text-slate-500 dark:text-slate-400">Days</span>
                             </p>
                         </div>
                     </div>
 
                     {/* Attendance Records Box */}
-                    <div className="employee-directory-card" style={{ backgroundColor: "#ffffff", borderRadius: "16px", border: "1px solid #e2e8f0" }}>
-
+                    <div className="employee-directory-card">
                         {/* Header controls bar */}
-                        <div className="filters-row" style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "20px 24px", borderBottom: "1px solid #f1f5f9" }}>
+                        <div className="filters-row flex justify-between items-center px-6 py-5 border-b border-slate-100 dark:border-slate-800/60 bg-slate-50/30 dark:bg-slate-950/5">
                             <h2 className="emp-card-title" style={{ margin: 0, fontSize: "18px", fontWeight: "800", color: "#000000" }}>Attendance Records</h2>
 
                             <div style={{ display: "flex", gap: "12px", alignItems: "center" }}>
@@ -247,15 +238,15 @@ export default function Attendance() {
 
                         {/* Table */}
                         <div className="table-responsive">
-                            <table className="employee-table" style={{ width: "100%", borderCollapse: "collapse" }}>
+                            <table className="employee-table" style={{ borderCollapse: "collapse" }}>
                                 <thead>
                                     <tr style={{ borderBottom: "1px solid #e2e8f0" }}>
-                                        <th style={{ padding: "14px 24px", textAlign: "left", fontSize: "11px", fontWeight: "700", color: "#64748b", textTransform: "uppercase" }}>Date</th>
-                                        <th style={{ padding: "14px 24px", textAlign: "left", fontSize: "11px", fontWeight: "700", color: "#64748b", textTransform: "uppercase" }}>Day</th>
-                                        <th style={{ padding: "14px 24px", textAlign: "left", fontSize: "11px", fontWeight: "700", color: "#64748b", textTransform: "uppercase" }}>Status</th>
-                                        <th style={{ padding: "14px 24px", textAlign: "left", fontSize: "11px", fontWeight: "700", color: "#64748b", textTransform: "uppercase" }}>Clock In</th>
-                                        <th style={{ padding: "14px 24px", textAlign: "left", fontSize: "11px", fontWeight: "700", color: "#64748b", textTransform: "uppercase" }}>Clock Out</th>
-                                        <th style={{ padding: "14px 24px", textAlign: "left", fontSize: "11px", fontWeight: "700", color: "#64748b", textTransform: "uppercase" }}>Worked Hours</th>
+                                        <th style={{ padding: "4px 8px", textAlign: "left", fontSize: "11px", fontWeight: "700", color: "#64748b", textTransform: "uppercase" }}>Date</th>
+                                        <th style={{ padding: "4px 8px", textAlign: "left", fontSize: "11px", fontWeight: "700", color: "#64748b", textTransform: "uppercase" }}>Day</th>
+                                        <th style={{ padding: "4px 8px", textAlign: "left", fontSize: "11px", fontWeight: "700", color: "#64748b", textTransform: "uppercase" }}>Status</th>
+                                        <th style={{ padding: "4px 8px", textAlign: "left", fontSize: "11px", fontWeight: "700", color: "#64748b", textTransform: "uppercase" }}>Clock In</th>
+                                        <th style={{ padding: "4px 8px", textAlign: "left", fontSize: "11px", fontWeight: "700", color: "#64748b", textTransform: "uppercase" }}>Clock Out</th>
+                                        <th style={{ padding: "4px 8px", textAlign: "left", fontSize: "11px", fontWeight: "700", color: "#64748b", textTransform: "uppercase" }}>Worked Hours</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -296,13 +287,13 @@ export default function Attendance() {
 
                                             return (
                                                 <tr key={rec._id} className="employee-row" style={{ borderBottom: "1px solid #f1f5f9" }}>
-                                                    <td style={{ padding: "16px 24px", fontWeight: "700", color: "#0f172a", fontSize: "14px" }}>
+                                                    <td style={{ padding: "4px 8px", fontWeight: "700", color: "#0f172a", fontSize: "14px" }}>
                                                         {dateFormatted}
                                                     </td>
-                                                    <td style={{ padding: "16px 24px", color: "#475569", fontSize: "13px", fontWeight: "600" }}>
+                                                    <td style={{ padding: "4px 8px", color: "#475569", fontSize: "13px", fontWeight: "600" }}>
                                                         {dayName}
                                                     </td>
-                                                    <td style={{ padding: "16px 24px" }}>
+                                                    <td style={{ padding: "4px 8px" }}>
                                                         <span
                                                             style={{
                                                                 display: "inline-flex",
@@ -319,13 +310,13 @@ export default function Attendance() {
                                                             {rec.status}
                                                         </span>
                                                     </td>
-                                                    <td style={{ padding: "16px 24px", color: "#334155", fontSize: "13px" }}>
+                                                    <td style={{ padding: "4px 8px", color: "#334155", fontSize: "13px" }}>
                                                         {rec.checkInTime || "—"}
                                                     </td>
-                                                    <td style={{ padding: "16px 24px", color: "#334155", fontSize: "13px" }}>
+                                                    <td style={{ padding: "4px 8px", color: "#334155", fontSize: "13px" }}>
                                                         {rec.checkOutTime || "—"}
                                                     </td>
-                                                    <td style={{ padding: "16px 24px", color: "#0f172a", fontWeight: "700", fontSize: "13px" }}>
+                                                    <td style={{ padding: "4px 8px", color: "#0f172a", fontWeight: "700", fontSize: "13px" }}>
                                                         {formatHours(rec.workedHours)}
                                                     </td>
                                                 </tr>

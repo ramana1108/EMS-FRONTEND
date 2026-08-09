@@ -6,22 +6,22 @@ export default function AdminLayout({ activeTab, setActiveTab, children }) {
     const [isOpen, setIsOpen] = useState(false);
 
     return (
-        <div className="min-h-screen bg-slate-100 text-slate-900">
+        <div className="min-h-screen bg-slate-50 dark:bg-slate-950/20 text-slate-800 dark:text-slate-100 transition-colors duration-300">
             <Sidebar activeTab={activeTab} setActiveTab={setActiveTab} isOpen={isOpen} setIsOpen={setIsOpen} />
 
             <div className="lg:pl-[260px]">
-                <div className="sticky top-0 z-30 flex items-center justify-between border-b border-slate-200/80 bg-white/95 px-4 py-3 backdrop-blur-xl lg:hidden">
+                <div className="sticky top-0 z-30 flex items-center justify-between border-b border-slate-200/80 dark:border-slate-800/80 bg-white/90 dark:bg-slate-900/90 px-6 py-4 backdrop-blur-xl lg:hidden">
                     <button
                         onClick={() => setIsOpen(true)}
-                        className="inline-flex h-11 w-11 items-center justify-center rounded-2xl bg-slate-900 text-white shadow-sm shadow-slate-900/10"
+                        className="inline-flex h-10 w-10 items-center justify-center rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white shadow-md transition-all"
                         aria-label="Open sidebar"
                     >
                         <Menu size={20} />
                     </button>
-                    <div className="text-sm font-semibold text-slate-900">Admin Dashboard</div>
+                    <div className="text-sm font-bold text-slate-800 dark:text-white uppercase tracking-wider">Admin Portal</div>
                 </div>
 
-                <main className="min-h-screen bg-slate-100 px-4 py-6 sm:px-6 lg:px-8">
+                <main className="min-h-screen px-4 py-8 sm:px-8 lg:px-10">
                     {children}
                 </main>
             </div>

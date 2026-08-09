@@ -1,14 +1,30 @@
 import { useState, useEffect } from "react";
-import "../App.css";
-import { 
-  ShieldCheck, 
-  Plus, 
-  Trash2, 
-  Users, 
-  UserCheck, 
+import api from "../api";
+import Pagination from "../components/Pagination";
+import {
+  ShieldCheck,
+  Plus,
+  Trash2,
+  Users,
+  UserCheck,
   Award,
-  AlertCircle
+  AlertCircle,
+  Edit,
+  X
 } from "lucide-react";
+
+const ALL_SYSTEM_PERMISSIONS = [
+  "dashboard",
+  "user",
+  "role",
+  "department",
+  "designation",
+  "employee",
+  "attendance",
+  "payroll",
+  "notice",
+  "profile"
+];
 
 export default function Roles() {
   const [roles, setRoles] = useState([]);
@@ -17,41 +33,24 @@ export default function Roles() {
   const [roleName, setRoleName] = useState("");
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 10;
 
-  const API_BASE_URL = import.meta.env.VITE_API_URL || "/api";
-  
-  function getHeaders() {
-    const token = localStorage.getItem("token");
-    return token
-      ? { Authorization: `Bearer ${token}`, "Content-Type": "application/json" }
-      : { "Content-Type": "application/json" };
-  }
+  // Modal Control States
+  const [isAddModalOpen, setIsAddModalOpen] = useState(false);
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [selectedRole, setSelectedRole] = useState(null);
+  const [editPermissions, setEditPermissions] = useState([]);
 
   const fetchData = async () => {
     setLoading(true);
     setError("");
     try {
-      // Fetch Roles
-      const rolesRes = await fetch(`${API_BASE_URL}/roles`, {
-        headers: getHeaders(),
-      });
-      const rolesData = await rolesRes.json();
-      
-      // Fetch Users to count members per role
-      const usersRes = await fetch(`${API_BASE_URL}/auth`, {
-        headers: getHeaders(),
-      });
-      const usersData = await usersRes.json();
+      const rolesData = await api.getRoles();
+      const usersData = await api.getAllUsers();
 
-      if (rolesRes.ok) {
-        setRoles(rolesData.roles || []);
-      } else {
-        setError(rolesData.message || "Failed to fetch roles");
-      }
-
-      if (usersRes.ok) {
-        setUsers(usersData.users || []);
-      }
+      if (rolesData) setRoles(rolesData.roles || []);
+      if (usersData) setUsers(usersData.users || []);
     } catch (err) {
       console.error(err);
       setError("Failed to fetch data from server");
@@ -73,22 +72,42 @@ export default function Roles() {
     setError("");
     setSuccess("");
     try {
-      const res = await fetch(`${API_BASE_URL}/roles`, {
-        method: "POST",
-        headers: getHeaders(),
-        body: JSON.stringify({ name: roleName.trim() }),
-      });
-      const data = await res.json();
-      if (res.ok) {
+      const data = await api.createRole({ name: roleName.trim() });
+      if (data && data.role) {
         setSuccess("Role added successfully!");
         setRoleName("");
+        setIsAddModalOpen(false);
         fetchData();
       } else {
-        setError(data.message || "Failed to create role");
+        setError(data?.message || "Failed to create role");
       }
     } catch (err) {
       console.error(err);
       setError("An error occurred. Make sure role name exists in permissions.");
+    }
+  };
+
+  const handleSavePermissions = async (e) => {
+    e.preventDefault();
+    if (!selectedRole) return;
+    setError("");
+    setSuccess("");
+    try {
+      const data = await api.updateRole(selectedRole._id, {
+        name: selectedRole.name,
+        permissions: editPermissions
+      });
+      if (data && data.role) {
+        setSuccess("Permissions updated successfully!");
+        setIsEditModalOpen(false);
+        setSelectedRole(null);
+        fetchData();
+      } else {
+        setError(data?.message || "Failed to update permissions");
+      }
+    } catch (err) {
+      console.error(err);
+      setError("Failed to update role permissions");
     }
   };
 
@@ -97,20 +116,30 @@ export default function Roles() {
     setError("");
     setSuccess("");
     try {
-      const res = await fetch(`${API_BASE_URL}/roles/${id}`, {
-        method: "DELETE",
-        headers: getHeaders(),
-      });
-      const data = await res.json();
-      if (res.ok) {
+      const data = await api.deleteRole(id);
+      if (data) {
         setSuccess("Role deleted successfully!");
         fetchData();
       } else {
-        setError(data.message || "Failed to delete role");
+        setError("Failed to delete role");
       }
     } catch (err) {
       console.error(err);
       setError("Failed to delete role");
+    }
+  };
+
+  const openEditPermissions = (role) => {
+    setSelectedRole(role);
+    setEditPermissions(role.permissions || []);
+    setIsEditModalOpen(true);
+  };
+
+  const togglePermission = (permission) => {
+    if (editPermissions.includes(permission)) {
+      setEditPermissions(editPermissions.filter(p => p !== permission));
+    } else {
+      setEditPermissions([...editPermissions, permission]);
     }
   };
 
@@ -119,27 +148,71 @@ export default function Roles() {
     return users.filter(u => u.role && u.role.name?.toLowerCase() === roleNameStr?.toLowerCase()).length;
   };
 
+  const formatDate = (isoString) => {
+    if (!isoString) return "—";
+    return new Date(isoString).toISOString().split("T")[0];
+  };
+
+  const getRoleUserNames = (roleNameStr) => {
+    const roleUsers = users.filter(u => u.role && (u.role.name?.toLowerCase() === roleNameStr?.toLowerCase() || u.role?._id === roleNameStr));
+    return roleUsers.map(u => u.name).join(", ") || "—";
+  };
+
+  const totalPages = Math.max(1, Math.ceil(roles.length / itemsPerPage));
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const paginatedRoles = roles.slice(startIndex, startIndex + itemsPerPage);
+
+  const getRoleFromToDate = (role) => {
+    if (!role.createdAt) return "—";
+    const fromDate = formatDate(role.createdAt);
+    const toDate = formatDate(role.updatedAt);
+    return `${fromDate} to ${toDate}`;
+  };
+
   const getAdminCount = () => getRoleUserCount("admin");
-  const getHrCount = () => getRoleUserCount("hr");
-  const getManagerCount = () => getRoleUserCount("manager");
   const getEmployeeCount = () => getRoleUserCount("employee");
 
   return (
-    <div className="p-6">
+    <div>
       {/* Top Header Bar */}
-      <div className="page-header">
+      <div className="page-header" style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "24px" }}>
         <div>
           <h1 className="dashboard-title">Role Management</h1>
           <p className="dashboard-subtitle">Define and monitor system user roles and their active user count.</p>
         </div>
+        <button
+          className="btn-add-dept"
+          onClick={() => {
+            setError("");
+            setSuccess("");
+            setIsAddModalOpen(true);
+          }}
+          style={{ display: "flex", alignItems: "center", gap: "8px" }}
+        >
+          <Plus size={16} />
+          <span>Add Role</span>
+        </button>
       </div>
+
+      {error && (
+        <div style={{ display: "flex", alignItems: "center", gap: "8px", color: "#b91c1c", backgroundColor: "#fef2f2", padding: "12px", borderRadius: "8px", marginBottom: "16px", fontSize: "14px" }}>
+          <AlertCircle size={16} />
+          <span>{error}</span>
+        </div>
+      )}
+
+      {success && (
+        <div style={{ color: "#065f46", backgroundColor: "#ecfdf5", padding: "12px", borderRadius: "8px", marginBottom: "16px", fontSize: "14px" }}>
+          {success}
+        </div>
+      )}
 
       {/* Stats Grid */}
       <div className="stats-grid" style={{ marginBottom: "24px" }}>
-        <div className="stat-card">
+        <div className="stat-card stat-card-indigo">
           <div className="stat-header">
-            <div className="stat-icon-box total-employees-icon" style={{ backgroundColor: "#065F46" }}>
-              <ShieldCheck size={20} color="#ffffff" />
+            <div className="stat-icon-box total-employees-icon">
+              <ShieldCheck size={20} />
             </div>
             <div>
               <p className="stat-label">Admins</p>
@@ -149,36 +222,10 @@ export default function Roles() {
           <p className="stat-description">System administrators</p>
         </div>
 
-        <div className="stat-card">
+        <div className="stat-card stat-card-blue">
           <div className="stat-header">
-            <div className="stat-icon-box active-staff-icon" style={{ backgroundColor: "#0D9488" }}>
-              <UserCheck size={20} color="#ffffff" />
-            </div>
-            <div>
-              <p className="stat-label">HR Managers</p>
-              <p className="stat-value">{getHrCount()}</p>
-            </div>
-          </div>
-          <p className="stat-description">Human resources staff</p>
-        </div>
-
-        <div className="stat-card">
-          <div className="stat-header">
-            <div className="stat-icon-box inactive-staff-icon" style={{ backgroundColor: "#D97706" }}>
-              <Award size={20} color="#ffffff" />
-            </div>
-            <div>
-              <p className="stat-label">Managers</p>
-              <p className="stat-value">{getManagerCount()}</p>
-            </div>
-          </div>
-          <p className="stat-description">Operational supervisors</p>
-        </div>
-
-        <div className="stat-card">
-          <div className="stat-header">
-            <div className="stat-icon-box depts-icon" style={{ backgroundColor: "#059669" }}>
-              <Users size={20} color="#ffffff" />
+            <div className="stat-icon-box depts-icon">
+              <Users size={20} />
             </div>
             <div>
               <p className="stat-label">Employees</p>
@@ -190,68 +237,62 @@ export default function Roles() {
       </div>
 
       {/* Main Content Layout */}
-      <div className="emp-middle-grid" style={{ display: "grid", gridTemplateColumns: "2fr 1fr", gap: "24px", alignItems: "start" }}>
-        
+      <div className="w-full">
         {/* Roles Table */}
-        <div className="employee-directory-card" style={{ padding: "24px" }}>
-          <h2 className="emp-card-title" style={{ marginBottom: "16px" }}>System Roles</h2>
-          
-          {error && (
-            <div style={{ display: "flex", alignItems: "center", gap: "8px", color: "#b91c1c", backgroundColor: "#fef2f2", padding: "12px", borderRadius: "8px", marginBottom: "16px", fontSize: "14px" }}>
-              <AlertCircle size={16} />
-              <span>{error}</span>
+        <div className="employee-directory-card">
+          <div className="filters-row">
+            <div className="filters-left">
+              <span className="filters-label">
+                System Roles
+              </span>
             </div>
-          )}
-
-          {success && (
-            <div style={{ color: "#065f46", backgroundColor: "#ecfdf5", padding: "12px", borderRadius: "8px", marginBottom: "16px", fontSize: "14px" }}>
-              {success}
-            </div>
-          )}
+          </div>
 
           <div className="table-responsive">
             <table className="employee-table">
               <thead>
                 <tr>
-                  <th style={{ padding: "12px 16px" }}>ROLE NAME</th>
-                  <th style={{ padding: "12px 16px" }}>PERMISSIONS GRANTED</th>
-                  <th style={{ padding: "12px 16px", textAlign: "center" }}>MEMBERS</th>
-                  <th style={{ padding: "12px 16px", textAlign: "right" }}>ACTIONS</th>
+                  <th>ROLE NAME</th>
+                  <th>PERMISSIONS GRANTED</th>
+                  <th>EMPLOYEE NAME(S)</th>
+                  <th>FROM-TO DATE</th>
+                  <th style={{ textAlign: "center" }}>MEMBERS</th>
+                  <th style={{ textAlign: "right", paddingRight: "24px" }}>ACTIONS</th>
                 </tr>
               </thead>
               <tbody>
                 {loading ? (
                   <tr>
-                    <td colSpan="4" style={{ textAlign: "center", padding: "30px 0" }}>Loading roles...</td>
+                    <td colSpan="6" style={{ textAlign: "center", padding: "30px 0" }}>Loading roles...</td>
                   </tr>
                 ) : roles.length === 0 ? (
                   <tr>
-                    <td colSpan="4" style={{ textAlign: "center", padding: "30px 0" }}>No roles registered yet.</td>
+                    <td colSpan="6" style={{ textAlign: "center", padding: "30px 0" }}>No roles registered yet.</td>
                   </tr>
                 ) : (
-                  roles.map((role) => (
+                  paginatedRoles.map((role) => (
                     <tr key={role._id} className="employee-row">
-                      <td style={{ padding: "16px" }}>
-                        <span style={{ fontWeight: "700", textTransform: "uppercase", letterSpacing: "0.5px", color: "#1f2937" }}>
+                      <td>
+                        <span style={{ fontWeight: "700", textTransform: "uppercase", letterSpacing: "0.5px" }}>
                           {role.name}
                         </span>
                       </td>
-                      <td style={{ padding: "16px", verticalAlign: "top" }}>
+                      <td>
                         {role.permissions && role.permissions.length > 0 ? (
-                          <div style={{ display: "grid", gap: "8px" }}>
+                          <div style={{ display: "flex", flexWrap: "wrap", gap: "6px" }}>
                             {role.permissions.map((p, idx) => (
                               <div
                                 key={idx}
                                 style={{
                                   display: "inline-flex",
                                   alignItems: "center",
-                                  gap: "8px",
-                                  padding: "8px 12px",
+                                  gap: "6px",
+                                  padding: "4px 8px",
                                   borderRadius: "12px",
                                   border: "1px solid #d1d5db",
                                   backgroundColor: "#f8fafc",
                                   color: "#334155",
-                                  fontSize: "13px",
+                                  fontSize: "12px",
                                   fontWeight: "600"
                                 }}
                               >
@@ -264,20 +305,34 @@ export default function Roles() {
                           <span style={{ color: "#64748b", fontSize: "13px" }}>No permissions configured</span>
                         )}
                       </td>
-                      <td style={{ padding: "16px", textAlign: "center" }}>
+                      <td style={{ color: "#475569", fontSize: "13px" }}>
+                        {getRoleUserNames(role.name)}
+                      </td>
+                      <td style={{ color: "#475569", fontSize: "13px" }}>
+                        {getRoleFromToDate(role)}
+                      </td>
+                      <td style={{ textAlign: "center" }}>
                         <span style={{ fontSize: "14px", fontWeight: "700", color: "#0f766e" }}>
                           {getRoleUserCount(role.name)}
                         </span>
                       </td>
-                      <td style={{ padding: "16px", textAlign: "right" }}>
-                        <button
-                          onClick={() => handleDeleteRole(role._id)}
-                          className="action-icon-btn delete"
-                          title="Delete Role"
-                          style={{ border: "none", background: "none", cursor: "pointer", color: "#b91c1c" }}
-                        >
-                          <Trash2 size={16} />
-                        </button>
+                      <td style={{ textAlign: "right", paddingRight: "24px" }}>
+                        <div className="employee-action-buttons">
+                          <button
+                            onClick={() => openEditPermissions(role)}
+                            className="action-icon-btn"
+                            title="Edit Permissions"
+                          >
+                            <Edit size={16} />
+                          </button>
+                          <button
+                            onClick={() => handleDeleteRole(role._id)}
+                            className="action-icon-btn delete"
+                            title="Delete Role"
+                          >
+                            <Trash2 size={16} />
+                          </button>
+                        </div>
                       </td>
                     </tr>
                   ))
@@ -285,71 +340,150 @@ export default function Roles() {
               </tbody>
             </table>
           </div>
+          <Pagination
+            currentPage={currentPage}
+            totalPages={totalPages}
+            onPageChange={setCurrentPage}
+            startItem={startIndex + 1}
+            endItem={Math.min(startIndex + itemsPerPage, roles.length)}
+            totalItems={roles.length}
+          />
         </div>
+      </div>
 
-        {/* Add Role Card */}
-        <div className="emp-card-box" style={{ padding: "24px", backgroundColor: "#ffffff", borderRadius: "16px" }}>
-          <h2 className="emp-card-title" style={{ marginBottom: "8px" }}>Add New Role</h2>
-          <p style={{ fontSize: "13px", color: "#64748b", marginBottom: "16px" }}>
-            Add a new system role. The configuration permissions will automatically match the configuration in standard permissions.
-          </p>
-
-          <form onSubmit={handleAddRole}>
-            <div style={{ marginBottom: "16px" }}>
-              <label style={{ display: "block", fontSize: "12px", fontWeight: "700", textTransform: "uppercase", color: "#475569", marginBottom: "6px" }}>
-                Role Name
-              </label>
-              <select
-                value={roleName}
-                onChange={(e) => setRoleName(e.target.value)}
-                style={{
-                  width: "100%",
-                  padding: "10px 12px",
-                  borderRadius: "8px",
-                  border: "1px solid #cbd5e1",
-                  fontSize: "14px",
-                  color: "#1e293b",
-                  backgroundColor: "#ffffff",
-                  outline: "none"
-                }}
+      {/* Add Role Modal Dialog */}
+      {isAddModalOpen && (
+        <div className="modal-backdrop">
+          <div className="modal-content-card" style={{ maxWidth: "450px" }}>
+            <div className="modal-header">
+              <div>
+                <h2>Add New Role</h2>
+                <p className="modal-subtitle">Configure system user role name.</p>
+              </div>
+              <button
+                className="btn-close"
+                onClick={() => setIsAddModalOpen(false)}
               >
-                <option value="">Select a system role...</option>
-                <option value="admin">Admin</option>
-                <option value="hr">HR</option>
-                <option value="manager">Manager</option>
-                <option value="employee">Employee</option>
-              </select>
-              <p style={{ fontSize: "11px", color: "#64748b", marginTop: "6px", fontStyle: "italic" }}>
-                Note: Supported system roles: admin, hr, manager, employee.
-              </p>
+                <X size={20} />
+              </button>
             </div>
 
-            <button
-              type="submit"
-              style={{
-                width: "100%",
-                padding: "10px",
-                backgroundColor: "#059669",
-                color: "#ffffff",
-                border: "none",
-                borderRadius: "8px",
-                fontWeight: "600",
-                fontSize: "14px",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                gap: "8px",
-                cursor: "pointer",
-                transition: "background 0.2s"
-              }}
-            >
-              <Plus size={16} />
-              <span>Create Role</span>
-            </button>
-          </form>
-        </div>
+            <form onSubmit={handleAddRole} className="enroll-form">
+              <div className="form-group">
+                <label>Role Name <span className="req">*</span></label>
+                <select
+                  value={roleName}
+                  onChange={(e) => setRoleName(e.target.value)}
+                  required
+                >
+                  <option value="">Select a system role...</option>
+                  <option value="admin">Admin</option>
+                  <option value="employee">Employee</option>
+                </select>
+                <p style={{ fontSize: "11px", color: "#64748b", marginTop: "6px", fontStyle: "italic" }}>
+                  Note: Supported system roles: admin, employee.
+                </p>
+              </div>
 
-      </div>
+              <div className="modal-actions">
+                <button
+                  type="button"
+                  className="btn-cancel"
+                  onClick={() => setIsAddModalOpen(false)}
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  className="btn-save"
+                >
+                  <Plus size={16} />
+                  <span>Create Role</span>
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* Edit Permissions Modal Dialog */}
+      {isEditModalOpen && selectedRole && (
+        <div className="modal-backdrop">
+          <div className="modal-content-card" style={{ maxWidth: "500px" }}>
+            <div className="modal-header">
+              <div>
+                <h2>Edit Permissions</h2>
+                <p className="modal-subtitle">Configure access permissions for role: <span style={{ fontWeight: "700", textTransform: "uppercase" }}>{selectedRole.name}</span></p>
+              </div>
+              <button
+                className="btn-close"
+                onClick={() => {
+                  setIsEditModalOpen(false);
+                  setSelectedRole(null);
+                }}
+              >
+                <X size={20} />
+              </button>
+            </div>
+
+            <form onSubmit={handleSavePermissions} className="enroll-form">
+              <div className="form-group" style={{ marginBottom: "20px" }}>
+                <label style={{ marginBottom: "12px" }}>Select Permissions Granted</label>
+                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "10px" }}>
+                  {ALL_SYSTEM_PERMISSIONS.map((perm) => {
+                    const isChecked = editPermissions.includes(perm);
+                    return (
+                      <label
+                        key={perm}
+                        style={{
+                          display: "flex",
+                          alignItems: "center",
+                          gap: "8px",
+                          padding: "10px",
+                          border: `1px solid ${isChecked ? "#10b981" : "#e2e8f0"}`,
+                          borderRadius: "8px",
+                          backgroundColor: isChecked ? "#f0fdf4" : "#ffffff",
+                          cursor: "pointer",
+                          transition: "all 0.2s"
+                        }}
+                      >
+                        <input
+                          type="checkbox"
+                          checked={isChecked}
+                          onChange={() => togglePermission(perm)}
+                          style={{ accentColor: "#10b981", width: "16px", height: "16px" }}
+                        />
+                        <span style={{ fontSize: "14px", fontWeight: "600", textTransform: "capitalize", color: isChecked ? "#065f46" : "#475569" }}>
+                          {perm}
+                        </span>
+                      </label>
+                    );
+                  })}
+                </div>
+              </div>
+
+              <div className="modal-actions">
+                <button
+                  type="button"
+                  className="btn-cancel"
+                  onClick={() => {
+                    setIsEditModalOpen(false);
+                    setSelectedRole(null);
+                  }}
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  className="btn-save"
+                >
+                  <span>Save Permissions</span>
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

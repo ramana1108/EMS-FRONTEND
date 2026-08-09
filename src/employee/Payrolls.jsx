@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import "../App.css";
 import Sidebar from "../components/Sidebar";
 import {
     Wallet,
@@ -136,111 +135,103 @@ export default function Payrolls() {
                 </div>
 
                 {/* Top Header Bar */}
-                <div className="emp-top-header" style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "32px", padding: "0 10px" }}>
+                <div className="emp-top-header flex justify-between items-center mb-8 px-2.5">
                     <div style={{ visibility: "hidden" }}>Placeholder</div>
-
-                    <div className="emp-user-profile-badge" style={{ display: "flex", alignItems: "center", gap: "8px", backgroundColor: "#ffffff", padding: "6px 14px", borderRadius: "12px", border: "1px solid #cbd5e1", fontWeight: "700", color: "#000000" }}>
-                        <div className="emp-avatar-circle" style={{ width: "30px", height: "30px", borderRadius: "50%", backgroundColor: "#043e30", color: "#ffffff", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "12px", fontWeight: "bold" }}>
-                            {getInitials(user?.name || "Akshaya Mehta")}
-                        </div>
-                        <span>{user?.name || "Akshaya Mehta"}</span>
-                    </div>
                 </div>
 
                 {/* Page Content */}
                 <div style={{ flex: 1, padding: "0 10px" }}>
-                    <div className="page-header" style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "24px" }}>
+                    <div className="page-header flex justify-between items-center mb-6">
                         <div>
-                            <h1 className="dashboard-title" style={{ fontSize: "32px", fontWeight: "800", color: "#000000", margin: 0 }}>Payrolls</h1>
-                            <p className="dashboard-subtitle" style={{ fontSize: "14px", color: "#64748b", marginTop: "4px" }}>View your salary details and download payslips</p>
+                            <h1 className="dashboard-title text-3xl font-extrabold text-slate-900 dark:text-white m-0">Payrolls</h1>
+                            <p className="dashboard-subtitle text-sm text-slate-500 dark:text-slate-400 mt-1">View your salary details and download payslips</p>
                         </div>
                     </div>
 
                     {/* Stats Grid representing Current/Latest Payslip breakdown */}
-                    <div className="emp-stats-grid" style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(210px, 1fr))", gap: "20px", marginBottom: "32px" }}>
+                    <div className="emp-stats-grid">
                         {/* Basic Salary */}
-                        <div className="emp-stat-card" style={{ backgroundColor: "#ffffff", padding: "20px", borderRadius: "16px", border: "1px solid #e2e8f0" }}>
-                            <div className="emp-stat-top" style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "8px" }}>
-                                <span className="emp-stat-title" style={{ fontSize: "13px", fontWeight: "700", color: "#64748b" }}>Basic Salary</span>
-                                <div className="emp-stat-icon-box" style={{ backgroundColor: "#ecfdf5", color: "#10b981", padding: "8px", borderRadius: "10px" }}>
+                        <div className="emp-stat-card">
+                            <div className="emp-stat-top">
+                                <span className="emp-stat-title">Basic Salary</span>
+                                <div className="emp-stat-icon-box bg-emerald-50 dark:bg-emerald-950/20 text-[#10b981]">
                                     <Wallet size={20} />
                                 </div>
                             </div>
-                            <p className="emp-stat-value" style={{ fontSize: "24px", fontWeight: "800", color: "#000000", margin: 0 }}>
+                            <p className="emp-stat-value">
                                 {formatCurrency(latestStats.basicSalary)}
                             </p>
                             <div style={{ marginTop: "4px" }}>
-                                <span className="emp-stat-subtext" style={{ fontSize: "12px", color: "#64748b", fontWeight: "bold" }}>Base allowance structure</span>
+                                <span className="emp-stat-subtext">Base allowance structure</span>
                             </div>
                         </div>
 
                         {/* Allowances */}
-                        <div className="emp-stat-card" style={{ backgroundColor: "#ffffff", padding: "20px", borderRadius: "16px", border: "1px solid #e2e8f0" }}>
-                            <div className="emp-stat-top" style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "8px" }}>
-                                <span className="emp-stat-title" style={{ fontSize: "13px", fontWeight: "700", color: "#64748b" }}>Allowances</span>
-                                <div className="emp-stat-icon-box" style={{ backgroundColor: "#eff6ff", color: "#3b82f6", padding: "8px", borderRadius: "10px" }}>
+                        <div className="emp-stat-card">
+                            <div className="emp-stat-top">
+                                <span className="emp-stat-title">Allowances</span>
+                                <div className="emp-stat-icon-box bg-blue-50 dark:bg-blue-950/20 text-[#3b82f6]">
                                     <Coins size={20} />
                                 </div>
                             </div>
-                            <p className="emp-stat-value" style={{ fontSize: "24px", fontWeight: "800", color: "#000000", margin: 0 }}>
+                            <p className="emp-stat-value">
                                 {formatCurrency(latestStats.allowance + latestStats.bonus)}
                             </p>
                             <div style={{ marginTop: "4px" }}>
-                                <span className="emp-stat-subtext" style={{ fontSize: "12px", color: "#10b981", fontWeight: "bold" }}>Includes HRA & Bonus</span>
+                                <span className="emp-stat-subtext text-emerald-600 dark:text-emerald-400">Includes HRA & Bonus</span>
                             </div>
-                        </div >
+                        </div>
 
                         {/* Deductions */}
-                        < div className="emp-stat-card" style={{ backgroundColor: "#ffffff", padding: "20px", borderRadius: "16px", border: "1px solid #e2e8f0" }
-                        }>
-                            <div className="emp-stat-top" style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "8px" }}>
-                                <span className="emp-stat-title" style={{ fontSize: "13px", fontWeight: "700", color: "#64748b" }}>Deductions</span>
-                                <div className="emp-stat-icon-box" style={{ backgroundColor: "#fef2f2", color: "#ef4444", padding: "8px", borderRadius: "10px" }}>
+                        <div className="emp-stat-card">
+                            <div className="emp-stat-top">
+                                <span className="emp-stat-title">Deductions</span>
+                                <div className="emp-stat-icon-box bg-red-50 dark:bg-red-950/20 text-[#ef4444]">
                                     <CreditCard size={20} />
                                 </div>
-                            </div >
-                            <p className="emp-stat-value" style={{ fontSize: "24px", fontWeight: "800", color: "#000000", margin: 0 }}>
+                            </div>
+                            <p className="emp-stat-value">
                                 {formatCurrency(latestStats.deductions + latestStats.tax)}
                             </p>
                             <div style={{ marginTop: "4px" }}>
-                                <span className="emp-stat-subtext" style={{ fontSize: "12px", color: "#ef4444", fontWeight: "bold" }}>Includes PF & Tax</span>
+                                <span className="emp-stat-subtext text-red-500">Includes PF & Tax</span>
                             </div>
-                        </div >
+                        </div>
 
                         {/* Net Salary */}
-                        < div className="emp-stat-card" style={{ backgroundColor: "#ffffff", padding: "20px", borderRadius: "16px", border: "1px solid #e2e8f0" }}>
-                            <div className="emp-stat-top" style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "8px" }}>
-                                <span className="emp-stat-title" style={{ fontSize: "13px", fontWeight: "700", color: "#64748b" }}>Net Salary</span>
-                                <div className="emp-stat-icon-box" style={{ backgroundColor: "#faf5ff", color: "#a855f7", padding: "8px", borderRadius: "10px" }}>
+                        <div className="emp-stat-card">
+                            <div className="emp-stat-top">
+                                <span className="emp-stat-title">Net Salary</span>
+                                <div className="emp-stat-icon-box bg-purple-50 dark:bg-purple-950/20 text-[#a855f7]">
                                     <Landmark size={20} />
                                 </div>
-                            </div >
-                            <p className="emp-stat-value" style={{ fontSize: "24px", fontWeight: "800", color: "#000000", margin: 0 }}>
+                            </div>
+                            <p className="emp-stat-value">
                                 {formatCurrency(latestStats.netSalary)}
                             </p>
                             <div style={{ marginTop: "4px" }}>
-                                <span className="emp-stat-subtext" style={{ fontSize: "12px", color: "#059669", fontWeight: "bold" }}>Deposited successfully</span>
+                                <span className="emp-stat-subtext text-[#059669]">Deposited successfully</span>
                             </div>
-                        </div >
-                    </div >
+                        </div>
+                    </div>
 
                     {/* Payslip History Box */}
-                    < div className="employee-directory-card" style={{ backgroundColor: "#ffffff", borderRadius: "16px", border: "1px solid #e2e8f0" }}>
-                        <div className="filters-row" style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "20px 24px", borderBottom: "1px solid #f1f5f9" }}>
-                            <h2 className="emp-card-title" style={{ margin: 0, fontSize: "18px", fontWeight: "800", color: "#000000" }}>Payslip History</h2>
+                    <div className="employee-directory-card">
+                        <div className="filters-row flex justify-between items-center px-6 py-5 border-b border-slate-100 dark:border-slate-800/60 bg-slate-50/30 dark:bg-slate-950/5">
+                            <h2 className="text-lg font-extrabold text-slate-900 dark:text-white" style={{ margin: 0 }}>Payslip History</h2>
                         </div>
 
                         <div className="table-responsive">
                             <table className="employee-table">
                                 <thead>
                                     <tr>
-                                        <th style={{ padding: "14px 24px" }}>Month/Year</th>
-                                        <th style={{ padding: "14px 24px" }}>Basic Salary</th>
-                                        <th style={{ padding: "14px 24px" }}>Allowances</th>
-                                        <th style={{ padding: "14px 24px" }}>Deductions</th>
-                                        <th style={{ padding: "14px 24px" }}>Net Salary</th>
-                                        <th style={{ padding: "14px 24px" }}>Payment Status</th>
-                                        <th style={{ padding: "14px 24px", textAlign: "right" }}>Actions</th>
+                                        <th style={{ padding: "4px 8px" }}>Month/Year</th>
+                                        <th style={{ padding: "4px 8px" }}>Basic Salary</th>
+                                        <th style={{ padding: "4px 8px" }}>Allowances</th>
+                                        <th style={{ padding: "4px 8px" }}>Deductions</th>
+                                        <th style={{ padding: "4px 8px" }}>Net Salary</th>
+                                        <th style={{ padding: "4px 8px" }}>Payment Status</th>
+                                        <th style={{ padding: "4px 8px", textAlign: "right" }}>Actions</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -260,22 +251,22 @@ export default function Payrolls() {
 
                                             return (
                                                 <tr key={pay._id} className="employee-row">
-                                                    <td style={{ padding: "16px 24px", fontWeight: "700", color: "#0f172a" }}>
+                                                    <td style={{ padding: "4px 8px", fontWeight: "700", color: "#0f172a" }}>
                                                         {pay.month} {pay.year}
                                                     </td>
-                                                    <td style={{ padding: "16px 24px", color: "#334155" }}>
+                                                    <td style={{ padding: "4px 8px", color: "#334155" }}>
                                                         {formatCurrency(pay.basicSalary)}
                                                     </td>
-                                                    <td style={{ padding: "16px 24px", color: "#059669" }}>
+                                                    <td style={{ padding: "4px 8px", color: "#059669" }}>
                                                         + {formatCurrency(totalAllowances)}
                                                     </td>
-                                                    <td style={{ padding: "16px 24px", color: "#dc2626" }}>
+                                                    <td style={{ padding: "4px 8px", color: "#dc2626" }}>
                                                         - {formatCurrency(totalDeductions)}
                                                     </td>
-                                                    <td style={{ padding: "16px 24px", fontWeight: "700", color: "#0f172a" }}>
+                                                    <td style={{ padding: "4px 8px", fontWeight: "700", color: "#0f172a" }}>
                                                         {formatCurrency(pay.netSalary)}
                                                     </td>
-                                                    <td style={{ padding: "16px 24px" }}>
+                                                    <td style={{ padding: "4px 8px" }}>
                                                         <span
                                                             className="employee-status-badge active"
                                                             style={{
@@ -303,7 +294,7 @@ export default function Payrolls() {
                                                             {pay.paymentStatus}
                                                         </span>
                                                     </td>
-                                                    <td style={{ padding: "16px 24px", textAlign: "right" }}>
+                                                    <td style={{ padding: "4px 8px", textAlign: "right" }}>
                                                         <div style={{ display: "flex", gap: "8px", justifyContent: "flex-end" }}>
                                                             <button
                                                                 onClick={() => setSelectedSlip(pay)}
@@ -329,7 +320,7 @@ export default function Payrolls() {
                 {
                     selectedSlip && (
                         <div style={{ position: "fixed", inset: 0, zIndex: 999, display: "flex", alignItems: "center", justifyContent: "center", backgroundColor: "rgba(15, 23, 42, 0.4)", backdropFilter: "blur(4px)" }}>
-                            <div style={{ backgroundColor: "#ffffff", borderRadius: "16px", border: "1px solid #e2e8f0", width: "550px", maxWidth: "90%", padding: "28px", boxShadow: "0 20px 25px -5px rgba(0, 0, 0, 0.1)" }}>
+                            <div style={{ backgroundColor: "var(--card-bg)", borderRadius: "16px", border: "1px solid #e2e8f0", width: "550px", maxWidth: "90%", padding: "28px", boxShadow: "0 20px 25px -5px rgba(0, 0, 0, 0.1)" }}>
 
                                 {/* Header */}
                                 <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "20px", borderBottom: "1px solid #f1f5f9", paddingBottom: "12px" }}>

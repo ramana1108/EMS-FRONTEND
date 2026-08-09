@@ -4,13 +4,13 @@
 
 [36mvite v8.2.0 [32mbuilding client environment for production...[36m[39m
 [2K
-transforming...Γ£ô 1811 modules transformed.
+transforming...Γ£ô 1812 modules transformed.
 rendering chunks...
 computing gzip size...
-dist/index.html                   0.46 kB Γöé gzip:   0.30 kB
-dist/assets/index-DzcdJmTr.css  141.39 kB Γöé gzip:  15.47 kB
-dist/assets/index-YMJfDSzY.js   470.13 kB Γöé gzip: 115.16 kB
+dist/index.html                   0.46 kB Γöé gzip:   0.29 kB
+dist/assets/index-CN1FD6rp.css   37.97 kB Γöé gzip:   7.86 kB
+dist/assets/index-CUvj1g1y.js   470.13 kB Γöé gzip: 115.16 kB
 
 [INEFFECTIVE_DYNAMIC_IMPORT] src/api/index.js is dynamically imported by src/admin/Dashboard.jsx but also statically imported by src/admin/Employee.jsx, src/employee/Announcements.jsx, src/employee/Attendance.jsx, src/employee/Dashboard.jsx, src/employee/Leavemanagement.jsx, ..., dynamic import will not move module into another chunk.
 
-[32mΓ£ô built in 850ms[39m
+[32mΓ£ô built in 556ms[39m

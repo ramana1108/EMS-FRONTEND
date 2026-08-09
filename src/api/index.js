@@ -75,8 +75,67 @@ export async function getDepartments() {
   return res.json();
 }
 
+export async function createDepartment(payload) {
+  const res = await fetch(`${API_BASE_URL}/departments`, {
+    method: "POST",
+    headers: authHeaders(),
+    body: JSON.stringify(payload),
+  });
+  return res.json();
+}
+
+export async function updateDepartment(id, payload) {
+  const res = await fetch(`${API_BASE_URL}/departments/${id}`, {
+    method: "PUT",
+    headers: authHeaders(),
+    body: JSON.stringify(payload),
+  });
+  return res.json();
+}
+
+export async function deleteDepartment(id) {
+  const res = await fetch(`${API_BASE_URL}/departments/${id}`, {
+    method: "DELETE",
+    headers: authHeaders(),
+  });
+  return res.json();
+}
+
+export async function getDepartmentEmployees(departmentId) {
+  const res = await fetch(`${API_BASE_URL}/departments/department/${departmentId}`, {
+    headers: authHeaders(),
+  });
+  return res.json();
+}
+
 export async function getDesignations() {
   const res = await fetch(`${API_BASE_URL}/designations`, {
+    headers: authHeaders(),
+  });
+  return res.json();
+}
+
+export async function createDesignation(payload) {
+  const res = await fetch(`${API_BASE_URL}/designations`, {
+    method: "POST",
+    headers: authHeaders(),
+    body: JSON.stringify(payload),
+  });
+  return res.json();
+}
+
+export async function updateDesignation(id, payload) {
+  const res = await fetch(`${API_BASE_URL}/designations/${id}`, {
+    method: "PUT",
+    headers: authHeaders(),
+    body: JSON.stringify(payload),
+  });
+  return res.json();
+}
+
+export async function deleteDesignation(id) {
+  const res = await fetch(`${API_BASE_URL}/designations/${id}`, {
+    method: "DELETE",
     headers: authHeaders(),
   });
   return res.json();
@@ -96,6 +155,71 @@ export async function getPayrolls() {
   return res.json();
 }
 
+export async function getRoles() {
+  const res = await fetch(`${API_BASE_URL}/roles`, {
+    headers: authHeaders(),
+  });
+  return res.json();
+}
+
+export async function createRole(payload) {
+  const res = await fetch(`${API_BASE_URL}/roles`, {
+    method: "POST",
+    headers: authHeaders(),
+    body: JSON.stringify(payload),
+  });
+  return res.json();
+}
+
+export async function deleteRole(id) {
+  const res = await fetch(`${API_BASE_URL}/roles/${id}`, {
+    method: "DELETE",
+    headers: authHeaders(),
+  });
+  return res.json();
+}
+
+export async function updateRole(id, payload) {
+  const res = await fetch(`${API_BASE_URL}/roles/${id}`, {
+    method: "PUT",
+    headers: authHeaders(),
+    body: JSON.stringify(payload),
+  });
+  return res.json();
+}
+
+export async function getAllUsers() {
+  const res = await fetch(`${API_BASE_URL}/auth`, {
+    headers: authHeaders(),
+  });
+  return res.json();
+}
+
+export async function getSettings() {
+  const res = await fetch(`${API_BASE_URL}/settings`, {
+    headers: authHeaders(),
+  });
+  return res.json();
+}
+
+export async function createSettings(payload) {
+  const res = await fetch(`${API_BASE_URL}/settings`, {
+    method: "POST",
+    headers: authHeaders(),
+    body: JSON.stringify(payload),
+  });
+  return res.json();
+}
+
+export async function updateSettings(id, payload) {
+  const res = await fetch(`${API_BASE_URL}/settings/${id}`, {
+    method: "PUT",
+    headers: authHeaders(),
+    body: JSON.stringify(payload),
+  });
+  return res.json();
+}
+
 export async function getAttendance() {
   const res = await fetch(`${API_BASE_URL}/attendance`, {
     headers: authHeaders(),
@@ -106,6 +230,46 @@ export async function getAttendance() {
 export async function getMyAttendance() {
   const res = await fetch(`${API_BASE_URL}/attendance/me`, {
     headers: authHeaders(),
+  });
+  return res.json();
+}
+
+export async function getMyLeaves() {
+  const res = await fetch(`${API_BASE_URL}/leave/me`, {
+    headers: authHeaders(),
+  });
+  return res.json();
+}
+
+export async function applyLeave(payload) {
+  const res = await fetch(`${API_BASE_URL}/leave`, {
+    method: "POST",
+    headers: authHeaders(),
+    body: JSON.stringify(payload),
+  });
+  return res.json();
+}
+
+export async function deleteLeave(id) {
+  const res = await fetch(`${API_BASE_URL}/leave/${id}`, {
+    method: "DELETE",
+    headers: authHeaders(),
+  });
+  return res.json();
+}
+
+export async function getAllLeaves() {
+  const res = await fetch(`${API_BASE_URL}/leave`, {
+    headers: authHeaders(),
+  });
+  return res.json();
+}
+
+export async function updateLeaveStatus(id, payload) {
+  const res = await fetch(`${API_BASE_URL}/leave/${id}`, {
+    method: "PUT",
+    headers: authHeaders(),
+    body: JSON.stringify(payload),
   });
   return res.json();
 }
@@ -129,10 +293,29 @@ export default {
   updateEmployee,
   deleteEmployee,
   getDepartments,
+  createDepartment,
+  updateDepartment,
+  deleteDepartment,
+  getDepartmentEmployees,
   getDesignations,
+  createDesignation,
+  updateDesignation,
+  deleteDesignation,
   getNotices,
   getPayrolls,
   getAttendance,
   getMyAttendance,
+  getMyLeaves,
+  applyLeave,
+  deleteLeave,
+  updateLeaveStatus,
   registerUser,
+  getRoles,
+  createRole,
+  deleteRole,
+  updateRole,
+  getAllUsers,
+  getSettings,
+  createSettings,
+  updateSettings,
 };

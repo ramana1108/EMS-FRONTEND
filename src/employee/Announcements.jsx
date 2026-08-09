@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
-import "../App.css";
 import Sidebar from "../components/Sidebar";
+import Pagination from "../components/Pagination";
 import {
     Search,
     Megaphone,
@@ -23,6 +23,16 @@ export default function Announcements() {
     const [searchTerm, setSearchTerm] = useState("");
     const [categoryFilter, setCategoryFilter] = useState("All");
     const [user, setUser] = useState(null);
+    const [currentPage, setCurrentPage] = useState(1);
+    const itemsPerPage = 6;
+
+    const totalPages = Math.max(1, Math.ceil(filteredNotices.length / itemsPerPage));
+    const startIndex = (currentPage - 1) * itemsPerPage;
+    const paginatedNotices = filteredNotices.slice(startIndex, startIndex + itemsPerPage);
+
+    useEffect(() => {
+        setCurrentPage(1);
+    }, [filteredNotices]);
 
     useEffect(() => {
         const loggedInUser = JSON.parse(localStorage.getItem("user") || "null");
@@ -163,8 +173,8 @@ export default function Announcements() {
                 </div>
 
                 {/* Top Header Bar */}
-                <div className="emp-top-header" style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "32px", padding: "0 10px" }}>
-                    <div className="emp-search-box" style={{ display: "flex", alignItems: "center", gap: "8px", backgroundColor: "#ffffff", padding: "10px 16px", borderRadius: "12px", border: "1px solid #cbd5e1", width: "320px" }}>
+                <div className="emp-top-header flex justify-between items-center mb-8 px-2.5">
+                    <div className="emp-search-box">
                         <Search size={18} color="#64748b" />
                         <input
                             type="text"
@@ -172,65 +182,28 @@ export default function Announcements() {
                             value={searchTerm}
                             onChange={(e) => setSearchTerm(e.target.value)}
                             className="emp-search-input"
-                            style={{ border: "none", outline: "none", background: "transparent", width: "100%", fontSize: "14px", color: "#000000" }}
                         />
-                    </div>
-
-                    <div className="emp-user-profile-badge" style={{ display: "flex", alignItems: "center", gap: "8px", backgroundColor: "#ffffff", padding: "6px 14px", borderRadius: "12px", border: "1px solid #cbd5e1", fontWeight: "700", color: "#000000" }}>
-                        <div className="emp-avatar-circle" style={{ width: "30px", height: "30px", borderRadius: "50%", backgroundColor: "#043e30", color: "#ffffff", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "12px", fontWeight: "bold" }}>
-                            {getInitials(user?.name || "Akshaya Mehta")}
-                        </div>
-                        <span>{user?.name || "Akshaya Mehta"}</span>
                     </div>
                 </div>
 
                 {/* Page Content */}
                 <div style={{ flex: 1, padding: "0 10px" }}>
-                    <div className="page-header" style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "8px" }}>
+                    <div className="page-header flex justify-between items-center mb-6">
                         <div>
-                            <h1 className="dashboard-title" style={{ fontSize: "32px", fontWeight: "800", color: "#000000", margin: 0 }}>Announcements</h1>
-                            <p className="dashboard-subtitle" style={{ fontSize: "14px", color: "#64748b", marginTop: "4px" }}>Stay updated with company news and announcements</p>
-                        </div>
-                    </div>
-
-                    {/* Search/Filters Row (matches the screenshot placement) */}
-                    <div style={{ display: "flex", gap: "12px", margin: "24px 0 16px 0", flexWrap: "wrap" }}>
-                        <div style={{ display: "flex", alignItems: "center", gap: "8px", backgroundColor: "#ffffff", padding: "8px 16px", borderRadius: "10px", border: "1px solid #cbd5e1" }}>
-                            <Search size={16} color="#64748b" />
-                            <input
-                                type="text"
-                                placeholder="Search announcements..."
-                                value={searchTerm}
-                                onChange={(e) => setSearchTerm(e.target.value)}
-                                style={{ border: "none", outline: "none", fontSize: "13px", color: "#000000", width: "200px" }}
-                            />
-                        </div>
-
-                        <div style={{ display: "flex", alignItems: "center", gap: "8px", backgroundColor: "#ffffff", padding: "8px 16px", borderRadius: "10px", border: "1px solid #cbd5e1", minWidth: "120px" }}>
-                            <Filter size={16} color="#64748b" />
-                            <select
-                                value={categoryFilter}
-                                onChange={(e) => setCategoryFilter(e.target.value)}
-                                style={{ border: "none", outline: "none", backgroundColor: "transparent", fontSize: "13px", fontWeight: "700", color: "#0f172a", width: "100%", cursor: "pointer" }}
-                            >
-                                <option value="All">All</option>
-                                <option value="Company News">Company News</option>
-                                <option value="Policies">Policies</option>
-                                <option value="Events">Events</option>
-                                <option value="General">General</option>
-                            </select>
+                            <h1 className="dashboard-title text-3xl font-extrabold text-slate-900 dark:text-white m-0">Announcements</h1>
+                            <p className="dashboard-subtitle text-sm text-slate-500 dark:text-slate-400 mt-1">Stay updated with company news and announcements</p>
                         </div>
                     </div>
 
                     {/* List display */}
-                    <div className="emp-card-box" style={{ padding: "32px", backgroundColor: "#ffffff", borderRadius: "16px", border: "1px solid #e2e8f0" }}>
-                        <div className="announcement-list" style={{ display: "flex", flexDirection: "column", gap: "20px" }}>
+                    <div className="emp-card-box">
+                        <div className="announcement-list" style={{ overflow: "visible" }}>
                             {loading ? (
                                 <div style={{ textAlign: "center", color: "#64748b", padding: "40px" }}>Loading announcements...</div>
                             ) : filteredNotices.length === 0 ? (
                                 <div style={{ textAlign: "center", color: "#64748b", padding: "40px" }}>No announcements found matching the criteria.</div>
                             ) : (
-                                filteredNotices.map((notice) => {
+                                paginatedNotices.map((notice) => {
                                     const meta = getAnnouncementMeta(notice.title || "");
                                     const IconComponent = meta.icon;
 
@@ -242,9 +215,9 @@ export default function Announcements() {
                                                 display: "flex",
                                                 alignItems: "flex-start",
                                                 gap: "16px",
-                                                padding: "20px",
+                                                padding: "16px",
                                                 borderRadius: "12px",
-                                                backgroundColor: "#ffffff",
+                                                backgroundColor: "var(--card-bg)",
                                                 border: "1px solid #e2e8f0",
                                                 transition: "box-shadow 0.2s"
                                             }}
@@ -303,7 +276,14 @@ export default function Announcements() {
                                 })
                             )}
                         </div>
-                    </div>
+                        <Pagination
+                            currentPage={currentPage}
+                            totalPages={totalPages}
+                            onPageChange={setCurrentPage}
+                            startItem={startIndex + 1}
+                            endItem={Math.min(startIndex + itemsPerPage, filteredNotices.length)}
+                            totalItems={filteredNotices.length}
+                        />                    </div>
                 </div>
             </div>
         </div >

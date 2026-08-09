@@ -1,5 +1,4 @@
 import React, { useState, useEffect, useRef } from "react";
-import "../App.css";
 import Sidebar from "../components/Sidebar";
 import {
     User,
@@ -257,13 +256,6 @@ export default function Profile() {
                 {/* Top Header Bar */}
                 <div className="emp-top-header" style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "32px", padding: "0 10px" }}>
                     <div style={{ visibility: "hidden" }}>Placeholder</div>
-
-                    <div className="emp-user-profile-badge" style={{ display: "flex", alignItems: "center", gap: "8px", backgroundColor: "#ffffff", padding: "6px 14px", borderRadius: "12px", border: "1px solid #cbd5e1", fontWeight: "700", color: "#000000" }}>
-                        <div className="emp-avatar-circle" style={{ width: "30px", height: "30px", borderRadius: "50%", backgroundColor: "#043e30", color: "#ffffff", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "12px", fontWeight: "bold" }}>
-                            {getInitials(formData.firstName + " " + formData.lastName)}
-                        </div>
-                        <span>{formData.firstName} {formData.lastName}</span>
-                    </div>
                 </div>
 
                 {/* Page Content */}
@@ -301,7 +293,7 @@ export default function Profile() {
                             <div className="emp-middle-grid" style={{ display: "grid", gridTemplateColumns: "1.2fr 2.5fr", gap: "24px", alignItems: "start" }}>
 
                                 {/* Left Profile Summary Card Container */}
-                                <div className="emp-card-box" style={{ padding: "24px", display: "flex", flexDirection: "column", alignItems: "center", backgroundColor: "#ffffff" }}>
+                                <div className="emp-card-box" style={{ padding: "24px", display: "flex", flexDirection: "column", alignItems: "center", backgroundColor: "var(--card-bg)" }}>
                                     <div style={{ position: "relative", marginBottom: "16px" }}>
                                         <div
                                             style={{
@@ -408,345 +400,89 @@ export default function Profile() {
                                 </div >
 
                                 {/* Right Tabbed Form Cards Container */}
-                                < div className="emp-card-box" style={{ padding: "24px", backgroundColor: "#ffffff" }}>
-
-                                    {/* Form Tabs Drawer Header */}
-                                    < div style={{ display: "flex", gap: "10px", borderBottom: "1px solid #f1f5f9", paddingBottom: "12px", marginBottom: "20px", flexWrap: "wrap" }}>
-                                        <button
-                                            type="button"
-                                            onClick={() => { setFormTab("personal"); setSuccess(""); setError(""); }}
-                                            style={{
-                                                padding: "8px 16px",
-                                                borderRadius: "8px",
-                                                border: "none",
-                                                backgroundColor: formTab === "personal" ? "#043e30" : "transparent",
-                                                color: formTab === "personal" ? "#ffffff" : "#475569",
-                                                fontWeight: "700",
-                                                fontSize: "14px",
-                                                cursor: "pointer",
-                                                transition: "all 0.2s"
-                                            }}
-                                        >
-                                            Personal Information
-                                        </button>
-                                        <button
-                                            type="button"
-                                            onClick={() => { setFormTab("contact"); setSuccess(""); setError(""); }}
-                                            style={{
-                                                padding: "8px 16px",
-                                                borderRadius: "8px",
-                                                border: "none",
-                                                backgroundColor: formTab === "contact" ? "#043e30" : "transparent",
-                                                color: formTab === "contact" ? "#ffffff" : "#475569",
-                                                fontWeight: "700",
-                                                fontSize: "14px",
-                                                cursor: "pointer",
-                                                transition: "all 0.2s"
-                                            }}
-                                        >
-                                            Contact Details
-                                        </button>
-                                        <button
-                                            type="button"
-                                            onClick={() => { setFormTab("bank"); setSuccess(""); setError(""); }}
-                                            style={{
-                                                padding: "8px 16px",
-                                                borderRadius: "8px",
-                                                border: "none",
-                                                backgroundColor: formTab === "bank" ? "#043e30" : "transparent",
-                                                color: formTab === "bank" ? "#ffffff" : "#475569",
-                                                fontWeight: "700",
-                                                fontSize: "14px",
-                                                cursor: "pointer",
-                                                transition: "all 0.2s"
-                                            }}
-                                        >
-                                            Bank & Emergency Info
-                                        </button>
-                                    </div >
+                                <div className="emp-card-box">
+                                    <div className="border-b border-slate-200 dark:border-slate-800/80 pb-4 mb-6">
+                                        <h2 className="text-xl font-extrabold text-slate-900 dark:text-white m-0">Personal Information</h2>
+                                        <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">Update your basic personal profile details</p>
+                                    </div>
 
                                     {/* Form Elements */}
-                                    < form onSubmit={handleSave} >
+                                    <form onSubmit={handleSave} className="space-y-5">
+                                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                                            <div className="form-group flex flex-col gap-2">
+                                                <label className="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">First Name <span className="text-red-500">*</span></label>
+                                                <input
+                                                    type="text"
+                                                    name="firstName"
+                                                    value={formData.firstName}
+                                                    onChange={handleChange}
+                                                    required
+                                                    className="w-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl px-4 py-3 text-sm font-semibold text-slate-800 dark:text-slate-100 outline-none transition-all focus:border-emerald-500 focus:ring-4 focus:ring-emerald-500/10"
+                                                />
+                                            </div>
+                                            <div className="form-group flex flex-col gap-2">
+                                                <label className="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Last Name <span className="text-red-500">*</span></label>
+                                                <input
+                                                    type="text"
+                                                    name="lastName"
+                                                    value={formData.lastName}
+                                                    onChange={handleChange}
+                                                    required
+                                                    className="w-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl px-4 py-3 text-sm font-semibold text-slate-800 dark:text-slate-100 outline-none transition-all focus:border-emerald-500 focus:ring-4 focus:ring-emerald-500/10"
+                                                />
+                                            </div>
+                                        </div>
 
-                                        {/* TAB: Personal */}
-                                        {
-                                            formTab === "personal" && (
-                                                <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
-                                                    <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "16px" }}>
-                                                        <div>
-                                                            <label style={{ display: "block", fontSize: "11px", fontWeight: "700", textTransform: "uppercase", color: "#475569", marginBottom: "4px" }}>First Name</label>
-                                                            <input
-                                                                type="text"
-                                                                name="firstName"
-                                                                value={formData.firstName}
-                                                                onChange={handleChange}
-                                                                style={{ width: "100%", padding: "10px 12px", borderRadius: "8px", border: "1px solid #cbd5e1", outline: "none", fontSize: "14px", color: "#000000" }}
-                                                                required
-                                                            />
-                                                        </div>
-                                                        <div>
-                                                            <label style={{ display: "block", fontSize: "11px", fontWeight: "700", textTransform: "uppercase", color: "#475569", marginBottom: "4px" }}>Last Name</label>
-                                                            <input
-                                                                type="text"
-                                                                name="lastName"
-                                                                value={formData.lastName}
-                                                                onChange={handleChange}
-                                                                style={{ width: "100%", padding: "10px 12px", borderRadius: "8px", border: "1px solid #cbd5e1", outline: "none", fontSize: "14px", color: "#000000" }}
-                                                                required
-                                                            />
-                                                        </div>
-                                                    </div>
+                                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                                            <div className="form-group flex flex-col gap-2">
+                                                <label className="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Date of Birth</label>
+                                                <input
+                                                    type="date"
+                                                    name="dob"
+                                                    value={formData.dob}
+                                                    onChange={handleChange}
+                                                    className="w-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl px-4 py-3 text-sm font-semibold text-slate-800 dark:text-slate-100 outline-none transition-all focus:border-emerald-500 focus:ring-4 focus:ring-emerald-500/10"
+                                                />
+                                            </div>
+                                            <div className="form-group flex flex-col gap-2">
+                                                <label className="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Gender</label>
+                                                <select
+                                                    name="gender"
+                                                    value={formData.gender}
+                                                    onChange={handleChange}
+                                                    className="w-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl px-4 py-3 text-sm font-semibold text-slate-800 dark:text-slate-100 outline-none transition-all focus:border-emerald-500 focus:ring-4 focus:ring-emerald-500/10"
+                                                >
+                                                    <option value="Male">Male</option>
+                                                    <option value="Female">Female</option>
+                                                    <option value="Other">Other</option>
+                                                </select>
+                                            </div>
+                                        </div>
 
-                                                    <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "16px" }}>
-                                                        <div>
-                                                            <label style={{ display: "block", fontSize: "11px", fontWeight: "700", textTransform: "uppercase", color: "#475569", marginBottom: "4px" }}>Date of Birth</label>
-                                                            <input
-                                                                type="date"
-                                                                name="dob"
-                                                                value={formData.dob}
-                                                                onChange={handleChange}
-                                                                style={{ width: "100%", padding: "10px 12px", borderRadius: "8px", border: "1px solid #cbd5e1", outline: "none", fontSize: "14px", color: "#000000" }}
-                                                            />
-                                                        </div>
-                                                        <div>
-                                                            <label style={{ display: "block", fontSize: "11px", fontWeight: "700", textTransform: "uppercase", color: "#475569", marginBottom: "4px" }}>Gender</label>
-                                                            <select
-                                                                name="gender"
-                                                                value={formData.gender}
-                                                                onChange={handleChange}
-                                                                style={{ width: "100%", padding: "10px 12px", borderRadius: "8px", border: "1px solid #cbd5e1", backgroundColor: "#ffffff", outline: "none", fontSize: "14px", color: "#000000" }}
-                                                            >
-                                                                <option value="Male">Male</option>
-                                                                <option value="Female">Female</option>
-                                                                <option value="Other">Other</option>
-                                                            </select>
-                                                        </div>
-                                                    </div>
-
-                                                    <div>
-                                                        <label style={{ display: "block", fontSize: "11px", fontWeight: "700", textTransform: "uppercase", color: "#475569", marginBottom: "4px" }}>Nationality</label>
-                                                        <input
-                                                            type="text"
-                                                            name="nationality"
-                                                            value={formData.nationality}
-                                                            onChange={handleChange}
-                                                            style={{ width: "100%", padding: "10px 12px", borderRadius: "8px", border: "1px solid #cbd5e1", outline: "none", fontSize: "14px", color: "#000000" }}
-                                                        />
-                                                    </div>
-                                                </div>
-                                            )
-                                        }
-
-                                        {/* TAB: Contact */}
-                                        {
-                                            formTab === "contact" && (
-                                                <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
-                                                    <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "16px" }}>
-                                                        <div>
-                                                            <label style={{ display: "block", fontSize: "11px", fontWeight: "700", textTransform: "uppercase", color: "#475569", marginBottom: "4px" }}>Primary Mobile Number</label>
-                                                            <div style={{ display: "flex", alignItems: "center", border: "1px solid #cbd5e1", borderRadius: "8px", paddingLeft: "10px", backgroundColor: "#ffffff" }}>
-                                                                <Phone size={16} color="#64748b" />
-                                                                <input
-                                                                    type="text"
-                                                                    name="phone"
-                                                                    value={formData.phone}
-                                                                    onChange={handleChange}
-                                                                    style={{ width: "100%", padding: "10px 12px", border: "none", outline: "none", fontSize: "14px", color: "#000000" }}
-                                                                    required
-                                                                />
-                                                            </div>
-                                                        </div>
-                                                        <div>
-                                                            <label style={{ display: "block", fontSize: "11px", fontWeight: "700", textTransform: "uppercase", color: "#475569", marginBottom: "4px" }}>Secondary Mobile Number</label>
-                                                            <div style={{ display: "flex", alignItems: "center", border: "1px solid #cbd5e1", borderRadius: "8px", paddingLeft: "10px", backgroundColor: "#ffffff" }}>
-                                                                <Phone size={16} color="#64748b" />
-                                                                <input
-                                                                    type="text"
-                                                                    name="secondaryPhone"
-                                                                    value={formData.secondaryPhone}
-                                                                    onChange={handleChange}
-                                                                    style={{ width: "100%", padding: "10px 12px", border: "none", outline: "none", fontSize: "14px", color: "#000000" }}
-                                                                    placeholder="Optional"
-                                                                />
-                                                            </div>
-                                                        </div>
-                                                    </div>
-
-                                                    <div>
-                                                        <label style={{ display: "block", fontSize: "11px", fontWeight: "700", textTransform: "uppercase", color: "#475569", marginBottom: "4px" }}>Email Address</label>
-                                                        <div style={{ display: "flex", alignItems: "center", border: "1px solid #cbd5e1", borderRadius: "8px", paddingLeft: "10px", backgroundColor: "#f8fafc" }}>
-                                                            <Mail size={16} color="#94a3b8" />
-                                                            <input
-                                                                type="email"
-                                                                value={formData.email}
-                                                                disabled
-                                                                style={{ width: "100%", padding: "10px 12px", border: "none", outline: "none", fontSize: "14px", color: "#94a3b8", cursor: "not-allowed" }}
-                                                            />
-                                                        </div>
-                                                        <span style={{ fontSize: "11px", color: "#64748b", fontStyle: "italic", marginTop: "2px", display: "inline-block" }}>
-                                                            Registered email cannot be modified.
-                                                        </span>
-                                                    </div>
-
-                                                    <div>
-                                                        <label style={{ display: "block", fontSize: "11px", fontWeight: "700", textTransform: "uppercase", color: "#475569", marginBottom: "4px" }}>Permanent Address</label>
-                                                        <div style={{ display: "flex", alignItems: "flex-start", border: "1px solid #cbd5e1", borderRadius: "8px", paddingLeft: "10px", backgroundColor: "#ffffff", paddingTop: "8px" }}>
-                                                            <MapPin size={16} color="#64748b" style={{ marginTop: "4px" }} />
-                                                            <textarea
-                                                                name="permanentAddress"
-                                                                value={formData.permanentAddress}
-                                                                onChange={handleChange}
-                                                                style={{ width: "100%", padding: "4px 12px 10px 12px", border: "none", outline: "none", fontSize: "14px", resize: "vertical", minHeight: "60px", color: "#000000" }}
-                                                                required
-                                                            />
-                                                        </div>
-                                                    </div>
-
-                                                    <div>
-                                                        <label style={{ display: "block", fontSize: "11px", fontWeight: "700", textTransform: "uppercase", color: "#475569", marginBottom: "4px" }}>Temporary / Current Address</label>
-                                                        <div style={{ display: "flex", alignItems: "flex-start", border: "1px solid #cbd5e1", borderRadius: "8px", paddingLeft: "10px", backgroundColor: "#ffffff", paddingTop: "8px" }}>
-                                                            <MapPin size={16} color="#64748b" style={{ marginTop: "4px" }} />
-                                                            <textarea
-                                                                name="temporaryAddress"
-                                                                value={formData.temporaryAddress}
-                                                                onChange={handleChange}
-                                                                style={{ width: "100%", padding: "4px 12px 10px 12px", border: "none", outline: "none", fontSize: "14px", resize: "vertical", minHeight: "60px", color: "#000000" }}
-                                                            />
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            )
-                                        }
-
-                                        {/* TAB: Bank & Emergency */}
-                                        {
-                                            formTab === "bank" && (
-                                                <div style={{ display: "flex", flexDirection: "column", gap: "20px" }}>
-
-                                                    {/* SubSection: Bank */}
-                                                    <div>
-                                                        <h4 style={{ margin: "0 0 12px 0", fontSize: "14px", fontWeight: "800", color: "#043e30", borderBottom: "1px solid #e2e8f0", paddingBottom: "6px" }}>Bank Account Details</h4>
-
-                                                        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "16px", marginBottom: "12px" }}>
-                                                            <div>
-                                                                <label style={{ display: "block", fontSize: "11px", fontWeight: "700", textTransform: "uppercase", color: "#475569", marginBottom: "4px" }}>Bank Name</label>
-                                                                <input
-                                                                    type="text"
-                                                                    name="bankName"
-                                                                    value={formData.bankName}
-                                                                    onChange={handleChange}
-                                                                    style={{ width: "100%", padding: "10px 12px", borderRadius: "8px", border: "1px solid #cbd5e1", outline: "none", fontSize: "14px", color: "#000000" }}
-                                                                />
-                                                            </div>
-                                                            <div>
-                                                                <label style={{ display: "block", fontSize: "11px", fontWeight: "700", textTransform: "uppercase", color: "#475569", marginBottom: "4px" }}>Account Holder</label>
-                                                                <input
-                                                                    type="text"
-                                                                    name="accountHolder"
-                                                                    value={formData.accountHolder}
-                                                                    onChange={handleChange}
-                                                                    style={{ width: "100%", padding: "10px 12px", borderRadius: "8px", border: "1px solid #cbd5e1", outline: "none", fontSize: "14px", color: "#000000" }}
-                                                                />
-                                                            </div>
-                                                        </div>
-
-                                                        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "16px" }}>
-                                                            <div>
-                                                                <label style={{ display: "block", fontSize: "11px", fontWeight: "700", textTransform: "uppercase", color: "#475569", marginBottom: "4px" }}>Account Number</label>
-                                                                <input
-                                                                    type="text"
-                                                                    name="accountNo"
-                                                                    value={formData.accountNo}
-                                                                    onChange={handleChange}
-                                                                    style={{ width: "100%", padding: "10px 12px", borderRadius: "8px", border: "1px solid #cbd5e1", outline: "none", fontSize: "14px", color: "#000000" }}
-                                                                />
-                                                            </div>
-                                                            <div>
-                                                                <label style={{ display: "block", fontSize: "11px", fontWeight: "700", textTransform: "uppercase", color: "#475569", marginBottom: "4px" }}>IFSC / Bank Code</label>
-                                                                <input
-                                                                    type="text"
-                                                                    name="ifsc"
-                                                                    value={formData.ifsc}
-                                                                    onChange={handleChange}
-                                                                    style={{ width: "100%", padding: "10px 12px", borderRadius: "8px", border: "1px solid #cbd5e1", outline: "none", fontSize: "14px", color: "#000000" }}
-                                                                />
-                                                            </div>
-                                                        </div>
-                                                    </div>
-
-                                                    {/* SubSection: Emergency */}
-                                                    <div>
-                                                        <h4 style={{ margin: "0 0 12px 0", fontSize: "14px", fontWeight: "800", color: "#043e30", borderBottom: "1px solid #e2e8f0", paddingBottom: "6px" }}>Emergency Representative</h4>
-
-                                                        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "16px", marginBottom: "12px" }}>
-                                                            <div>
-                                                                <label style={{ display: "block", fontSize: "11px", fontWeight: "700", textTransform: "uppercase", color: "#475569", marginBottom: "4px" }}>Contact Name</label>
-                                                                <input
-                                                                    type="text"
-                                                                    name="emergencyName"
-                                                                    value={formData.emergencyName}
-                                                                    onChange={handleChange}
-                                                                    style={{ width: "100%", padding: "10px 12px", borderRadius: "8px", border: "1px solid #cbd5e1", outline: "none", fontSize: "14px", color: "#000000" }}
-                                                                />
-                                                            </div>
-                                                            <div>
-                                                                <label style={{ display: "block", fontSize: "11px", fontWeight: "700", textTransform: "uppercase", color: "#475569", marginBottom: "4px" }}>Relationship</label>
-                                                                <input
-                                                                    type="text"
-                                                                    name="emergencyRelation"
-                                                                    value={formData.emergencyRelation}
-                                                                    onChange={handleChange}
-                                                                    style={{ width: "100%", padding: "10px 12px", borderRadius: "8px", border: "1px solid #cbd5e1", outline: "none", fontSize: "14px", color: "#000000" }}
-                                                                />
-                                                            </div>
-                                                        </div>
-
-                                                        <div>
-                                                            <label style={{ display: "block", fontSize: "11px", fontWeight: "700", textTransform: "uppercase", color: "#475569", marginBottom: "4px" }}>Phone Number</label>
-                                                            <div style={{ display: "flex", alignItems: "center", border: "1px solid #cbd5e1", borderRadius: "8px", paddingLeft: "10px", backgroundColor: "#ffffff" }}>
-                                                                <Phone size={16} color="#64748b" />
-                                                                <input
-                                                                    type="text"
-                                                                    name="emergencyPhone"
-                                                                    value={formData.emergencyPhone}
-                                                                    onChange={handleChange}
-                                                                    style={{ width: "100%", padding: "10px 12px", border: "none", outline: "none", fontSize: "14px", color: "#000000" }}
-                                                                />
-                                                            </div>
-                                                        </div>
-                                                    </div>
-
-                                                </div>
-                                            )
-                                        }
+                                        <div className="form-group flex flex-col gap-2">
+                                            <label className="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Nationality</label>
+                                            <input
+                                                type="text"
+                                                name="nationality"
+                                                value={formData.nationality}
+                                                onChange={handleChange}
+                                                className="w-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl px-4 py-3 text-sm font-semibold text-slate-800 dark:text-slate-100 outline-none transition-all focus:border-emerald-500 focus:ring-4 focus:ring-emerald-500/10"
+                                            />
+                                        </div>
 
                                         {/* Form Footer Action */}
-                                        <div style={{ marginTop: "24px", paddingTop: "16px", borderTop: "1px solid #f1f5f9", display: "flex", justifyContent: "flex-end" }}>
+                                        <div className="flex justify-end pt-4 border-t border-slate-200 dark:border-slate-800/80">
                                             <button
                                                 type="submit"
                                                 disabled={saving}
-                                                style={{
-                                                    backgroundColor: "#043e30",
-                                                    color: "#ffffff",
-                                                    border: "none",
-                                                    borderRadius: "10px",
-                                                    padding: "12px 24px",
-                                                    fontSize: "14px",
-                                                    fontWeight: "700",
-                                                    cursor: saving ? "default" : "pointer",
-                                                    transition: "all 0.2s",
-                                                    opacity: saving ? 0.7 : 1
-                                                }}
+                                                className="btn-save"
                                             >
-                                                {saving ? "Saving Changes..." : "Save Changes"}
+                                                {saving ? "Saving..." : "Save Changes"}
                                             </button>
                                         </div>
-
-                                    </form >
-
-                                </div >
-
-                            </div >
+                                    </form>
+                                </div>
+                            </div>
                         )}
 
                 </div >

@@ -1,5 +1,4 @@
 import { useState, useEffect } from "react";
-import "../App.css";
 import {
     Wallet,
     Plus,
@@ -10,7 +9,9 @@ import {
     TrendingDown,
     Percent,
     AlertCircle,
-    Clock
+    Clock,
+    CheckCircle,
+    X
 } from "lucide-react";
 
 export default function Payroll() {
@@ -19,6 +20,13 @@ export default function Payroll() {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState("");
     const [success, setSuccess] = useState("");
+
+    // Modal Control States
+    const [isAddModalOpen, setIsAddModalOpen] = useState(false);
+
+    // Pagination
+    const [currentPage, setCurrentPage] = useState(1);
+    const itemsPerPage = 10;
 
     // Form Fields
     const [selectedEmpId, setSelectedEmpId] = useState("");
@@ -137,6 +145,8 @@ export default function Payroll() {
                 setTax("0");
                 setPaymentStatus("Pending");
                 setPaymentDate("");
+                setIsAddModalOpen(false);
+                setCurrentPage(1);
                 fetchPayrolls();
             } else {
                 setError(data.message || "Failed to process payroll");
@@ -185,7 +195,7 @@ export default function Payroll() {
         const net = Number(payroll.netSalary || (basic + allow + bon - ded - tx));
 
         const formattedPaymentDate = payroll.paymentDate
-            ? new Date(payroll.paymentDate).toLocaleDateString("en-US", { year: 'numeric', month: 'long', day: 'numeric' })
+            ? new Date(payroll.paymentDate).toLocaleDateString("en-IN", { year: 'numeric', month: 'long', day: 'numeric' })
             : "N/A";
 
         printWindow.document.write(`
@@ -263,33 +273,33 @@ export default function Payroll() {
               <thead>
                 <tr>
                   <th style="width: 70%;">EARNINGS / DEDUCTIONS DETAILS</th>
-                  <th style="width: 30%; text-align: right;">AMOUNT (USD)</th>
+                  <th style="width: 30%; text-align: right;">AMOUNT (INR)</th>
                 </tr>
               </thead>
               <tbody>
                 <tr>
                   <td style="font-weight: 600;">Basic Salary (Actual)</td>
-                  <td style="text-align: right; font-weight: 700;">$${basic.toLocaleString("en-US", { minimumFractionDigits: 2 })}</td>
+                  <td style="text-align: right; font-weight: 700;">₹${basic.toLocaleString("en-IN", { minimumFractionDigits: 2 })}</td>
                 </tr>
                 <tr style="color: #0d9488;">
                   <td style="padding-left: 24px;">+ Allowance</td>
-                  <td style="text-align: right;">$${allow.toLocaleString("en-US", { minimumFractionDigits: 2 })}</td>
+                  <td style="text-align: right;">₹${allow.toLocaleString("en-IN", { minimumFractionDigits: 2 })}</td>
                 </tr>
                 <tr style="color: #0d9488;">
                   <td style="padding-left: 24px;">+ Bonus</td>
-                  <td style="text-align: right;">$${bon.toLocaleString("en-US", { minimumFractionDigits: 2 })}</td>
+                  <td style="text-align: right;">₹${bon.toLocaleString("en-IN", { minimumFractionDigits: 2 })}</td>
                 </tr>
                 <tr style="color: #b91c1c;">
                   <td style="padding-left: 24px;">- Reductions</td>
-                  <td style="text-align: right;">$${ded.toLocaleString("en-US", { minimumFractionDigits: 2 })}</td>
+                  <td style="text-align: right;">₹${ded.toLocaleString("en-IN", { minimumFractionDigits: 2 })}</td>
                 </tr>
                 <tr style="color: #b91c1c;">
                   <td style="padding-left: 24px;">- Tax Withholding</td>
-                  <td style="text-align: right;">$${tx.toLocaleString("en-US", { minimumFractionDigits: 2 })}</td>
+                  <td style="text-align: right;">₹${tx.toLocaleString("en-IN", { minimumFractionDigits: 2 })}</td>
                 </tr>
                 <tr class="total-net-row">
                   <td>NET DISBURSED AMOUNT</td>
-                  <td style="text-align: right;">$${net.toLocaleString("en-US", { minimumFractionDigits: 2 })}</td>
+                  <td style="text-align: right;">₹${net.toLocaleString("en-IN", { minimumFractionDigits: 2 })}</td>
                 </tr>
               </tbody>
             </table>
@@ -335,14 +345,31 @@ export default function Payroll() {
         return matchesYear && matchesMonth;
     });
 
+    // Pagination Calculation
+    const totalPages = Math.ceil(filteredPayrolls.length / itemsPerPage);
+    const startIndex = (currentPage - 1) * itemsPerPage;
+    const paginatedPayrolls = filteredPayrolls.slice(startIndex, startIndex + itemsPerPage);
+
     return (
         <div className="p-6">
             {/* Header */}
-            <div className="page-header">
+            <div className="page-header" style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "24px" }}>
                 <div>
                     <h1 className="dashboard-title">Payroll Center</h1>
                     <p className="dashboard-subtitle">Disburse salaries, calculate taxes, deductions, and log payment records.</p>
                 </div>
+                <button
+                    className="btn-enroll-employee"
+                    onClick={() => {
+                        setError("");
+                        setSuccess("");
+                        setIsAddModalOpen(true);
+                    }}
+                    style={{ display: "flex", alignItems: "center", gap: "8px" }}
+                >
+                    <Plus size={16} />
+                    <span>Process Salary</span>
+                </button>
             </div>
 
             {/* Stats Widget */}
@@ -354,7 +381,7 @@ export default function Payroll() {
                         </div>
                         <div>
                             <p className="stat-label">Total Disbursed (Paid)</p>
-                            <p className="stat-value">${totalDisbursed.toLocaleString("en-US", { maximumFractionDigits: 0 })}</p>
+                            <p className="stat-value">₹{totalDisbursed.toLocaleString("en-IN", { maximumFractionDigits: 0 })}</p>
                         </div>
                     </div>
                     <p className="stat-description">Successfully disbursed salaries</p>
@@ -367,7 +394,7 @@ export default function Payroll() {
                         </div>
                         <div>
                             <p className="stat-label">Total Outstandings (Pending)</p>
-                            <p className="stat-value">${pendingDisbursed.toLocaleString("en-US", { maximumFractionDigits: 0 })}</p>
+                            <p className="stat-value">₹{pendingDisbursed.toLocaleString("en-IN", { maximumFractionDigits: 0 })}</p>
                         </div>
                     </div>
                     <p className="stat-description">Pending disbursements</p>
@@ -400,10 +427,8 @@ export default function Payroll() {
                 </div>
             )}
 
-            {/* Main Grid split */}
-            <div className="emp-middle-grid" style={{ display: "grid", gridTemplateColumns: "2.3fr 1fr", gap: "24px", alignItems: "start" }}>
-
-                {/* Payroll List */}
+            {/* Payroll List Full Width */}
+            <div className="w-full">
                 <div className="employee-directory-card" style={{ padding: "24px" }}>
                     <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "16px", flexWrap: "wrap", gap: "10px" }}>
                         <h2 className="emp-card-title" style={{ margin: 0 }}>Payroll Logs</h2>
@@ -412,7 +437,10 @@ export default function Payroll() {
                         <div style={{ display: "flex", gap: "8px" }}>
                             <select
                                 value={searchYear}
-                                onChange={(e) => setSearchYear(e.target.value)}
+                                onChange={(e) => {
+                                    setSearchYear(e.target.value);
+                                    setCurrentPage(1);
+                                }}
                                 style={{ padding: "6px 12px", borderRadius: "6px", border: "1px solid #cbd5e1", fontSize: "13px", backgroundColor: "#ffffff" }}
                             >
                                 <option value="All Years">All Years</option>
@@ -422,7 +450,10 @@ export default function Payroll() {
                             </select>
                             <select
                                 value={searchMonth}
-                                onChange={(e) => setSearchMonth(e.target.value)}
+                                onChange={(e) => {
+                                    setSearchMonth(e.target.value);
+                                    setCurrentPage(1);
+                                }}
                                 style={{ padding: "6px 12px", borderRadius: "6px", border: "1px solid #cbd5e1", fontSize: "13px", backgroundColor: "#ffffff" }}
                             >
                                 <option value="All Months">All Months</option>
@@ -437,14 +468,14 @@ export default function Payroll() {
                         <table className="employee-table">
                             <thead>
                                 <tr>
-                                    <th style={{ padding: "12px" }}>EMPLOYEE</th>
-                                    <th style={{ padding: "12px" }}>PERIOD</th>
-                                    <th style={{ padding: "12px", textAlign: "right" }}>BASIC ($)</th>
-                                    <th style={{ padding: "12px", textAlign: "right" }}>REDUCTION ($)</th>
-                                    <th style={{ padding: "12px", textAlign: "right" }}>TAX ($)</th>
-                                    <th style={{ padding: "12px", textAlign: "right" }}>NET PAID ($)</th>
-                                    <th style={{ padding: "12px", textAlign: "center" }}>STATUS</th>
-                                    <th style={{ padding: "12px", textAlign: "right" }}>ACTIONS</th>
+                                    <th style={{ padding: "8px 12px" }}>EMPLOYEE</th>
+                                    <th style={{ padding: "8px 12px" }}>PERIOD</th>
+                                    <th style={{ padding: "8px 12px", textAlign: "right" }}>BASIC (₹)</th>
+                                    <th style={{ padding: "8px 12px", textAlign: "right" }}>REDUCTION (₹)</th>
+                                    <th style={{ padding: "8px 12px", textAlign: "right" }}>TAX (₹)</th>
+                                    <th style={{ padding: "8px 12px", textAlign: "right" }}>NET PAID (₹)</th>
+                                    <th style={{ padding: "8px 12px", textAlign: "center" }}>STATUS</th>
+                                    <th style={{ padding: "8px 12px", textAlign: "right" }}>ACTIONS</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -452,14 +483,14 @@ export default function Payroll() {
                                     <tr>
                                         <td colSpan="8" style={{ textAlign: "center", padding: "30px 0" }}>Loading payroll data...</td>
                                     </tr>
-                                ) : filteredPayrolls.length === 0 ? (
+                                ) : paginatedPayrolls.length === 0 ? (
                                     <tr>
                                         <td colSpan="8" style={{ textAlign: "center", padding: "30px 0" }}>No payroll records found matching filters.</td>
                                     </tr>
                                 ) : (
-                                    filteredPayrolls.map((payroll) => (
+                                    paginatedPayrolls.map((payroll) => (
                                         <tr key={payroll._id} className="employee-row">
-                                            <td style={{ padding: "12px" }}>
+                                            <td style={{ padding: "8px 12px" }}>
                                                 <div>
                                                     <p style={{ fontWeight: "700", color: "#1e293b", fontSize: "14px" }}>
                                                         {payroll.employeeId?.firstName} {payroll.employeeId?.lastName}
@@ -467,24 +498,24 @@ export default function Payroll() {
                                                     <p style={{ fontSize: "11px", color: "#64748b" }}>{payroll.employeeId?.employeeId}</p>
                                                 </div>
                                             </td>
-                                            <td style={{ padding: "12px" }}>
+                                            <td style={{ padding: "8px 12px" }}>
                                                 <span style={{ fontSize: "13px", fontWeight: "600", color: "#475569" }}>
                                                     {payroll.month} {payroll.year}
                                                 </span>
                                             </td>
-                                            <td style={{ padding: "12px", textAlign: "right", fontWeight: "600" }}>
-                                                {(payroll.basicSalary || 0).toLocaleString()}
+                                            <td style={{ padding: "8px 12px", textAlign: "right", fontWeight: "600" }}>
+                                                {(payroll.basicSalary || 0).toLocaleString("en-IN")}
                                             </td>
-                                            <td style={{ padding: "12px", textAlign: "right", color: "#b91c1c" }}>
-                                                -{(payroll.deductions || 0).toLocaleString()}
+                                            <td style={{ padding: "8px 12px", textAlign: "right", color: "#b91c1c" }}>
+                                                -{(payroll.deductions || 0).toLocaleString("en-IN")}
                                             </td>
-                                            <td style={{ padding: "12px", textAlign: "right", color: "#b91c1c" }}>
-                                                -{(payroll.tax || 0).toLocaleString()}
+                                            <td style={{ padding: "8px 12px", textAlign: "right", color: "#b91c1c" }}>
+                                                -{(payroll.tax || 0).toLocaleString("en-IN")}
                                             </td>
-                                            <td style={{ padding: "12px", textAlign: "right", fontWeight: "700", color: "#065f46" }}>
-                                                {(payroll.netSalary || 0).toLocaleString("en-US", { minimumFractionDigits: 2 })}
+                                            <td style={{ padding: "8px 12px", textAlign: "right", fontWeight: "700", color: "#065f46" }}>
+                                                {(payroll.netSalary || 0).toLocaleString("en-IN", { minimumFractionDigits: 2 })}
                                             </td>
-                                            <td style={{ padding: "12px", textAlign: "center" }}>
+                                            <td style={{ padding: "8px 12px", textAlign: "center" }}>
                                                 <span style={{
                                                     padding: "2px 8px",
                                                     fontSize: "11px",
@@ -494,10 +525,10 @@ export default function Payroll() {
                                                     backgroundColor: payroll.paymentStatus === "Paid" ? "#ecfdf5" : "#fef2f2",
                                                     color: payroll.paymentStatus === "Paid" ? "#065f46" : "#b91c1c"
                                                 }}>
-                                                    {payroll.paymentStatus === "Paid" ? "✓ Paid" : "⚠ Pending"}
+                                                    {payroll.paymentStatus === "Paid" ? "Paid" : "Pending"}
                                                 </span>
                                             </td>
-                                            <td style={{ padding: "12px", textAlign: "right" }}>
+                                            <td style={{ padding: "8px 12px", textAlign: "right" }}>
                                                 <div style={{ display: "flex", gap: "8px", justifyContent: "flex-end" }}>
                                                     <button
                                                         onClick={() => handleDownloadPayslip(payroll)}
@@ -535,152 +566,200 @@ export default function Payroll() {
                             </tbody>
                         </table>
                     </div>
+
+                    {/* Pagination Controls */}
+                    {totalPages > 1 && (
+                        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginTop: "16px" }}>
+                            <span style={{ fontSize: "13px", color: "#64748b" }}>
+                                Showing {startIndex + 1} to {Math.min(startIndex + itemsPerPage, filteredPayrolls.length)} of {filteredPayrolls.length} records
+                            </span>
+                            <div style={{ display: "flex", gap: "8px" }}>
+                                <button
+                                    disabled={currentPage === 1}
+                                    onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
+                                    className="btn-close"
+                                    style={{ padding: "6px 12.5px" }}
+                                >
+                                    Previous
+                                </button>
+                                <span style={{ fontSize: "14px", fontWeight: "600", alignSelf: "center" }}>
+                                    {currentPage} of {totalPages}
+                                </span>
+                                <button
+                                    disabled={currentPage === totalPages}
+                                    onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
+                                    className="btn-close"
+                                    style={{ padding: "6px 12.5px" }}
+                                >
+                                    Next
+                                </button>
+                            </div>
+                        </div>
+                    )}
                 </div>
+            </div>
 
-                {/* Process Salary Form */}
-                <div className="emp-card-box" style={{ padding: "24px" }}>
-                    <h2 className="emp-card-title" style={{ marginBottom: "16px" }}>Process Salary</h2>
-                    <form onSubmit={handleAddPayroll}>
-
-                        <div style={{ marginBottom: "12px" }}>
-                            <label style={{ display: "block", fontSize: "11px", fontWeight: "700", textTransform: "uppercase", color: "#475569", marginBottom: "4px" }}>Employee*</label>
-                            <select
-                                value={selectedEmpId}
-                                onChange={(e) => setSelectedEmpId(e.target.value)}
-                                style={{ width: "100%", padding: "8px 12px", borderRadius: "6px", border: "1px solid #cbd5e1", backgroundColor: "#ffffff" }}
+            {/* Process Salary Modal */}
+            {isAddModalOpen && (
+                <div className="modal-backdrop">
+                    <div className="modal-content-card" style={{ maxWidth: "500px" }}>
+                        <div className="modal-header">
+                            <div>
+                                <h2>Process Salary</h2>
+                                <p className="modal-subtitle">Log new transaction payslips for employees.</p>
+                            </div>
+                            <button
+                                className="btn-close"
+                                onClick={() => setIsAddModalOpen(false)}
                             >
-                                <option value="">Select Employee...</option>
-                                {employees.map(emp => (
-                                    <option key={emp._id} value={emp._id}>
-                                        {emp.firstName} {emp.lastName} ({emp.employeeId})
-                                    </option>
-                                ))}
-                            </select>
+                                <X size={20} />
+                            </button>
                         </div>
 
-                        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "10px", marginBottom: "12px" }}>
-                            <div>
-                                <label style={{ display: "block", fontSize: "11px", fontWeight: "700", textTransform: "uppercase", color: "#475569", marginBottom: "4px" }}>Month*</label>
+                        <form onSubmit={handleAddPayroll} className="enroll-form">
+                            <div className="form-group">
+                                <label>Employee <span className="req">*</span></label>
                                 <select
-                                    value={month}
-                                    onChange={(e) => setMonth(e.target.value)}
-                                    style={{ width: "100%", padding: "8px 12px", borderRadius: "6px", border: "1px solid #cbd5e1", backgroundColor: "#ffffff" }}
+                                    value={selectedEmpId}
+                                    onChange={(e) => setSelectedEmpId(e.target.value)}
+                                    required
                                 >
-                                    <option value="">Month</option>
-                                    {["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"].map(m => (
-                                        <option key={m} value={m}>{m}</option>
+                                    <option value="">Select Employee...</option>
+                                    {employees.map(emp => (
+                                        <option key={emp._id} value={emp._id}>
+                                            {emp.firstName} {emp.lastName} ({emp.employeeId})
+                                        </option>
                                     ))}
                                 </select>
                             </div>
-                            <div>
-                                <label style={{ display: "block", fontSize: "11px", fontWeight: "700", textTransform: "uppercase", color: "#475569", marginBottom: "4px" }}>Year*</label>
+
+                            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "10px" }}>
+                                <div className="form-group">
+                                    <label>Month <span className="req">*</span></label>
+                                    <select
+                                        value={month}
+                                        onChange={(e) => setMonth(e.target.value)}
+                                        required
+                                    >
+                                        <option value="">Month</option>
+                                        {["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"].map(m => (
+                                            <option key={m} value={m}>{m}</option>
+                                        ))}
+                                    </select>
+                                </div>
+                                <div className="form-group">
+                                    <label>Year <span className="req">*</span></label>
+                                    <input
+                                        type="number"
+                                        value={year}
+                                        onChange={(e) => setYear(e.target.value)}
+                                        required
+                                    />
+                                </div>
+                            </div>
+
+                            <div className="form-group">
+                                <label>Basic Salary (₹) <span className="req">*</span></label>
                                 <input
                                     type="number"
-                                    value={year}
-                                    onChange={(e) => setYear(e.target.value)}
-                                    style={{ width: "100%", padding: "8px 12px", borderRadius: "6px", border: "1px solid #cbd5e1" }}
-                                    placeholder="e.g. 2026"
+                                    value={basicSalary}
+                                    onChange={(e) => setBasicSalary(e.target.value)}
+                                    placeholder="e.g. 50000"
+                                    required
                                 />
                             </div>
-                        </div>
 
-                        <div style={{ marginBottom: "12px" }}>
-                            <label style={{ display: "block", fontSize: "11px", fontWeight: "700", textTransform: "uppercase", color: "#475569", marginBottom: "4px" }}>Basic Salary* ($)</label>
-                            <input
-                                type="number"
-                                value={basicSalary}
-                                onChange={(e) => setBasicSalary(e.target.value)}
-                                style={{ width: "100%", padding: "8px 12px", borderRadius: "6px", border: "1px solid #cbd5e1" }}
-                                placeholder="e.g. 5000"
-                            />
-                        </div>
+                            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "10px" }}>
+                                <div className="form-group">
+                                    <label>Allowance (₹)</label>
+                                    <input
+                                        type="number"
+                                        value={allowance}
+                                        onChange={(e) => setAllowance(e.target.value)}
+                                    />
+                                </div>
+                                <div className="form-group">
+                                    <label>Bonus (₹)</label>
+                                    <input
+                                        type="number"
+                                        value={bonus}
+                                        onChange={(e) => setBonus(e.target.value)}
+                                    />
+                                </div>
+                            </div>
 
-                        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "10px", marginBottom: "12px" }}>
-                            <div>
-                                <label style={{ display: "block", fontSize: "11px", fontWeight: "700", textTransform: "uppercase", color: "#475569", marginBottom: "4px" }}>Allowance ($)</label>
-                                <input
-                                    type="number"
-                                    value={allowance}
-                                    onChange={(e) => setAllowance(e.target.value)}
-                                    style={{ width: "100%", padding: "8px 12px", borderRadius: "6px", border: "1px solid #cbd5e1" }}
-                                />
+                            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "10px" }}>
+                                <div className="form-group">
+                                    <label>Reductions (₹)</label>
+                                    <input
+                                        type="number"
+                                        value={deductions}
+                                        onChange={(e) => setDeductions(e.target.value)}
+                                        placeholder="Deduction"
+                                    />
+                                </div>
+                                <div className="form-group">
+                                    <label>Income Tax (₹)</label>
+                                    <input
+                                        type="number"
+                                        value={tax}
+                                        onChange={(e) => setTax(e.target.value)}
+                                        placeholder="Tax"
+                                    />
+                                </div>
                             </div>
-                            <div>
-                                <label style={{ display: "block", fontSize: "11px", fontWeight: "700", textTransform: "uppercase", color: "#475569", marginBottom: "4px" }}>Bonus ($)</label>
-                                <input
-                                    type="number"
-                                    value={bonus}
-                                    onChange={(e) => setBonus(e.target.value)}
-                                    style={{ width: "100%", padding: "8px 12px", borderRadius: "6px", border: "1px solid #cbd5e1" }}
-                                />
-                            </div>
-                        </div>
 
-                        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "10px", marginBottom: "12px" }}>
-                            <div>
-                                <label style={{ display: "block", fontSize: "11px", fontWeight: "700", textTransform: "uppercase", color: "#475569", marginBottom: "4px" }}>Reductions ($)</label>
-                                <input
-                                    type="number"
-                                    value={deductions}
-                                    onChange={(e) => setDeductions(e.target.value)}
-                                    style={{ width: "100%", padding: "8px 12px", borderRadius: "6px", border: "1px solid #cbd5e1" }}
-                                    placeholder="Deduction/Reduction"
-                                />
-                            </div>
-                            <div>
-                                <label style={{ display: "block", fontSize: "11px", fontWeight: "700", textTransform: "uppercase", color: "#475569", marginBottom: "4px" }}>Income Tax ($)</label>
-                                <input
-                                    type="number"
-                                    value={tax}
-                                    onChange={(e) => setTax(e.target.value)}
-                                    style={{ width: "100%", padding: "8px 12px", borderRadius: "6px", border: "1px solid #cbd5e1" }}
-                                    placeholder="Tax"
-                                />
-                            </div>
-                        </div>
+                            {/* Calculated Net Salary Indicator */}
+                            {basicSalary && (
+                                <div style={{ padding: "10px", backgroundColor: "#f0fdf4", border: "1px solid #34d399", borderRadius: "6px", margin: "10px 0", fontSize: "13px", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                                    <span style={{ fontWeight: "700", color: "#065f46" }}>Estimated Net:</span>
+                                    <span style={{ fontWeight: "800", color: "#065f46" }}>₹{getCalculatedNet().toLocaleString("en-IN", { minimumFractionDigits: 2 })}</span>
+                                </div>
+                            )}
 
-                        {/* Calculated Net Salary Indicator */}
-                        {basicSalary && (
-                            <div style={{ padding: "10px", backgroundColor: "#f0fdf4", border: "1px solid #34d399", borderRadius: "6px", marginBottom: "12px", fontSize: "13px", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                                <span style={{ fontWeight: "700", color: "#065f46" }}>Estimated Net:</span>
-                                <span style={{ fontWeight: "800", color: "#065f46" }}>${getCalculatedNet().toLocaleString("en-US", { minimumFractionDigits: 2 })}</span>
+                            <div style={{ display: "grid", gridTemplateColumns: "1fr 1.2fr", gap: "10px" }}>
+                                <div className="form-group">
+                                    <label>Payment Status <span className="req">*</span></label>
+                                    <select
+                                        value={paymentStatus}
+                                        onChange={(e) => setPaymentStatus(e.target.value)}
+                                        required
+                                    >
+                                        <option value="Pending">Pending</option>
+                                        <option value="Paid">Paid</option>
+                                    </select>
+                                </div>
+                                <div className="form-group">
+                                    <label>Payment Date</label>
+                                    <input
+                                        type="date"
+                                        value={paymentDate}
+                                        onChange={(e) => setPaymentDate(e.target.value)}
+                                    />
+                                </div>
                             </div>
-                        )}
 
-                        <div style={{ display: "grid", gridTemplateColumns: "1fr 1.2fr", gap: "10px", marginBottom: "20px" }}>
-                            <div>
-                                <label style={{ display: "block", fontSize: "11px", fontWeight: "700", textTransform: "uppercase", color: "#475569", marginBottom: "4px" }}>Payment Status*</label>
-                                <select
-                                    value={paymentStatus}
-                                    onChange={(e) => setPaymentStatus(e.target.value)}
-                                    style={{ width: "100%", padding: "8px 12px", borderRadius: "6px", border: "1px solid #cbd5e1", backgroundColor: "#ffffff" }}
+                            <div className="modal-actions">
+                                <button
+                                    type="button"
+                                    className="btn-close"
+                                    onClick={() => setIsAddModalOpen(false)}
+                                    style={{ padding: "8px 16px" }}
                                 >
-                                    <option value="Pending">Pending</option>
-                                    <option value="Paid">Paid</option>
-                                </select>
+                                    Cancel
+                                </button>
+                                <button
+                                    type="submit"
+                                    className="btn-enroll-employee"
+                                >
+                                    <Plus size={16} />
+                                    <span>Process Salary</span>
+                                </button>
                             </div>
-                            <div>
-                                <label style={{ display: "block", fontSize: "11px", fontWeight: "700", textTransform: "uppercase", color: "#475569", marginBottom: "4px" }}>Payment Date</label>
-                                <input
-                                    type="date"
-                                    value={paymentDate}
-                                    onChange={(e) => setPaymentDate(e.target.value)}
-                                    style={{ width: "100%", padding: "8px 12px", borderRadius: "6px", border: "1px solid #cbd5e1" }}
-                                />
-                            </div>
-                        </div>
-
-                        <button
-                            type="submit"
-                            style={{ width: "100%", padding: "10px", backgroundColor: "#065f46", color: "#ffffff", border: "none", borderRadius: "6px", fontWeight: "600", fontSize: "14px", cursor: "pointer", display: "flex", alignItems: "center", justifyBox: "center", justifyContent: "center", gap: "8px" }}
-                        >
-                            <Plus size={16} />
-                            <span>Process Salary Disbursal</span>
-                        </button>
-                    </form>
+                        </form>
+                    </div>
                 </div>
-
-            </div>
-        </div >
+            )}
+        </div>
     );
 }

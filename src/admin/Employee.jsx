@@ -1,13 +1,11 @@
 import { useState, useEffect } from "react";
-import "../App.css";
-
 import api from "../api";
 import {
     Building2,
     Users,
-    Bell,
     Plus,
     Eye,
+    EyeOff,
     Edit,
     Trash2,
     Filter,
@@ -35,6 +33,8 @@ export default function Employee() {
     const [editingId, setEditingId] = useState(null);
     const [viewingEmployee, setViewingEmployee] = useState(null);
     const [formError, setFormError] = useState("");
+    const [showPassword, setShowPassword] = useState(false);
+    const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
     const [formErrors, setFormErrors] = useState({});
     const [currentUser] = useState(() => {
@@ -424,15 +424,6 @@ export default function Employee() {
                     />
                 </div>
 
-                <div className="header-right">
-                    <button className="icon-btn">
-                        <Bell size={18} />
-                    </button>
-                    <div className="admin-profile-badge">
-                        <div className="admin-avatar-small">{getInitials(currentUser.name)}</div>
-                        <span>{currentUser.role.toUpperCase()}</span>
-                    </div>
-                </div>
             </div>
 
             {/* Page Title Header */}
@@ -442,69 +433,16 @@ export default function Employee() {
                     <p className="dashboard-subtitle">Manage workforce records, roles, statuses and enroll new employees.</p>
                 </div>
                 <button
-                    className="btn-enroll-employee"
+                    className="btn-add-dept"
                     onClick={handleOpenEnrollModal}
-                    style={{ backgroundColor: "#059669", color: "#ffffff", display: "flex", alignItems: "center", gap: "8px", cursor: "pointer", borderRadius: "9999px", padding: "8px 16px", fontSize: "14px", fontWeight: "500" }}
+                    style={{ display: "flex", alignItems: "center", gap: "6px" }}
                 >
                     <Plus size={16} />
-                    <span>Enroll Employee</span>
+                    <span>Add Employee</span>
                 </button>
             </div>
 
-            {/* 4 Stat Cards Grid */}
-            <div className="stats-grid">
-                <div className="stat-card">
-                    <div className="stat-header">
-                        <div className="stat-icon-box total-employees-icon">
-                            <Users size={20} />
-                        </div>
-                        <div>
-                            <p className="stat-label">Total Employees</p>
-                            <p className="stat-value">{totalEmployeesCount}</p>
-                        </div>
-                    </div>
-                    <p className="stat-description">Registered in database</p>
-                </div>
 
-                <div className="stat-card">
-                    <div className="stat-header">
-                        <div className="stat-icon-box active-staff-icon">
-                            <Users size={20} />
-                        </div>
-                        <div>
-                            <p className="stat-label">Active Staff</p>
-                            <p className="stat-value">{activeStaffCount}</p>
-                        </div>
-                    </div>
-                    <p className="stat-description">Currently active</p>
-                </div>
-
-                <div className="stat-card">
-                    <div className="stat-header">
-                        <div className="stat-icon-box inactive-staff-icon">
-                            <Users size={20} />
-                        </div>
-                        <div>
-                            <p className="stat-label">Inactive Staff</p>
-                            <p className="stat-value">{inactiveStaffCount}</p>
-                        </div>
-                    </div>
-                    <p className="stat-description">Offboarded / On leave</p>
-                </div>
-
-                <div className="stat-card">
-                    <div className="stat-header">
-                        <div className="stat-icon-box depts-icon">
-                            <Building2 size={20} />
-                        </div>
-                        <div>
-                            <p className="stat-label">Departments</p>
-                            <p className="stat-value">{departmentsCountText}</p>
-                        </div>
-                    </div>
-                    <p className="stat-description">{departmentNamesText}</p>
-                </div>
-            </div>
 
             {/* Table Directory Section */}
             <div className="employee-directory-card">
@@ -745,36 +683,54 @@ export default function Employee() {
                                         required
                                     >
                                         <option value="employee">Employee</option>
-                                        <option value="manager">Manager</option>
-                                        <option value="hr">HR</option>
                                         <option value="admin">Admin</option>
                                     </select>
                                     {formErrors.role && <div className="field-error">{formErrors.role}</div>}
                                 </div>
                                 <div className="form-group">
                                     <label>Password <span className="req">*</span></label>
-                                    <input
-                                        type="password"
-                                        name="password"
-                                        value={formData.password}
-                                        onChange={handleInputChange}
-                                        className={formErrors.password ? 'input-error' : ''}
-                                        placeholder="Min 8 chars, upper, lower, number, special"
-                                    />
+                                    <div style={{ position: "relative" }}>
+                                        <input
+                                            type={showPassword ? "text" : "password"}
+                                            name="password"
+                                            value={formData.password}
+                                            onChange={handleInputChange}
+                                            className={formErrors.password ? 'input-error' : ''}
+                                            style={{ paddingRight: "40px" }}
+                                            placeholder="Min 8 chars, upper, lower, number, special"
+                                        />
+                                        <button
+                                            type="button"
+                                            onClick={() => setShowPassword(!showPassword)}
+                                            style={{ position: "absolute", right: "12px", top: "50%", transform: "translateY(-50%)", border: "none", background: "none", cursor: "pointer", display: "flex", alignItems: "center" }}
+                                        >
+                                            {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
+                                        </button>
+                                    </div>
                                     {formErrors.password && <div className="field-error">{formErrors.password}</div>}
                                 </div>
                             </div>
 
                             <div className="form-group">
                                 <label>Confirm Password <span className="req">*</span></label>
-                                <input
-                                    type="password"
-                                    name="confirmPassword"
-                                    value={formData.confirmPassword}
-                                    onChange={handleInputChange}
-                                    className={formErrors.confirmPassword ? 'input-error' : ''}
-                                    placeholder="Re-enter password"
-                                />
+                                <div style={{ position: "relative" }}>
+                                    <input
+                                        type={showConfirmPassword ? "text" : "password"}
+                                        name="confirmPassword"
+                                        value={formData.confirmPassword}
+                                        onChange={handleInputChange}
+                                        className={formErrors.confirmPassword ? 'input-error' : ''}
+                                        style={{ paddingRight: "40px" }}
+                                        placeholder="Re-enter password"
+                                    />
+                                    <button
+                                        type="button"
+                                        onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                                        style={{ position: "absolute", right: "12px", top: "50%", transform: "translateY(-50%)", border: "none", background: "none", cursor: "pointer", display: "flex", alignItems: "center" }}
+                                    >
+                                        {showConfirmPassword ? <EyeOff size={16} /> : <Eye size={16} />}
+                                    </button>
+                                </div>
                                 {formErrors.confirmPassword && <div className="field-error">{formErrors.confirmPassword}</div>}
                             </div>
 
@@ -943,7 +899,7 @@ export default function Employee() {
                                 >
                                     Cancel
                                 </button>
-                                <button type="submit" className="btn-submit">
+                                <button type="submit" className="btn-save">
                                     {editingId ? "Update Employee Record" : "Enroll Employee"}
                                 </button>
                             </div>
