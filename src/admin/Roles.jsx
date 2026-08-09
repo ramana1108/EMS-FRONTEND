@@ -14,6 +14,7 @@ import {
 } from "lucide-react";
 
 const ALL_SYSTEM_PERMISSIONS = [
+
   "dashboard",
   "user",
   "role",
@@ -24,6 +25,7 @@ const ALL_SYSTEM_PERMISSIONS = [
   "payroll",
   "notice",
   "profile"
+  
 ];
 
 export default function Roles() {

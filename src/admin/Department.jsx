@@ -107,8 +107,20 @@ export default function Departments() {
     setSelectedDepartment(department);
 
     try {
-      const data = await api.getDepartmentEmployees(department._id);
-      setSelectedDepartmentEmployees(data.employees || data.data || []);
+      console.debug("fetchDepartmentEmployees: department", department._id);
+      // Some environments may not expose the department-specific endpoint correctly.
+      // Fall back to fetching all employees and filtering by departmentId for reliability.
+      const all = await api.getAllEmployees();
+      const list = (all && all.employees) || (all && all.data) || all || [];
+      console.debug("fetchDepartmentEmployees: all employees count", list.length);
+      const filtered = list.filter((e) => {
+        // departmentId may be object or string
+        const dep = e.departmentId && (e.departmentId._id || e.departmentId);
+        console.debug("compare", String(dep), String(department._id));
+        return String(dep) === String(department._id);
+      });
+      console.debug("fetchDepartmentEmployees: filtered count", filtered.length);
+      setSelectedDepartmentEmployees(filtered);
     } catch (error) {
       console.warn(error);
       setEmployeesError("Could not load department employees.");
@@ -406,29 +418,32 @@ export default function Departments() {
               No employees assigned to this department.
             </p>
           ) : (
-            <div className="employees-table-wrapper">
-              <table className="employees-table">
-                <thead>
-                  <tr>
-                    <th style={{ padding: "4px 8px" }}>Name</th>
-                    <th style={{ padding: "4px 8px" }}>Email</th>
-                    <th style={{ padding: "4px 8px" }}>Phone</th>
-                    <th style={{ padding: "4px 8px" }}>Designation</th>
-                    <th style={{ padding: "4px 8px" }}>Status</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {selectedDepartmentEmployees.map((employee) => (
-                    <tr key={employee._id}>
-                      <td style={{ padding: "4px 8px" }}>{`${employee.firstName || ""} ${employee.lastName || ""}`.trim() || "—"}</td>
-                      <td style={{ padding: "4px 8px" }}>{employee.email || "—"}</td>
-                      <td style={{ padding: "4px 8px" }}>{employee.phone || "—"}</td>
-                      <td style={{ padding: "4px 8px" }}>{employee.designationId?.name || employee.designationId || "—"}</td>
-                      <td style={{ padding: "4px 8px" }}>{employee.status || "—"}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
+            <div className="employees-cards-grid" style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(240px,1fr))", gap: 16 }}>
+              {selectedDepartmentEmployees.map((employee) => {
+                const initials = `${(employee.firstName || "").charAt(0)}${(employee.lastName || "").charAt(0)}`.toUpperCase();
+                return (
+                  <div key={employee._id} className="employee-card" style={{ background: "rgba(255,255,255,0.02)", border: "1px solid rgba(255,255,255,0.03)", padding: 12, borderRadius: 12, display: "flex", gap: 12, alignItems: "center" }}>
+                    <div style={{ width: 48, height: 48, borderRadius: 12, background: "linear-gradient(135deg,#065f46,#10b981)", display: "flex", alignItems: "center", justifyContent: "center", color: "white", fontWeight: 800, fontSize: 14 }}>
+                      {initials || "—"}
+                    </div>
+                    <div style={{ flex: 1 }}>
+                      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                        <div>
+                          <div style={{ fontWeight: 800, color: "#e6eef8" }}>{`${employee.firstName || ""} ${employee.lastName || ""}`.trim() || "—"}</div>
+                          <div style={{ fontSize: 12, color: "#94a3b8" }}>{employee.designationId?.name || employee.designationId || "—"}</div>
+                        </div>
+                        <div style={{ textAlign: "right" }}>
+                          <div style={{ fontSize: 12, color: "#94a3b8" }}>{employee.status || "—"}</div>
+                        </div>
+                      </div>
+                      <div style={{ marginTop: 8, display: "flex", gap: 12, fontSize: 13, color: "#cbd5e1" }}>
+                        <div>{employee.email || "—"}</div>
+                        <div style={{ opacity: 0.9 }}>{employee.phone || "—"}</div>
+                      </div>
+                    </div>
+                  </div>
+                );
+              })}
             </div>
           )}
         </div>

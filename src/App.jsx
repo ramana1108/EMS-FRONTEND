@@ -39,7 +39,12 @@ function getStoredUser() {
 }
 
 function normalizeRole(role) {
-  return typeof role === "string" ? role.toLowerCase() : "";
+  if (typeof role === "string") return role.toLowerCase();
+  if (typeof role === "object" && role !== null) {
+    if (typeof role.name === "string") return role.name.toLowerCase();
+    if (typeof role.role === "string") return role.role.toLowerCase();
+  }
+  return "";
 }
 
 function defaultRouteForUser(user) {

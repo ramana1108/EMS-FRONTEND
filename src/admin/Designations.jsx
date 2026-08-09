@@ -44,6 +44,7 @@ export default function Designations() {
     const [desigDeptId, setDesigDeptId] = useState("");
     const [desigEmployeeId, setDesigEmployeeId] = useState("");
     const [editingId, setEditingId] = useState(null);
+    const [currentAssignedEmployees, setCurrentAssignedEmployees] = useState([]);
 
     // Modal Control State
     const [isAddModalOpen, setIsAddModalOpen] = useState(false);
@@ -96,8 +97,10 @@ export default function Designations() {
                 list = data.data;
             }
             setEmployees(list || []);
+            return list || [];
         } catch (err) {
             console.error("Failed to load employees for designation matching:", err);
+            return [];
         }
     };
 
@@ -144,6 +147,19 @@ export default function Designations() {
         }
     };
 
+    // Open Add modal and refresh employees in real-time
+    const openAddModal = async () => {
+        setError("");
+        setSuccess("");
+        await fetchEmployees();
+        setEditingId(null);
+        setDesigName("");
+        setDesigDeptId("");
+        setDesigEmployeeId("");
+        setCurrentAssignedEmployees([]);
+        setIsAddModalOpen(true);
+    };
+
     const handleAddDesignation = async (e) => {
         e.preventDefault();
         if (!desigName || !desigDeptId) {
@@ -168,11 +184,11 @@ export default function Designations() {
 
             if (data && data.designation) {
                 const desigId = data.designation._id;
-                // If an employee is selected, assign them this designation
+                // If an employee is selected, assign that employee to the designation
                 if (desigEmployeeId) {
                     await api.updateEmployee(desigEmployeeId, {
                         designationId: desigId,
-                        departmentId: desigDeptId
+                        departmentId: desigDeptId,
                     });
                 }
                 setSuccess(editingId ? "Designation updated successfully!" : "Designation created successfully!");
@@ -191,19 +207,21 @@ export default function Designations() {
         }
     };
 
-    const handleEditDesignationClick = (desig) => {
+    const handleEditDesignationClick = async (desig) => {
         setError("");
         setSuccess("");
+        const freshEmployees = await fetchEmployees();
         setEditingId(desig._id);
         setDesigName(desig.designationName);
         setDesigDeptId(desig.departmentId?._id || desig.departmentId || "");
 
         // Find if any employee is assigned to this designation
-        const assignedEmp = employees.find(emp => {
+        const assigned = freshEmployees.filter(emp => {
             const empDesigId = emp.designationId?._id || emp.designationId;
-            return empDesigId === desig._id;
+            return String(empDesigId) === String(desig._id);
         });
-        setDesigEmployeeId(assignedEmp ? assignedEmp._id : "");
+        setCurrentAssignedEmployees(assigned);
+        setDesigEmployeeId(assigned.length > 0 ? assigned[0]._id : "");
         setIsAddModalOpen(true);
     };
 
@@ -259,11 +277,7 @@ export default function Designations() {
                 </div>
                 <button
                     className="btn-enroll-employee"
-                    onClick={() => {
-                        setError("");
-                        setSuccess("");
-                        setIsAddModalOpen(true);
-                    }}
+                    onClick={openAddModal}
                     style={{ display: "flex", alignItems: "center", gap: "8px" }}
                 >
                     <Plus size={16} />
@@ -378,7 +392,7 @@ export default function Designations() {
                                         designations.map((desig) => {
                                             const desigEmployees = employees.filter(emp => {
                                                 const empDesigId = emp.designationId?._id || emp.designationId;
-                                                return empDesigId === desig._id;
+                                                return String(empDesigId) === String(desig._id);
                                             });
                                             const employeeNames = desigEmployees.map(emp => `${emp.firstName || ""} ${emp.lastName || ""}`.trim()).join(", ") || "—";
                                             return (
@@ -548,13 +562,36 @@ export default function Designations() {
                                         onChange={(e) => setDesigEmployeeId(e.target.value)}
                                     >
                                         <option value="">Select Employee...</option>
-                                        {employees.map((emp) => (
-                                            <option key={emp._id} value={emp._id}>
-                                                {emp.firstName} {emp.lastName} ({emp.employeeId || emp._id})
-                                            </option>
-                                        ))}
+                                        {(() => {
+                                            const opts = [...employees];
+                                            if (!opts || opts.length === 0) {
+                                                return <option value="">No employees available</option>;
+                                            }
+                                            return opts.map((emp) => (
+                                                <option key={emp._id} value={emp._id}>
+                                                    {emp.firstName} {emp.lastName} ({emp.employeeId || emp._id})
+                                                </option>
+                                            ));
+                                        })()}
                                     </select>
                                 </div>
+
+                                {editingId && (
+                                    <div style={{ marginTop: 8 }}>
+                                        <label style={{ fontSize: 12, color: '#94a3b8' }}>Current assigned employees</label>
+                                        <div style={{ display: 'flex', gap: 8, marginTop: 6, flexWrap: 'wrap' }}>
+                                            {currentAssignedEmployees.length === 0 ? (
+                                                <div style={{ color: '#64748b', fontSize: 13 }}>No employees assigned to this designation.</div>
+                                            ) : (
+                                                currentAssignedEmployees.map(emp => (
+                                                    <span key={emp._id} style={{ background: '#0f172a', color: '#e6eef8', padding: '6px 10px', borderRadius: 999, fontSize: 13, border: '1px solid rgba(255,255,255,0.04)' }}>
+                                                        {emp.firstName} {emp.lastName}
+                                                    </span>
+                                                ))
+                                            )}
+                                        </div>
+                                    </div>
+                                )}
 
                                 <div className="modal-actions">
                                     <button

@@ -8,7 +8,9 @@ function authHeaders() {
 }
 
 export async function getAdminDashboard() {
-  const res = await fetch(`${API_BASE_URL}/dashboard/admin`, {
+  const token = localStorage.getItem("token");
+  const path = token ? "/dashboard/admin" : "/dashboard/admin/public";
+  const res = await fetch(`${API_BASE_URL}${path}`, {
     headers: authHeaders(),
   });
   return res.json();

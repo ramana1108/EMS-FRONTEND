@@ -64,7 +64,12 @@ export default function Dashboard() {
     const stored = localStorage.getItem("user");
     if (stored) {
       try {
-        return JSON.parse(stored);
+        const parsed = JSON.parse(stored);
+        // Normalize role to a displayable string if it's an object
+        if (parsed && parsed.role && typeof parsed.role === "object") {
+          parsed.role = parsed.role.name || parsed.role.role || JSON.stringify(parsed.role);
+        }
+        return parsed;
       } catch (e) {
         console.error(e);
       }
@@ -115,9 +120,9 @@ export default function Dashboard() {
           <button className="icon-btn">
             <Bell size={18} />
           </button>
-          <div className="admin-profile-badge">
+            <div className="admin-profile-badge">
             <div className="admin-avatar-small">{getInitials(user.name)}</div>
-            <span>{user.role || "ADMIN"}</span>
+            <span>{typeof user.role === "string" ? user.role : String(user.role || "ADMIN")}</span>
           </div>
         </div>
       </div>
@@ -140,7 +145,7 @@ export default function Dashboard() {
           <>
             <div className="summary-card stat-card-green">
               <div className="stat-header">
-                <div className="stat-icon-box" style={{ backgroundColor: "#d1fae5", color: "#065f46" }}>
+                <div className="stat-icon-box" style={{ backgroundColor: "#075d31", color: "#065f46" }}>
                   <Users size={20} />
                 </div>
                 <div>
