@@ -1,16 +1,14 @@
 import React, { useState, useEffect, useRef } from "react";
+<<<<<<< HEAD
+=======
+// styles are loaded globally via src/index.css (Tailwind + custom styles)
+>>>>>>> 819c511ce486a6353829f2805eb90ecdf071faa3
 import Sidebar from "../components/Sidebar";
 import {
-    User,
     Mail,
-    Phone,
-    MapPin,
-    Lock,
     Camera,
     CheckCircle,
     AlertCircle,
-    Briefcase,
-    HelpCircle,
     Menu
 } from "lucide-react";
 import api from "../api";
@@ -18,7 +16,6 @@ import api from "../api";
 export default function Profile() {
     const [activeTab, setActiveTab] = useState("Profile");
     const [isOpen, setIsOpen] = useState(false);
-    const [formTab, setFormTab] = useState("personal"); // personal | contact | bank
 
     const [loading, setLoading] = useState(false);
     const [saving, setSaving] = useState(false);
@@ -30,26 +27,27 @@ export default function Profile() {
     const [previewImage, setPreviewImage] = useState("");
     const fileInputRef = useRef(null);
 
-    // Form Fields
+    // Form Fields (aligned to backend Profile model)
+    const [departments, setDepartments] = useState([]);
+    const [designations, setDesignations] = useState([]);
+
     const [formData, setFormData] = useState({
+        employeeId: "",
         firstName: "",
         lastName: "",
         dob: "",
         gender: "Male",
-        nationality: "Indian",
-        phone: "",
-        secondaryPhone: "",
         email: "",
-        permanentAddress: "",
-        temporaryAddress: "",
-        bankName: "HDFC Bank Ltd",
-        accountHolder: "",
-        accountNo: "",
-        ifsc: "",
-        branch: "",
-        emergencyName: "",
-        emergencyRelation: "",
-        emergencyPhone: ""
+        phone: "",
+        role: "Employee",
+        departmentId: "",
+        designationId: "",
+        salary: "",
+        joiningDate: "",
+        employmentType: "Permanent",
+        status: "Active",
+        address: "",
+        profileImage: ""
     });
 
     const handleCameraClick = () => {
@@ -76,16 +74,13 @@ export default function Profile() {
             const base64Data = reader.result;
             setPreviewImage(base64Data);
 
-            if (employee?._id) {
+            if (employee?.employeeId) {
                 try {
-                    const updatePayload = {
-                        ...employee,
-                        profileImage: base64Data
-                    };
-                    const result = await api.updateEmployee(employee._id, updatePayload);
-                    if (result && (result.success || result._id)) {
+                    const updatePayload = { profileImage: base64Data };
+                    const result = await api.updateProfile(employee.employeeId, updatePayload);
+                    if (result && result.success) {
                         setSuccess("Profile photo updated successfully!");
-                        setEmployee(result.employee || result.data || updatePayload);
+                        setEmployee(result.profile || { ...employee, profileImage: base64Data });
                     } else {
                         setError(result.message || "Failed to update profile photo.");
                     }
@@ -115,45 +110,48 @@ export default function Profile() {
             setLoading(true);
             setError("");
             try {
-                const all = await api.getAllEmployees();
-                const list = Array.isArray(all) ? all : all?.employees || [];
+                // load reference lists
+                const deps = await api.getDepartments();
+                const desigs = await api.getDesignations();
+                setDepartments(Array.isArray(deps) ? deps : deps?.departments || []);
+                setDesignations(Array.isArray(desigs) ? desigs : desigs?.designations || []);
+
+                // load profiles and match by email
+                const all = await api.getProfiles();
+                const list = Array.isArray(all) ? all : all?.profiles || [];
 
                 let found = null;
                 if (loggedInUser?.email) {
-                    found = list.find(
-                        (e) => e.email?.toLowerCase() === loggedInUser.email.toLowerCase()
-                    );
+                    found = list.find((p) => p.email?.toLowerCase() === loggedInUser.email.toLowerCase());
                 }
 
                 if (found) {
                     setEmployee(found);
                     setFormData({
+                        employeeId: found.employeeId || "",
                         firstName: found.firstName || "",
                         lastName: found.lastName || "",
-                        dob: found.dob ? found.dob.split("T")[0] : "1994-08-15",
-                        gender: found.gender || "Female",
-                        nationality: found.nationality || "Indian",
-                        phone: found.phone || found.mobile || "+91 98765 43210",
-                        secondaryPhone: found.secondaryPhone || "",
+                        dob: found.dob ? found.dob.split("T")[0] : "",
+                        gender: found.gender || "Male",
                         email: found.email || "",
-                        permanentAddress: found.permanentAddress || found.address || "123, Residency Road, Bangalore, KA - 560001",
-                        temporaryAddress: found.temporaryAddress || found.address || "123, Residency Road, Bangalore, KA - 560001",
-                        bankName: found.bankName || "State Bank of India",
-                        accountHolder: found.accountHolder || `${found.firstName} ${found.lastName}`,
-                        accountNo: found.accountNo || "************8901",
-                        ifsc: found.ifsc || "SBIN0029302",
-                        branch: found.branch || "Corporate Park Branch",
-                        emergencyName: found.emergencyName || "Rajesh Mehta",
-                        emergencyRelation: found.emergencyRelation || "Father",
-                        emergencyPhone: found.emergencyPhone || "+91 94401 23456"
+                        phone: found.phone || "",
+                        role: found.role || "Employee",
+                        departmentId: found.departmentId?._id || found.departmentId || "",
+                        designationId: found.designationId?._id || found.designationId || "",
+                        salary: found.salary || "",
+                        joiningDate: found.joiningDate ? found.joiningDate.split("T")[0] : "",
+                        employmentType: found.employmentType || "Permanent",
+                        status: found.status || "Active",
+                        address: found.address || "",
+                        profileImage: found.profileImage || ""
                     });
+                    setPreviewImage(found.profileImage || "");
                 } else if (loggedInUser) {
-                    // Mock data fallback if employee record is not synced in DB
                     setFormData((prev) => ({
                         ...prev,
-                        firstName: loggedInUser.name?.split(" ")[0] || "Akshaya",
-                        lastName: loggedInUser.name?.split(" ")[1] || "Mehta",
-                        email: loggedInUser.email || "akshaya@gmail.com"
+                        firstName: loggedInUser.name?.split(" ")[0] || "",
+                        lastName: loggedInUser.name?.split(" ")[1] || "",
+                        email: loggedInUser.email || "",
                     }));
                 }
             } catch (err) {
@@ -174,51 +172,54 @@ export default function Profile() {
 
     const handleSave = async (e) => {
         e.preventDefault();
-        if (!employee?._id) {
-            // Local storage mock save if not in DB
-            setSuccess("Profile settings saved locally!");
-            setTimeout(() => setSuccess(""), 4000);
-            return;
-        }
-
         setSaving(true);
         setError("");
         setSuccess("");
 
         try {
-            // Merge values to update database schema fields
+            // Build update payload aligned with Profile model
             const updatePayload = {
-                ...employee,
                 firstName: formData.firstName,
                 lastName: formData.lastName,
                 gender: formData.gender,
                 dob: formData.dob,
                 phone: formData.phone,
-                address: formData.permanentAddress,
-                // Store supplemental custom fields under native model properties or pass-through
-                permanentAddress: formData.permanentAddress,
-                temporaryAddress: formData.temporaryAddress,
-                nationality: formData.nationality,
-                bankName: formData.bankName,
-                accountHolder: formData.accountHolder,
-                accountNo: formData.accountNo,
-                ifsc: formData.ifsc,
-                branch: formData.branch,
-                emergencyName: formData.emergencyName,
-                emergencyRelation: formData.emergencyRelation,
-                emergencyPhone: formData.emergencyPhone
+                role: formData.role,
+                departmentId: formData.departmentId,
+                designationId: formData.designationId,
+                salary: formData.salary,
+                joiningDate: formData.joiningDate,
+                employmentType: formData.employmentType,
+                status: formData.status,
+                address: formData.address,
+                profileImage: formData.profileImage || employee?.profileImage || ""
             };
 
-            const result = await api.updateEmployee(employee._id, updatePayload);
-            if (result && (result.success || result._id)) {
-                setSuccess("Profile details updated successfully!");
-                setEmployee(result.employee || result.data || updatePayload);
-                // Also update local storage user object name if modified
+            let result;
+            if (employee?.employeeId) {
+                result = await api.updateProfile(employee.employeeId, updatePayload);
+            } else {
+                if (!formData.employeeId) {
+                    throw new Error("Employee ID is required to save profile.");
+                }
+                const createPayload = {
+                    ...updatePayload,
+                    employeeId: formData.employeeId,
+                    createdBy: user?.id || user?._id,
+                    email: user?.email || formData.email,
+                    password: "Password@123"
+                };
+                result = await api.createProfile(createPayload);
+            }
+
+            if (result && result.success) {
+                setSuccess("Profile details saved successfully!");
+                setEmployee(result.profile || { ...employee, ...updatePayload, employeeId: formData.employeeId });
                 const updatedUser = { ...user, name: `${formData.firstName} ${formData.lastName}` };
                 localStorage.setItem("user", JSON.stringify(updatedUser));
-                window.dispatchEvent(new Event("storage")); // Trigger sidebar reload
+                window.dispatchEvent(new Event("storage"));
             } else {
-                setError(result.message || "Failed to update profile details.");
+                setError(result.message || "Failed to save profile details.");
             }
         } catch (err) {
             console.error(err);
@@ -241,11 +242,10 @@ export default function Profile() {
             <div className="lg:pl-[260px] flex flex-col min-h-screen">
 
                 {/* Mobile Header */}
-                <div className="sticky top-0 z-30 flex items-center justify-between border-b border-slate-200/80 bg-white/95 px-4 py-3 backdrop-blur-xl lg:hidden" style={{ minHeight: "60px" }}>
+                <div className="sticky top-0 z-30 flex items-center justify-between border-b border-slate-200/80 bg-white/95 px-4 py-3 backdrop-blur-xl lg:hidden min-h-[60px]">
                     <button
                         onClick={() => setIsOpen(true)}
-                        className="inline-flex h-11 w-11 items-center justify-center rounded-2xl bg-[#043e30] text-white shadow-sm shadow-[#043e30]/10"
-                        style={{ border: "none", cursor: "pointer" }}
+                        className="inline-flex h-11 w-11 items-center justify-center rounded-2xl bg-emerald-900 text-white shadow-sm border-0 cursor-pointer"
                         aria-label="Open sidebar"
                     >
                         <Menu size={20} />
@@ -254,23 +254,33 @@ export default function Profile() {
                 </div>
 
                 {/* Top Header Bar */}
+<<<<<<< HEAD
                 <div className="emp-top-header" style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "32px", padding: "0 10px" }}>
                     <div style={{ visibility: "hidden" }}>Placeholder</div>
+=======
+                <div className="flex justify-between items-center mb-8 px-2">
+                    <div className="invisible">Placeholder</div>
+
+                    <div className="flex items-center gap-2 bg-white px-3 py-1 rounded-xl border border-slate-200 font-bold text-black">
+                        <div className="w-8 h-8 rounded-full bg-emerald-800 text-white flex items-center justify-center text-xs font-bold">{getInitials(formData.firstName + " " + formData.lastName)}</div>
+                        <span>{formData.firstName} {formData.lastName}</span>
+                    </div>
+>>>>>>> 819c511ce486a6353829f2805eb90ecdf071faa3
                 </div>
 
                 {/* Page Content */}
-                <div style={{ flex: 1, padding: "0 10px" }}>
+                <div className="flex-1 px-2">
 
-                    <div className="page-header" style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "24px" }}>
+                    <div className="page-header flex justify-between items-center mb-6">
                         <div>
-                            <h1 className="dashboard-title" style={{ fontSize: "32px", fontWeight: "800", color: "#000000", margin: 0 }}>My Profile</h1>
-                            <p className="dashboard-subtitle" style={{ fontSize: "14px", color: "#64748b", marginTop: "4px" }}>Manage your personal details and contact settings</p>
+                            <h1 className="text-3xl md:text-4xl font-extrabold text-slate-900 m-0">My Profile</h1>
+                            <p className="text-sm text-slate-500 mt-1">Manage your personal details and contact settings</p>
                         </div>
                     </div>
 
                     {
                         success && (
-                            <div style={{ display: "flex", alignItems: "center", gap: "8px", color: "#065f46", backgroundColor: "#ecfdf5", padding: "12px 16px", borderRadius: "10px", marginBottom: "20px", fontSize: "14px", fontWeight: "600", border: "1px solid #a7f3d0" }}>
+                            <div className="flex items-center gap-2 text-emerald-800 bg-emerald-50 px-4 py-3 rounded-lg mb-5 text-sm font-semibold border border-emerald-100">
                                 <CheckCircle size={16} />
                                 <span>{success}</span>
                             </div>
@@ -279,7 +289,7 @@ export default function Profile() {
 
                     {
                         error && (
-                            <div style={{ display: "flex", alignItems: "center", gap: "8px", color: "#b91c1c", backgroundColor: "#fef2f2", padding: "12px 16px", borderRadius: "10px", marginBottom: "20px", fontSize: "14px", fontWeight: "600", border: "1px solid #fca5a5" }}>
+                            <div className="flex items-center gap-2 text-rose-700 bg-rose-50 px-4 py-3 rounded-lg mb-5 text-sm font-semibold border border-rose-100">
                                 <AlertCircle size={16} />
                                 <span>{error}</span>
                             </div>
@@ -288,11 +298,12 @@ export default function Profile() {
 
                     {
                         loading ? (
-                            <div style={{ textAlign: "center", padding: "50px", color: "#64748b" }}>Loading profile...</div>
+                            <div className="text-center text-slate-500 p-12">Loading profile...</div>
                         ) : (
-                            <div className="emp-middle-grid" style={{ display: "grid", gridTemplateColumns: "1.2fr 2.5fr", gap: "24px", alignItems: "start" }}>
+                            <div className="grid lg:grid-cols-[1.2fr_2.5fr] gap-6 items-start">
 
                                 {/* Left Profile Summary Card Container */}
+<<<<<<< HEAD
                                 <div className="emp-card-box" style={{ padding: "24px", display: "flex", flexDirection: "column", alignItems: "center", backgroundColor: "var(--card-bg)" }}>
                                     <div style={{ position: "relative", marginBottom: "16px" }}>
                                         <div
@@ -312,12 +323,13 @@ export default function Profile() {
                                                 overflow: "hidden"
                                             }}
                                         >
+=======
+                                <div className="bg-white p-6 rounded-xl flex flex-col items-center">
+                                    <div className="relative mb-4">
+                                        <div className="w-[100px] h-[100px] rounded-full bg-emerald-900 text-white text-[36px] font-extrabold flex items-center justify-center border-4 border-emerald-500 shadow-lg overflow-hidden">
+>>>>>>> 819c511ce486a6353829f2805eb90ecdf071faa3
                                             {previewImage || employee?.profileImage ? (
-                                                <img
-                                                    src={previewImage || employee.profileImage}
-                                                    alt="Profile"
-                                                    style={{ width: "100%", height: "100%", objectFit: "cover" }}
-                                                />
+                                                <img src={previewImage || employee.profileImage} alt="Profile" className="w-full h-full object-cover" />
                                             ) : (
                                                 getInitials(formData.firstName + " " + formData.lastName)
                                             )}
@@ -390,7 +402,7 @@ export default function Profile() {
                                         }
                                         }>
                                             <span style={{ color: "#64748b", fontWeight: "600" }}>Department</span>
-                                            <span style={{ fontWeight: "700", color: "#0f172a" }}>{employee?.department || "Technology"}</span>
+                                            <span style={{ fontWeight: "700", color: "#0f172a" }}>{employee?.departmentId?.departmentName || "Technology"}</span>
                                         </div >
                                         <div style={{ display: "flex", justifyContent: "space-between", padding: "8px 0" }}>
                                             <span style={{ color: "#64748b", fontWeight: "600" }}>Role</span>
@@ -399,6 +411,7 @@ export default function Profile() {
                                     </div >
                                 </div >
 
+<<<<<<< HEAD
                                 {/* Right Tabbed Form Cards Container */}
                                 <div className="emp-card-box">
                                     <div className="border-b border-slate-200 dark:border-slate-800/80 pb-4 mb-6">
@@ -472,6 +485,159 @@ export default function Profile() {
 
                                         {/* Form Footer Action */}
                                         <div className="flex justify-end pt-4 border-t border-slate-200 dark:border-slate-800/80">
+=======
+                                {/* Right Profile Form Container */}
+                                <div className="emp-card-box" style={{ padding: "24px", backgroundColor: "#ffffff" }}>
+                                    <form onSubmit={handleSave}>
+                                        <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
+                                            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "16px" }}>
+                                                <div>
+                                                    <label style={{ display: "block", fontSize: "11px", fontWeight: "700", textTransform: "uppercase", color: "#475569", marginBottom: "4px" }}>Employee ID</label>
+                                                    <input
+                                                        type="text"
+                                                        name="employeeId"
+                                                        value={formData.employeeId}
+                                                        onChange={handleChange}
+                                                        style={{ width: "100%", padding: "10px 12px", borderRadius: "8px", border: "1px solid #cbd5e1", outline: "none", fontSize: "14px", color: "#000000" }}
+                                                        required
+                                                    />
+                                                </div>
+                                                <div>
+                                                    <label style={{ display: "block", fontSize: "11px", fontWeight: "700", textTransform: "uppercase", color: "#475569", marginBottom: "4px" }}>Role</label>
+                                                    <select
+                                                        name="role"
+                                                        value={formData.role}
+                                                        onChange={handleChange}
+                                                        style={{ width: "100%", padding: "10px 12px", borderRadius: "8px", border: "1px solid #cbd5e1", backgroundColor: "#ffffff", outline: "none", fontSize: "14px", color: "#000000" }}
+                                                    >
+                                                        <option>Admin</option>
+                                                        <option>Manager</option>
+                                                        <option>Employee</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+
+                                            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "16px" }}>
+                                                <div>
+                                                    <label style={{ display: "block", fontSize: "11px", fontWeight: "700", textTransform: "uppercase", color: "#475569", marginBottom: "4px" }}>First Name</label>
+                                                    <input
+                                                        type="text"
+                                                        name="firstName"
+                                                        value={formData.firstName}
+                                                        onChange={handleChange}
+                                                        style={{ width: "100%", padding: "10px 12px", borderRadius: "8px", border: "1px solid #cbd5e1", outline: "none", fontSize: "14px", color: "#000000" }}
+                                                        required
+                                                    />
+                                                </div>
+                                                <div>
+                                                    <label style={{ display: "block", fontSize: "11px", fontWeight: "700", textTransform: "uppercase", color: "#475569", marginBottom: "4px" }}>Last Name</label>
+                                                    <input
+                                                        type="text"
+                                                        name="lastName"
+                                                        value={formData.lastName}
+                                                        onChange={handleChange}
+                                                        style={{ width: "100%", padding: "10px 12px", borderRadius: "8px", border: "1px solid #cbd5e1", outline: "none", fontSize: "14px", color: "#000000" }}
+                                                        required
+                                                    />
+                                                </div>
+                                            </div>
+
+                                            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "16px" }}>
+                                                <div>
+                                                    <label style={{ display: "block", fontSize: "11px", fontWeight: "700", textTransform: "uppercase", color: "#475569", marginBottom: "4px" }}>Email</label>
+                                                    <input
+                                                        type="email"
+                                                        name="email"
+                                                        value={formData.email}
+                                                        onChange={handleChange}
+                                                        style={{ width: "100%", padding: "10px 12px", borderRadius: "8px", border: "1px solid #cbd5e1", outline: "none", fontSize: "14px", color: "#000000" }}
+                                                        required
+                                                    />
+                                                </div>
+                                                <div>
+                                                    <label style={{ display: "block", fontSize: "11px", fontWeight: "700", textTransform: "uppercase", color: "#475569", marginBottom: "4px" }}>Phone</label>
+                                                    <input
+                                                        type="text"
+                                                        name="phone"
+                                                        value={formData.phone}
+                                                        onChange={handleChange}
+                                                        style={{ width: "100%", padding: "10px 12px", borderRadius: "8px", border: "1px solid #cbd5e1", outline: "none", fontSize: "14px", color: "#000000" }}
+                                                        required
+                                                    />
+                                                </div>
+                                            </div>
+
+                                            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "16px" }}>
+                                                <div>
+                                                    <label style={{ display: "block", fontSize: "11px", fontWeight: "700", textTransform: "uppercase", color: "#475569", marginBottom: "4px" }}>Gender</label>
+                                                    <select name="gender" value={formData.gender} onChange={handleChange} style={{ width: "100%", padding: "10px 12px", borderRadius: "8px", border: "1px solid #cbd5e1", backgroundColor: "#ffffff", outline: "none", fontSize: "14px", color: "#000000" }}>
+                                                        <option>Male</option>
+                                                        <option>Female</option>
+                                                        <option>Other</option>
+                                                    </select>
+                                                </div>
+                                                <div>
+                                                    <label style={{ display: "block", fontSize: "11px", fontWeight: "700", textTransform: "uppercase", color: "#475569", marginBottom: "4px" }}>Date of Birth</label>
+                                                    <input type="date" name="dob" value={formData.dob} onChange={handleChange} style={{ width: "100%", padding: "10px 12px", borderRadius: "8px", border: "1px solid #cbd5e1" }} />
+                                                </div>
+                                            </div>
+
+                                            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "16px" }}>
+                                                <div>
+                                                    <label style={{ display: "block", fontSize: "11px", fontWeight: "700", textTransform: "uppercase", color: "#475569", marginBottom: "4px" }}>Department</label>
+                                                    <select name="departmentId" value={formData.departmentId} onChange={handleChange} style={{ width: "100%", padding: "10px 12px", borderRadius: "8px", border: "1px solid #cbd5e1" }}>
+                                                        <option value="">Select department</option>
+                                                        {departments.map(d => <option key={d._id} value={d._id}>{d.departmentName}</option>)}
+                                                    </select>
+                                                </div>
+                                                <div>
+                                                    <label style={{ display: "block", fontSize: "11px", fontWeight: "700", textTransform: "uppercase", color: "#475569", marginBottom: "4px" }}>Designation</label>
+                                                    <select name="designationId" value={formData.designationId} onChange={handleChange} style={{ width: "100%", padding: "10px 12px", borderRadius: "8px", border: "1px solid #cbd5e1" }}>
+                                                        <option value="">Select designation</option>
+                                                        {designations.map(d => <option key={d._id} value={d._id}>{d.designationName}</option>)}
+                                                    </select>
+                                                </div>
+                                            </div>
+
+                                            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "16px" }}>
+                                                <div>
+                                                    <label style={{ display: "block", fontSize: "11px", fontWeight: "700", textTransform: "uppercase", color: "#475569", marginBottom: "4px" }}>Salary</label>
+                                                    <input type="number" name="salary" value={formData.salary} onChange={handleChange} style={{ width: "100%", padding: "10px 12px", borderRadius: "8px", border: "1px solid #cbd5e1" }} />
+                                                </div>
+                                                <div>
+                                                    <label style={{ display: "block", fontSize: "11px", fontWeight: "700", textTransform: "uppercase", color: "#475569", marginBottom: "4px" }}>Joining Date</label>
+                                                    <input type="date" name="joiningDate" value={formData.joiningDate} onChange={handleChange} style={{ width: "100%", padding: "10px 12px", borderRadius: "8px", border: "1px solid #cbd5e1" }} />
+                                                </div>
+                                            </div>
+
+                                            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "16px" }}>
+                                                <div>
+                                                    <label style={{ display: "block", fontSize: "11px", fontWeight: "700", textTransform: "uppercase", color: "#475569", marginBottom: "4px" }}>Employment Type</label>
+                                                    <select name="employmentType" value={formData.employmentType} onChange={handleChange} style={{ width: "100%", padding: "10px 12px", borderRadius: "8px", border: "1px solid #cbd5e1" }}>
+                                                        <option>Permanent</option>
+                                                        <option>Contract</option>
+                                                        <option>Intern</option>
+                                                        <option>Full-time</option>
+                                                        <option>Part-time</option>
+                                                    </select>
+                                                </div>
+                                                <div>
+                                                    <label style={{ display: "block", fontSize: "11px", fontWeight: "700", textTransform: "uppercase", color: "#475569", marginBottom: "4px" }}>Status</label>
+                                                    <select name="status" value={formData.status} onChange={handleChange} style={{ width: "100%", padding: "10px 12px", borderRadius: "8px", border: "1px solid #cbd5e1" }}>
+                                                        <option>Active</option>
+                                                        <option>Inactive</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+
+                                            <div>
+                                                <label style={{ display: "block", fontSize: "11px", fontWeight: "700", textTransform: "uppercase", color: "#475569", marginBottom: "4px" }}>Address</label>
+                                                <textarea name="address" value={formData.address} onChange={handleChange} style={{ width: "100%", padding: "8px 12px", borderRadius: "8px", border: "1px solid #cbd5e1", minHeight: "80px" }} />
+                                            </div>
+                                        </div>
+
+                                        <div style={{ marginTop: "24px", paddingTop: "16px", borderTop: "1px solid #f1f5f9", display: "flex", justifyContent: "flex-end" }}>
+>>>>>>> 819c511ce486a6353829f2805eb90ecdf071faa3
                                             <button
                                                 type="submit"
                                                 disabled={saving}
@@ -482,6 +648,10 @@ export default function Profile() {
                                         </div>
                                     </form>
                                 </div>
+<<<<<<< HEAD
+=======
+
+>>>>>>> 819c511ce486a6353829f2805eb90ecdf071faa3
                             </div>
                         )}
 

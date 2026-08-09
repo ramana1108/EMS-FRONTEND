@@ -30,6 +30,13 @@ export async function getCurrentEmployeeDashboard() {
   return res.json();
 }
 
+export async function getCurrentUser() {
+  const res = await fetch(`${API_BASE_URL}/auth/me`, {
+    headers: authHeaders(),
+  });
+  return res.json();
+}
+
 export async function getAllEmployees() {
   const res = await fetch(`${API_BASE_URL}/employees`, {
     headers: authHeaders(),
@@ -77,13 +84,33 @@ export async function getDepartments() {
   return res.json();
 }
 
+<<<<<<< HEAD
+=======
+async function parseJsonResponse(res) {
+  const text = await res.text();
+  try {
+    return text ? JSON.parse(text) : {};
+  } catch (error) {
+    return { message: text || "Invalid JSON response" };
+  }
+}
+
+>>>>>>> 819c511ce486a6353829f2805eb90ecdf071faa3
 export async function createDepartment(payload) {
   const res = await fetch(`${API_BASE_URL}/departments`, {
     method: "POST",
     headers: authHeaders(),
     body: JSON.stringify(payload),
   });
+<<<<<<< HEAD
   return res.json();
+=======
+  const data = await parseJsonResponse(res);
+  if (!res.ok) {
+    throw new Error(data.message || "Failed to create department");
+  }
+  return data;
+>>>>>>> 819c511ce486a6353829f2805eb90ecdf071faa3
 }
 
 export async function updateDepartment(id, payload) {
@@ -92,7 +119,15 @@ export async function updateDepartment(id, payload) {
     headers: authHeaders(),
     body: JSON.stringify(payload),
   });
+<<<<<<< HEAD
   return res.json();
+=======
+  const data = await parseJsonResponse(res);
+  if (!res.ok) {
+    throw new Error(data.message || "Failed to update department");
+  }
+  return data;
+>>>>>>> 819c511ce486a6353829f2805eb90ecdf071faa3
 }
 
 export async function deleteDepartment(id) {
@@ -100,6 +135,7 @@ export async function deleteDepartment(id) {
     method: "DELETE",
     headers: authHeaders(),
   });
+<<<<<<< HEAD
   return res.json();
 }
 
@@ -108,6 +144,13 @@ export async function getDepartmentEmployees(departmentId) {
     headers: authHeaders(),
   });
   return res.json();
+=======
+  const data = await parseJsonResponse(res);
+  if (!res.ok) {
+    throw new Error(data.message || "Failed to delete department");
+  }
+  return data;
+>>>>>>> 819c511ce486a6353829f2805eb90ecdf071faa3
 }
 
 export async function getDesignations() {
@@ -117,6 +160,7 @@ export async function getDesignations() {
   return res.json();
 }
 
+<<<<<<< HEAD
 export async function createDesignation(payload) {
   const res = await fetch(`${API_BASE_URL}/designations`, {
     method: "POST",
@@ -138,6 +182,10 @@ export async function updateDesignation(id, payload) {
 export async function deleteDesignation(id) {
   const res = await fetch(`${API_BASE_URL}/designations/${id}`, {
     method: "DELETE",
+=======
+export async function getDepartmentEmployees(departmentId) {
+  const res = await fetch(`${API_BASE_URL}/departments/department/${departmentId}`, {
+>>>>>>> 819c511ce486a6353829f2805eb90ecdf071faa3
     headers: authHeaders(),
   });
   return res.json();
@@ -157,15 +205,25 @@ export async function getPayrolls() {
   return res.json();
 }
 
+<<<<<<< HEAD
 export async function getRoles() {
   const res = await fetch(`${API_BASE_URL}/roles`, {
+=======
+export async function getProfiles() {
+  const res = await fetch(`${API_BASE_URL}/profile`, {
+>>>>>>> 819c511ce486a6353829f2805eb90ecdf071faa3
     headers: authHeaders(),
   });
   return res.json();
 }
 
+<<<<<<< HEAD
 export async function createRole(payload) {
   const res = await fetch(`${API_BASE_URL}/roles`, {
+=======
+export async function createProfile(payload) {
+  const res = await fetch(`${API_BASE_URL}/profile`, {
+>>>>>>> 819c511ce486a6353829f2805eb90ecdf071faa3
     method: "POST",
     headers: authHeaders(),
     body: JSON.stringify(payload),
@@ -173,16 +231,33 @@ export async function createRole(payload) {
   return res.json();
 }
 
+<<<<<<< HEAD
 export async function deleteRole(id) {
   const res = await fetch(`${API_BASE_URL}/roles/${id}`, {
     method: "DELETE",
+=======
+export async function getProfileByEmployeeId(employeeId) {
+  const res = await fetch(`${API_BASE_URL}/profile/${employeeId}`, {
+>>>>>>> 819c511ce486a6353829f2805eb90ecdf071faa3
     headers: authHeaders(),
   });
   return res.json();
 }
 
+<<<<<<< HEAD
 export async function updateRole(id, payload) {
   const res = await fetch(`${API_BASE_URL}/roles/${id}`, {
+=======
+export async function getMyProfile() {
+  const res = await fetch(`${API_BASE_URL}/profile/me`, {
+    headers: authHeaders(),
+  });
+  return res.json();
+}
+
+export async function updateMyProfile(payload) {
+  const res = await fetch(`${API_BASE_URL}/profile/me`, {
+>>>>>>> 819c511ce486a6353829f2805eb90ecdf071faa3
     method: "PUT",
     headers: authHeaders(),
     body: JSON.stringify(payload),
@@ -190,6 +265,7 @@ export async function updateRole(id, payload) {
   return res.json();
 }
 
+<<<<<<< HEAD
 export async function getAllUsers() {
   const res = await fetch(`${API_BASE_URL}/auth`, {
     headers: authHeaders(),
@@ -215,6 +291,10 @@ export async function createSettings(payload) {
 
 export async function updateSettings(id, payload) {
   const res = await fetch(`${API_BASE_URL}/settings/${id}`, {
+=======
+export async function updateProfile(employeeId, payload) {
+  const res = await fetch(`${API_BASE_URL}/profile/${employeeId}`, {
+>>>>>>> 819c511ce486a6353829f2805eb90ecdf071faa3
     method: "PUT",
     headers: authHeaders(),
     body: JSON.stringify(payload),
@@ -237,14 +317,22 @@ export async function getMyAttendance() {
 }
 
 export async function getMyLeaves() {
+<<<<<<< HEAD
   const res = await fetch(`${API_BASE_URL}/leave/me`, {
+=======
+  const res = await fetch(`${API_BASE_URL}/api/leaves/me`, {
+>>>>>>> 819c511ce486a6353829f2805eb90ecdf071faa3
     headers: authHeaders(),
   });
   return res.json();
 }
 
 export async function applyLeave(payload) {
+<<<<<<< HEAD
   const res = await fetch(`${API_BASE_URL}/leave`, {
+=======
+  const res = await fetch(`${API_BASE_URL}/api/leaves`, {
+>>>>>>> 819c511ce486a6353829f2805eb90ecdf071faa3
     method: "POST",
     headers: authHeaders(),
     body: JSON.stringify(payload),
@@ -253,13 +341,18 @@ export async function applyLeave(payload) {
 }
 
 export async function deleteLeave(id) {
+<<<<<<< HEAD
   const res = await fetch(`${API_BASE_URL}/leave/${id}`, {
+=======
+  const res = await fetch(`${API_BASE_URL}/api/leaves/${id}`, {
+>>>>>>> 819c511ce486a6353829f2805eb90ecdf071faa3
     method: "DELETE",
     headers: authHeaders(),
   });
   return res.json();
 }
 
+<<<<<<< HEAD
 export async function getAllLeaves() {
   const res = await fetch(`${API_BASE_URL}/leave`, {
     headers: authHeaders(),
@@ -276,10 +369,29 @@ export async function updateLeaveStatus(id, payload) {
   return res.json();
 }
 
+=======
+>>>>>>> 819c511ce486a6353829f2805eb90ecdf071faa3
 export async function registerUser(payload) {
   const res = await fetch(`${API_BASE_URL}/auth/register`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(payload),
+  });
+  return res.json();
+}
+
+export async function getAllUsers(query = "") {
+  const url = `${API_BASE_URL}/auth${query ? `?q=${encodeURIComponent(query)}` : ""}`;
+  const res = await fetch(url, {
+    headers: authHeaders(),
+  });
+  return res.json();
+}
+
+export async function updateUser(id, payload) {
+  const res = await fetch(`${API_BASE_URL}/auth/${id}`, {
+    method: "PUT",
+    headers: authHeaders(),
     body: JSON.stringify(payload),
   });
   return res.json();
@@ -292,24 +404,35 @@ export default {
   getAllEmployees,
   getEmployeeById,
   createEmployee,
+  getDepartmentEmployees,
   updateEmployee,
   deleteEmployee,
   getDepartments,
   createDepartment,
   updateDepartment,
   deleteDepartment,
+<<<<<<< HEAD
   getDepartmentEmployees,
+=======
+>>>>>>> 819c511ce486a6353829f2805eb90ecdf071faa3
   getDesignations,
   createDesignation,
   updateDesignation,
   deleteDesignation,
   getNotices,
   getPayrolls,
+  getProfiles,
+  getProfileByEmployeeId,
+  createProfile,
+  updateProfile,
+  getMyProfile,
+  updateMyProfile,
   getAttendance,
   getMyAttendance,
   getMyLeaves,
   applyLeave,
   deleteLeave,
+<<<<<<< HEAD
   updateLeaveStatus,
   registerUser,
   getRoles,
@@ -321,3 +444,7 @@ export default {
   createSettings,
   updateSettings,
 };
+=======
+  registerUser,
+};
+>>>>>>> 819c511ce486a6353829f2805eb90ecdf071faa3

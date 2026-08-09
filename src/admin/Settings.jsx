@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import { useState, useEffect } from "react";
 import {
   Building,
@@ -10,6 +11,10 @@ import {
   Loader
 } from "lucide-react";
 import api from "../api";
+=======
+import React, { useState, useEffect } from "react";
+// styles are loaded globally via src/index.css (Tailwind + custom styles)
+>>>>>>> 819c511ce486a6353829f2805eb90ecdf071faa3
 
 export default function Settings() {
   const [settingsData, setSettingsData] = useState(null);
@@ -43,8 +48,22 @@ export default function Settings() {
   const fetchSettings = async () => {
     setFetching(true);
     try {
+<<<<<<< HEAD
       const data = await api.getSettings();
       if (data && data.success) {
+=======
+      const token = localStorage.getItem("token");
+
+      const response = await fetch(API_URL, {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: token ? `Bearer ${token}` : "",
+        },
+      });
+      const data = await response.json();
+
+      if (response.ok && data.success) {
+>>>>>>> 819c511ce486a6353829f2805eb90ecdf071faa3
         const settings = data.settings;
         setSettingsData(settings);
         setSettingsId(settings._id);
@@ -153,12 +172,34 @@ export default function Settings() {
         country: formData.country,
       };
 
+<<<<<<< HEAD
       let data;
       if (isUpdate) {
         data = await api.updateSettings(settingsId, payload);
       } else {
         data = await api.createSettings(payload);
       }
+=======
+      const token = localStorage.getItem("token");
+
+      const response = await fetch(url, {
+        method,
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: token ? `Bearer ${token}` : "",
+        },
+        body: JSON.stringify(payload),
+      });
+
+      const data = await response.json();
+
+      if (response.ok && data.success) {
+        setAlert({
+          show: true,
+          type: "success",
+          message: data.message,
+        });
+>>>>>>> 819c511ce486a6353829f2805eb90ecdf071faa3
 
       if (data && data.success) {
         setAlert({ show: true, type: "success", message: data.message });
@@ -179,6 +220,7 @@ export default function Settings() {
   };
 
   return (
+<<<<<<< HEAD
     <div>
       {/* Header */}
       <div className="page-header" style={{ marginBottom: "24px" }}>
@@ -213,6 +255,14 @@ export default function Settings() {
           <div style={{ display: "flex", alignItems: "center", gap: "8px", borderBottom: "1px solid #f1f5f9", paddingBottom: "12px", marginBottom: "16px" }}>
             <Building size={20} color="#0f766e" />
             <h2 className="emp-card-title" style={{ margin: 0 }}>Company Information</h2>
+=======
+    <div className={` ${darkMode ? 'dark' : ''}`}>
+      <main className="p-6">
+        <div className="page-header">
+          <div>
+            <h1 className="text-2xl font-bold">Company Settings</h1>
+            <p className="text-sm text-slate-600">Manage your company information and application settings.</p>
+>>>>>>> 819c511ce486a6353829f2805eb90ecdf071faa3
           </div>
 
           {fetching ? (
@@ -271,12 +321,19 @@ export default function Settings() {
           )}
         </div>
 
+<<<<<<< HEAD
         {/* Form Card */}
         <div className="employee-directory-card p-6">
           <div style={{ borderBottom: "1px solid #f1f5f9", paddingBottom: "12px", marginBottom: "16px" }}>
             <h2 className="emp-card-title">{settingsId ? "Update Settings" : "Configure Settings"}</h2>
+=======
+        {alert.show && (
+          <div className={`mb-4 ${alert.type === 'success' ? 'text-emerald-800 bg-emerald-50' : 'text-rose-700 bg-rose-50'} p-3 rounded-md`}> 
+            <span>{alert.message}</span>
+>>>>>>> 819c511ce486a6353829f2805eb90ecdf071faa3
           </div>
 
+<<<<<<< HEAD
           <form onSubmit={handleSubmit} className="enroll-form">
             <div className="form-group">
               <label>Company Name <span className="req">*</span></label>
@@ -319,9 +376,92 @@ export default function Settings() {
                 {errors.companyPhone && (
                   <div className="field-error">{errors.companyPhone}</div>
                 )}
+=======
+        <div className="grid lg:grid-cols-2 gap-6">
+          <div className="bg-white rounded-xl p-6 shadow-sm">
+            <div className="mb-4">
+              <h3 className="text-base font-semibold text-slate-900">Company Information</h3>
+            </div>
+
+            {fetching ? (
+              <p>Loading...</p>
+            ) : settingsData ? (
+              <div className="space-y-3">
+                <div className="flex justify-between">
+                  <span>Company Name</span>
+                  <strong>{settingsData.companyName}</strong>
+                </div>
+
+                <div className="flex justify-between">
+                  <span>Email</span>
+                  <strong>{settingsData.companyEmail}</strong>
+                </div>
+
+                <div className="flex justify-between">
+                  <span>Phone</span>
+                  <strong>{settingsData.companyPhone}</strong>
+                </div>
+
+                <div className="flex justify-between">
+                  <span>Address</span>
+                  <strong>{settingsData.companyAddress}</strong>
+                </div>
+
+                <div className="flex justify-between">
+                  <span>City</span>
+                  <strong>{settingsData.city}</strong>
+                </div>
+
+                <div className="flex justify-between">
+                  <span>State</span>
+                  <strong>{settingsData.state}</strong>
+                </div>
+
+                <div className="flex justify-between">
+                  <span>Country</span>
+                  <strong>{settingsData.country}</strong>
+                </div>
+
+                <div className="flex items-center justify-between">
+                  <div>
+                    <span>Password</span>
+                    <div>
+                      <strong>{showPassword ? settingsData.adminPassword : '••••••••'}</strong>
+                    </div>
+                  </div>
+                  <button type="button" onClick={() => setShowPassword(!showPassword)} className="px-3 py-1 rounded-md bg-slate-100">{showPassword ? 'Hide' : 'View'}</button>
+                </div>
+              </div>
+            ) : (
+              <p>No Company Settings Found.</p>
+            )}
+          </div>
+
+          <div className="bg-white rounded-xl p-6 shadow-sm">
+            <h3 className="text-lg font-semibold mb-4">{settingsId ? 'Update Company' : 'Create Company'}</h3>
+
+            <form onSubmit={handleSubmit}>
+              <div className="mb-3">
+                <label className="block text-sm font-medium mb-1">Company Name *</label>
+                <input type="text" name="companyName" value={formData.companyName} onChange={handleChange} placeholder="Enter Company Name" className="w-full px-3 py-2 rounded-md border border-slate-300" />
+                {errors.companyName && <small className="text-rose-600">{errors.companyName}</small>}
+              </div>
+
+              <div className="mb-3">
+                <label className="block text-sm font-medium mb-1">Company Email *</label>
+                <input type="email" name="companyEmail" value={formData.companyEmail} onChange={handleChange} placeholder="Enter Company Email" className="w-full px-3 py-2 rounded-md border border-slate-300" />
+                {errors.companyEmail && <small className="text-rose-600">{errors.companyEmail}</small>}
+              </div>
+
+              <div className="mb-3">
+                <label className="block text-sm font-medium mb-1">Company Phone *</label>
+                <input type="text" name="companyPhone" maxLength={10} value={formData.companyPhone} onChange={handleChange} placeholder="Enter Phone Number" className="w-full px-3 py-2 rounded-md border border-slate-300" />
+                {errors.companyPhone && <small className="text-rose-600">{errors.companyPhone}</small>}
+>>>>>>> 819c511ce486a6353829f2805eb90ecdf071faa3
               </div>
             </div>
 
+<<<<<<< HEAD
             <div className="form-group">
               <label>Company Address <span className="req">*</span></label>
               <textarea
@@ -376,9 +516,34 @@ export default function Settings() {
                 {errors.country && (
                   <div className="field-error">{errors.country}</div>
                 )}
+=======
+              <div className="mb-3">
+                <label className="block text-sm font-medium mb-1">Company Address *</label>
+                <textarea name="companyAddress" rows="3" value={formData.companyAddress} onChange={handleChange} placeholder="Enter Company Address" className="w-full px-3 py-2 rounded-md border border-slate-300" />
+                {errors.companyAddress && <small className="text-rose-600">{errors.companyAddress}</small>}
+              </div>
+
+              <div className="mb-3">
+                <label className="block text-sm font-medium mb-1">City *</label>
+                <input type="text" name="city" value={formData.city} onChange={handleChange} placeholder="Enter City" className="w-full px-3 py-2 rounded-md border border-slate-300" />
+                {errors.city && <small className="text-rose-600">{errors.city}</small>}
+              </div>
+
+              <div className="mb-3">
+                <label className="block text-sm font-medium mb-1">State *</label>
+                <input type="text" name="state" value={formData.state} onChange={handleChange} placeholder="Enter State" className="w-full px-3 py-2 rounded-md border border-slate-300" />
+                {errors.state && <small className="text-rose-600">{errors.state}</small>}
+              </div>
+
+              <div className="mb-3">
+                <label className="block text-sm font-medium mb-1">Country *</label>
+                <input type="text" name="country" value={formData.country} onChange={handleChange} placeholder="Enter Country" className="w-full px-3 py-2 rounded-md border border-slate-300" />
+                {errors.country && <small className="text-rose-600">{errors.country}</small>}
+>>>>>>> 819c511ce486a6353829f2805eb90ecdf071faa3
               </div>
             </div>
 
+<<<<<<< HEAD
 
 
             <button
@@ -400,6 +565,24 @@ export default function Settings() {
               )}
             </button>
           </form>
+=======
+              <div className="mb-3">
+                <label className="block text-sm font-medium mb-1">Admin Password *</label>
+                <div className="flex gap-2">
+                  <input type={showPassword ? 'text' : 'password'} name="adminPassword" value={formData.adminPassword} onChange={handleChange} placeholder="Enter Admin Password" className="flex-1 px-3 py-2 rounded-md border border-slate-300" />
+                  <button type="button" onClick={() => setShowPassword(!showPassword)} className="px-3 py-2 rounded-md bg-slate-100">{showPassword ? 'Hide' : 'View'}</button>
+                </div>
+                {errors.adminPassword && <small className="text-rose-600">{errors.adminPassword}</small>}
+              </div>
+
+              <div className="mb-3">
+                <button type="submit" className="w-full py-2 rounded-md bg-emerald-700 text-white" disabled={loading}>
+                  {loading ? 'Saving...' : settingsId ? 'Update Settings' : 'Create Settings'}
+                </button>
+              </div>
+            </form>
+          </div>
+>>>>>>> 819c511ce486a6353829f2805eb90ecdf071faa3
         </div>
       </div>
     </div>

@@ -1,6 +1,11 @@
 import { useState, useEffect } from "react";
+<<<<<<< HEAD
 import Pagination from "../components/Pagination";
 import { Megaphone, Plus, Calendar, User, Trash2, AlertCircle, X } from "lucide-react";
+=======
+// styles are loaded globally via src/index.css (Tailwind + custom styles)
+import { Megaphone, Plus, Calendar, User, Trash2, AlertCircle } from "lucide-react";
+>>>>>>> 819c511ce486a6353829f2805eb90ecdf071faa3
 
 export default function Notice() {
     const [notices, setNotices] = useState([]);
@@ -149,8 +154,8 @@ export default function Notice() {
             {/* Header */}
             <div className="page-header" style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "24px" }}>
                 <div>
-                    <h1 className="dashboard-title">Announcements & Notices</h1>
-                    <p className="dashboard-subtitle">Broadcasting corporate announcements and regulatory notifications.</p>
+                    <h1 className="text-2xl font-bold">Announcements & Notices</h1>
+                    <p className="text-sm text-slate-600">Broadcasting corporate announcements and regulatory notifications.</p>
                 </div>
                 <button
                     className="btn-add-dept"
@@ -167,11 +172,19 @@ export default function Notice() {
             </div>
 
             {/* Stats Widget */}
+<<<<<<< HEAD
             <div className="stats-grid" style={{ marginBottom: "24px" }}>
                 <div className="stat-card stat-card-green">
                     <div className="stat-header">
                         <div className="stat-icon-box depts-icon">
                             <Megaphone size={20} />
+=======
+            <div className="stats-grid mb-6">
+                <div className="stat-card">
+                    <div className="stat-header">
+                        <div className="stat-icon-box bg-sky-600">
+                            <Megaphone size={20} color="#ffffff" />
+>>>>>>> 819c511ce486a6353829f2805eb90ecdf071faa3
                         </div>
                         <div>
                             <p className="stat-label">Total Notices</p>
@@ -183,18 +196,14 @@ export default function Notice() {
             </div>
 
             {error && (
-                <div style={{ display: "flex", alignItems: "center", gap: "8px", color: "#b91c1c", backgroundColor: "#fef2f2", padding: "12px", borderRadius: "8px", marginBottom: "20px", fontSize: "14px" }}>
-                    <AlertCircle size={16} />
-                    <span>{error}</span>
-                </div>
+                <div className="flex items-center gap-2 text-rose-700 bg-rose-50 p-3 rounded-md mb-5"><AlertCircle size={16} /><span>{error}</span></div>
             )}
 
             {success && (
-                <div style={{ color: "#065f46", backgroundColor: "#ecfdf5", padding: "12px", borderRadius: "8px", marginBottom: "20px", fontSize: "14px" }}>
-                    {success}
-                </div>
+                <div className="text-emerald-800 bg-emerald-50 p-3 rounded-md mb-5">{success}</div>
             )}
 
+<<<<<<< HEAD
             {/* Full-width Layout */}
             <div className="w-full">
                 {/* Notice Feed */}
@@ -208,11 +217,22 @@ export default function Notice() {
                     </div>
 
                     <div style={{ display: "flex", flexDirection: "column", gap: "16px", overflow: "visible" }}>
+=======
+            {/* Main Split Layout */}
+            <div className="grid lg:grid-cols-[2fr_1fr] gap-6 items-start">
+
+                {/* Notice Feed */}
+                <div className="bg-white rounded-xl p-6 shadow-sm">
+                    <h2 className="text-lg font-semibold mb-5">Active Notices Feed</h2>
+
+                    <div className="flex flex-col gap-4">
+>>>>>>> 819c511ce486a6353829f2805eb90ecdf071faa3
                         {loading ? (
-                            <p style={{ textAlign: "center", color: "#64748b" }}>Loading announcements feed...</p>
+                            <p className="text-center text-slate-500">Loading announcements feed...</p>
                         ) : notices.length === 0 ? (
-                            <p style={{ textAlign: "center", color: "#64748b", padding: "40px 0" }}>No corporate notices published yet.</p>
+                            <p className="text-center text-slate-500 py-8">No corporate notices published yet.</p>
                         ) : (
+<<<<<<< HEAD
                             paginatedNotices.map((notice) => (
                                 <div
                                     key={notice._id}
@@ -243,28 +263,60 @@ export default function Notice() {
                                             }}
                                             title="Delete Announcement"
                                         >
+=======
+                            notices.map((notice) => (
+                                <div key={notice._id} className="p-4 rounded-lg border border-slate-200 bg-slate-50 transition">
+                                    <div className="flex justify-between items-start mb-2">
+                                        <h3 className="m-0 text-base font-semibold text-slate-900">{notice.title}</h3>
+                                        <button onClick={() => handleDeleteNotice(notice._id)} title="Delete Announcement" className="text-rose-600 hover:text-rose-800 p-1 rounded-md">
+>>>>>>> 819c511ce486a6353829f2805eb90ecdf071faa3
                                             <Trash2 size={16} />
                                         </button>
                                     </div>
-                                    <p style={{ color: "#334155", fontSize: "14px", lineHeight: "1.6", margin: "0 0 16px 0", whiteSpace: "pre-line" }}>
-                                        {notice.description}
-                                    </p>
+                                    <p className="text-slate-700 text-sm leading-6 mb-3 whitespace-pre-line">{notice.description}</p>
 
-                                    <div style={{ display: "flex", flexWrap: "wrap", justifyContent: "space-between", alignItems: "center", borderTop: "1px solid #cbd5e1", paddingTop: "12px", fontSize: "12px", color: "#64748b", fontWeight: "600" }}>
-                                        <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
-                                            <User size={14} color="#0d9488" />
-                                            <span>{notice.postedBy?.employeeName || "System Administrator"} ({notice.postedBy?.employeeId || "N/A"})</span>
-                                        </div>
-                                        <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
-                                            <Calendar size={14} />
-                                            <span>{formatDate(notice.createdAt)}</span>
-                                        </div>
+                                    <div className="flex flex-wrap justify-between items-center border-t border-slate-200 pt-3 text-sm text-slate-500 font-semibold">
+                                        <div className="flex items-center gap-2"><User size={14} color="#0d9488" /><span>{notice.postedBy?.employeeName || "System Administrator"} ({notice.postedBy?.employeeId || "N/A"})</span></div>
+                                        <div className="flex items-center gap-2"><Calendar size={14} /><span>{formatDate(notice.createdAt)}</span></div>
                                     </div>
                                 </div>
                             ))
                         )}
                     </div>
                 </div>
+<<<<<<< HEAD
+=======
+
+                {/* Publish Notice Form */}
+                <div className="bg-white rounded-xl p-6 shadow-sm">
+                    <h2 className="text-lg font-semibold mb-4">Publish Notice</h2>
+                    <form onSubmit={handleAddNotice}>
+                        <div className="mb-3">
+                            <label className="block text-xs font-semibold uppercase text-slate-600 mb-2">Notice Title</label>
+                            <input type="text" value={title} onChange={(e) => setTitle(e.target.value)} placeholder="e.g. Town Hall Meeting Scheduled" className="w-full px-3 py-2 rounded-md border border-slate-300 text-sm" />
+                        </div>
+
+                        <div className="mb-3">
+                            <label className="block text-xs font-semibold uppercase text-slate-600 mb-2">Description Detail</label>
+                            <textarea value={description} onChange={(e) => setDescription(e.target.value)} placeholder="Write announcements details here..." className="w-full px-3 py-2 rounded-md border border-slate-300 min-h-[100px] text-sm resize-vertical" />
+                        </div>
+
+                        <div className="mb-5">
+                            <label className="block text-xs font-semibold uppercase text-slate-600 mb-2">Author / Posted By</label>
+                            <select value={postedBy} onChange={(e) => setPostedBy(e.target.value)} className="w-full px-3 py-2 rounded-md border border-slate-300 text-sm">
+                                <option value="">Select Authoring Employee...</option>
+                                {employees.map((emp) => (<option key={emp._id} value={emp._id}>{emp.firstName} {emp.lastName} ({emp.employeeId})</option>))}
+                            </select>
+                        </div>
+
+                        <button type="submit" className="w-full py-2 rounded-md bg-emerald-800 text-white font-semibold flex items-center justify-center gap-2">
+                            <Plus size={16} />
+                            <span>Publish notice</span>
+                        </button>
+                    </form>
+                </div>
+
+>>>>>>> 819c511ce486a6353829f2805eb90ecdf071faa3
             </div>
 
             {/* Publish Notice Modal */}

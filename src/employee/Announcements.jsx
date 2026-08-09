@@ -1,4 +1,8 @@
 import React, { useState, useEffect } from "react";
+<<<<<<< HEAD
+=======
+// styles are loaded globally via src/index.css (Tailwind + custom styles)
+>>>>>>> 819c511ce486a6353829f2805eb90ecdf071faa3
 import Sidebar from "../components/Sidebar";
 import Pagination from "../components/Pagination";
 import {
@@ -160,11 +164,10 @@ export default function Announcements() {
             <div className="lg:pl-[260px] flex flex-col min-h-screen">
 
                 {/* Mobile Header */}
-                <div className="sticky top-0 z-30 flex items-center justify-between border-b border-slate-200/80 bg-white/95 px-4 py-3 backdrop-blur-xl lg:hidden" style={{ minHeight: "60px" }}>
+                <div className="sticky top-0 z-30 flex items-center justify-between border-b border-slate-200/80 bg-white/95 px-4 py-3 backdrop-blur-xl lg:hidden min-h-[60px]">
                     <button
                         onClick={() => setIsOpen(true)}
-                        className="inline-flex h-11 w-11 items-center justify-center rounded-2xl bg-[#043e30] text-white shadow-sm shadow-[#043e30]/10"
-                        style={{ border: "none", cursor: "pointer" }}
+                        className="inline-flex h-11 w-11 items-center justify-center rounded-2xl bg-emerald-900 text-white shadow-sm border-0 cursor-pointer"
                         aria-label="Open sidebar"
                     >
                         <Menu size={20} />
@@ -173,14 +176,20 @@ export default function Announcements() {
                 </div>
 
                 {/* Top Header Bar */}
+<<<<<<< HEAD
                 <div className="emp-top-header flex justify-between items-center mb-8 px-2.5">
                     <div className="emp-search-box">
+=======
+                <div className="flex justify-between items-center mb-8 px-2">
+                    <div className="flex items-center gap-2 bg-white px-4 py-2 rounded-xl border border-slate-200 w-[320px]">
+>>>>>>> 819c511ce486a6353829f2805eb90ecdf071faa3
                         <Search size={18} color="#64748b" />
                         <input
                             type="text"
                             placeholder="Search announcements..."
                             value={searchTerm}
                             onChange={(e) => setSearchTerm(e.target.value)}
+<<<<<<< HEAD
                             className="emp-search-input"
                         />
                     </div>
@@ -192,16 +201,70 @@ export default function Announcements() {
                         <div>
                             <h1 className="dashboard-title text-3xl font-extrabold text-slate-900 dark:text-white m-0">Announcements</h1>
                             <p className="dashboard-subtitle text-sm text-slate-500 dark:text-slate-400 mt-1">Stay updated with company news and announcements</p>
+=======
+                            className="border-none outline-none bg-transparent w-full text-sm text-black"
+                        />
+                    </div>
+
+                    <div className="flex items-center gap-2 bg-white px-3 py-1 rounded-xl border border-slate-200 font-bold text-black">
+                        <div className="w-8 h-8 rounded-full bg-emerald-800 text-white flex items-center justify-center text-xs font-bold">
+                            {getInitials(user?.name || "Akshaya Mehta")}
+                        </div>
+                        <span>{user?.name || "Akshaya Mehta"}</span>
+                    </div>
+                </div>
+
+                {/* Page Content */}
+                <div className="flex-1 px-2">
+                    <div className="page-header flex justify-between items-center mb-2">
+                        <div>
+                            <h1 className="text-3xl md:text-4xl font-extrabold text-slate-900 m-0">Announcements</h1>
+                            <p className="text-sm text-slate-500 mt-1">Stay updated with company news and announcements</p>
+                        </div>
+                    </div>
+
+                    {/* Search/Filters Row (matches the screenshot placement) */}
+                    <div className="flex gap-3 my-6 flex-wrap">
+                        <div className="flex items-center gap-2 bg-white px-4 py-2 rounded-lg border border-slate-200">
+                            <Search size={16} color="#64748b" />
+                            <input
+                                type="text"
+                                placeholder="Search announcements..."
+                                value={searchTerm}
+                                onChange={(e) => setSearchTerm(e.target.value)}
+                                className="border-none outline-none text-sm text-black w-[200px]"
+                            />
+                        </div>
+
+                        <div className="flex items-center gap-2 bg-white px-4 py-2 rounded-lg border border-slate-200 min-w-[120px]">
+                            <Filter size={16} color="#64748b" />
+                            <select
+                                value={categoryFilter}
+                                onChange={(e) => setCategoryFilter(e.target.value)}
+                                className="border-none outline-none bg-transparent text-sm font-bold text-slate-900 w-full cursor-pointer"
+                            >
+                                <option value="All">All</option>
+                                <option value="Company News">Company News</option>
+                                <option value="Policies">Policies</option>
+                                <option value="Events">Events</option>
+                                <option value="General">General</option>
+                            </select>
+>>>>>>> 819c511ce486a6353829f2805eb90ecdf071faa3
                         </div>
                     </div>
 
                     {/* List display */}
+<<<<<<< HEAD
                     <div className="emp-card-box">
                         <div className="announcement-list" style={{ overflow: "visible" }}>
+=======
+                    <div className="p-8 bg-white rounded-xl border border-slate-200">
+                        <div className="flex flex-col gap-5">
+>>>>>>> 819c511ce486a6353829f2805eb90ecdf071faa3
                             {loading ? (
-                                <div style={{ textAlign: "center", color: "#64748b", padding: "40px" }}>Loading announcements...</div>
+                                <div className="text-center text-slate-500 p-10">Loading announcements...</div>
                             ) : filteredNotices.length === 0 ? (
-                                <div style={{ textAlign: "center", color: "#64748b", padding: "40px" }}>No announcements found matching the criteria.</div>
+                                <div className="text-center text-slate-500 p-10">No announcements found matching the criteria.</div>
                             ) : (
                                 paginatedNotices.map((notice) => {
                                     const meta = getAnnouncementMeta(notice.title || "");
@@ -210,6 +273,7 @@ export default function Announcements() {
                                     return (
                                         <div
                                             key={notice._id}
+<<<<<<< HEAD
                                             className="announcement-item"
                                             style={{
                                                 display: "flex",
@@ -221,53 +285,37 @@ export default function Announcements() {
                                                 border: "1px solid #e2e8f0",
                                                 transition: "box-shadow 0.2s"
                                             }}
+=======
+                                            className="flex items-start gap-4 p-5 rounded-lg bg-white border border-slate-200 transition-shadow"
+>>>>>>> 819c511ce486a6353829f2805eb90ecdf071faa3
                                         >
                                             {/* Left Icon Pill */}
                                             <div
-                                                className="announcement-icon"
-                                                style={{
-                                                    backgroundColor: meta.bgColor,
-                                                    color: meta.color,
-                                                    padding: "12px",
-                                                    borderRadius: "50%",
-                                                    display: "flex",
-                                                    alignItems: "center",
-                                                    justifyContent: "center",
-                                                    height: "44px",
-                                                    width: "44px",
-                                                    flexShrink: 0
-                                                }}
+                                                className="flex items-center justify-center h-11 w-11 rounded-full flex-shrink-0"
+                                                style={{ backgroundColor: meta.bgColor, color: meta.color }}
                                             >
                                                 <IconComponent size={20} />
                                             </div>
 
                                             {/* Content */}
-                                            <div style={{ flex: 1 }}>
-                                                <h3 className="announcement-title" style={{ fontSize: "16px", fontWeight: "700", color: "#000000", margin: "0" }}>
+                                            <div className="flex-1">
+                                                <h3 className="text-base font-semibold text-slate-900 m-0">
                                                     {notice.title}
                                                 </h3>
-                                                <p className="announcement-desc" style={{ fontSize: "14px", color: "#475569", margin: "6px 0 0 0", lineHeight: "1.5" }}>
+                                                <p className="text-sm text-slate-600 mt-1 leading-relaxed">
                                                     {notice.description}
                                                 </p>
                                             </div>
 
                                             {/* Right Meta Column */}
-                                            <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-end", gap: "8px", flexShrink: 0 }}>
+                                            <div className="flex flex-col items-end gap-2 flex-shrink-0">
                                                 <span
-                                                    className="employee-status-badge"
-                                                    style={{
-                                                        backgroundColor: meta.bgColor,
-                                                        color: meta.textColor,
-                                                        border: `1px solid ${meta.borderColor}`,
-                                                        padding: "4px 10px",
-                                                        borderRadius: "8px",
-                                                        fontSize: "11px",
-                                                        fontWeight: "700"
-                                                    }}
+                                                    className="px-2 py-1 rounded-md text-xs font-semibold"
+                                                    style={{ backgroundColor: meta.bgColor, color: meta.textColor, border: `1px solid ${meta.borderColor}` }}
                                                 >
                                                     {meta.category}
                                                 </span>
-                                                <span className="announcement-date" style={{ fontSize: "12px", fontWeight: "600", color: "#64748b" }}>
+                                                <span className="text-xs font-semibold text-slate-500">
                                                     {formatDate(notice.createdAt)}
                                                 </span>
                                             </div>

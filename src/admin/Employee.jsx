@@ -1,4 +1,10 @@
+<<<<<<< HEAD
 import { useState, useEffect } from "react";
+=======
+import { useState, useEffect, useMemo } from "react";
+// styles are loaded globally via src/index.css (Tailwind + custom styles)
+
+>>>>>>> 819c511ce486a6353829f2805eb90ecdf071faa3
 import api from "../api";
 import {
     Building2,
@@ -14,7 +20,6 @@ import {
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
-// Fallback when backend returns no employees
 const defaultEmployees = [];
 
 export default function Employee() {
@@ -24,8 +29,10 @@ export default function Employee() {
     const [designationsOptions, setDesignationsOptions] = useState([]);
     const [loading, setLoading] = useState(false);
     const [searchTerm, setSearchTerm] = useState("");
+    const [showProfileInfo, setShowProfileInfo] = useState(false);
     const [statusFilter, setStatusFilter] = useState("All Statuses");
     const [deptFilter, setDeptFilter] = useState("All Departments");
+    const [currentEmployeeProfile, setCurrentEmployeeProfile] = useState(null);
 
     // Modal Control States
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -95,12 +102,16 @@ export default function Employee() {
             if (list && list.length > 0) {
                 const formatted = list.map(emp => ({
                     ...emp,
-                    name: emp.name || `${emp.firstName || ''} ${emp.lastName || ''}`.trim() || 'Employee',
-                    department: emp.departmentId && typeof emp.departmentId === 'object' ? emp.departmentId.departmentName : (emp.department || emp.departmentId || 'General'),
+                    name: emp.name || `${emp.firstName || ''} ${emp.lastName || ''}`.trim(),
+                    department: emp.departmentId && typeof emp.departmentId === 'object'
+                        ? emp.departmentId.departmentName
+                        : emp.department || emp.departmentId,
                     departmentId: emp.departmentId && typeof emp.departmentId === 'object' ? emp.departmentId._id : emp.departmentId,
-                    designation: emp.designationId && typeof emp.designationId === 'object' ? emp.designationId.designationName : (emp.designation || emp.designationId || ''),
+                    designation: emp.designationId && typeof emp.designationId === 'object'
+                        ? emp.designationId.designationName
+                        : emp.designation || emp.designationId,
                     designationId: emp.designationId && typeof emp.designationId === 'object' ? emp.designationId._id : emp.designationId,
-                    role: emp.employmentType || emp.role || 'Full-time'
+                    role: emp.employmentType || emp.role
                 }));
                 setEmployees(formatted);
             } else {
@@ -133,10 +144,70 @@ export default function Employee() {
         }
     };
 
+    const fetchCurrentEmployeeProfile = async () => {
+        try {
+            const res = await api.getMyProfile();
+            if (res?.success && res.profile) {
+                setCurrentEmployeeProfile(res.profile);
+            }
+        } catch (err) {
+            console.warn("[Employee] failed to load current employee profile:", err);
+        }
+    };
+
     useEffect(() => {
+        fetchCurrentEmployeeProfile();
         fetchEmployees();
         fetchDepartmentsAndDesignations();
     }, []);
+
+    const coworkerDepartmentId = useMemo(() => {
+        if (!currentEmployeeProfile) return null;
+        if (currentEmployeeProfile.departmentId && typeof currentEmployeeProfile.departmentId === 'object') {
+            return currentEmployeeProfile.departmentId._id;
+        }
+        return (
+            currentEmployeeProfile.departmentId ||
+            currentEmployeeProfile.departmentName ||
+            null
+        );
+    }, [currentEmployeeProfile]);
+
+    const coworkerDepartmentName = useMemo(() => {
+        if (!currentEmployeeProfile) return null;
+        return (
+            currentEmployeeProfile.departmentId?.departmentName ||
+            currentEmployeeProfile.departmentName ||
+            null
+        );
+    }, [currentEmployeeProfile]);
+
+    const coworkers = useMemo(() => {
+        const role = String(currentUser?.role || "").toLowerCase();
+
+        // Admins should see all employees.
+        if (role === "admin") return employees;
+
+        // For non-admins, show only coworkers in the same department.
+        if (!coworkerDepartmentId && !coworkerDepartmentName) return [];
+
+        return employees.filter(emp => {
+            const empDeptId = emp.departmentId && typeof emp.departmentId === 'object'
+                ? emp.departmentId._id
+                : emp.departmentId;
+            const empDeptName = emp.department || (emp.departmentId && typeof emp.departmentId === 'object' ? emp.departmentId.departmentName : undefined);
+            if (coworkerDepartmentId && empDeptId && String(empDeptId) === String(coworkerDepartmentId)) {
+                return true;
+            }
+            if (coworkerDepartmentName && empDeptName && String(empDeptName).toLowerCase() === String(coworkerDepartmentName).toLowerCase()) {
+                return true;
+            }
+            return false;
+        });
+    }, [employees, coworkerDepartmentId, coworkerDepartmentName, currentUser]);
+
+    const displayedEmployees = coworkers;
+
     const getInitials = (name) => {
         if (!name) return "A";
         const parts = name.split(" ");
@@ -383,20 +454,17 @@ export default function Employee() {
 
     // Departments list for filter dropdown
     const departmentsList = Array.from(
-        new Set(employees.map(e => e.department || e.departmentId).filter(Boolean))
+        new Set(displayedEmployees.map(e => e.department || e.departmentId).filter(Boolean))
     );
-    if (departmentsList.length === 0) {
-        departmentsList.push("IT", "Sales", "Admin", "Production");
-    }
 
     // Dynamic Calculations
-    const totalEmployeesCount = employees.length;
-    const activeStaffCount = employees.filter(e => e.status?.toLowerCase() === "active").length;
-    const inactiveStaffCount = employees.filter(e => e.status?.toLowerCase() === "inactive" || e.status?.toLowerCase() === "on leave" || e.status?.toLowerCase() === "offboarded").length;
+    const totalEmployeesCount = displayedEmployees.length;
+    const activeStaffCount = displayedEmployees.filter(e => e.status?.toLowerCase() === "active").length;
+    const inactiveStaffCount = displayedEmployees.filter(e => e.status?.toLowerCase() === "inactive" || e.status?.toLowerCase() === "on leave" || e.status?.toLowerCase() === "offboarded").length;
     const departmentsCountText = `${departmentsList.length} Active`;
-    const departmentNamesText = departmentsList.length > 0 ? departmentsList.join(", ") : "IT, Sales, Admin & Production";
+    const departmentNamesText = departmentsList.length > 0 ? departmentsList.join(", ") : "No departments available";
 
-    const filteredEmployees = employees.filter(e => {
+    const filteredEmployees = displayedEmployees.filter(e => {
         const nameMatches = e.name?.toLowerCase().includes(searchTerm.toLowerCase()) || false;
         const emailMatches = e.email?.toLowerCase().includes(searchTerm.toLowerCase()) || false;
         const idMatches = e.employeeId?.toLowerCase().includes(searchTerm.toLowerCase()) || false;
@@ -424,6 +492,34 @@ export default function Employee() {
                     />
                 </div>
 
+<<<<<<< HEAD
+=======
+                                <div className="header-right relative">
+                    <button className="icon-btn" onClick={() => navigate("/admin/notices") }>
+                        <Bell size={18} />
+                    </button>
+                    <div
+                        className="admin-profile-badge"
+                        onClick={() => setShowProfileInfo((prev) => !prev)}
+                    >
+                        <div className="admin-avatar-small">{getInitials(currentUser.name)}</div>
+                        <span>{currentUser.role.toUpperCase()}</span>
+                    </div>
+                    {showProfileInfo && (
+                                            <div className="absolute right-0 top-full mt-2 w-56 bg-white border border-slate-200 rounded-lg shadow-lg p-3 z-30">
+                                                <div className="flex items-center gap-3 mb-2">
+                                                    <div className="w-9 h-9 rounded-full bg-emerald-700 text-white flex items-center justify-center font-bold">{getInitials(currentUser.name)}</div>
+                                                    <div>
+                                                        <div className="font-bold">{currentUser.name}</div>
+                                                        <div className="text-xs text-slate-500">{currentUser.role.toUpperCase()}</div>
+                                                    </div>
+                                                </div>
+                                                <div className="text-sm text-slate-700 mb-3"><strong>Email:</strong> {currentUser.email || "-"}</div>
+                                                <button className="w-full rounded-md py-2 bg-emerald-700 text-white" onClick={() => { navigate("/admin/settings"); setShowProfileInfo(false); }}>View Profile Settings</button>
+                                            </div>
+                    )}
+                </div>
+>>>>>>> 819c511ce486a6353829f2805eb90ecdf071faa3
             </div>
 
             {/* Page Title Header */}
@@ -432,11 +528,15 @@ export default function Employee() {
                     <h1 className="dashboard-title">Employee Directory</h1>
                     <p className="dashboard-subtitle">Manage workforce records, roles, statuses and enroll new employees.</p>
                 </div>
+<<<<<<< HEAD
                 <button
                     className="btn-add-dept"
                     onClick={handleOpenEnrollModal}
                     style={{ display: "flex", alignItems: "center", gap: "6px" }}
                 >
+=======
+                <button className="btn-enroll-employee bg-emerald-700 text-white flex items-center gap-2 rounded-full px-4 py-2 text-sm font-medium" onClick={handleOpenEnrollModal}>
+>>>>>>> 819c511ce486a6353829f2805eb90ecdf071faa3
                     <Plus size={16} />
                     <span>Add Employee</span>
                 </button>
@@ -474,7 +574,7 @@ export default function Employee() {
 
                     <div className="filters-right">
                         <span className="showing-indicator">
-                            Showing {filteredEmployees.length} of {employees.length} employees
+                            Showing {filteredEmployees.length} of {displayedEmployees.length} coworkers
                         </span>
                     </div>
                 </div>
@@ -488,21 +588,17 @@ export default function Employee() {
                                 <th>DEPARTMENT</th>
                                 <th>ROLE / EMPLOYMENT TYPE</th>
                                 <th>STATUS</th>
-                                <th style={{ textAlign: "right", paddingRight: "24px" }}>ACTIONS</th>
+                                <th className="text-right pr-6">ACTIONS</th>
                             </tr>
                         </thead>
                         <tbody>
                             {loading ? (
                                 <tr>
-                                    <td colSpan="5" style={{ textAlign: "center", padding: "40px 0" }}>
-                                        Loading employee records...
-                                    </td>
+                                    <td colSpan="5" className="text-center py-10">Loading employee records...</td>
                                 </tr>
                             ) : filteredEmployees.length === 0 ? (
                                 <tr>
-                                    <td colSpan="5" style={{ textAlign: "center", padding: "40px 0" }}>
-                                        No employees match filter criteria.
-                                    </td>
+                                    <td colSpan="5" className="text-center py-10">No coworkers match filter criteria.</td>
                                 </tr>
                             ) : (
                                 filteredEmployees.map((emp, index) => (
@@ -513,9 +609,9 @@ export default function Employee() {
                                                     {getInitials(emp.name)}
                                                 </div>
                                                 <div>
-                                                    <p className="employee-name-text">{emp.name}</p>
+                                                    <p className="employee-name-text">{emp.name || `${emp.firstName || ""} ${emp.lastName || ""}`.trim()}</p>
                                                     <p className="employee-meta-text">
-                                                        {emp.employeeId || `EMP-${1000 + index}`} • {emp.email}
+                                                        {emp.employeeId || ""}{emp.employeeId && emp.email ? " • " : ""}{emp.email || ""}
                                                     </p>
                                                 </div>
                                             </div>
@@ -523,15 +619,15 @@ export default function Employee() {
 
                                         <td>
                                             <span className="employee-dept-pill">
-                                                {emp.department || emp.departmentId || "IT"}
+                                                {emp.department || emp.departmentId || ""}
                                             </span>
                                         </td>
 
                                         <td>
                                             <div>
-                                                <p className="employee-role-type">{emp.employmentType || emp.role || "Full-time"}</p>
+                                                <p className="employee-role-type">{emp.employmentType || emp.role || ""}</p>
                                                 <p className="employee-joining-date">
-                                                    Joining: {emp.joiningDate || "2021-03-15"}
+                                                    {emp.joiningDate ? `Joining: ${emp.joiningDate}` : ""}
                                                 </p>
                                             </div>
                                         </td>
@@ -539,11 +635,11 @@ export default function Employee() {
                                         <td>
                                             <span className={`employee-status-badge ${emp.status?.toLowerCase() === "active" ? "active" : "inactive"}`}>
                                                 <span className="bullet"></span>
-                                                {emp.status || "Active"}
+                                                {emp.status || ""}
                                             </span>
                                         </td>
 
-                                        <td style={{ textAlign: "right", paddingRight: "24px" }}>
+                                        <td className="text-right pr-6">
                                             <div className="employee-action-buttons">
                                                 <button className="action-icon-btn" title="View details" onClick={() => handleViewClick(emp)}>
                                                     <Eye size={16} />
@@ -791,7 +887,7 @@ export default function Employee() {
                                         )}
                                     </select>
                                     {formErrors.departmentId && <div className="field-error">{formErrors.departmentId}</div>}
-                                    <label style={{ marginTop: 8 }}>Designation</label>
+                                    <label className="mt-2">Designation</label>
                                     <select
                                         name="designationId"
                                         value={formData.designationId}
@@ -934,7 +1030,7 @@ export default function Employee() {
                             <div className="detail-item"><strong>Joining Date:</strong> {viewingEmployee.joiningDate}</div>
                             <div className="detail-item"><strong>Salary:</strong> ${viewingEmployee.salary || "N/A"}</div>
                             <div className="detail-item"><strong>Status:</strong> {viewingEmployee.status}</div>
-                            <div className="detail-item"><strong>Created By:</strong> {viewingEmployee.createdBy || "Admin"}</div>
+                            <div className="detail-item"><strong>Created By:</strong> {viewingEmployee.createdBy?.name || viewingEmployee.createdBy || ""}</div>
                             <div className="detail-item full-width"><strong>Address:</strong> {viewingEmployee.address || "N/A"}</div>
                         </div>
 

@@ -1,5 +1,5 @@
 import React from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import {
     LayoutDashboard,
     Building2,
@@ -28,29 +28,34 @@ const menuItems = [
 ];
 
 const employeeMenuItems = [
-    { name: "Dashboard", icon: LayoutDashboard, path: "/employee/dashboard" },
+    { name: "Dashboard", icon: LayoutDashboard, permission: "dashboard", path: "/employee/dashboard" },
     { name: "Leave Management", icon: CalendarDays, permission: "leave", path: "/employee/leave" },
     { name: "Attendance", icon: Clock, permission: "attendance", path: "/employee/attendance" },
     { name: "Payrolls", icon: Wallet, permission: "payroll", path: "/employee/payroll" },
     { name: "Announcements", icon: Megaphone, permission: "notice", path: "/employee/announcements" },
-    { name: "Profile", icon: Users, path: "/employee/profile" },
+    { name: "Profile", icon: Users, permission: "profile", path: "/employee/profile" },
 ];
 
 export default function Sidebar({ activeTab, setActiveTab, isOpen, setIsOpen }) {
     const navigate = useNavigate();
+    const location = useLocation();
     const user = typeof window !== "undefined" ? JSON.parse(localStorage.getItem("user") || "{}") : {};
     const userName = user.name || "User";
 
+<<<<<<< HEAD
     const roleName = typeof user.role === "string"
         ? user.role.trim().toLowerCase()
         : typeof user.role === "object" && user.role !== null && user.role.name
             ? String(user.role.name).trim().toLowerCase()
             : "";
+=======
+>>>>>>> 819c511ce486a6353829f2805eb90ecdf071faa3
     const rawPermissions = Array.isArray(user.permissions)
         ? user.permissions
         : typeof user.permissions === "string"
             ? user.permissions.split(",").map((perm) => perm.trim()).filter(Boolean)
             : [];
+<<<<<<< HEAD
     const defaultPermissions = roleName === "admin"
         ? menuItems.map((item) => item.permission)
         : roleName === "employee"
@@ -67,6 +72,31 @@ export default function Sidebar({ activeTab, setActiveTab, isOpen, setIsOpen }) 
         : (permissions.length === 0
             ? menuItems
             : menuItems.filter((item) => !item.permission || permissions.includes(item.permission)));
+=======
+    const userRole = String(user.role || "").toLowerCase();
+
+    // Role-based defaults when explicit permissions are absent.
+    const rolePermissionMap = {
+        admin: menuItems.map((i) => i.permission).filter(Boolean),
+        employee: ["dashboard", "attendance", "notice", "leave", "payroll", "profile"],
+    };
+
+    const effectivePermissions = rawPermissions.length > 0
+        ? Array.from(new Set(rawPermissions.map((perm) => String(perm).toLowerCase())))
+        : (rolePermissionMap[userRole] || ["dashboard"]);
+
+    const allMenuItems = [...menuItems, ...employeeMenuItems];
+    const uniqueMenuItems = allMenuItems.filter((item, index, self) =>
+        index === self.findIndex((other) => other.path === item.path)
+    );
+
+    const isAdminMode = userRole === "admin" || effectivePermissions.some((perm) => ["department", "designation", "employee", "role", "settings"].includes(perm));
+    const sidebarItems = isAdminMode ? menuItems : employeeMenuItems;
+
+    const visibleMenuItems = sidebarItems.filter((item) =>
+        !item.permission || effectivePermissions.includes(item.permission)
+    );
+>>>>>>> 819c511ce486a6353829f2805eb90ecdf071faa3
 
     const handleLogout = () => {
         localStorage.removeItem("token");

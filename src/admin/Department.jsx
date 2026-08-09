@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import { useState, useEffect } from "react";
 import {
   Search,
@@ -52,6 +53,16 @@ const INITIAL_DEMO_DATA = [
 
 export default function Departments() {
   const [departments, setDepartments] = useState(INITIAL_DEMO_DATA);
+=======
+import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import api from "../api";
+
+const Departments = () => {
+  const navigate = useNavigate();
+  const [departments, setDepartments] = useState([]);
+  const [showProfileInfo, setShowProfileInfo] = useState(false);
+>>>>>>> 819c511ce486a6353829f2805eb90ecdf071faa3
   const [searchQuery, setSearchQuery] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingId, setEditingId] = useState(null);
@@ -62,6 +73,7 @@ export default function Departments() {
   const [selectedDepartmentEmployees, setSelectedDepartmentEmployees] = useState([]);
   const [employeesLoading, setEmployeesLoading] = useState(false);
   const [employeesError, setEmployeesError] = useState("");
+  const [loading, setLoading] = useState(false);
 
   // Form State corresponding to departmentController.js fields
   const [formData, setFormData] = useState({
@@ -80,10 +92,17 @@ export default function Departments() {
 
   const fetchDashboardCounts = async () => {
     try {
+<<<<<<< HEAD
       const data = await api.getAdminDashboard();
       if (data && data.dashboard) {
         setBackendTotalDepartments(data.dashboard.totalDepartments || 0);
         setBackendTotalEmployees(data.dashboard.totalEmployees || 0);
+=======
+      const res = await api.getAdminDashboard();
+      if (res?.dashboard) {
+        setBackendTotalDepartments(res.dashboard.totalDepartments || 0);
+        setBackendTotalEmployees(res.dashboard.totalEmployees || 0);
+>>>>>>> 819c511ce486a6353829f2805eb90ecdf071faa3
       }
     } catch (error) {
       console.warn("Unable to load dashboard totals from backend:", error);
@@ -91,11 +110,23 @@ export default function Departments() {
   };
 
   const fetchDepartments = async () => {
+    setLoading(true);
     try {
+<<<<<<< HEAD
       const data = await api.getDepartments();
       if (data) setDepartments(data.departments || data.data || []);
+=======
+      const res = await api.getDepartments();
+      if (res?.departments) {
+        setDepartments(res.departments);
+      } else if (Array.isArray(res)) {
+        setDepartments(res);
+      }
+>>>>>>> 819c511ce486a6353829f2805eb90ecdf071faa3
     } catch (error) {
-      console.warn("Backend API offline. Using local demo state.", error);
+      console.warn("Backend API offline or failed to fetch departments:", error);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -107,6 +138,7 @@ export default function Departments() {
     setSelectedDepartment(department);
 
     try {
+<<<<<<< HEAD
       console.debug("fetchDepartmentEmployees: department", department._id);
       // Some environments may not expose the department-specific endpoint correctly.
       // Fall back to fetching all employees and filtering by departmentId for reliability.
@@ -121,6 +153,12 @@ export default function Departments() {
       });
       console.debug("fetchDepartmentEmployees: filtered count", filtered.length);
       setSelectedDepartmentEmployees(filtered);
+=======
+      const res = await api.getDepartmentEmployees(department._id);
+      if (res?.employees) setSelectedDepartmentEmployees(res.employees);
+      else if (res?.employees === undefined && Array.isArray(res)) setSelectedDepartmentEmployees(res);
+      else setSelectedDepartmentEmployees(res.employees || []);
+>>>>>>> 819c511ce486a6353829f2805eb90ecdf071faa3
     } catch (error) {
       console.warn(error);
       setEmployeesError("Could not load department employees.");
@@ -201,6 +239,7 @@ export default function Departments() {
 
     if (editingId) {
       try {
+<<<<<<< HEAD
         const res = await api.updateDepartment(editingId, formData);
         if (res && res.department) {
           setDepartments((prev) => prev.map((d) => (d._id === editingId ? res.department : d)));
@@ -224,6 +263,35 @@ export default function Departments() {
       } catch (err) {
         const newDept = { ...formData, _id: "temp-" + Math.random().toString(36).substring(2, 9) };
         setDepartments((prev) => [newDept, ...prev]);
+=======
+        const data = await api.updateDepartment(editingId, formData);
+
+        if (data?.department) {
+          await fetchDepartments();
+          await fetchDashboardCounts();
+        } else {
+          setErrorMsg(data?.message || "Failed to update department.");
+          return;
+        }
+      } catch (err) {
+        setErrorMsg(err?.message || "Failed to update department.");
+        return;
+      }
+    } else {
+      try {
+        const data = await api.createDepartment(formData);
+
+        if (data?.department) {
+          await fetchDepartments();
+          await fetchDashboardCounts();
+        } else {
+          setErrorMsg(data?.message || "Failed to create department.");
+          return;
+        }
+      } catch (err) {
+        setErrorMsg(err?.message || "Failed to create department.");
+        return;
+>>>>>>> 819c511ce486a6353829f2805eb90ecdf071faa3
       }
     }
 
@@ -235,12 +303,16 @@ export default function Departments() {
     if (!window.confirm("Are you sure you want to delete this department?")) return;
 
     try {
+<<<<<<< HEAD
       const res = await api.deleteDepartment(id);
       if (res) fetchDashboardCounts();
+=======
+      await api.deleteDepartment(id);
+      await fetchDepartments();
+      await fetchDashboardCounts();
+>>>>>>> 819c511ce486a6353829f2805eb90ecdf071faa3
     } catch (err) {
-      console.warn("Offline delete fallback");
-    } finally {
-      setDepartments((prev) => prev.filter((d) => d._id !== id));
+      setErrorMsg(err?.message || "Failed to delete department.");
     }
   };
 
@@ -257,10 +329,35 @@ export default function Departments() {
             onChange={(e) => setSearchQuery(e.target.value)}
           />
         </div>
+<<<<<<< HEAD
         <div className="header-right" style={{ display: "flex", alignItems: "center", gap: "16px" }}>
           <button className="btn-add-dept" onClick={handleOpenAddModal} style={{ display: "flex", alignItems: "center", gap: "6px" }}>
             <Plus size={16} />
             <span>Add Department</span>
+=======
+        <div className="header-right relative">
+          <button className="icon-btn" title="Notifications" onClick={() => navigate("/admin/notices") }>
+            🔔
+          </button>
+          <div className="admin-badge cursor-pointer flex items-center gap-2" onClick={() => setShowProfileInfo((prev) => !prev)}>
+            <span className="badge-avatar">AB</span>
+            <span className="badge-text">admin</span>
+          </div>
+          {showProfileInfo && (
+            <div className="absolute right-0 top-full mt-2 w-56 bg-white border border-slate-200 rounded-lg shadow-lg p-3 z-30">
+              <div className="flex items-center gap-3 mb-2">
+                <div className="w-9 h-9 rounded-full bg-emerald-700 text-white flex items-center justify-center font-bold">AB</div>
+                <div>
+                  <div className="font-bold">Admin</div>
+                  <div className="text-xs text-slate-500">Administrator</div>
+                </div>
+              </div>
+              <button className="w-full rounded-md py-2 bg-emerald-700 text-white" onClick={() => { navigate("/admin/settings"); setShowProfileInfo(false); }}>View Profile Settings</button>
+            </div>
+          )}
+          <button className="btn-add-dept" onClick={handleOpenAddModal}>
+            + Add Department
+>>>>>>> 819c511ce486a6353829f2805eb90ecdf071faa3
           </button>
         </div>
       </div>
