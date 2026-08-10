@@ -26,14 +26,14 @@ export async function getAdminDashboard() {
 }
 
 export async function getEmployeeDashboard(employeeId) {
-  const res = await fetch(`${API_BASE_URL}/dashboard/employee/${employeeId}`, {
+  const res = await fetch(`${API_BASE_URL}/employeedashboard/${employeeId}`, {
     headers: authHeaders(),
   });
   return res.json();
 }
 
 export async function getCurrentEmployeeDashboard() {
-  const res = await fetch(`${API_BASE_URL}/dashboard/employee/me`, {
+  const res = await fetch(`${API_BASE_URL}/employeedashboard/me`, {
     headers: authHeaders(),
   });
   return res.json();

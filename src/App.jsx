@@ -75,9 +75,20 @@ function getUserPermissions(user) {
   return Array.from(new Set(permissions.map((perm) => String(perm).trim().toLowerCase()).filter(Boolean)));
 }
 
+function getEffectivePermissions(user) {
+  const explicitPermissions = getUserPermissions(user);
+  const role = normalizeRole(user?.role);
+  const rolePermissionMap = {
+    admin: ["dashboard", "department", "designation", "employee", "role", "attendance", "payroll", "notice", "settings"],
+    employee: ["dashboard", "leave", "attendance", "payroll", "notice", "profile"],
+  };
+  const defaultRolePermissions = rolePermissionMap[role] || [];
+  return Array.from(new Set([...explicitPermissions, ...defaultRolePermissions]));
+}
+
 function hasAnyPermission(user, allowedPermissions = []) {
   if (!user || !allowedPermissions.length) return false;
-  const userPermissions = getUserPermissions(user);
+  const userPermissions = getEffectivePermissions(user);
 
   function permissionMatches(key, perms) {
     if (!key) return true;

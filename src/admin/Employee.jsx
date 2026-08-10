@@ -205,21 +205,11 @@ export default function Employee() {
   }, [currentEmployeeProfile]);
 
   const coworkers = useMemo(() => {
-    const role = normalizeRole(currentUser?.role || "admin");
-    function normalizeRole(role) {
-      if (!role) return "";
-      if (typeof role === "string") return role.toLowerCase();
-      if (typeof role === "object" && role !== null) {
-        if (typeof role.name === "string") return role.name.toLowerCase();
-        if (typeof role.role === "string") return role.role.toLowerCase();
-      }
-      return String(role).toLowerCase();
-    }
-
-    const role = normalizeRole(currentUser?.role);
+    // Normalize current user's role for access filtering.
+    const currentRole = normalizeRole(currentUser?.role || "admin");
 
     // Admins should see all employees.
-    if (role === "admin") return employees;
+    if (currentRole === "admin") return employees;
 
     // For non-admins, show only coworkers in the same department.
     if (!coworkerDepartmentId && !coworkerDepartmentName) return [];

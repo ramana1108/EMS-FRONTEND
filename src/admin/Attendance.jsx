@@ -10,6 +10,7 @@ import {
     CheckCircle,
     X
 } from "lucide-react";
+import api from "../api";
 
 export default function Attendance() {
     const [activeTab, setActiveTab] = useState("attendance");
@@ -49,58 +50,33 @@ export default function Attendance() {
     const [filterEmpId, setFilterEmpId] = useState("");
     const [filterDate, setFilterDate] = useState("");
 
-    const API_BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
-
-    function getHeaders() {
-        const token = localStorage.getItem("token");
-        return token
-            ? { Authorization: `Bearer ${token}`, "Content-Type": "application/json" }
-            : { "Content-Type": "application/json" };
-    }
-
     const fetchEmployees = async () => {
         try {
-            const res = await fetch(`${API_BASE_URL}/employees`, {
-                headers: getHeaders(),
-            });
-            const data = await res.json();
-            if (res.ok) {
-                setEmployees(data.employees || []);
-            }
+            const res = await api.getAllEmployees();
+            setEmployees(res.employees || res.data || []);
         } catch (err) {
-            console.error(err);
+            console.error("Failed to load employees:", err);
+            setError("Unable to load employee list.");
         }
     };
 
     const fetchAttendance = async () => {
         try {
-            const res = await fetch(`${API_BASE_URL}/attendance`, {
-                headers: getHeaders(),
-            });
-            const data = await res.json();
-            if (res.ok) {
-                setRecords(data.attendance || []);
-            } else {
-                setError(data.message || "Failed to fetch attendance logs");
-            }
+            const res = await api.getAttendance();
+            setRecords(res.attendance || res.data || []);
         } catch (err) {
-            console.error(err);
-            setError("Failed to connect to data server");
+            console.error("Failed to fetch attendance:", err);
+            setError("Failed to fetch attendance logs");
         }
     };
 
     const fetchLeaves = async () => {
         try {
-            const res = await fetch(`${API_BASE_URL}/leaves`, { headers: getHeaders() });
-            const data = await res.json();
-            if (res.ok) {
-                setLeaves(data.leaves || []);
-            } else {
-                setError(data.message || "Failed to fetch leave logs");
-            }
+            const res = await api.getAllLeaves();
+            setLeaves(res.leaves || res.data || []);
         } catch (err) {
-            console.error(err);
-            setError("Failed to connect to leave endpoint");
+            console.error("Failed to fetch leaves:", err);
+            setError("Failed to fetch leave logs");
         }
     };
 
@@ -150,13 +126,8 @@ export default function Attendance() {
                 notes,
             };
 
-            const res = await fetch(`${API_BASE_URL}/attendance`, {
-                method: "POST",
-                headers: getHeaders(),
-                body: JSON.stringify(payload),
-            });
-            const data = await res.json();
-            if (res.ok) {
+            const data = await api.createAttendance(payload);
+            if (data.success !== false) {
                 setSuccess("Attendance record created successfully!");
                 setSelectedEmpId("");
                 setNotes("");
@@ -174,10 +145,27 @@ export default function Attendance() {
 
     const handleApplyLeave = async (e) => {
         e.preventDefault();
-        if (!leaveEmpId || !leaveFrom || !leaveTo || !leaveReason || !leaveType) {
-            setError("All fields are required to request leave: Employee, Start Date, End Date, Type, Reason");
+        if (!leaveEmpId) {
+            setError("Please select an employee for this leave request.");
             return;
         }
+        if (!leaveFrom) {
+            setError("From Date is required.");
+            return;
+        }
+        if (!leaveTo) {
+            setError("To Date is required.");
+            return;
+        }
+        if (!leaveType) {
+            setError("Leave Type is required.");
+            return;
+        }
+        if (!leaveReason || !leaveReason.trim()) {
+            setError("Reason for leave is required.");
+            return;
+        }
+
         setError("");
         setSuccess("");
 
@@ -190,21 +178,15 @@ export default function Attendance() {
 
         setLoading(true);
         try {
-            const res = await fetch(`${API_BASE_URL}/leaves`, {
-                method: "POST",
-                headers: getHeaders(),
-                body: JSON.stringify({
-                    employeeId: leaveEmpId,
-                    leaveType,
-                    fromDate: leaveFrom,
-                    toDate: leaveTo,
-                    reason: leaveReason,
-                }),
+            const data = await api.applyLeave({
+                employeeId: leaveEmpId,
+                leaveType,
+                fromDate: leaveFrom,
+                toDate: leaveTo,
+                reason: leaveReason,
             });
-
-            const data = await res.json();
             setLoading(false);
-            if (res.ok) {
+            if (data.success !== false) {
                 setSuccess("Leave request submitted successfully.");
                 setLeaveEmpId("");
                 setLeaveFrom("");
@@ -228,13 +210,8 @@ export default function Attendance() {
         setError("");
         setSuccess("");
         try {
-            const res = await fetch(`${API_BASE_URL}/leaves/${id}`, {
-                method: "PUT",
-                headers: getHeaders(),
-                body: JSON.stringify({ status: newStatus }),
-            });
-            const data = await res.json();
-            if (res.ok) {
+            const data = await api.updateLeaveStatus(id, { status: newStatus });
+            if (data.success !== false) {
                 setSuccess(`Leave ${newStatus.toLowerCase()} successfully.`);
                 fetchLeaves();
             } else {
@@ -251,12 +228,8 @@ export default function Attendance() {
         setError("");
         setSuccess("");
         try {
-            const res = await fetch(`${API_BASE_URL}/attendance/${id}`, {
-                method: "DELETE",
-                headers: getHeaders(),
-            });
-            const data = await res.json();
-            if (res.ok) {
+            const data = await api.deleteAttendance(id);
+            if (data.success) {
                 setSuccess("Attendance record deleted successfully!");
                 fetchAttendance();
             } else {
@@ -273,12 +246,8 @@ export default function Attendance() {
         setError("");
         setSuccess("");
         try {
-            const res = await fetch(`${API_BASE_URL}/leaves/${id}`, {
-                method: "DELETE",
-                headers: getHeaders(),
-            });
-            const data = await res.json();
-            if (res.ok) {
+            const data = await api.deleteLeave(id);
+            if (data.success !== false) {
                 setSuccess("Leave request deleted successfully.");
                 fetchLeaves();
             } else {

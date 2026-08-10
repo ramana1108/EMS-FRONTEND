@@ -125,10 +125,10 @@ export default function EmployeeDashboard() {
                     <div className="emp-stat-icon-box">
                       <Calendar size={18} />
                     </div>
-                    <span className="emp-stat-title">Leave Balance</span>
+                    <span className="emp-stat-title">Available Leave Balance</span>
                   </div>
                   <p className="emp-stat-value">
-                    {employeeProfile.leaveBalance != null ? employeeProfile.leaveBalance : "—"}
+                    {employeeProfile.leaveBalance != null ? `${employeeProfile.leaveBalance} days` : "0 days"}
                   </p>
                   <span className="emp-stat-subtext">Available</span>
                 </div>

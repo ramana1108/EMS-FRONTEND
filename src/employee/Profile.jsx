@@ -132,13 +132,18 @@ export default function Profile() {
                 setDepartments(Array.isArray(deps) ? deps : deps?.departments || []);
                 setDesignations(Array.isArray(desigs) ? desigs : desigs?.designations || []);
 
-                // load profiles and match by email
-                const all = await api.getProfiles();
-                const list = Array.isArray(all) ? all : all?.profiles || [];
-
+                // load current user profile
                 let found = null;
-                if (loggedInUser?.email) {
-                    found = list.find((p) => p.email?.toLowerCase() === loggedInUser.email.toLowerCase());
+                const myProfileRes = await api.getMyProfile();
+                if (myProfileRes?.success && myProfileRes.profile) {
+                    found = myProfileRes.profile;
+                } else {
+                    const all = await api.getProfiles();
+                    const list = Array.isArray(all) ? all : all?.profiles || [];
+
+                    if (loggedInUser?.email) {
+                        found = list.find((p) => p.email?.toLowerCase() === loggedInUser.email.toLowerCase());
+                    }
                 }
 
                 if (found) {
@@ -239,9 +244,9 @@ export default function Profile() {
                 employmentType: editForm.employmentType
             };
 
-            const result = await api.updateEmployee(employee._id, updatePayload);
-            if (result && (result.success || result._id || result.employee)) {
-                const updatedEmpObj = result.employee || result.data || updatePayload;
+            const result = await api.updateMyProfile(updatePayload);
+            if (result && result.success) {
+                const updatedEmpObj = result.profile || updatePayload;
                 setSuccess("Profile updated successfully.");
                 setEmployee(updatedEmpObj);
 

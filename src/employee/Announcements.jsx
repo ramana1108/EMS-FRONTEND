@@ -149,6 +149,17 @@ export default function Announcements() {
         });
     };
 
+    const getNoticeAuthor = (notice) => {
+        if (!notice || !notice.postedBy) return "System Administrator";
+        const author = notice.postedBy;
+        if (typeof author === "string") return author;
+        const name = [author.firstName, author.lastName, author.name, author.employeeName]
+            .filter(Boolean)
+            .join(" ")
+            .trim();
+        return name || author.employeeId || author._id || "System Administrator";
+    };
+
     const getInitials = (name) => {
         if (!name) return "U";
         return name.split(" ").map((n) => n[0]).join("").toUpperCase().slice(0, 2);
