@@ -464,17 +464,17 @@ export default function Payroll() {
                     </div>
 
                     <div className="overflow-auto rounded-md border border-slate-100">
-                        <table className="min-w-full divide-y">
+                        <table className="min-w-full divide-y table-fixed">
                             <thead>
                                 <tr>
-                                    <th>EMPLOYEE</th>
-                                    <th>PERIOD</th>
-                                    <th className="table-number-col">BASIC (₹)</th>
-                                    <th className="table-number-col">REDUCTION (₹)</th>
-                                    <th className="table-number-col">TAX (₹)</th>
-                                    <th className="table-number-col">NET PAID (₹)</th>
-                                    <th className="table-center-col">STATUS</th>
-                                    <th className="table-actions-col">ACTIONS</th>
+                                    <th className="table-col-3xl">EMPLOYEE</th>
+                                    <th className="table-col-lg">PERIOD</th>
+                                    <th className="table-col-md table-number-col">BASIC (₹)</th>
+                                    <th className="table-col-md table-number-col">REDUCTION (₹)</th>
+                                    <th className="table-col-md table-number-col">TAX (₹)</th>
+                                    <th className="table-col-md table-number-col">NET PAID (₹)</th>
+                                    <th className="table-col-sm table-center-col">STATUS</th>
+                                    <th className="table-col-actions table-actions-col">ACTIONS</th>
                                 </tr>
                             </thead>
                             <tbody>

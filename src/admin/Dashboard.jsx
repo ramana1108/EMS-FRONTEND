@@ -192,7 +192,7 @@ export default function Dashboard() {
         </div>
 
         <div className="header-right relative">
-          <button className="icon-btn" onClick={() => navigate("/admin/notices")}>
+          <button className="icon-btn" onClick={() => navigate("/admin/notices")} style={{ color: "black" }}>
             <Bell size={18} />
           </button>
 
@@ -316,20 +316,20 @@ export default function Dashboard() {
           <h2 className="card-title mb-4">Quick Actions</h2>
           <div className="action-buttons-stack">
             <button className="btn-action flex justify-between items-center" onClick={() => navigate("/admin/employee")}>
-              <span className="flex items-center gap-2"><Plus size={16} /> Add Employee</span>
               <span className="rounded-full px-2 py-1 text-xs font-bold bg-sky-100 text-sky-700">{dashboard ? dashboard.totalEmployees : "--"}</span>
+              <span className="flex items-center gap-2"><Plus size={16} /> Add Employee</span>
             </button>
             <button className="btn-action flex justify-between items-center" onClick={() => navigate("/admin/payroll")}>
-              <span className="flex items-center gap-2"><Plus size={16} /> Create Payroll</span>
               <span className="rounded-full px-2 py-1 text-xs font-bold bg-emerald-50 text-emerald-700">{dashboard ? dashboard.totalPayrolls : "--"}</span>
+              <span className="flex items-center gap-2"><Plus size={16} /> Create Payroll</span>
             </button>
             <button className="btn-action flex justify-between items-center" onClick={() => navigate("/admin/roles")}>
-              <span className="flex items-center gap-2"><Plus size={16} /> Create Manager</span>
               <span className="rounded-full px-2 py-1 text-xs font-bold bg-amber-100 text-amber-700">{dashboard ? dashboard.totalManagers : "--"}</span>
+              <span className="flex items-center gap-2"><Plus size={16} /> Create Manager</span>
             </button>
             <button className="btn-action flex justify-between items-center" onClick={() => navigate("/admin/notices")}>
-              <span className="flex items-center gap-2"><FileText size={16} /> Create Notice</span>
               <span className="rounded-full px-2 py-1 text-xs font-bold bg-violet-100 text-violet-700">{dashboard ? dashboard.totalNotices : "--"}</span>
+              <span className="flex items-center gap-2"><FileText size={16} /> Create Notice</span>
             </button>
           </div>
         </div>

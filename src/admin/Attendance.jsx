@@ -91,7 +91,7 @@ export default function Attendance() {
 
     const fetchLeaves = async () => {
         try {
-            const res = await fetch(`${API_BASE_URL}/leave`, { headers: getHeaders() });
+            const res = await fetch(`${API_BASE_URL}/leaves`, { headers: getHeaders() });
             const data = await res.json();
             if (res.ok) {
                 setLeaves(data.leaves || []);
@@ -190,7 +190,7 @@ export default function Attendance() {
 
         setLoading(true);
         try {
-            const res = await fetch(`${API_BASE_URL}/leave`, {
+            const res = await fetch(`${API_BASE_URL}/leaves`, {
                 method: "POST",
                 headers: getHeaders(),
                 body: JSON.stringify({
@@ -228,7 +228,7 @@ export default function Attendance() {
         setError("");
         setSuccess("");
         try {
-            const res = await fetch(`${API_BASE_URL}/leave/${id}`, {
+            const res = await fetch(`${API_BASE_URL}/leaves/${id}`, {
                 method: "PUT",
                 headers: getHeaders(),
                 body: JSON.stringify({ status: newStatus }),
@@ -273,7 +273,7 @@ export default function Attendance() {
         setError("");
         setSuccess("");
         try {
-            const res = await fetch(`${API_BASE_URL}/leave/${id}`, {
+            const res = await fetch(`${API_BASE_URL}/leaves/${id}`, {
                 method: "DELETE",
                 headers: getHeaders(),
             });
@@ -307,7 +307,9 @@ export default function Attendance() {
 
     // Filters computed logs
     const filteredRecords = records.filter(rec => {
-        const matchesEmp = !filterEmpId || rec.employeeCode === filterEmpId || (rec.employeeName?.toLowerCase().includes(filterEmpId.toLowerCase()));
+        const employeeCode = rec.employeeId?.employeeId || rec.employeeCode || "";
+        const employeeName = `${rec.employeeId?.firstName || ""} ${rec.employeeId?.lastName || ""}`.trim() || rec.employeeName || "";
+        const matchesEmp = !filterEmpId || employeeCode === filterEmpId || employeeName.toLowerCase().includes(filterEmpId.toLowerCase());
         const matchesDate = !filterDate || formatDate(rec.attendanceDate) === filterDate;
         return matchesEmp && matchesDate;
     });
@@ -490,12 +492,16 @@ export default function Attendance() {
                                             <tr key={rec._id} className="border-b last:border-b-0">
                                                 <td className="px-4 py-3">
                                                     <div>
-                                                        <p className="font-semibold text-slate-900 text-sm">{rec.employeeName}</p>
-                                                        <p className="text-xs text-slate-500">{rec.employeeCode}</p>
+                                                        <p className="font-semibold text-slate-900 text-sm">
+                                                            {rec.employeeId?.firstName ? `${rec.employeeId.firstName} ${rec.employeeId.lastName}` : rec.employeeName || "Unknown"}
+                                                        </p>
+                                                        <p className="text-xs text-slate-500">{rec.employeeId?.employeeId || rec.employeeCode || "-"}</p>
                                                     </div>
                                                 </td>
                                                 <td className="px-4 py-3">
-                                                    <span className="text-sm font-medium text-slate-600">{rec.departmentName}</span>
+                                                    <span className="text-sm font-medium text-slate-600">
+                                                        {rec.employeeId?.departmentId?.departmentName || rec.departmentName || "-"}
+                                                    </span>
                                                 </td>
                                                 <td className="px-4 py-3 text-center">{formatDate(rec.attendanceDate)}</td>
                                                 <td className="px-4 py-3 text-center font-semibold">{rec.checkInTime || "--:--"}</td>
@@ -559,15 +565,15 @@ export default function Attendance() {
                         <h2 className="text-lg font-semibold mb-4">Leave Requests</h2>
 
                         <div className="overflow-auto max-h-[520px] rounded-md border border-slate-100">
-                            <table className="min-w-full divide-y">
+                            <table className="min-w-full divide-y table-fixed">
                                 <thead>
                                     <tr>
-                                        <th className="px-3 py-3 text-left">EMPLOYEE</th>
-                                        <th className="px-3 py-3 text-center">DATES</th>
-                                        <th className="px-3 py-3 text-left">REASON</th>
-                                        <th className="px-3 py-3 text-center">TYPE</th>
-                                        <th className="px-3 py-3 text-center">STATUS</th>
-                                        <th className="px-3 py-3 text-right">ACTIONS</th>
+                                        <th className="table-col-3xl text-left">EMPLOYEE</th>
+                                        <th className="table-col-lg text-center">DATES</th>
+                                        <th className="table-col-3xl text-left">REASON</th>
+                                        <th className="table-col-lg text-center">TYPE</th>
+                                        <th className="table-col-lg text-center">STATUS</th>
+                                        <th className="table-col-actions text-right">ACTIONS</th>
                                     </tr>
                                 </thead>
                                 <tbody>

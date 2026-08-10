@@ -39,6 +39,15 @@ export default function Employee() {
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   const [formErrors, setFormErrors] = useState({});
+  const normalizeRole = (role) => {
+    if (typeof role === "string") return role.trim().toLowerCase();
+    if (typeof role === "object" && role !== null) {
+      if (typeof role.name === "string") return role.name.trim().toLowerCase();
+      if (typeof role.role === "string") return role.role.trim().toLowerCase();
+    }
+    return "admin";
+  };
+
   const [currentUser] = useState(() => {
     const stored = localStorage.getItem("user");
     if (stored) {
@@ -48,14 +57,15 @@ export default function Employee() {
           return {
             id: parsed._id || parsed.id || "admin-01",
             name: parsed.name,
-            role: parsed.role || "ADMIN",
+            role: normalizeRole(parsed.role || "ADMIN"),
+            email: parsed.email || "",
           };
         }
       } catch (e) {
         console.error(e);
       }
     }
-    return { id: "admin-01", name: "Prasanna Ramana", role: "ADMIN" };
+    return { id: "admin-01", name: "Prasanna Ramana", role: "admin", email: "" };
   });
 
   // Form State corresponding EXACTLY to employeeController.js required fields
@@ -170,7 +180,7 @@ export default function Employee() {
   }, [currentEmployeeProfile]);
 
   const coworkers = useMemo(() => {
-    const role = String(currentUser?.role || "").toLowerCase();
+    const role = normalizeRole(currentUser?.role || "admin");
 
     // Admins should see all employees.
     if (role === "admin") return employees;
@@ -472,7 +482,7 @@ export default function Employee() {
         </div>
 
         <div className="header-right relative" style={{ display: "flex", alignItems: "center", gap: "16px" }}>
-          <button className="icon-btn" onClick={() => navigate("/admin/notices")}>
+          <button className="icon-btn" onClick={() => navigate("/admin/notices")} style={{ color: "black" }}>
             <Bell size={18} />
           </button>
           <div className="admin-profile-badge" onClick={() => setShowProfileInfo((prev) => !prev)}>
@@ -550,14 +560,14 @@ export default function Employee() {
 
         {/* Table */}
         <div className="table-responsive">
-          <table className="employee-table">
+          <table className="employee-table table-fixed">
             <thead>
               <tr>
-                <th>NAME</th>
-                <th>DEPARTMENT</th>
-                <th>ROLE / EMPLOYMENT TYPE</th>
-                <th className="table-center-col">STATUS</th>
-                <th className="table-actions-col">ACTIONS</th>
+                <th className="table-col-xl">NAME</th>
+                <th className="table-col-lg">DEPARTMENT</th>
+                <th className="table-col-3xl">ROLE / EMPLOYMENT TYPE</th>
+                <th className="table-col-sm table-center-col">STATUS</th>
+                <th className="table-col-actions table-actions-col">ACTIONS</th>
               </tr>
             </thead>
             <tbody>

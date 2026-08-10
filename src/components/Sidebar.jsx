@@ -64,7 +64,10 @@ export default function Sidebar({ activeTab, setActiveTab, isOpen, setIsOpen }) 
     };
 
     const effectivePermissions = rawPermissions.length > 0
-        ? Array.from(new Set(rawPermissions.map((perm) => String(perm).toLowerCase())))
+        ? (userRole === "admin"
+            ? Array.from(new Set([...rawPermissions.map((perm) => String(perm).toLowerCase()), ...rolePermissionMap.admin]))
+            : Array.from(new Set(rawPermissions.map((perm) => String(perm).toLowerCase())))
+          )
         : (rolePermissionMap[userRole] || ["dashboard"]);
 
     const useEmployeeMenu = ["employee"].includes(userRole);

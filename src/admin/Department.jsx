@@ -228,7 +228,7 @@ export default function Departments() {
           />
         </div>
         <div className="header-right relative" style={{ display: "flex", alignItems: "center", gap: "16px" }}>
-          <button className="icon-btn" title="Notifications" onClick={() => navigate("/admin/notices")}>
+          <button className="icon-btn" title="Notifications" onClick={() => navigate("/admin/notices")} style={{ color: "black" }}>
             <Bell size={18} />
           </button>
           <div className="admin-badge cursor-pointer flex items-center gap-2" onClick={() => setShowProfileInfo((prev) => !prev)}>
@@ -317,16 +317,16 @@ export default function Departments() {
         </div>
 
         <div className="table-wrapper">
-          <table className="departments-table">
+          <table className="departments-table table-fixed">
             <thead>
               <tr>
-                <th>D_ID</th>
-                <th>DEPARTMENT NAME</th>
-                <th>HEAD NAME</th>
-                <th>HEAD DESIGNATION</th>
-                <th>DESCRIPTION</th>
-                <th>NO. OF EMPLOYEES</th>
-                <th>ACTIONS</th>
+                <th className="table-col-xs">D_ID</th>
+                <th className="table-col-xl">DEPARTMENT NAME</th>
+                <th className="table-col-lg">HEAD NAME</th>
+                <th className="table-col-lg">HEAD DESIGNATION</th>
+                <th className="table-col-xl">DESCRIPTION</th>
+                <th className="table-col-sm">NO. OF EMPLOYEES</th>
+                <th className="table-col-actions table-actions-col">ACTIONS</th>
               </tr>
             </thead>
             <tbody>

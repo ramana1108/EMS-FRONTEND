@@ -399,16 +399,16 @@ export default function Roles() {
         </div>
 
         <div className="table-responsive">
-          <table className="employee-table" style={{ borderCollapse: "collapse", width: "100%" }}>
+          <table className="employee-table table-fixed" style={{ borderCollapse: "collapse", width: "100%" }}>
             <thead className="permissions-table-header">
               <tr>
-                <th className="table-center-col" style={{ width: "50px", color: "black" }}>#</th>
-                <th style={{ color: "black" }}>EMPLOYEE ID</th>
-                <th style={{ color: "black" }}>EMPLOYEE NAME</th>
-                <th style={{ color: "black" }}>EMAIL</th>
-                <th style={{ color: "black" }}>ROLE</th>
-                <th className="table-center-col" style={{ color: "black" }}>STATUS</th>
-                <th className="table-actions-col" style={{ width: "80px", color: "black" }}>ACTIONS</th>
+                <th className="table-col-xs table-center-col" style={{ color: "black" }}>#</th>
+                <th className="table-col-lg" style={{ color: "black" }}>EMPLOYEE ID</th>
+                <th className="table-col-3xl" style={{ color: "black" }}>EMPLOYEE NAME</th>
+                <th className="table-col-3xl" style={{ color: "black" }}>EMAIL</th>
+                <th className="table-col-lg" style={{ color: "black" }}>ROLE</th>
+                <th className="table-col-sm table-center-col" style={{ color: "black" }}>STATUS</th>
+                <th className="table-col-actions table-actions-col" style={{ color: "black" }}>ACTIONS</th>
               </tr>
             </thead>
             <tbody>

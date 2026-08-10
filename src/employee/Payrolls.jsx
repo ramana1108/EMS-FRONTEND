@@ -236,16 +236,16 @@ export default function Payrolls() {
                         </div>
 
                         <div className="table-responsive">
-                            <table className="employee-table">
+                            <table className="employee-table table-fixed">
                                 <thead>
                                     <tr>
-                                        <th>Month/Year</th>
-                                        <th className="table-number-col">Basic Salary</th>
-                                        <th className="table-number-col">Allowances</th>
-                                        <th className="table-number-col">Deductions</th>
-                                        <th className="table-number-col">Net Salary</th>
-                                        <th className="table-center-col">Payment Status</th>
-                                        <th className="table-actions-col">Actions</th>
+                                        <th className="table-col-xl">EMPLOYEE</th>
+                                        <th className="table-col-lg">PERIOD</th>
+                                        <th className="table-col-md table-number-col">BASIC (₹)</th>
+                                        <th className="table-col-md table-number-col">REDUCTION (₹)</th>
+                                        <th className="table-col-md table-number-col">TAX (₹)</th>
+                                        <th className="table-col-md table-number-col">NET PAID (₹)</th>
+                                        <th className="table-col-sm table-center-col">ACTIONS</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -259,54 +259,36 @@ export default function Payrolls() {
                                         </tr>
                                     ) : (
                                         payrolls.map((pay) => {
-                                            const totalAllowances = (pay.allowance || 0) + (pay.bonus || 0);
-                                            const totalDeductions = (pay.deductions || 0) + (pay.tax || 0);
+                                            const reductionAmount = pay.deductions || 0;
+                                            const taxAmount = pay.tax || 0;
                                             const isPaid = pay.paymentStatus === "Paid";
+                                            const employeeName = pay.employeeId?.name || `${pay.employeeId?.firstName || ""} ${pay.employeeId?.lastName || ""}`.trim() || user?.name || "Employee";
+                                            const employeeCode = pay.employeeId?.employeeId || pay.employeeId?.id || pay.employeeId?._id || "";
 
                                             return (
                                                 <tr key={pay._id} className="employee-row">
-                                                    <td style={{ fontWeight: "700", color: "#0f172a" }}>
+                                                    <td>
+                                                        <div style={{ display: "flex", flexDirection: "column", gap: "2px" }}>
+                                                            <span style={{ fontWeight: "700", color: "#0f172a" }}>{employeeName}</span>
+                                                            {employeeCode ? (
+                                                                <span style={{ fontSize: "12px", color: "#64748b" }}>{employeeCode}</span>
+                                                            ) : null}
+                                                        </div>
+                                                    </td>
+                                                    <td style={{ color: "#334155" }}>
                                                         {pay.month} {pay.year}
                                                     </td>
                                                     <td className="table-number-col" style={{ color: "#334155" }}>
                                                         {formatCurrency(pay.basicSalary)}
                                                     </td>
-                                                    <td className="table-number-col" style={{ color: "#059669" }}>
-                                                        + {formatCurrency(totalAllowances)}
+                                                    <td className="table-number-col" style={{ color: "#dc2626" }}>
+                                                        - {formatCurrency(reductionAmount)}
                                                     </td>
                                                     <td className="table-number-col" style={{ color: "#dc2626" }}>
-                                                        - {formatCurrency(totalDeductions)}
+                                                        - {formatCurrency(taxAmount)}
                                                     </td>
                                                     <td className="table-number-col" style={{ fontWeight: "700", color: "#0f172a" }}>
                                                         {formatCurrency(pay.netSalary)}
-                                                    </td>
-                                                    <td className="table-center-col">
-                                                        <span
-                                                            className="employee-status-badge active"
-                                                            style={{
-                                                                display: "inline-flex",
-                                                                alignItems: "center",
-                                                                padding: "4px 10px",
-                                                                borderRadius: "8px",
-                                                                fontSize: "12px",
-                                                                fontWeight: "700",
-                                                                backgroundColor: isPaid ? "#ecfdf5" : "#fef3c7",
-                                                                color: isPaid ? "#047857" : "#d97706",
-                                                                border: isPaid ? "1px solid #a7f3d0" : "1px solid #fde68a"
-                                                            }}
-                                                        >
-                                                            <span
-                                                                className="bullet"
-                                                                style={{
-                                                                    backgroundColor: isPaid ? "#10b981" : "#f59e0b",
-                                                                    width: "6px",
-                                                                    height: "6px",
-                                                                    borderRadius: "50%",
-                                                                    marginRight: "6px"
-                                                                }}
-                                                            />
-                                                            {pay.paymentStatus}
-                                                        </span>
                                                     </td>
                                                     <td style={{ padding: "4px 8px", textAlign: "right" }}>
                                                         <div style={{ display: "flex", gap: "8px", justifyContent: "flex-end" }}>

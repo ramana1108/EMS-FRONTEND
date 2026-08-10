@@ -41,7 +41,9 @@ export default function Attendance() {
             setLoading(true);
             try {
                 const res = await api.getMyAttendance();
-                const list = Array.isArray(res) ? res : res?.attendance || [];
+                const list = Array.isArray(res)
+                    ? res
+                    : res?.attendance || res?.data || [];
 
                 const sortedRecords = [...list].sort((a, b) => {
                     return new Date(b.attendanceDate) - new Date(a.attendanceDate);
@@ -133,6 +135,46 @@ export default function Attendance() {
 
     return (
         <div className="min-h-screen bg-slate-100 text-slate-900">
+            {/* Shared table theme — matches the Employees directory table */}
+            <style>{`
+                .ems-table-card {
+                    background: #ffffff;
+                    border-radius: 16px;
+                    border: 1px solid #e2e8f0;
+                    overflow: hidden;
+                }
+                .ems-table-v2 { width: 100%; border-collapse: collapse; }
+                .ems-table-v2 thead tr { background: #9aa1ac; }
+                .ems-table-v2 thead th {
+                    text-align: left;
+                    padding: 14px 20px;
+                    font-size: 12px;
+                    font-weight: 700;
+                    letter-spacing: 0.04em;
+                    text-transform: uppercase;
+                    color: #ffffff;
+                    white-space: nowrap;
+                }
+                .ems-table-v2 tbody td {
+                    padding: 14px 20px;
+                    font-size: 14px;
+                    color: #1e293b;
+                    border-bottom: 1px solid #f1f5f9;
+                }
+                .ems-table-v2 tbody tr:last-child td { border-bottom: none; }
+                .ems-table-v2 tbody tr:hover { background: #f8fafc; }
+                .ems-table-footer {
+                    display: flex;
+                    justify-content: space-between;
+                    align-items: center;
+                    padding: 14px 20px;
+                    border-top: 1px solid #f1f5f9;
+                    font-size: 13px;
+                    color: #64748b;
+                    font-weight: 600;
+                }
+            `}</style>
+
             <Sidebar activeTab={activeTab} setActiveTab={setActiveTab} isOpen={isOpen} setIsOpen={setIsOpen} />
 
             <div className="lg:pl-[260px] flex flex-col min-h-screen">
@@ -216,7 +258,7 @@ export default function Attendance() {
                     </div>
 
                     {/* Attendance Records Box */}
-                    <div className="employee-directory-card">
+                    <div className="ems-table-card">
                         {/* Header controls bar */}
                         <div className="filters-row flex justify-between items-center px-6 py-5 border-b border-slate-100 dark:border-slate-800/60 bg-slate-50/30 dark:bg-slate-950/5">
                             <h2 className="emp-card-title" style={{ margin: 0, fontSize: "18px", fontWeight: "800", color: "#000000" }}>Attendance Records</h2>
@@ -243,15 +285,15 @@ export default function Attendance() {
 
                         {/* Table */}
                         <div className="table-responsive">
-                            <table className="employee-table" style={{ borderCollapse: "collapse" }}>
+                            <table className="ems-table-v2">
                                 <thead>
-                                    <tr style={{ borderBottom: "1px solid #e2e8f0" }}>
-                                        <th style={{ padding: "4px 8px", textAlign: "left", fontSize: "11px", fontWeight: "700", color: "#64748b", textTransform: "uppercase" }}>Date</th>
-                                        <th style={{ padding: "4px 8px", textAlign: "left", fontSize: "11px", fontWeight: "700", color: "#64748b", textTransform: "uppercase" }}>Day</th>
-                                        <th style={{ padding: "4px 8px", textAlign: "left", fontSize: "11px", fontWeight: "700", color: "#64748b", textTransform: "uppercase" }}>Status</th>
-                                        <th style={{ padding: "4px 8px", textAlign: "left", fontSize: "11px", fontWeight: "700", color: "#64748b", textTransform: "uppercase" }}>Clock In</th>
-                                        <th style={{ padding: "4px 8px", textAlign: "left", fontSize: "11px", fontWeight: "700", color: "#64748b", textTransform: "uppercase" }}>Clock Out</th>
-                                        <th style={{ padding: "4px 8px", textAlign: "left", fontSize: "11px", fontWeight: "700", color: "#64748b", textTransform: "uppercase" }}>Worked Hours</th>
+                                    <tr>
+                                        <th>Date</th>
+                                        <th>Day</th>
+                                        <th>Status</th>
+                                        <th>Clock In</th>
+                                        <th>Clock Out</th>
+                                        <th>Worked Hours</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -291,14 +333,14 @@ export default function Attendance() {
                                             }
 
                                             return (
-                                                <tr key={rec._id} className="employee-row" style={{ borderBottom: "1px solid #f1f5f9" }}>
-                                                    <td style={{ padding: "4px 8px", fontWeight: "700", color: "#0f172a", fontSize: "14px" }}>
+                                                <tr key={rec._id}>
+                                                    <td style={{ fontWeight: "700", color: "#0f172a" }}>
                                                         {dateFormatted}
                                                     </td>
-                                                    <td style={{ padding: "4px 8px", color: "#475569", fontSize: "13px", fontWeight: "600" }}>
+                                                    <td style={{ color: "#475569", fontWeight: "600" }}>
                                                         {dayName}
                                                     </td>
-                                                    <td className="table-center-col">
+                                                    <td>
                                                         <span
                                                             style={{
                                                                 display: "inline-flex",
@@ -315,13 +357,13 @@ export default function Attendance() {
                                                             {rec.status}
                                                         </span>
                                                     </td>
-                                                    <td style={{ padding: "4px 8px", color: "#334155", fontSize: "13px" }}>
+                                                    <td style={{ color: "#334155" }}>
                                                         {rec.checkInTime || "—"}
                                                     </td>
-                                                    <td style={{ padding: "4px 8px", color: "#334155", fontSize: "13px" }}>
+                                                    <td style={{ color: "#334155" }}>
                                                         {rec.checkOutTime || "—"}
                                                     </td>
-                                                    <td className="table-center-col" style={{ color: "#0f172a", fontWeight: "700", fontSize: "13px" }}>
+                                                    <td style={{ color: "#0f172a", fontWeight: "700" }}>
                                                         {formatHours(rec.workedHours)}
                                                     </td>
                                                 </tr>
@@ -332,71 +374,73 @@ export default function Attendance() {
                             </table>
                         </div>
 
-                        {/* Pagination Controls */}
-                        {filteredRecords.length > itemsPerPage && (
-                            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "16px 24px", borderTop: "1px solid #f1f5f9" }}>
-                                <span style={{ fontSize: "13px", fontWeight: "700", color: "#64748b" }}>
+                        {/* Footer / Pagination Controls */}
+                        {!loading && filteredRecords.length > 0 && (
+                            <div className="ems-table-footer">
+                                <span>
                                     Showing {indexOfFirstItem + 1} to {Math.min(indexOfLastItem, filteredRecords.length)} of {filteredRecords.length} records
                                 </span>
 
-                                <div style={{ display: "flex", gap: "8px" }}>
-                                    <button
-                                        onClick={() => handlePageChange(currentPage - 1)}
-                                        disabled={currentPage === 1}
-                                        style={{
-                                            display: "inline-flex",
-                                            alignItems: "center",
-                                            justifyContent: "center",
-                                            width: "36px",
-                                            height: "36px",
-                                            borderRadius: "8px",
-                                            border: "1px solid #cbd5e1",
-                                            backgroundColor: currentPage === 1 ? "#f8fafc" : "#ffffff",
-                                            color: currentPage === 1 ? "#94a3b8" : "#475569",
-                                            cursor: currentPage === 1 ? "default" : "pointer"
-                                        }}
-                                    >
-                                        <ChevronLeft size={16} />
-                                    </button>
-
-                                    {Array.from({ length: totalPages }, (_, i) => i + 1).map((p) => (
+                                {totalPages > 1 && (
+                                    <div style={{ display: "flex", gap: "8px" }}>
                                         <button
-                                            key={p}
-                                            onClick={() => handlePageChange(p)}
+                                            onClick={() => handlePageChange(currentPage - 1)}
+                                            disabled={currentPage === 1}
                                             style={{
+                                                display: "inline-flex",
+                                                alignItems: "center",
+                                                justifyContent: "center",
                                                 width: "36px",
                                                 height: "36px",
                                                 borderRadius: "8px",
                                                 border: "1px solid #cbd5e1",
-                                                backgroundColor: currentPage === p ? "#043e30" : "#ffffff",
-                                                color: currentPage === p ? "#ffffff" : "#475569",
-                                                fontWeight: "700",
-                                                cursor: "pointer"
+                                                backgroundColor: currentPage === 1 ? "#f8fafc" : "#ffffff",
+                                                color: currentPage === 1 ? "#94a3b8" : "#475569",
+                                                cursor: currentPage === 1 ? "default" : "pointer"
                                             }}
                                         >
-                                            {p}
+                                            <ChevronLeft size={16} />
                                         </button>
-                                    ))}
 
-                                    <button
-                                        onClick={() => handlePageChange(currentPage + 1)}
-                                        disabled={currentPage === totalPages}
-                                        style={{
-                                            display: "inline-flex",
-                                            alignItems: "center",
-                                            justifyContent: "center",
-                                            width: "36px",
-                                            height: "36px",
-                                            borderRadius: "8px",
-                                            border: "1px solid #cbd5e1",
-                                            backgroundColor: currentPage === totalPages ? "#f8fafc" : "#ffffff",
-                                            color: currentPage === totalPages ? "#94a3b8" : "#475569",
-                                            cursor: currentPage === totalPages ? "default" : "pointer"
-                                        }}
-                                    >
-                                        <ChevronRight size={16} />
-                                    </button>
-                                </div>
+                                        {Array.from({ length: totalPages }, (_, i) => i + 1).map((p) => (
+                                            <button
+                                                key={p}
+                                                onClick={() => handlePageChange(p)}
+                                                style={{
+                                                    width: "36px",
+                                                    height: "36px",
+                                                    borderRadius: "8px",
+                                                    border: "1px solid #cbd5e1",
+                                                    backgroundColor: currentPage === p ? "#043e30" : "#ffffff",
+                                                    color: currentPage === p ? "#ffffff" : "#475569",
+                                                    fontWeight: "700",
+                                                    cursor: "pointer"
+                                                }}
+                                            >
+                                                {p}
+                                            </button>
+                                        ))}
+
+                                        <button
+                                            onClick={() => handlePageChange(currentPage + 1)}
+                                            disabled={currentPage === totalPages}
+                                            style={{
+                                                display: "inline-flex",
+                                                alignItems: "center",
+                                                justifyContent: "center",
+                                                width: "36px",
+                                                height: "36px",
+                                                borderRadius: "8px",
+                                                border: "1px solid #cbd5e1",
+                                                backgroundColor: currentPage === totalPages ? "#f8fafc" : "#ffffff",
+                                                color: currentPage === totalPages ? "#94a3b8" : "#475569",
+                                                cursor: currentPage === totalPages ? "default" : "pointer"
+                                            }}
+                                        >
+                                            <ChevronRight size={16} />
+                                        </button>
+                                    </div>
+                                )}
                             </div>
                         )}
                     </div>

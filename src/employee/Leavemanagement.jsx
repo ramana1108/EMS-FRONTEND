@@ -205,6 +205,48 @@ export default function Leavemanagement() {
 
     return (
         <div className="min-h-screen bg-slate-100 text-slate-900">
+            {/* Shared table theme — matches the Employees directory table */}
+            <style>{`
+                .ems-table-card {
+                    background: #ffffff;
+                    border-radius: 16px;
+                    border: 1px solid #e2e8f0;
+                    overflow: hidden;
+                }
+                .ems-table-v2 { width: 100%; border-collapse: collapse; }
+                .ems-table-v2 thead tr { background: #9aa1ac; }
+                .ems-table-v2 thead th {
+                    text-align: left;
+                    padding: 14px 20px;
+                    font-size: 12px;
+                    font-weight: 700;
+                    letter-spacing: 0.04em;
+                    text-transform: uppercase;
+                    color: #ffffff;
+                    white-space: nowrap;
+                }
+                .ems-table-v2 thead th.center { text-align: center; }
+                .ems-table-v2 tbody td {
+                    padding: 14px 20px;
+                    font-size: 14px;
+                    color: #1e293b;
+                    border-bottom: 1px solid #f1f5f9;
+                }
+                .ems-table-v2 tbody td.center { text-align: center; }
+                .ems-table-v2 tbody tr:last-child td { border-bottom: none; }
+                .ems-table-v2 tbody tr:hover { background: #f8fafc; }
+                .ems-table-footer {
+                    display: flex;
+                    justify-content: space-between;
+                    align-items: center;
+                    padding: 14px 20px;
+                    border-top: 1px solid #f1f5f9;
+                    font-size: 13px;
+                    color: #64748b;
+                    font-weight: 600;
+                }
+            `}</style>
+
             <Sidebar activeTab={activeTab} setActiveTab={setActiveTab} isOpen={isOpen} setIsOpen={setIsOpen} />
 
             <div className="lg:pl-[260px] flex flex-col min-h-screen">
@@ -293,8 +335,8 @@ export default function Leavemanagement() {
                     </div>
 
                     {/* List display */}
-                    <div className="employee-directory-card">
-                        <div className="filters-row">
+                    <div className="ems-table-card">
+                        <div className="filters-row flex justify-between items-center px-6 py-5 border-b border-slate-100 dark:border-slate-800/60 bg-slate-50/30 dark:bg-slate-950/5">
                             <h2 className="text-lg font-extrabold text-slate-900 dark:text-white" style={{ margin: 0 }}>
                                 My Leave Requests
                             </h2>
@@ -315,16 +357,16 @@ export default function Leavemanagement() {
                                     Loading leave requests...
                                 </div>
                             ) : (
-                                <table className="employee-table">
+                                <table className="ems-table-v2">
                                     <thead>
                                         <tr>
                                             <th>Leave Type</th>
                                             <th>From Date</th>
                                             <th>To Date</th>
-                                            <th className="table-center-col">Days</th>
-                                            <th className="table-center-col">Status</th>
+                                            <th className="center">Days</th>
+                                            <th className="center">Status</th>
                                             <th>Applied On</th>
-                                            <th className="table-actions-col">Actions</th>
+                                            <th className="center">Actions</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -351,20 +393,20 @@ export default function Leavemanagement() {
                                                 }
 
                                                 return (
-                                                    <tr key={req.id} className="employee-row">
-                                                        <td style={{ padding: "16px 24px", fontWeight: "700", color: "#0f172a" }}>
+                                                    <tr key={req.id}>
+                                                        <td style={{ fontWeight: "700", color: "#0f172a" }}>
                                                             {req.leaveType}
                                                         </td>
-                                                        <td style={{ padding: "16px 24px", color: "#334155" }}>
+                                                        <td style={{ color: "#334155" }}>
                                                             {formatDateDisplay(req.fromDate)}
                                                         </td>
-                                                        <td style={{ padding: "16px 24px", color: "#334155" }}>
+                                                        <td style={{ color: "#334155" }}>
                                                             {formatDateDisplay(req.toDate)}
                                                         </td>
-                                                        <td className="table-center-col" style={{ fontWeight: "600", color: "#0f172a" }}>
+                                                        <td className="center" style={{ fontWeight: "600", color: "#0f172a" }}>
                                                             {req.days}
                                                         </td>
-                                                        <td className="table-center-col">
+                                                        <td className="center">
                                                             <span
                                                                 style={{
                                                                     display: "inline-flex",
@@ -381,11 +423,11 @@ export default function Leavemanagement() {
                                                                 {req.status}
                                                             </span>
                                                         </td>
-                                                        <td style={{ padding: "16px 24px", color: "#64748b", fontSize: "13px" }}>
+                                                        <td style={{ color: "#64748b", fontSize: "13px" }}>
                                                             {formatDateDisplay(req.appliedOn)}
                                                         </td>
-                                                        <td style={{ padding: "16px 24px", textAlign: "right" }}>
-                                                            <div style={{ display: "flex", gap: "8px", justifyContent: "flex-end" }}>
+                                                        <td className="center">
+                                                            <div style={{ display: "flex", gap: "8px", justifyContent: "center" }}>
                                                                 <button
                                                                     onClick={() => setSelectedLeave(req)}
                                                                     className="action-icon-btn"
@@ -415,6 +457,15 @@ export default function Leavemanagement() {
                                 </table>
                             )}
                         </div>
+
+                        {/* Footer */}
+                        {!loading && requests.length > 0 && (
+                            <div className="ems-table-footer">
+                                <span>
+                                    Showing 1 to {requests.length} of {requests.length} requests
+                                </span>
+                            </div>
+                        )}
                     </div>
                 </div>
 

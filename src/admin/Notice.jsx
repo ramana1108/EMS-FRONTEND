@@ -149,7 +149,7 @@ export default function Notice() {
       {/* Header */}
       <div className="page-header" style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "24px" }}>
         <div>
-          <h1 className="text-2xl font-bold">Announcements & Notices</h1>
+          <h1 className="text-2xl font-bold" style={{color:"black"}}>Announcements & Notices</h1>
           <p className="text-sm text-slate-600">Broadcasting corporate announcements and regulatory notifications.</p>
         </div>
         <button

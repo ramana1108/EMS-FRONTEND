@@ -113,7 +113,7 @@ function Login() {
                             <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-xl bg-emerald-500/10 text-emerald-500 border border-emerald-500/20 shadow-inner">
                                 <Briefcase size={24} />
                             </div>
-                            <h2 className="text-2xl font-extrabold text-slate-900 dark:text-white tracking-tight">
+                            <h2 className="text-2xl font-extrabold text-slate-900 dark:text-white tracking-tight" style={{ color: "white" }}>
                                 Welcome Back
                             </h2>
                             <p className="mt-2 text-xs font-semibold text-slate-400 dark:text-slate-500">Enter your credentials to access your workspace.</p>
@@ -135,7 +135,9 @@ function Login() {
 
                         <form onSubmit={handleLogin} className="space-y-4">
                             <div className="form-group">
-                                <label className="form-label">Email Address</label>
+                                <label className="form-label" style={{ color: "white" }}>
+                                    Email Address
+                                </label>
                                 <div className="input-container">
                                     <span className="input-icon">
                                         <User size={16} />
@@ -147,14 +149,16 @@ function Login() {
                                         value={username}
                                         onChange={(e) => setUsername(e.target.value)}
                                         required
+                                        style={{ marginLeft: "2.5rem", color: "white" }} // Adjusted padding for icon
                                     />
                                 </div>
                             </div>
 
                             <div className="form-group">
                                 <div className="mb-2 flex items-center justify-between">
-                                    <label className="form-label mb-0!">Password</label>
-                                    <a href="#" className="text-xs text-slate-400 dark:text-slate-500 hover:text-emerald-500 font-bold transition-all">Forgot password?</a>
+                                    <label className="form-label mb-0!" style={{ color: "white" }}>
+                                        Password
+                                    </label>
                                 </div>
                                 <div className="input-container">
                                     <span className="input-icon">
@@ -167,6 +171,7 @@ function Login() {
                                         value={password}
                                         onChange={(e) => setPassword(e.target.value)}
                                         required
+                                         style={{ marginLeft: "2.5rem", color: "white" }}// Ensure space for the toggle button
                                     />
                                     <button
                                         type="button"

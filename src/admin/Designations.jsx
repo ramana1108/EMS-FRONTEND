@@ -254,7 +254,7 @@ export default function Designations() {
       {/* Page Title & View Toggle */}
       <div className="flex items-center justify-between mb-6">
         <div>
-          <h1 className="text-2xl font-bold">{activeView === "departments" ? "Departments" : "Designations"}</h1>
+          <h1 className="text-2xl font-bold" style={{color:"black"}}>{activeView === "departments" ? "Departments" : "Designations"}</h1>
           <p className="text-sm text-slate-600">
             {activeView === "departments"
               ? "Oversee organizational structures, heads, and descriptions."
@@ -284,14 +284,14 @@ export default function Designations() {
             <h2 className="emp-card-title" style={{ marginBottom: "16px" }}>Department List</h2>
 
             <div className="table-responsive">
-              <table className="employee-table">
+              <table className="employee-table table-fixed">
                 <thead>
                   <tr>
-                    <th>DEPARTMENT NAME</th>
-                    <th>DESCRIPTION</th>
-                    <th>DEPARTMENT HEAD</th>
-                    <th className="table-center-col">EMPLOYEES</th>
-                    <th className="table-actions-col">ACTIONS</th>
+                    <th className="table-col-xl">DEPARTMENT NAME</th>
+                    <th className="table-col-3xl">DESCRIPTION</th>
+                    <th className="table-col-lg">DEPARTMENT HEAD</th>
+                    <th className="table-col-sm table-center-col">EMPLOYEES</th>
+                    <th className="table-col-actions table-actions-col">ACTIONS</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -358,13 +358,13 @@ export default function Designations() {
             <h2 className="emp-card-title" style={{ marginBottom: "16px" }}>Designation List</h2>
 
             <div className="table-responsive">
-              <table className="employee-table">
+              <table className="employee-table table-fixed">
                 <thead>
                   <tr>
-                    <th>EMPLOYEE NAME(S)</th>
-                    <th>DESIGNATION</th>
-                    <th>DEPARTMENT</th>
-                    <th className="table-actions-col">ACTIONS</th>
+                    <th className="table-col-3xl">EMPLOYEE NAME(S)</th>
+                    <th className="table-col-lg">DESIGNATION</th>
+                    <th className="table-col-lg">DEPARTMENT</th>
+                    <th className="table-col-actions table-actions-col">ACTIONS</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -530,15 +530,17 @@ export default function Designations() {
                   <label>
                     Designation Name <span className="req">*</span>
                   </label>
-                  <input type="text" value={desigName} onChange={(e) => setDesigName(e.target.value)} placeholder="e.g. Lead Engineer" required />
+                  <input type="text" value={desigName} onChange={(e) => setDesigName(e.target.value)} placeholder="e.g. Lead Engineer" required style={{ minHeight: "40px", color:"black" }} />
                 </div>
 
                 <div className="form-group">
                   <label>
                     Department <span className="req">*</span>
                   </label>
-                  <select value={desigDeptId} onChange={(e) => setDesigDeptId(e.target.value)} required>
-                    <option value="">Select Department...</option>
+                  <select value={desigDeptId} onChange={(e) => setDesigDeptId(e.target.value)} required style={{ minHeight: "40px", color:"black" }}>
+                    <option value="" style={{ color: "gray" }}>
+                      Select Department...
+                    </option>
                     {departments.map((dept) => (
                       <option key={dept._id} value={dept._id}>
                         {dept.departmentName}
@@ -549,8 +551,10 @@ export default function Designations() {
 
                 <div className="form-group">
                   <label>Assign Employee (Optional)</label>
-                  <select value={desigEmployeeId} onChange={(e) => setDesigEmployeeId(e.target.value)}>
-                    <option value="">Select Employee...</option>
+                  <select value={desigEmployeeId} onChange={(e) => setDesigEmployeeId(e.target.value)} style={{ minHeight: "40px", color:"black" }}>
+                    <option value="" style={{ color: "gray" }}>
+                      Select Employee...
+                    </option>
                     {employees.length === 0 ? (
                       <option value="">No employees available</option>
                     ) : (
