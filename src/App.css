@@ -14,7 +14,7 @@
 }
 
 @utility modal-content-card-wide {
-  background: var(--surface);
+  background: white;
   @apply rounded-3xl w-full max-w-6xl p-8 shadow-2xl border border-slate-100 dark:border-slate-800 transition-all duration-300;
   max-height: none;
   overflow: visible;
@@ -2152,7 +2152,7 @@ background: var(--card-bg);
    ========================================================= */
 
 @utility employee-permissions-card {
-  @apply bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800/80 rounded-2xl p-6 shadow-sm mt-8 overflow-visible;
+  @apply bg-white dark:bg-slate-900 dark:border-slate-800/80 rounded-2xl p-6 shadow-sm mt-8 overflow-visible;
 }
 
 @utility permissions-table-header {

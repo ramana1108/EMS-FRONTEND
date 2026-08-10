@@ -224,7 +224,7 @@ export default function Dashboard() {
       {/* Page Title Header (Black Text) */}
       <div className="page-header">
         <div>
-          <h1 className="dashboard-title">Dashboard</h1>
+          <h1 className="dashboard-title" style={{ color: "black" }}>Dashboard</h1>
           <p className="dashboard-subtitle">Welcome back, Admin.</p>
         </div>
         <div className="status-badge">

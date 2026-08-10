@@ -440,7 +440,7 @@ export default function Attendance() {
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 items-start">
 
                     {/* Logs View */}
-                    <div className="lg:col-span-2 bg-white rounded-xl p-6 shadow-sm">
+                    <div className="lg:col-span-2 bg-white rounded-xl p-6 shadow-sm" style={{ minHeight: "500px", width: "92rem" }}>
                         <div className="flex items-center justify-between flex-wrap gap-4 mb-4">
                             <h2 className="text-lg font-semibold m-0">Attendance Log Panel</h2>
 
@@ -463,17 +463,17 @@ export default function Attendance() {
                         </div>
 
                         <div className="overflow-auto max-h-[520px] rounded-md border border-slate-100">
-                            <table className="min-w-full divide-y">
+                            <table className="min-w-full divide-y table-fixed">
                                 <thead>
                                     <tr>
-                                        <th className="px-3 py-3 text-left">EMPLOYEE</th>
-                                        <th className="px-3 py-3 text-left">DEPARTMENT</th>
-                                        <th className="px-3 py-3 text-center">DATE</th>
-                                        <th className="px-3 py-3 text-center">IN</th>
-                                        <th className="px-3 py-3 text-center">OUT</th>
-                                        <th className="px-3 py-3 text-center">HOURS</th>
-                                        <th className="px-3 py-3 text-center">STATUS</th>
-                                        <th className="px-3 py-3 text-right">ACTIONS</th>
+                                        <th className="w-72 px-4 py-3 text-left">EMPLOYEE</th>
+                                        <th className="w-48 px-4 py-3 text-left">DEPARTMENT</th>
+                                        <th className="w-32 px-4 py-3 text-center">DATE</th>
+                                        <th className="w-28 px-4 py-3 text-center">IN</th>
+                                        <th className="w-28 px-4 py-3 text-center">OUT</th>
+                                        <th className="w-24 px-4 py-3 text-center">HOURS</th>
+                                        <th className="w-28 px-4 py-3 text-center">STATUS</th>
+                                        <th className="w-24 px-4 py-3 text-right">ACTIONS</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -548,73 +548,14 @@ export default function Attendance() {
                     </div>
 
                     {/* Record Attendance Form */}
-                    <div className="bg-white rounded-xl p-6 shadow-sm">
-                        <h2 className="text-lg font-semibold mb-4">Log Attendance</h2>
-                        <form onSubmit={handleAddAttendance}>
-
-                            <div className="mb-3">
-                                <label className="block text-xs font-semibold uppercase text-slate-600 mb-1">Employee*</label>
-                                <select value={selectedEmpId} onChange={(e) => setSelectedEmpId(e.target.value)} required className="w-full px-3 py-2 rounded-md border border-slate-300 bg-white">
-                                    <option value="">Select Employee...</option>
-                                    {employees.map(emp => (
-                                        <option key={emp._id} value={emp._id}>{emp.firstName} {emp.lastName} ({emp.employeeId})</option>
-                                    ))}
-                                </select>
-                            </div>
-
-                            <div className="mb-3">
-                                <label className="block text-xs font-semibold uppercase text-slate-600 mb-1">Attendance Date*</label>
-                                <input type="date" value={attendanceDate} onChange={(e) => setAttendanceDate(e.target.value)} required className="w-full px-3 py-2 rounded-md border border-slate-300" />
-                            </div>
-
-                            <div className="mb-3">
-                                <label className="block text-xs font-semibold uppercase text-slate-600 mb-1">Shift Status*</label>
-                                <select value={status} onChange={(e) => setStatus(e.target.value)} required className="w-full px-3 py-2 rounded-md border border-slate-300 bg-white">
-                                    <option value="Present">Present</option>
-                                    <option value="Half Day">Half Day</option>
-                                    <option value="Absent">Absent</option>
-                                    <option value="Leave">Leave</option>
-                                </select>
-                            </div>
-
-                            {(status === "Present" || status === "Half Day") && (
-                                <>
-                                    <div className="grid grid-cols-2 gap-2 mb-3">
-                                        <div>
-                                            <label className="block text-xs font-semibold uppercase text-slate-600 mb-1">In Time</label>
-                                            <input type="time" value={checkInTime} onChange={(e) => setCheckInTime(e.target.value)} className="w-full px-3 py-2 rounded-md border border-slate-300" />
-                                        </div>
-                                        <div>
-                                            <label className="block text-xs font-semibold uppercase text-slate-600 mb-1">Out Time</label>
-                                            <input type="time" value={checkOutTime} onChange={(e) => setCheckOutTime(e.target.value)} className="w-full px-3 py-2 rounded-md border border-slate-300" />
-                                        </div>
-                                    </div>
-
-                                    <div className="mb-3">
-                                        <label className="block text-xs font-semibold uppercase text-slate-600 mb-1">Worked Hours</label>
-                                        <input type="number" step="0.1" value={workedHours} onChange={(e) => setWorkedHours(e.target.value)} className="w-full px-3 py-2 rounded-md border border-slate-300" />
-                                    </div>
-                                </>
-                            )}
-
-                            <div className="mb-4">
-                                <label className="block text-xs font-semibold uppercase text-slate-600 mb-1">Administrator Notes</label>
-                                <input type="text" value={notes} onChange={(e) => setNotes(e.target.value)} className="w-full px-3 py-2 rounded-md border border-slate-300" placeholder="e.g. Cleared by HR" />
-                            </div>
-
-                            <button type="submit" className="w-full px-4 py-2 bg-emerald-700 hover:bg-emerald-800 text-white rounded-md font-semibold flex items-center justify-center gap-2">
-                                <Plus size={16} />
-                                <span>Log Attendance</span>
-                            </button>
-                        </form>
-                    </div>
+                   
                 </div>
             ) : (
                 /* Leave Tab */
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 items-start">
 
                     {/* Leave Requests Table */}
-                    <div className="lg:col-span-2 bg-white rounded-xl p-6 shadow-sm">
+                    <div className="lg:col-span-2 bg-white rounded-xl p-6 shadow-sm" style={{ minHeight: "500px", width: "92rem" }}>
                         <h2 className="text-lg font-semibold mb-4">Leave Requests</h2>
 
                         <div className="overflow-auto max-h-[520px] rounded-md border border-slate-100">
@@ -725,63 +666,7 @@ export default function Attendance() {
                     </div>
 
                     {/* Request / Record Leave Form */}
-                    <div className="bg-white rounded-xl p-6 shadow-sm">
-                        <h2 className="text-lg font-semibold mb-1">Create Leave Request</h2>
-                        <p className="text-xs text-slate-500 mb-4">Submit a leave request on behalf of an employee, then approve or reject it from the list.</p>
-                        <form onSubmit={handleApplyLeave}>
-
-                            <div className="mb-3">
-                                <label className="block text-xs font-semibold uppercase text-slate-600 mb-1">Employee*</label>
-                                <select value={leaveEmpId} onChange={(e) => setLeaveEmpId(e.target.value)} required className="w-full px-3 py-2 rounded-md border border-slate-300 bg-white">
-                                    <option value="">Select Employee...</option>
-                                    {employees.map(emp => (
-                                        <option key={emp._id} value={emp._id}>
-                                            {emp.firstName} {emp.lastName} ({emp.employeeId})
-                                        </option>
-                                    ))}
-                                </select>
-                            </div>
-
-                            <div className="mb-3">
-                                <label className="block text-xs font-semibold uppercase text-slate-600 mb-1">Leave Type*</label>
-                                <select value={leaveType} onChange={(e) => setLeaveType(e.target.value)} className="w-full px-3 py-2 rounded-md border border-slate-300 bg-white">
-                                    <option value="Casual Leave">Casual Leave</option>
-                                    <option value="Sick Leave">Sick Leave</option>
-                                    <option value="Earned Leave">Earned Leave</option>
-                                    <option value="Maternity Leave">Maternity Leave</option>
-                                    <option value="Paternity Leave">Paternity Leave</option>
-                                    <option value="Emergency Leave">Emergency Leave</option>
-                                </select>
-                            </div>
-
-                            <div className="grid grid-cols-2 gap-2 mb-3">
-                                <div>
-                                    <label className="block text-xs font-semibold uppercase text-slate-600 mb-1">From Date*</label>
-                                    <input type="date" value={leaveFrom} onChange={(e) => setLeaveFrom(e.target.value)} required className="w-full px-3 py-2 rounded-md border border-slate-300" />
-                                </div>
-                                <div>
-                                    <label className="block text-xs font-semibold uppercase text-slate-600 mb-1">To Date*</label>
-                                    <input type="date" value={leaveTo} onChange={(e) => setLeaveTo(e.target.value)} required className="w-full px-3 py-2 rounded-md border border-slate-300" />
-                                </div>
-                            </div>
-
-                            <div className="mb-4">
-                                <label className="block text-xs font-semibold uppercase text-slate-600 mb-1">Reason for Leave*</label>
-                                <textarea
-                                    value={leaveReason}
-                                    onChange={(e) => setLeaveReason(e.target.value)}
-                                    required
-                                    placeholder="e.g. Sickness, vacation, etc."
-                                    className="w-full px-3 py-2 rounded-md border border-slate-300 min-h-[80px] resize-y"
-                                />
-                            </div>
-
-                            <button type="submit" className="w-full px-4 py-2 bg-emerald-800 hover:bg-emerald-900 text-white rounded-md font-semibold flex items-center justify-center gap-2">
-                                <CheckCircle size={16} />
-                                <span>Submit Leave Request</span>
-                            </button>
-                        </form>
-                    </div>
+                    
                 </div>
             )}
 

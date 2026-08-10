@@ -306,7 +306,7 @@ export default function Roles() {
       {/* Top Header Bar */}
       <div className="page-header" style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "24px" }}>
         <div>
-          <h1 className="text-2xl font-bold">Role Management</h1>
+          <h1 className="text-2xl font-bold" style={{color:"black"}}>Role Management</h1>
           <p className="text-sm text-slate-600">Define system user roles and manage employee access permissions.</p>
         </div>
         <button
@@ -339,16 +339,16 @@ export default function Roles() {
       {/* Stats Grid */}
       <div className="stats-grid" style={{ marginBottom: "24px" }}>
         <div className="stat-card stat-card-indigo">
-          <div className="stat-header">
+          <div className="stat-header" style={{marginBottom:"-1.8px"}}>
             <div className="stat-icon-box total-employees-icon">
               <ShieldCheck size={20} />
             </div>
             <div>
               <p className="stat-label">Admins</p>
-              <p className="stat-value">{getAdminCount()}</p>
+              <p className="stat-value" >{getAdminCount()}</p>
             </div>
           </div>
-          <p className="stat-description">System administrators</p>
+          <p className="stat-description" style={{marginRight:"14rem"}}>System administrators</p>
         </div>
 
         <div className="stat-card stat-card-blue">
@@ -361,12 +361,12 @@ export default function Roles() {
               <p className="stat-value">{getEmployeeCount()}</p>
             </div>
           </div>
-          <p className="stat-description">General staff members</p>
+          <p className="stat-description" style={{marginRight:"14rem"}}>General staff members</p>
         </div>
       </div>
 
       {/* Employees Permissions Card */}
-      <div className="employee-permissions-card">
+      <div className="employee-permissions-card" style={{ padding: "24px", backgroundColor: "#f8fafc", borderRadius: "8px", boxShadow: "0 1px 3px rgba(0,0,0,0.1)", marginBottom: "24px" }}>
         <div
           style={{
             display: "flex",
@@ -402,13 +402,13 @@ export default function Roles() {
           <table className="employee-table" style={{ borderCollapse: "collapse", width: "100%" }}>
             <thead className="permissions-table-header">
               <tr>
-                <th className="table-center-col" style={{ width: "50px" }}>#</th>
-                <th>EMPLOYEE ID</th>
-                <th>EMPLOYEE NAME</th>
-                <th>EMAIL</th>
-                <th>ROLE</th>
-                <th className="table-center-col">STATUS</th>
-                <th className="table-actions-col" style={{ width: "80px" }}>ACTIONS</th>
+                <th className="table-center-col" style={{ width: "50px", color: "black" }}>#</th>
+                <th style={{ color: "black" }}>EMPLOYEE ID</th>
+                <th style={{ color: "black" }}>EMPLOYEE NAME</th>
+                <th style={{ color: "black" }}>EMAIL</th>
+                <th style={{ color: "black" }}>ROLE</th>
+                <th className="table-center-col" style={{ color: "black" }}>STATUS</th>
+                <th className="table-actions-col" style={{ width: "80px", color: "black" }}>ACTIONS</th>
               </tr>
             </thead>
             <tbody>
@@ -423,17 +423,17 @@ export default function Roles() {
               ) : (
                 paginatedUsers.map((user, idx) => (
                   <tr key={user._id} className="employee-row" style={{ borderBottom: "1px solid #f1f5f9" }}>
-                    <td className="table-center-col" style={{ fontSize: "14px", fontWeight: "600", color: "#64748b" }}>
+                    <td className="table-center-col" style={{ fontSize: "14px", fontWeight: "600", color: "#333" }}>
                       {startIndex + idx + 1}
                     </td>
-                    <td style={{ fontSize: "14px", fontWeight: "600" }}>{user.employeeId}</td>
-                    <td style={{ fontSize: "14px", fontWeight: "500" }}>{user.displayName}</td>
-                    <td style={{ fontSize: "13px" }}>{user.email}</td>
-                    <td style={{ textAlign: "left" }}>
+                    <td style={{ fontSize: "14px", fontWeight: "600", color: "#333" }}>{user.employeeId}</td>
+                    <td style={{ fontSize: "14px", fontWeight: "500", color: "#333" }}>{user.displayName}</td>
+                    <td style={{ fontSize: "13px", color: "#333" }}>{user.email}</td>
+                    <td style={{ textAlign: "left", fontSize: "13px", color: "#333" }}>
                       <span className="role-pill-blue">{user.role?.name || "Employee"}</span>
                     </td>
                     <td className="table-center-col">
-                      <span className={user.status?.toLowerCase() === "active" ? "status-pill-green" : "status-pill-red"}>
+                      <span className={user.status?.toLowerCase() === "active" ? "status-pill-green" : "status-pill-red"} style={{color:"#333"}}>
                         {user.status || "Active"}
                       </span>
                     </td>
@@ -506,10 +506,10 @@ export default function Roles() {
       {/* Add Role Modal Dialog */}
       {isAddModalOpen && (
         <div className="modal-backdrop">
-          <div className="modal-content-card-wide">
+          <div className="modal-content-card-wide" style={{backgroundColor:"white"}}>
             <div className="modal-header">
               <div>
-                <h2>Add New Role</h2>
+                <h2 style={{ color: "black" }}>Add New Role</h2>
                 <p className="modal-subtitle">Configure system user role name.</p>
               </div>
               <button className="btn-close" onClick={() => setIsAddModalOpen(false)}>
@@ -522,7 +522,7 @@ export default function Roles() {
                 <label>
                   Role Name <span className="req">*</span>
                 </label>
-                <select value={roleName} onChange={(e) => setRoleName(e.target.value)} required>
+                <select value={roleName} onChange={(e) => setRoleName(e.target.value)} required style={{ color: "#334155", fontSize: "13px", padding: "8px", borderRadius: "6px", border: "1px solid #cbd5e1", width: "100%" }}>
                   <option value="">Select a system role...</option>
                   <option value="admin">Admin</option>
                   <option value="employee">Employee</option>
@@ -549,10 +549,10 @@ export default function Roles() {
       {/* Edit Permissions Modal Dialog */}
       {isEditModalOpen && selectedRole && (
         <div className="modal-backdrop">
-          <div className="modal-content-card-wide" style={{ maxWidth: "900px" }}>
+          <div className="modal-content-card-wide" style={{ maxWidth: "900px", background: "white" }}>
             <div className="modal-header">
               <div>
-                <h2>Edit Permissions</h2>
+                <h2 style={{ color: "black" }}>Edit Permissions</h2>
                 <p className="modal-subtitle">
                   Configure access permissions for role: <span style={{ fontWeight: "700", textTransform: "uppercase" }}>{selectedRole.name}</span>
                 </p>
@@ -662,7 +662,7 @@ export default function Roles() {
           <div className="modal-content-card-wide" style={{ maxWidth: "600px" }}>
             <div className="modal-header">
               <div>
-                <h2>View Permissions</h2>
+                <h2 style={{ color: "black" }}>View Permissions</h2>
                 <p className="modal-subtitle">
                   Granted access permissions for Employee: <span style={{ fontWeight: "700" }}>{viewingUser.displayName}</span>
                 </p>
@@ -686,8 +686,8 @@ export default function Roles() {
                 <table style={{ width: "100%", borderCollapse: "collapse", fontSize: "13px" }}>
                   <thead>
                     <tr style={{ backgroundColor: "#f8fafc", borderBottom: "1px solid #e2e8f0" }}>
-                      <th style={{ textAlign: "left", padding: "10px 16px", fontWeight: "600", color: "#475569" }}>Module</th>
-                      <th style={{ textAlign: "left", padding: "10px 16px", fontWeight: "600", color: "#475569" }}>Actions Granted</th>
+                      <th style={{ textAlign: "left", padding: "10px 16px", fontWeight: "600", color: "black" }}>Module</th>
+                      <th style={{ textAlign: "left", padding: "10px 16px", fontWeight: "600", color: "black" }}>Actions Granted</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -721,7 +721,7 @@ export default function Roles() {
                                 ))}
                               </div>
                             ) : (
-                              <span style={{ color: "#cbd5e1", fontStyle: "italic" }}>No access</span>
+                              <span style={{ color: "#333", fontStyle: "italic" }}>No access</span>
                             )}
                           </td>
                         </tr>
