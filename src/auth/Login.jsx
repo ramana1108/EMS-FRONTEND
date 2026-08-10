@@ -64,9 +64,21 @@ function Login() {
 
             setSuccess(`Sign in successful! Welcome back, ${data.user.name}.`);
 
+            const mergedPermissions = [
+                ...(Array.isArray(data.user.permissions) ? data.user.permissions : []),
+                ...(Array.isArray(data.user.role?.permissions) ? data.user.role.permissions : []),
+            ];
+            const normalizedPermissions = Array.from(
+                new Set(
+                    mergedPermissions
+                        .map((p) => String(p || "").trim().toLowerCase())
+                        .filter(Boolean)
+                )
+            );
+
             const normalizedUser = {
                 ...data.user,
-                permissions: Array.isArray(data.user.permissions) ? data.user.permissions : []
+                permissions: normalizedPermissions,
             };
 
             localStorage.setItem("token", data.token);

@@ -1,4 +1,4 @@
-const API_BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
+const API_BASE_URL = import.meta.env.VITE_API_URL || "/api";
 
 function authHeaders() {
   const token = localStorage.getItem("token");
@@ -178,8 +178,58 @@ export async function getNotices() {
   return res.json();
 }
 
+export async function createNotice(payload) {
+  const res = await fetch(`${API_BASE_URL}/notices`, {
+    method: "POST",
+    headers: authHeaders(),
+    body: JSON.stringify(payload),
+  });
+  return res.json();
+}
+
+export async function deleteNotice(id) {
+  const res = await fetch(`${API_BASE_URL}/notices/${id}`, {
+    method: "DELETE",
+    headers: authHeaders(),
+  });
+  return res.json();
+}
+
 export async function getPayrolls() {
   const res = await fetch(`${API_BASE_URL}/payrolls`, {
+    headers: authHeaders(),
+  });
+  return res.json();
+}
+
+export async function createPayroll(payload) {
+  const res = await fetch(`${API_BASE_URL}/payrolls`, {
+    method: "POST",
+    headers: authHeaders(),
+    body: JSON.stringify(payload),
+  });
+  return res.json();
+}
+
+export async function getPayrollById(id) {
+  const res = await fetch(`${API_BASE_URL}/payrolls/${id}`, {
+    headers: authHeaders(),
+  });
+  return res.json();
+}
+
+export async function updatePayroll(id, payload) {
+  const res = await fetch(`${API_BASE_URL}/payrolls/${id}`, {
+    method: "PUT",
+    headers: authHeaders(),
+    body: JSON.stringify(payload),
+  });
+  return res.json();
+}
+
+export async function deletePayroll(id) {
+  const res = await fetch(`${API_BASE_URL}/payrolls/${id}`, {
+    method: "DELETE",
     headers: authHeaders(),
   });
   return res.json();
@@ -323,14 +373,14 @@ export async function getMyAttendance() {
 }
 
 export async function getMyLeaves() {
-  const res = await fetch(`${API_BASE_URL}/api/leaves/me`, {
+  const res = await fetch(`${API_BASE_URL}/leaves/me`, {
     headers: authHeaders(),
   });
   return res.json();
 }
 
 export async function applyLeave(payload) {
-  const res = await fetch(`${API_BASE_URL}/api/leaves`, {
+  const res = await fetch(`${API_BASE_URL}/leaves`, {
     method: "POST",
     headers: authHeaders(),
     body: JSON.stringify(payload),
@@ -339,7 +389,7 @@ export async function applyLeave(payload) {
 }
 
 export async function deleteLeave(id) {
-  const res = await fetch(`${API_BASE_URL}/api/leaves/${id}`, {
+  const res = await fetch(`${API_BASE_URL}/leaves/${id}`, {
     method: "DELETE",
     headers: authHeaders(),
   });
@@ -347,17 +397,51 @@ export async function deleteLeave(id) {
 }
 
 export async function getAllLeaves() {
-  const res = await fetch(`${API_BASE_URL}/api/leaves`, {
+  const res = await fetch(`${API_BASE_URL}/leaves`, {
     headers: authHeaders(),
   });
   return res.json();
 }
 
 export async function updateLeaveStatus(id, payload) {
-  const res = await fetch(`${API_BASE_URL}/api/leaves/${id}`, {
+  const res = await fetch(`${API_BASE_URL}/leaves/${id}`, {
     method: "PUT",
     headers: authHeaders(),
     body: JSON.stringify(payload),
+  });
+  return res.json();
+}
+
+// Attendance helpers
+export async function createAttendance(payload) {
+  const res = await fetch(`${API_BASE_URL}/attendance`, {
+    method: "POST",
+    headers: authHeaders(),
+    body: JSON.stringify(payload),
+  });
+  return res.json();
+}
+
+export async function getAttendanceById(id) {
+  const res = await fetch(`${API_BASE_URL}/attendance/${id}`, {
+    headers: authHeaders(),
+  });
+  return res.json();
+}
+
+export async function updateAttendance(id, payload) {
+  const res = await fetch(`${API_BASE_URL}/attendance/${id}`, {
+    method: "PUT",
+    headers: authHeaders(),
+    body: JSON.stringify(payload),
+  });
+  return res.json();
+}
+
+export async function deleteAttendance(id) {
+  const res = await fetch(`${API_BASE_URL}/attendance/${id}`, {
+    method: "DELETE",
+    headers: authHeaders(),
   });
   return res.json();
 }
@@ -391,7 +475,13 @@ export default {
   updateDesignation,
   deleteDesignation,
   getNotices,
+  createNotice,
+  deleteNotice,
   getPayrolls,
+  createPayroll,
+  getPayrollById,
+  updatePayroll,
+  deletePayroll,
   getProfiles,
   createProfile,
   getProfileByEmployeeId,

@@ -258,9 +258,17 @@ export default function Profile() {
                 }));
 
                 // Also update local storage user object name if modified
-                const updatedUser = { ...user, name: `${editForm.firstName} ${editForm.lastName}`, email: editForm.email };
+                const updatedUser = {
+                    ...user,
+                    name: `${editForm.firstName} ${editForm.lastName}`,
+                    email: editForm.email,
+                    permissions: user?.permissions ?? (user?.role?.permissions ?? []),
+                    role: user?.role ?? user?.role,
+                };
                 localStorage.setItem("user", JSON.stringify(updatedUser));
-                window.dispatchEvent(new Event("storage")); // Trigger sidebar reload
+                // Trigger sidebar reload in this window and across other tabs
+                window.dispatchEvent(new Event("userChanged"));
+                window.dispatchEvent(new Event("storage"));
                 setIsEditModalOpen(false);
             } else {
                 setError(result.message || "Failed to update profile details.");

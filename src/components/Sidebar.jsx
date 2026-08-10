@@ -39,8 +39,36 @@ const employeeMenuItems = [
 export default function Sidebar({ activeTab, setActiveTab, isOpen, setIsOpen }) {
     const navigate = useNavigate();
     const location = useLocation();
-    const user = typeof window !== "undefined" ? JSON.parse(localStorage.getItem("user") || "{}") : {};
+    const [user, setUser] = React.useState(() => {
+        if (typeof window === "undefined") return {};
+        try {
+            return JSON.parse(localStorage.getItem("user") || "{}") || {};
+        } catch {
+            return {};
+        }
+    });
     const userName = user.name || "User";
+
+    // Keep user in sync with localStorage changes triggered elsewhere in the app
+    React.useEffect(() => {
+        const handleStorage = () => {
+            try {
+                const updated = JSON.parse(localStorage.getItem("user") || "{}") || {};
+                setUser(updated);
+            } catch {
+                setUser({});
+            }
+        };
+
+        window.addEventListener("storage", handleStorage);
+        // some code paths dispatch a plain Event("storage") — support manual dispatches
+        window.addEventListener("userChanged", handleStorage);
+
+        return () => {
+            window.removeEventListener("storage", handleStorage);
+            window.removeEventListener("userChanged", handleStorage);
+        };
+    }, []);
 
     // user.role can be a plain string or a populated role object ({ name: "..." })
     // depending on which endpoint hydrated it, so handle both shapes.
@@ -72,8 +100,20 @@ export default function Sidebar({ activeTab, setActiveTab, isOpen, setIsOpen }) 
 
     const useEmployeeMenu = ["employee"].includes(userRole);
     const sidebarItems = useEmployeeMenu ? employeeMenuItems : menuItems;
+    function permissionMatches(key, perms) {
+        if (!key) return true;
+        const k = String(key).toLowerCase();
+        return perms.some((p) => {
+            const perm = String(p || "").toLowerCase();
+            if (!perm) return false;
+            if (perm === k) return true;
+            if (perm.startsWith(k + ":")) return true;
+            return false;
+        });
+    }
+
     const visibleMenuItems = sidebarItems.filter((item) =>
-        !item.permission || effectivePermissions.includes(item.permission)
+        !item.permission || permissionMatches(item.permission, effectivePermissions)
     );
 
     const handleLogout = () => {
@@ -124,7 +164,7 @@ export default function Sidebar({ activeTab, setActiveTab, isOpen, setIsOpen }) 
                 </div>
 
                 {/* Sidebar Navigation */}
-                <nav className="flex-1 overflow-y-auto px-4 py-6 space-y-1.5 scrollbar-none">
+                        <nav className="flex-1 overflow-y-auto px-4 py-6 space-y-1.5 scrollbar-none">
                     {visibleMenuItems.length === 0 ? (
                         <div className="rounded-2xl border border-emerald-950/20 bg-emerald-950/10 p-4 text-xs font-semibold text-emerald-200">
                             You do not have permissions for any menu items.

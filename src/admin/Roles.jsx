@@ -91,7 +91,8 @@ export default function Roles() {
       const usersData = await api.getAllUsers();
       const employeesData = await api.getAllEmployees();
 
-      if (rolesData) setRoles(rolesData.roles || []);
+      const loadedRoles = rolesData?.roles || rolesData || [];
+      setRoles(loadedRoles);
 
       const loadedEmployees = employeesData?.employees || employeesData || [];
       const mapped = (usersData?.users || []).map((u, idx) => {
@@ -365,6 +366,84 @@ export default function Roles() {
         </div>
       </div>
 
+      {/* Roles List Card */}
+      <div className="roles-list-card" style={{ padding: "24px", backgroundColor: "#f8fafc", borderRadius: "8px", boxShadow: "0 1px 3px rgba(0,0,0,0.1)", marginBottom: "24px" }}>
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "20px", flexWrap: "wrap", gap: "12px" }}>
+          <div>
+            <h2 className="dashboard-title" style={{ fontSize: "20px", fontWeight: "700" }}>Roles</h2>
+            <p className="dashboard-subtitle" style={{ margin: "4px 0 0 0" }}>Loaded from the database. Edit permissions or remove roles here.</p>
+          </div>
+          <div style={{ fontSize: "13px", color: "#475569" }}>
+            Total roles: <strong>{roles.length}</strong>
+          </div>
+        </div>
+
+        <div className="table-responsive">
+          <table className="roles-table" style={{ width: "100%", borderCollapse: "collapse" }}>
+            <thead>
+              <tr style={{ backgroundColor: "#f8fafc", borderBottom: "1px solid #e2e8f0" }}>
+                <th style={{ textAlign: "left", padding: "12px 16px", fontWeight: "600", color: "#334155" }}>Role Name</th>
+                <th style={{ textAlign: "center", padding: "12px 16px", fontWeight: "600", color: "#334155" }}>Users</th>
+                <th style={{ textAlign: "center", padding: "12px 16px", fontWeight: "600", color: "#334155" }}>Permissions</th>
+                <th style={{ textAlign: "center", padding: "12px 16px", fontWeight: "600", color: "#334155" }}>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {loading ? (
+                <tr>
+                  <td colSpan="4" style={{ textAlign: "center", padding: "30px 0" }}>Loading roles...</td>
+                </tr>
+              ) : roles.length === 0 ? (
+                <tr>
+                  <td colSpan="4" style={{ textAlign: "center", padding: "30px 0" }}>No roles found in the database.</td>
+                </tr>
+              ) : (
+                roles.map((role) => (
+                  <tr key={role._id} style={{ borderBottom: "1px solid #f1f5f9" }}>
+                    <td style={{ padding: "12px 16px", color: "#334155", fontWeight: "600" }}>{role.name}</td>
+                    <td style={{ textAlign: "center", padding: "12px 16px", color: "#334155" }}>{getRoleUserCount(role.name)}</td>
+                    <td style={{ textAlign: "center", padding: "12px 16px", color: "#334155" }}>{(role.permissions || []).length}</td>
+                    <td style={{ textAlign: "center", padding: "12px 16px", display: "flex", justifyContent: "center", gap: "10px", flexWrap: "wrap" }}>
+                      <button
+                        type="button"
+                        onClick={() => openEditPermissions(role)}
+                        style={{
+                          padding: "8px 14px",
+                          borderRadius: "999px",
+                          border: "none",
+                          backgroundImage: "linear-gradient(135deg, #16a34a 0%, #22c55e 100%)",
+                          color: "#ffffff",
+                          fontWeight: 700,
+                          cursor: "pointer",
+                          boxShadow: "0 8px 16px rgba(22, 163, 74, 0.18)",
+                        }}
+                      >
+                        Edit
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => handleDeleteRole(role._id)}
+                        style={{
+                          padding: "8px 14px",
+                          borderRadius: "999px",
+                          border: "1px solid #ef4444",
+                          backgroundColor: "#ffffff",
+                          color: "#ef4444",
+                          fontWeight: 700,
+                          cursor: "pointer",
+                        }}
+                      >
+                        Delete
+                      </button>
+                    </td>
+                  </tr>
+                ))
+              )}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
       {/* Employees Permissions Card */}
       <div className="employee-permissions-card" style={{ padding: "24px", backgroundColor: "#f8fafc", borderRadius: "8px", boxShadow: "0 1px 3px rgba(0,0,0,0.1)", marginBottom: "24px" }}>
         <div
@@ -520,15 +599,44 @@ export default function Roles() {
             <form onSubmit={handleAddRole} className="enroll-form">
               <div className="form-group">
                 <label>
-                  Role Name <span className="req">*</span>
+                  Role Type <span className="req">*</span>
                 </label>
-                <select value={roleName} onChange={(e) => setRoleName(e.target.value)} required style={{ color: "#334155", fontSize: "13px", padding: "8px", borderRadius: "6px", border: "1px solid #cbd5e1", width: "100%" }}>
-                  <option value="">Select a system role...</option>
-                  <option value="admin">Admin</option>
-                  <option value="employee">Employee</option>
-                </select>
-                <p style={{ fontSize: "11px", color: "#64748b", marginTop: "6px", fontStyle: "italic" }}>
-                  Note: Supported system roles: admin, employee.
+                <div style={{ display: "flex", gap: "12px", marginTop: "8px" }}>
+                  <button
+                    type="button"
+                    onClick={() => setRoleName("admin")}
+                    style={{
+                      flex: 1,
+                      borderRadius: "8px",
+                      padding: "12px 14px",
+                      border: roleName === "admin" ? "2px solid #047857" : "1px solid #cbd5e1",
+                      backgroundColor: roleName === "admin" ? "#047857" : "#ffffff",
+                      color: roleName === "admin" ? "#ffffff" : "#334155",
+                      cursor: "pointer",
+                      fontWeight: 700,
+                    }}
+                  >
+                    Admin
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setRoleName("employee")}
+                    style={{
+                      flex: 1,
+                      borderRadius: "8px",
+                      padding: "12px 14px",
+                      border: roleName === "employee" ? "2px solid #2563eb" : "1px solid #cbd5e1",
+                      backgroundColor: roleName === "employee" ? "#2563eb" : "#ffffff",
+                      color: roleName === "employee" ? "#ffffff" : "#334155",
+                      cursor: "pointer",
+                      fontWeight: 700,
+                    }}
+                  >
+                    Employee
+                  </button>
+                </div>
+                <p style={{ fontSize: "11px", color: "#64748b", marginTop: "10px", fontStyle: "italic" }}>
+                  Note: Choose the role type for the new system role.
                 </p>
               </div>
 

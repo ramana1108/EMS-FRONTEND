@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import Pagination from "../components/Pagination";
 import { Megaphone, Plus, Calendar, User, Trash2, AlertCircle, X } from "lucide-react";
+import api from "../api";
 
 export default function Notice() {
   const [notices, setNotices] = useState([]);
@@ -27,24 +28,10 @@ export default function Notice() {
   const [description, setDescription] = useState("");
   const [postedBy, setPostedBy] = useState("");
 
-  const API_BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
-
-  function getHeaders() {
-    const token = localStorage.getItem("token");
-    return token
-      ? { Authorization: `Bearer ${token}`, "Content-Type": "application/json" }
-      : { "Content-Type": "application/json" };
-  }
-
   const fetchEmployees = async () => {
     try {
-      const res = await fetch(`${API_BASE_URL}/employees`, {
-        headers: getHeaders(),
-      });
-      const data = await res.json();
-      if (res.ok) {
-        setEmployees(data.employees || []);
-      }
+      const data = await api.getAllEmployees();
+      setEmployees(data.employees || data.users || []);
     } catch (err) {
       console.error(err);
     }
@@ -52,15 +39,8 @@ export default function Notice() {
 
   const fetchNotices = async () => {
     try {
-      const res = await fetch(`${API_BASE_URL}/notices`, {
-        headers: getHeaders(),
-      });
-      const data = await res.json();
-      if (res.ok) {
-        setNotices(data.notices || []);
-      } else {
-        setError(data.message || "Failed to fetch notices");
-      }
+      const data = await api.getNotices();
+      setNotices(data.notices || []);
     } catch (err) {
       console.error(err);
       setError("Failed to fetch notices from database");
@@ -86,17 +66,12 @@ export default function Notice() {
     setError("");
     setSuccess("");
     try {
-      const res = await fetch(`${API_BASE_URL}/notices`, {
-        method: "POST",
-        headers: getHeaders(),
-        body: JSON.stringify({
-          title: title.trim(),
-          description: description.trim(),
-          postedBy,
-        }),
+      const data = await api.createNotice({
+        title: title.trim(),
+        description: description.trim(),
+        postedBy,
       });
-      const data = await res.json();
-      if (res.ok) {
+      if (data && (data.notice || data.message === "Notice Created Successfully")) {
         setSuccess("Notice published successfully!");
         setTitle("");
         setDescription("");
@@ -117,12 +92,8 @@ export default function Notice() {
     setError("");
     setSuccess("");
     try {
-      const res = await fetch(`${API_BASE_URL}/notices/${id}`, {
-        method: "DELETE",
-        headers: getHeaders(),
-      });
-      const data = await res.json();
-      if (res.ok) {
+      const data = await api.deleteNotice(id);
+      if (data && (data.message === "Notice Deleted Successfully" || data.success)) {
         setSuccess("Notice deleted successfully!");
         fetchNotices();
       } else {

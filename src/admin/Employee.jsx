@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import api from "../api";
 import "../App.css";
 import {
@@ -19,6 +19,7 @@ const defaultEmployees = [];
 
 export default function Employee() {
   const navigate = useNavigate();
+  const location = useLocation();
   const [employees, setEmployees] = useState([]);
   const [departmentsOptions, setDepartmentsOptions] = useState([]);
   const [designationsOptions, setDesignationsOptions] = useState([]);
@@ -67,6 +68,16 @@ export default function Employee() {
     }
     return { id: "admin-01", name: "Prasanna Ramana", role: "admin", email: "" };
   });
+
+  const getRoleDisplay = (role) => {
+    if (!role) return "";
+    if (typeof role === "string") return role.toUpperCase();
+    if (typeof role === "object" && role !== null) {
+      if (typeof role.name === "string") return role.name.toUpperCase();
+      if (typeof role.role === "string") return role.role.toUpperCase();
+    }
+    return "";
+  };
 
   // Form State corresponding EXACTLY to employeeController.js required fields
   const [formData, setFormData] = useState({
@@ -166,6 +177,20 @@ export default function Employee() {
     fetchDepartmentsAndDesignations();
   }, []);
 
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    const viewId = params.get("view");
+    if (viewId && employees.length > 0) {
+      const matched = employees.find(
+        (emp) => emp._id === viewId || emp.employeeId === viewId || String(emp._id) === String(viewId)
+      );
+      if (matched) {
+        setViewingEmployee(matched);
+        setIsViewModalOpen(true);
+      }
+    }
+  }, [location.search, employees]);
+
   const coworkerDepartmentId = useMemo(() => {
     if (!currentEmployeeProfile) return null;
     if (currentEmployeeProfile.departmentId && typeof currentEmployeeProfile.departmentId === "object") {
@@ -181,6 +206,17 @@ export default function Employee() {
 
   const coworkers = useMemo(() => {
     const role = normalizeRole(currentUser?.role || "admin");
+    function normalizeRole(role) {
+      if (!role) return "";
+      if (typeof role === "string") return role.toLowerCase();
+      if (typeof role === "object" && role !== null) {
+        if (typeof role.name === "string") return role.name.toLowerCase();
+        if (typeof role.role === "string") return role.role.toLowerCase();
+      }
+      return String(role).toLowerCase();
+    }
+
+    const role = normalizeRole(currentUser?.role);
 
     // Admins should see all employees.
     if (role === "admin") return employees;
@@ -373,6 +409,21 @@ export default function Employee() {
           if (updateRes && updateRes.message && !updateRes.employee) {
             setFormError(updateRes.message);
           }
+          // Also sync auth user role/permissions: find auth user by email and update role
+          try {
+            const usersRes = await api.getAllUsers();
+            const authUsers = usersRes?.users || usersRes || [];
+            const match = authUsers.find((u) => u.email && u.email.toLowerCase() === updatePayload.email?.toLowerCase());
+            if (match && api.updateUser) {
+              await api.updateUser(match._id || match.id, {
+                name: `${updatePayload.firstName} ${updatePayload.lastName}`.trim(),
+                email: updatePayload.email,
+                role: updatePayload.role || updatePayload.employmentType || match.role?.name || "employee",
+              });
+            }
+          } catch (syncErr) {
+            console.warn("Failed to sync auth user role:", syncErr);
+          }
         }
       } catch (err) {
         console.warn("API update failed, updating state locally", err);
@@ -487,7 +538,7 @@ export default function Employee() {
           </button>
           <div className="admin-profile-badge" onClick={() => setShowProfileInfo((prev) => !prev)}>
             <div className="admin-avatar-small">{getInitials(currentUser.name)}</div>
-            <span>{currentUser.role.toUpperCase()}</span>
+            <span>{getRoleDisplay(currentUser.role)}</span>
           </div>
           {showProfileInfo && (
             <div className="absolute right-0 top-full mt-2 w-56 bg-white border border-slate-200 rounded-lg shadow-lg p-3 z-30">
@@ -497,7 +548,7 @@ export default function Employee() {
                 </div>
                 <div>
                   <div className="font-bold">{currentUser.name}</div>
-                  <div className="text-xs text-slate-500">{currentUser.role.toUpperCase()}</div>
+                  <div className="text-xs text-slate-500">{getRoleDisplay(currentUser.role)}</div>
                 </div>
               </div>
               <div className="text-sm text-slate-700 mb-3">

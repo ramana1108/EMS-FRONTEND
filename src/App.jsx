@@ -56,29 +56,42 @@ function userHasAdminPermissions(user) {
 
 function defaultRouteForUser(user) {
   const role = normalizeRole(user?.role);
-  if (role === "admin") return "/admin/dashboard";
-  if (["employee"].includes(role)) return "/employee/dashboard";
+  if (role === "admin" || userHasAdminPermissions(user)) return "/admin/dashboard";
   if (role === "employee") return "/employee/dashboard";
-if (role === "employee") return "/employee/dashboard";
-if (role === "admin" || userHasAdminPermissions(user)) return "/admin/dashboard";
-  if (["employee"].includes(role)) return "/employee/dashboard";
   return "/";
 }
 
 function getUserPermissions(user) {
   if (!user) return [];
-  const permissions = Array.isArray(user.permissions)
+  const explicitPermissions = Array.isArray(user.permissions)
     ? user.permissions
     : typeof user.permissions === "string"
       ? user.permissions.split(",").map((perm) => perm.trim()).filter(Boolean)
       : [];
-  return Array.from(new Set(permissions.map((perm) => String(perm).toLowerCase())));
+  const rolePermissions = Array.isArray(user.role?.permissions)
+    ? user.role.permissions
+    : [];
+  const permissions = [...explicitPermissions, ...rolePermissions];
+  return Array.from(new Set(permissions.map((perm) => String(perm).trim().toLowerCase()).filter(Boolean)));
 }
 
 function hasAnyPermission(user, allowedPermissions = []) {
   if (!user || !allowedPermissions.length) return false;
   const userPermissions = getUserPermissions(user);
-  return allowedPermissions.some((perm) => userPermissions.includes(String(perm).toLowerCase()));
+
+  function permissionMatches(key, perms) {
+    if (!key) return true;
+    const k = String(key).toLowerCase();
+    return perms.some((p) => {
+      const perm = String(p || "").toLowerCase();
+      if (!perm) return false;
+      if (perm === k) return true;
+      if (perm.startsWith(k + ":")) return true;
+      return false;
+    });
+  }
+
+  return allowedPermissions.some((perm) => permissionMatches(perm, userPermissions));
 }
 
 function isAllowedRole(user, allowedRoles = []) {
@@ -140,22 +153,62 @@ function AppContent() {
     const storedUser = getStoredUser();
     if (!storedUser) return;
 
+    let stopped = false;
+
+    const normalizeUserFromData = (dataUser) => {
+      const mergedPermissions = [
+        ...(Array.isArray(dataUser.permissions) ? dataUser.permissions : []),
+        ...(Array.isArray(dataUser.role?.permissions) ? dataUser.role.permissions : []),
+      ];
+      const normalizedPermissions = Array.from(
+        new Set(
+          mergedPermissions
+            .map((p) => String(p || "").trim().toLowerCase())
+            .filter(Boolean)
+        )
+      );
+      return {
+        ...dataUser,
+        permissions: normalizedPermissions,
+      };
+    };
+
     const refreshUser = async () => {
       try {
         const data = await getCurrentUser();
+        if (stopped) return;
         if (data?.success && data.user) {
-          const normalizedUser = {
-            ...data.user,
-            permissions: Array.isArray(data.user.permissions) ? data.user.permissions : []
-          };
-          localStorage.setItem("user", JSON.stringify(normalizedUser));
+          const normalizedUser = normalizeUserFromData(data.user);
+
+          const currentRaw = getStoredUser() || {};
+          const currentPerms = Array.isArray(currentRaw.permissions) ? currentRaw.permissions.map(p=>String(p).toLowerCase()) : [];
+          const newPerms = Array.isArray(normalizedUser.permissions) ? normalizedUser.permissions.map(p=>String(p).toLowerCase()) : [];
+
+          const permsChanged = currentPerms.length !== newPerms.length ||
+            currentPerms.some((p) => !newPerms.includes(p)) ||
+            newPerms.some((p) => !currentPerms.includes(p));
+
+          if (permsChanged || JSON.stringify(currentRaw.role) !== JSON.stringify(normalizedUser.role)) {
+            localStorage.setItem("user", JSON.stringify(normalizedUser));
+            // notify other parts of the app
+            window.dispatchEvent(new Event("userChanged"));
+            // Some libraries rely on storage event for cross-tab; also trigger it
+            window.dispatchEvent(new Event("storage"));
+          }
         }
       } catch (error) {
         console.error("Unable to refresh current user:", error);
       }
     };
 
+    // Initial refresh, then poll every 30s
     refreshUser();
+    const id = setInterval(refreshUser, 30000);
+
+    return () => {
+      stopped = true;
+      clearInterval(id);
+    };
   }, []);
 
   return (

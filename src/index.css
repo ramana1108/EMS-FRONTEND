@@ -13,9 +13,6 @@
   width: 0 !important;
   height: 0 !important;
 }
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
 
 :root {
   --text: #334155;

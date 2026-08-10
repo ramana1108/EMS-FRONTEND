@@ -15,6 +15,7 @@ import {
   Plus,
   FileText
 } from "lucide-react";
+import api from "../api";
 
 // Company Notices List (fallback when dashboard data hasn't loaded yet)
 const notices = [
@@ -70,9 +71,10 @@ export default function Dashboard() {
     const load = async () => {
       setLoading(true);
       try {
-        const api = await import("../api");
         const res = await api.getAdminDashboard();
-        if (mounted && res && res.success) setDashboard(res.dashboard);
+        if (mounted && res && res.success) {
+          setDashboard(res.dashboard || {});
+        }
 
         // fetch departments for distribution
         try {
@@ -101,11 +103,13 @@ export default function Dashboard() {
       } catch (err) {
         console.error("Failed to load admin dashboard:", err);
       } finally {
-        setLoading(false);
+        if (mounted) setLoading(false);
       }
     };
     load();
-    return () => (mounted = false);
+    return () => {
+      mounted = false;
+    };
   }, []);
 
   const searchItems = [
@@ -263,6 +267,19 @@ export default function Dashboard() {
               <p className="stat-description">Manage department structures and team ownership.</p>
             </div>
 
+            <div className="summary-card stat-card-purple">
+              <div className="stat-header">
+                <div className="stat-icon-box">
+                  <Award size={20} />
+                </div>
+                <div>
+                  <p className="stat-label">Designations</p>
+                  <p className="stat-value">{dashboard.totalDesignations}</p>
+                </div>
+              </div>
+              <p className="stat-description">Monitor role structure and job title counts.</p>
+            </div>
+
             <div className="summary-card stat-card-indigo">
               <div className="stat-header">
                 <div className="stat-icon-box">
@@ -348,7 +365,12 @@ export default function Dashboard() {
                     <p className="manager-name">{`${emp.firstName || ""} ${emp.lastName || ""}`.trim()}</p>
                     <p className="manager-role">{emp.employeeId || ""}</p>
                   </div>
-                  <button className="btn-contact">View</button>
+                  <button
+                    className="btn-contact"
+                    onClick={() => navigate(`/admin/employee?view=${encodeURIComponent(emp._id || emp.employeeId || "")}`)}
+                  >
+                    View
+                  </button>
                 </div>
               ))
             ) : (
@@ -362,100 +384,6 @@ export default function Dashboard() {
                 </div>
               ))
             )}
-          </div>
-        </div>
-
-      </div>
-
-      {/* 3. Bottom Section */}
-      <div className="bottom-grid">
-
-        {/* Attendance Analytics Bar Chart (breakdown for today) */}
-        <div className="card-box">
-          <h2 className="card-title">Attendance Analytics Bar Chart</h2>
-          <div className="chart-bars-container flex gap-3 py-4">
-            {dashboard ? (
-              (() => {
-                const bars = [
-                  { label: 'Present', value: dashboard.presentToday || 0, color: '#10B981' },
-                  { label: 'Absent', value: dashboard.absentToday || 0, color: '#111827' },
-                  { label: 'Leave', value: dashboard.leaveToday || 0, color: '#D97706' },
-                ];
-                const maxValue = Math.max(...bars.map(b => b.value), 1);
-                const maxPx = 120; // max bar pixel height
-                return bars.map((b, i) => {
-                  const heightPx = Math.round((b.value / maxValue) * maxPx);
-                  const pct = maxValue > 0 ? Math.round((b.value / ((dashboard.presentToday || 0) + (dashboard.absentToday || 0) + (dashboard.leaveToday || 0))) * 100) : 0;
-                  return (
-                    <div key={i} className="flex-1 text-center">
-                      <div className="flex items-end justify-center" style={{ height: maxPx + 20 }}>
-                        <div style={{ width: 40, height: heightPx || 6, background: b.color, borderRadius: 8, transition: 'height 300ms ease' }} />
-                      </div>
-                      <div className="mt-2 font-bold">{b.value || 0}</div>
-                      <div className="text-xs text-slate-500">{b.label}</div>
-                      <div className="text-xs text-slate-400">{pct}%</div>
-                    </div>
-                  );
-                });
-              })()
-            ) : (
-              <div className="p-5">No attendance data</div>
-            )}
-          </div>
-        </div>
-
-        {/* Employee Distribution Pie Chart */}
-        <div className="card-box">
-          <h2 className="card-title">Employee Distribution Pie Chart</h2>
-          <div className="flex items-center gap-4 py-3">
-            <div className="w-[150px] h-[150px] flex items-center justify-center relative">
-              {(() => {
-                const total = departments && departments.reduce ? departments.reduce((acc, d) => acc + (d.employeeCount || 0), 0) : 0;
-                const slices = (departments && departments.length > 0 ? departments : []).slice(0, 6);
-                const colors = ['#064E3B', '#F97316', '#059669', '#D97706', '#0EA5A4', '#10B981'];
-                if (total <= 0 || slices.length === 0) {
-                  return (
-                    <div className="w-[120px] h-[120px] rounded-full flex items-center justify-center" style={{ background: 'conic-gradient(#10B981 0deg, #D1FAE5 360deg)' }}>
-                      <div className="font-bold text-[22px]">{total}</div>
-                    </div>
-                  );
-                }
-
-                // build conic-gradient stops
-                let angleSoFar = 0;
-                const stops = slices.map((d, i) => {
-                  const pct = (d.employeeCount || 0) / total;
-                  const start = angleSoFar;
-                  const end = angleSoFar + pct * 360;
-                  angleSoFar = end;
-                  return `${colors[i % colors.length]} ${start}deg ${end}deg`;
-                }).join(', ');
-
-                return (
-                  <div className="w-[120px] h-[120px] rounded-full flex items-center justify-center" style={{ background: `conic-gradient(${stops})` }}>
-                    <div className="absolute font-bold text-[22px]">{total}</div>
-                  </div>
-                );
-              })()}
-            </div>
-
-            <div className="flex flex-col gap-2">
-              {departments && departments.length > 0 ? (
-                departments.slice(0, 4).map((d, i) => (
-                  <div key={i} className="flex items-center gap-2">
-                    <span className="w-3 h-3 rounded-sm" style={{ background: ['#064E3B', '#F97316', '#059669', '#D97706'][i % 4] }}></span>
-                    <span className="text-slate-900">{d.departmentName} ({d.employeeCount || 0})</span>
-                  </div>
-                ))
-              ) : (
-                <>
-                  <span className="flex items-center gap-2"><span className="w-3 h-3 rounded-sm" style={{ background: '#064E3B' }}></span> Production</span>
-                  <span className="flex items-center gap-2"><span className="w-3 h-3 rounded-sm" style={{ background: '#F97316' }}></span> Sales</span>
-                  <span className="flex items-center gap-2"><span className="w-3 h-3 rounded-sm" style={{ background: '#059669' }}></span> IT</span>
-                  <span className="flex items-center gap-2"><span className="w-3 h-3 rounded-sm" style={{ background: '#D97706' }}></span> Admin</span>
-                </>
-              )}
-            </div>
           </div>
         </div>
 
