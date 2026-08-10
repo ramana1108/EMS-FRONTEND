@@ -1,11 +1,8 @@
 import { useState, useEffect } from "react";
-<<<<<<< HEAD
 import Pagination from "../components/Pagination";
 import { Megaphone, Plus, Calendar, User, Trash2, AlertCircle, X } from "lucide-react";
-=======
 // styles are loaded globally via src/index.css (Tailwind + custom styles)
 import { Megaphone, Plus, Calendar, User, Trash2, AlertCircle } from "lucide-react";
->>>>>>> 819c511ce486a6353829f2805eb90ecdf071faa3
 
 export default function Notice() {
     const [notices, setNotices] = useState([]);
@@ -172,19 +169,16 @@ export default function Notice() {
             </div>
 
             {/* Stats Widget */}
-<<<<<<< HEAD
             <div className="stats-grid" style={{ marginBottom: "24px" }}>
                 <div className="stat-card stat-card-green">
                     <div className="stat-header">
                         <div className="stat-icon-box depts-icon">
                             <Megaphone size={20} />
-=======
-            <div className="stats-grid mb-6">
+<div className="stats-grid mb-6">
                 <div className="stat-card">
                     <div className="stat-header">
                         <div className="stat-icon-box bg-sky-600">
                             <Megaphone size={20} color="#ffffff" />
->>>>>>> 819c511ce486a6353829f2805eb90ecdf071faa3
                         </div>
                         <div>
                             <p className="stat-label">Total Notices</p>
@@ -203,7 +197,6 @@ export default function Notice() {
                 <div className="text-emerald-800 bg-emerald-50 p-3 rounded-md mb-5">{success}</div>
             )}
 
-<<<<<<< HEAD
             {/* Full-width Layout */}
             <div className="w-full">
                 {/* Notice Feed */}
@@ -217,8 +210,7 @@ export default function Notice() {
                     </div>
 
                     <div style={{ display: "flex", flexDirection: "column", gap: "16px", overflow: "visible" }}>
-=======
-            {/* Main Split Layout */}
+{/* Main Split Layout */}
             <div className="grid lg:grid-cols-[2fr_1fr] gap-6 items-start">
 
                 {/* Notice Feed */}
@@ -226,13 +218,11 @@ export default function Notice() {
                     <h2 className="text-lg font-semibold mb-5">Active Notices Feed</h2>
 
                     <div className="flex flex-col gap-4">
->>>>>>> 819c511ce486a6353829f2805eb90ecdf071faa3
                         {loading ? (
                             <p className="text-center text-slate-500">Loading announcements feed...</p>
                         ) : notices.length === 0 ? (
                             <p className="text-center text-slate-500 py-8">No corporate notices published yet.</p>
                         ) : (
-<<<<<<< HEAD
                             paginatedNotices.map((notice) => (
                                 <div
                                     key={notice._id}
@@ -263,13 +253,11 @@ export default function Notice() {
                                             }}
                                             title="Delete Announcement"
                                         >
-=======
-                            notices.map((notice) => (
+notices.map((notice) => (
                                 <div key={notice._id} className="p-4 rounded-lg border border-slate-200 bg-slate-50 transition">
                                     <div className="flex justify-between items-start mb-2">
                                         <h3 className="m-0 text-base font-semibold text-slate-900">{notice.title}</h3>
                                         <button onClick={() => handleDeleteNotice(notice._id)} title="Delete Announcement" className="text-rose-600 hover:text-rose-800 p-1 rounded-md">
->>>>>>> 819c511ce486a6353829f2805eb90ecdf071faa3
                                             <Trash2 size={16} />
                                         </button>
                                     </div>

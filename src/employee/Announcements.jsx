@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-<<<<<<< HEAD
 =======
 // styles are loaded globally via src/index.css (Tailwind + custom styles)
 >>>>>>> 819c511ce486a6353829f2805eb90ecdf071faa3
@@ -179,17 +178,14 @@ export default function Announcements() {
 <<<<<<< HEAD
                 <div className="emp-top-header flex justify-between items-center mb-8 px-2.5">
                     <div className="emp-search-box">
-=======
-                <div className="flex justify-between items-center mb-8 px-2">
+<div className="flex justify-between items-center mb-8 px-2">
                     <div className="flex items-center gap-2 bg-white px-4 py-2 rounded-xl border border-slate-200 w-[320px]">
->>>>>>> 819c511ce486a6353829f2805eb90ecdf071faa3
                         <Search size={18} color="#64748b" />
                         <input
                             type="text"
                             placeholder="Search announcements..."
                             value={searchTerm}
                             onChange={(e) => setSearchTerm(e.target.value)}
-<<<<<<< HEAD
                             className="emp-search-input"
                         />
                     </div>
@@ -201,8 +197,7 @@ export default function Announcements() {
                         <div>
                             <h1 className="dashboard-title text-3xl font-extrabold text-slate-900 dark:text-white m-0">Announcements</h1>
                             <p className="dashboard-subtitle text-sm text-slate-500 dark:text-slate-400 mt-1">Stay updated with company news and announcements</p>
-=======
-                            className="border-none outline-none bg-transparent w-full text-sm text-black"
+className="border-none outline-none bg-transparent w-full text-sm text-black"
                         />
                     </div>
 
@@ -249,18 +244,14 @@ export default function Announcements() {
                                 <option value="Events">Events</option>
                                 <option value="General">General</option>
                             </select>
->>>>>>> 819c511ce486a6353829f2805eb90ecdf071faa3
                         </div>
                     </div>
 
                     {/* List display */}
-<<<<<<< HEAD
                     <div className="emp-card-box">
                         <div className="announcement-list" style={{ overflow: "visible" }}>
-=======
-                    <div className="p-8 bg-white rounded-xl border border-slate-200">
+<div className="p-8 bg-white rounded-xl border border-slate-200">
                         <div className="flex flex-col gap-5">
->>>>>>> 819c511ce486a6353829f2805eb90ecdf071faa3
                             {loading ? (
                                 <div className="text-center text-slate-500 p-10">Loading announcements...</div>
                             ) : filteredNotices.length === 0 ? (
@@ -273,7 +264,6 @@ export default function Announcements() {
                                     return (
                                         <div
                                             key={notice._id}
-<<<<<<< HEAD
                                             className="announcement-item"
                                             style={{
                                                 display: "flex",
@@ -285,9 +275,7 @@ export default function Announcements() {
                                                 border: "1px solid #e2e8f0",
                                                 transition: "box-shadow 0.2s"
                                             }}
-=======
-                                            className="flex items-start gap-4 p-5 rounded-lg bg-white border border-slate-200 transition-shadow"
->>>>>>> 819c511ce486a6353829f2805eb90ecdf071faa3
+className="flex items-start gap-4 p-5 rounded-lg bg-white border border-slate-200 transition-shadow"
                                         >
                                             {/* Left Icon Pill */}
                                             <div

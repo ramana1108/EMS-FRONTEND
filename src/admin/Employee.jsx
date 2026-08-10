@@ -1,15 +1,9 @@
-<<<<<<< HEAD
 import { useState, useEffect, useMemo } from "react";
 import "../App.css";
-=======
-<<<<<<< HEAD
 import { useState, useEffect } from "react";
-=======
 import { useState, useEffect, useMemo } from "react";
 // styles are loaded globally via src/index.css (Tailwind + custom styles)
 
->>>>>>> 819c511ce486a6353829f2805eb90ecdf071faa3
->>>>>>> 614e3dc5d896ce340e10987b715fcc5204d54c2f
 import api from "../api";
 import {
     Building2,
@@ -498,13 +492,9 @@ export default function Employee() {
                     />
                 </div>
 
-<<<<<<< HEAD
                 <div className="header-right" style={{ position: "relative" }}>
 =======
-<<<<<<< HEAD
-=======
                                 <div className="header-right relative">
->>>>>>> 614e3dc5d896ce340e10987b715fcc5204d54c2f
                     <button className="icon-btn" onClick={() => navigate("/admin/notices") }>
                         <Bell size={18} />
                     </button>
@@ -529,10 +519,7 @@ export default function Employee() {
                                             </div>
                     )}
                 </div>
-<<<<<<< HEAD
-=======
 >>>>>>> 819c511ce486a6353829f2805eb90ecdf071faa3
->>>>>>> 614e3dc5d896ce340e10987b715fcc5204d54c2f
             </div>
 
             {/* Page Title Header */}
@@ -547,9 +534,7 @@ export default function Employee() {
                     onClick={handleOpenEnrollModal}
                     style={{ display: "flex", alignItems: "center", gap: "6px" }}
                 >
-=======
-                <button className="btn-enroll-employee bg-emerald-700 text-white flex items-center gap-2 rounded-full px-4 py-2 text-sm font-medium" onClick={handleOpenEnrollModal}>
->>>>>>> 819c511ce486a6353829f2805eb90ecdf071faa3
+<button className="btn-enroll-employee bg-emerald-700 text-white flex items-center gap-2 rounded-full px-4 py-2 text-sm font-medium" onClick={handleOpenEnrollModal}>
                     <Plus size={16} />
                     <span>Add Employee</span>
                 </button>
@@ -600,13 +585,10 @@ export default function Employee() {
                                 <th>NAME</th>
                                 <th>DEPARTMENT</th>
                                 <th>ROLE / EMPLOYMENT TYPE</th>
-<<<<<<< HEAD
                                 <th className="table-center-col">STATUS</th>
                                 <th className="table-actions-col">ACTIONS</th>
-=======
-                                <th>STATUS</th>
+<th>STATUS</th>
                                 <th className="text-right pr-6">ACTIONS</th>
->>>>>>> 614e3dc5d896ce340e10987b715fcc5204d54c2f
                             </tr>
                         </thead>
                         <tbody>
@@ -657,11 +639,8 @@ export default function Employee() {
                                             </span>
                                         </td>
 
-<<<<<<< HEAD
                                         <td className="table-actions-col">
-=======
-                                        <td className="text-right pr-6">
->>>>>>> 614e3dc5d896ce340e10987b715fcc5204d54c2f
+<td className="text-right pr-6">
                                             <div className="employee-action-buttons">
                                                 <button className="action-icon-btn" title="View details" onClick={() => handleViewClick(emp)}>
                                                     <Eye size={16} />

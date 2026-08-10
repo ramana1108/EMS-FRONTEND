@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
 import api from "../api";
 import { useLocation } from "react-router-dom";
-<<<<<<< HEAD
 =======
 // styles are loaded globally via src/index.css (Tailwind + custom styles)
 >>>>>>> 819c511ce486a6353829f2805eb90ecdf071faa3
@@ -359,8 +358,7 @@ export default function Designations() {
                             </table>
                         </div>
                     </div>
-=======
-            {/* Main Grid View */}
+{/* Main Grid View */}
             <div className="grid lg:grid-cols-[2.2fr_1fr] gap-6 items-start">
 
                 {/* Render Departments View */}
@@ -447,12 +445,10 @@ export default function Designations() {
                             </form>
                         </div>
                     </>
->>>>>>> 819c511ce486a6353829f2805eb90ecdf071faa3
                 )}
 
                 {/* Render Designations View */}
                 {activeView === "designations" && (
-<<<<<<< HEAD
                     <div className="employee-directory-card" style={{ padding: "24px" }}>
                         <h2 className="emp-card-title" style={{ marginBottom: "16px" }}>Designation List</h2>
 
@@ -489,8 +485,7 @@ export default function Designations() {
                                                     </td>
                                                     <td style={{ padding: "4px 8px" }}>
                                                         <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-=======
-                    <>
+<>
                         {/* Designations Table */}
                         <div className="employee-directory-card bg-white rounded-xl p-6 shadow-sm">
                             <h2 className="text-lg font-semibold mb-4">Designation List</h2>
@@ -518,12 +513,10 @@ export default function Designations() {
                                                 <tr key={desig._id} className="border-b last:border-b-0">
                                                     <td className="px-4 py-3">
                                                         <div className="flex items-center gap-2">
->>>>>>> 819c511ce486a6353829f2805eb90ecdf071faa3
                                                             <Award size={16} color="#8b5cf6" />
                                                             <span className="font-medium text-slate-900">{desig.designationName}</span>
                                                         </div>
                                                     </td>
-<<<<<<< HEAD
                                                     <td style={{ padding: "4px 8px" }}>
                                                         <span style={{ fontSize: "13px", fontWeight: "600", color: "#374151", padding: "3px 8px", backgroundColor: "#f3f4f6", borderRadius: "12px" }}>
                                                             {desig.departmentId?.departmentName || "Unassigned"}
@@ -548,13 +541,11 @@ export default function Designations() {
                                                                 <Trash2 size={16} />
                                                             </button>
                                                         </div>
-=======
-                                                    <td className="px-4 py-3">
+<td className="px-4 py-3">
                                                         <span className="text-sm font-semibold text-slate-700 px-2 py-1 bg-slate-100 rounded-full">{desig.departmentId?.departmentName || "Unassigned"}</span>
                                                     </td>
                                                     <td className="px-4 py-3 text-right">
                                                         <button onClick={() => handleDeleteDesignation(desig._id)} className="text-rose-600 hover:text-rose-800"><Trash2 size={16} /></button>
->>>>>>> 819c511ce486a6353829f2805eb90ecdf071faa3
                                                     </td>
                                                 </tr>
                                             );
@@ -592,7 +583,6 @@ export default function Designations() {
                             </button>
                         </div>
 
-<<<<<<< HEAD
                         {activeView === "departments" ? (
                             <form onSubmit={handleAddDepartment} className="enroll-form">
                                 <div className="form-group">
@@ -672,8 +662,7 @@ export default function Designations() {
                                         onChange={(e) => setDesigDeptId(e.target.value)}
                                         required
                                     >
-=======
-                        {/* Add Designation Form */}
+{/* Add Designation Form */}
                         <div className="emp-card-box bg-white rounded-xl p-6 shadow-sm">
                             <h2 className="text-lg font-semibold mb-4">Add Designation</h2>
                             <form onSubmit={handleAddDesignation}>
@@ -685,7 +674,6 @@ export default function Designations() {
                                 <div className="mb-4">
                                     <label className="block text-xs font-semibold uppercase text-slate-600 mb-1">Department</label>
                                     <select value={desigDeptId} onChange={(e) => setDesigDeptId(e.target.value)} className="w-full px-3 py-2 rounded-md border border-slate-300 bg-white">
->>>>>>> 819c511ce486a6353829f2805eb90ecdf071faa3
                                         <option value="">Select Department...</option>
                                         {departments.map((dept) => (
                                             <option key={dept._id} value={dept._id}>{dept.departmentName}</option>
@@ -693,7 +681,6 @@ export default function Designations() {
                                     </select>
                                 </div>
 
-<<<<<<< HEAD
                                 <div className="form-group">
                                     <label>Assign Employee (Optional)</label>
                                     <select
@@ -714,13 +701,11 @@ export default function Designations() {
                                         })()}
                                     </select>
                                 </div>
-=======
-                                <button type="submit" className="w-full px-4 py-2 bg-emerald-700 text-white rounded-md font-semibold flex items-center justify-center gap-2"><Plus size={16} /><span>Create Designation</span></button>
+<button type="submit" className="w-full px-4 py-2 bg-emerald-700 text-white rounded-md font-semibold flex items-center justify-center gap-2"><Plus size={16} /><span>Create Designation</span></button>
                             </form>
                         </div>
                     </>
                 )}
->>>>>>> 819c511ce486a6353829f2805eb90ecdf071faa3
 
                                 {editingId && (
                                     <div style={{ marginTop: 8 }}>

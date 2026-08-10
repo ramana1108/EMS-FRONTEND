@@ -56,18 +56,12 @@ function userHasAdminPermissions(user) {
 
 function defaultRouteForUser(user) {
   const role = normalizeRole(user?.role);
-<<<<<<< HEAD
   if (role === "admin") return "/admin/dashboard";
-<<<<<<< HEAD
   if (["employee"].includes(role)) return "/employee/dashboard";
   if (role === "employee") return "/employee/dashboard";
-=======
-  if (role === "employee") return "/employee/dashboard";
-=======
-  if (role === "admin" || userHasAdminPermissions(user)) return "/admin/dashboard";
+if (role === "employee") return "/employee/dashboard";
+if (role === "admin" || userHasAdminPermissions(user)) return "/admin/dashboard";
   if (["employee"].includes(role)) return "/employee/dashboard";
->>>>>>> 819c511ce486a6353829f2805eb90ecdf071faa3
->>>>>>> 614e3dc5d896ce340e10987b715fcc5204d54c2f
   return "/";
 }
 
@@ -277,11 +271,8 @@ function AppContent() {
       <Route
         path="/employee/dashboard"
         element={
-<<<<<<< HEAD
           <RequireRole allowedRoles={["employee"]}>
-=======
-          <RequireAccess allowedPermissions={["dashboard"]}>
->>>>>>> 819c511ce486a6353829f2805eb90ecdf071faa3
+<RequireAccess allowedPermissions={["dashboard"]}>
             <EmployeeDashboard />
           </RequireAccess>
         }
@@ -291,11 +282,8 @@ function AppContent() {
       <Route
         path="/employee/announcements"
         element={
-<<<<<<< HEAD
           <RequireRole allowedRoles={["employee"]}>
-=======
-          <RequireAccess allowedPermissions={["notice"]}>
->>>>>>> 819c511ce486a6353829f2805eb90ecdf071faa3
+<RequireAccess allowedPermissions={["notice"]}>
             <EmployeeAnnouncements />
           </RequireAccess>
         }
@@ -305,11 +293,8 @@ function AppContent() {
       <Route
         path="/employee/attendance"
         element={
-<<<<<<< HEAD
           <RequireRole allowedRoles={["employee"]}>
-=======
-          <RequireAccess allowedPermissions={["attendance"]}>
->>>>>>> 819c511ce486a6353829f2805eb90ecdf071faa3
+<RequireAccess allowedPermissions={["attendance"]}>
             <EmployeeAttendance />
           </RequireAccess>
         }
@@ -319,11 +304,8 @@ function AppContent() {
       <Route
         path="/employee/leave"
         element={
-<<<<<<< HEAD
           <RequireRole allowedRoles={["employee"]}>
-=======
-          <RequireAccess allowedPermissions={["leave"]}>
->>>>>>> 819c511ce486a6353829f2805eb90ecdf071faa3
+<RequireAccess allowedPermissions={["leave"]}>
             <EmployeeLeavemanagement />
           </RequireAccess>
         }
@@ -333,11 +315,8 @@ function AppContent() {
       <Route
         path="/employee/payroll"
         element={
-<<<<<<< HEAD
           <RequireRole allowedRoles={["employee"]}>
-=======
-          <RequireAccess allowedPermissions={["payroll"]}>
->>>>>>> 819c511ce486a6353829f2805eb90ecdf071faa3
+<RequireAccess allowedPermissions={["payroll"]}>
             <EmployeePayrolls />
           </RequireAccess>
         }
@@ -347,11 +326,8 @@ function AppContent() {
       <Route
         path="/employee/profile"
         element={
-<<<<<<< HEAD
           <RequireRole allowedRoles={["employee"]}>
-=======
-          <RequireAccess allowedPermissions={["profile"]}>
->>>>>>> 819c511ce486a6353829f2805eb90ecdf071faa3
+<RequireAccess allowedPermissions={["profile"]}>
             <EmployeeProfile />
           </RequireAccess>
         }

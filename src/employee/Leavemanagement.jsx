@@ -1,21 +1,15 @@
 import React, { useState, useEffect } from "react";
-<<<<<<< HEAD
 import Sidebar from "../components/Sidebar";
-<<<<<<< HEAD
 import { useLocation } from "react-router-dom";
 import {
     getMyLeaves,
     applyLeave as applyLeaveRequest,
     deleteLeave as deleteLeaveRequest,
 } from "../api";
-=======
 import { getMyLeaves, applyLeave as applyLeaveRequest, deleteLeave as deleteLeaveRequest } from "../api";
-=======
 // styles are loaded globally via src/index.css (Tailwind + custom styles)
 import Sidebar from "../components/Sidebar";
 import { useLocation } from "react-router-dom";
->>>>>>> 819c511ce486a6353829f2805eb90ecdf071faa3
->>>>>>> 614e3dc5d896ce340e10987b715fcc5204d54c2f
 import {
     Calendar,
     Briefcase,
@@ -27,13 +21,9 @@ import {
     Menu,
 } from "lucide-react";
 
-<<<<<<< HEAD
-=======
-<<<<<<< HEAD
 =======
 const API_URL = "http://localhost:5000/api/leaves";
 
->>>>>>> 819c511ce486a6353829f2805eb90ecdf071faa3
 >>>>>>> 614e3dc5d896ce340e10987b715fcc5204d54c2f
 export default function Leavemanagement() {
     const [activeTab, setActiveTab] = useState("Leave Management");
@@ -94,7 +84,6 @@ export default function Leavemanagement() {
 
     useEffect(() => {
         const loggedInUser = JSON.parse(localStorage.getItem("user") || "null");
-<<<<<<< HEAD
         if (!loggedInUser) return;
 
         setUser(loggedInUser);
@@ -117,7 +106,6 @@ export default function Leavemanagement() {
             0,
             36 - requests.reduce((total, item) => total + (item.status === "Approved" ? item.days : 0), 0)
         ),
-=======
 <<<<<<< HEAD
         setUser(loggedInUser);
         loadLeaves();
@@ -128,9 +116,7 @@ export default function Leavemanagement() {
         sick: requests.filter((item) => item.leaveType === "Sick Leave").reduce((total, item) => total + (item.status === "Approved" ? item.days : 0), 0),
         earned: requests.filter((item) => item.leaveType === "Earned Leave").reduce((total, item) => total + (item.status === "Approved" ? item.days : 0), 0),
         remaining: Math.max(0, 36 - requests.reduce((total, item) => total + (item.status === "Approved" ? item.days : 0), 0)),
-=======
-
-        if (!loggedInUser) return;
+if (!loggedInUser) return;
 
         setUser(loggedInUser);
         fetchLeaves();
@@ -170,8 +156,6 @@ export default function Leavemanagement() {
             if (r.status === "Approved") approvedDays += r.days;
         });
         return totalAllowance - approvedDays;
->>>>>>> 819c511ce486a6353829f2805eb90ecdf071faa3
->>>>>>> 614e3dc5d896ce340e10987b715fcc5204d54c2f
     };
 
     const handleApplyClick = () => {
@@ -185,15 +169,11 @@ export default function Leavemanagement() {
 
     const handleSubmitLeave = async (e) => {
         e.preventDefault();
-<<<<<<< HEAD
 =======
-<<<<<<< HEAD
         setFormError("");
         if (!leaveType || !fromDate || !toDate || !reason.trim()) {
             setFormError("Frontend validation failed");
-=======
-        console.log("Submitting leave", { fromDate, toDate, leaveType, reason, user });
->>>>>>> 614e3dc5d896ce340e10987b715fcc5204d54c2f
+console.log("Submitting leave", { fromDate, toDate, leaveType, reason, user });
 
         if (!leaveType) {
             setFormError("Leave Type is required");
@@ -209,10 +189,7 @@ export default function Leavemanagement() {
         }
         if (!reason || !reason.trim()) {
             setFormError("Reason is required");
-<<<<<<< HEAD
-=======
 >>>>>>> 819c511ce486a6353829f2805eb90ecdf071faa3
->>>>>>> 614e3dc5d896ce340e10987b715fcc5204d54c2f
             return;
         }
 
@@ -229,9 +206,6 @@ export default function Leavemanagement() {
 
         try {
 <<<<<<< HEAD
-=======
-<<<<<<< HEAD
->>>>>>> 614e3dc5d896ce340e10987b715fcc5204d54c2f
             const data = await applyLeaveRequest({
                 leaveType,
                 fromDate,
@@ -254,10 +228,7 @@ export default function Leavemanagement() {
         } catch (error) {
             console.error("Failed to apply leave", error);
             setFormError("Unable to submit leave request right now.");
-<<<<<<< HEAD
-=======
-=======
-            const token = localStorage.getItem("token");
+const token = localStorage.getItem("token");
             const headers = token ? { Authorization: `Bearer ${token}` } : {};
             await axios.post(API_URL, {
                 employeeId: user?._id || user?.id || localStorage.getItem("employeeId") || undefined,
@@ -278,8 +249,6 @@ export default function Leavemanagement() {
             setReason("");
         } catch (err) {
             setFormError(err.response?.data?.message || "Something went wrong.");
->>>>>>> 819c511ce486a6353829f2805eb90ecdf071faa3
->>>>>>> 614e3dc5d896ce340e10987b715fcc5204d54c2f
         }
     };
 
@@ -287,9 +256,7 @@ export default function Leavemanagement() {
         if (!window.confirm("Are you sure you want to cancel / delete this request?")) return;
 
         try {
-<<<<<<< HEAD
 =======
-<<<<<<< HEAD
 >>>>>>> 614e3dc5d896ce340e10987b715fcc5204d54c2f
             const data = await deleteLeaveRequest(id);
             if (!data?.success) {
@@ -305,9 +272,7 @@ export default function Leavemanagement() {
             console.error("Failed to delete leave request", error);
             setFormError("Unable to delete leave request right now.");
 <<<<<<< HEAD
-=======
-=======
-            await axios.delete(`${API_URL}/${id}`);
+await axios.delete(`${API_URL}/${id}`);
 
             // Refresh from the backend so state stays in sync with what was actually deleted
             await fetchLeaves(user._id);
@@ -318,8 +283,6 @@ export default function Leavemanagement() {
         } catch (err) {
             console.log(err);
             setFormError(err.response?.data?.message || "Unable to cancel this request.");
->>>>>>> 819c511ce486a6353829f2805eb90ecdf071faa3
->>>>>>> 614e3dc5d896ce340e10987b715fcc5204d54c2f
         }
     };
 
@@ -485,7 +448,6 @@ export default function Leavemanagement() {
                                                     statusBorder = "#fca5a5";
                                                 }
 
-<<<<<<< HEAD
                                                 return (
                                                     <tr key={req.id} className="employee-row">
                                                         <td style={{ padding: "16px 24px", fontWeight: "700", color: "#0f172a" }}>
@@ -501,8 +463,6 @@ export default function Leavemanagement() {
                                                             {req.days}
                                                         </td>
                                                         <td className="table-center-col">
-=======
-<<<<<<< HEAD
                                                 return (
                                                     <tr key={req.id} className="employee-row">
                                                         <td style={{ padding: "4px 8px", fontWeight: "700", color: "#0f172a" }}>{req.leaveType}</td>
@@ -510,7 +470,6 @@ export default function Leavemanagement() {
                                                         <td style={{ padding: "4px 8px", color: "#334155" }}>{formatDateDisplay(req.toDate)}</td>
                                                         <td style={{ padding: "4px 8px", fontWeight: "600", color: "#0f172a" }}>{req.days}</td>
                                                         <td style={{ padding: "4px 8px" }}>
->>>>>>> 614e3dc5d896ce340e10987b715fcc5204d54c2f
                                                             <span
                                                                 style={{
                                                                     display: "inline-flex",
@@ -523,10 +482,7 @@ export default function Leavemanagement() {
                                                                     color: statusText,
                                                                     border: `1px solid ${statusBorder}`,
                                                                 }}
-<<<<<<< HEAD
-=======
-=======
-                                            return (
+return (
                                                 <tr key={req._id} className="employee-row">
                                                     <td style={{ padding: "16px 24px", fontWeight: "700", color: "#0f172a" }}>{req.leaveType}</td>
                                                     <td style={{ padding: "16px 24px", color: "#334155" }}>{formatDateDisplay(req.fromDate)}</td>
@@ -557,8 +513,6 @@ export default function Leavemanagement() {
                                                                 className="action-icon-btn"
                                                                 title="View details"
                                                                 style={{ cursor: "pointer" }}
->>>>>>> 819c511ce486a6353829f2805eb90ecdf071faa3
->>>>>>> 614e3dc5d896ce340e10987b715fcc5204d54c2f
                                                             >
                                                                 {req.status}
                                                             </span>
@@ -569,21 +523,15 @@ export default function Leavemanagement() {
                                                         <td style={{ padding: "16px 24px", textAlign: "right" }}>
                                                             <div style={{ display: "flex", gap: "8px", justifyContent: "flex-end" }}>
                                                                 <button
-<<<<<<< HEAD
                                                                     onClick={() => setSelectedLeave(req)}
                                                                     className="action-icon-btn"
                                                                     title="View details"
-=======
-<<<<<<< HEAD
                                                                     onClick={() => setSelectedLeave(req)}
                                                                     className="action-icon-btn"
                                                                     title="View details"
-=======
-                                                                    onClick={() => cancelRequest(req._id)}
+onClick={() => cancelRequest(req._id)}
                                                                     className="action-icon-btn delete"
                                                                     title="Cancel Leave Request"
->>>>>>> 819c511ce486a6353829f2805eb90ecdf071faa3
->>>>>>> 614e3dc5d896ce340e10987b715fcc5204d54c2f
                                                                     style={{ cursor: "pointer" }}
                                                                 >
                                                                     <ExternalLink size={14} />
@@ -613,7 +561,6 @@ export default function Leavemanagement() {
                 </div>
 
                 {/* Modal: Apply Leave */}
-<<<<<<< HEAD
                 {showApplyModal && (
                     <div className="fixed inset-0 z-[999] flex items-center justify-center bg-slate-900/60 backdrop-blur-sm p-4">
                         <div className="bg-white dark:bg-slate-900 rounded-3xl w-full max-w-xl max-h-[92vh] overflow-y-auto p-8 shadow-2xl border border-slate-100 dark:border-slate-800 transition-all duration-300">
@@ -665,8 +612,6 @@ export default function Leavemanagement() {
                                         <input
                                             type="date"
                                             value={fromDate}
-=======
-<<<<<<< HEAD
                 {
                     showApplyModal && (
                         <div className="fixed inset-0 z-999 flex items-center justify-center bg-slate-900/60 backdrop-blur-sm p-4">
@@ -690,7 +635,6 @@ export default function Leavemanagement() {
                                         <label className="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Leave Type <span className="text-red-500">*</span></label>
                                         <select
                                             value={leaveType}
->>>>>>> 614e3dc5d896ce340e10987b715fcc5204d54c2f
                                             onChange={(e) => {
                                                 setFromDate(e.target.value);
                                                 if (formError) setFormError("");
@@ -710,12 +654,10 @@ export default function Leavemanagement() {
                                                 setToDate(e.target.value);
                                                 if (formError) setFormError("");
                                             }}
-<<<<<<< HEAD
                                             required
                                             className="w-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl px-4 py-3 text-sm font-semibold text-slate-800 dark:text-slate-100 outline-none transition-all focus:border-emerald-500 focus:ring-4 focus:ring-emerald-500/10"
                                         />
-=======
-                                        >
+>
                                             {selectedLeave.status}
                                         </span>
                                     </div>
@@ -724,8 +666,7 @@ export default function Leavemanagement() {
                                         <p style={{ margin: 0, padding: "10px", backgroundColor: "#f8fafc", borderRadius: "8px", border: "1px solid #e2e8f0", color: "#334155", fontStyle: "italic", minHeight: "50px" }}>
                                             {selectedLeave.reason}
                                         </p>
-=======
-                {showApplyModal && (
+{showApplyModal && (
                     <div style={{ position: "fixed", inset: 0, zIndex: 999, display: "flex", alignItems: "center", justifyContent: "center", backgroundColor: "rgba(15, 23, 42, 0.4)", backdropFilter: "blur(4px)" }}>
                         <div style={{ backgroundColor: "#ffffff", borderRadius: "16px", border: "1px solid #e2e8f0", width: "450px", maxWidth: "90%", padding: "24px", boxShadow: "0 20px 25px -5px rgba(0, 0, 0, 0.1)" }}>
                             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "16px" }}>
@@ -774,8 +715,6 @@ export default function Leavemanagement() {
                                             onChange={(e) => setToDate(e.target.value)}
                                             style={{ width: "100%", padding: "8px 12px", borderRadius: "6px", border: "1px solid #cbd5e1", outline: "none", fontSize: "14px" }}
                                         />
->>>>>>> 819c511ce486a6353829f2805eb90ecdf071faa3
->>>>>>> 614e3dc5d896ce340e10987b715fcc5204d54c2f
                                     </div>
                                 </div>
 

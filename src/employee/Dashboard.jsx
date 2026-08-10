@@ -1,17 +1,11 @@
-<<<<<<< HEAD
 ﻿import React, { useState, useEffect } from "react";
 import "../App.css";
 import { useNavigate } from "react-router-dom";
-=======
-<<<<<<< HEAD
 
 import React, { useState, useEffect } from "react";
-=======
 ﻿import React, { useState, useEffect } from "react";
 // styles are loaded globally via src/index.css (Tailwind + custom styles)
 import { useNavigate } from "react-router-dom";
->>>>>>> 819c511ce486a6353829f2805eb90ecdf071faa3
->>>>>>> 614e3dc5d896ce340e10987b715fcc5204d54c2f
 import Sidebar from "../components/Sidebar";
 import {
   Search,
@@ -92,13 +86,10 @@ export default function EmployeeDashboard() {
               />
             </div>
 
-<<<<<<< HEAD
 =======
-<<<<<<< HEAD
             <div className="emp-user-profile-badge">
               <div className="emp-avatar-circle">E</div>
               <span>Employee</span>
-=======
 >>>>>>> 614e3dc5d896ce340e10987b715fcc5204d54c2f
             <button
               className="icon-btn"
@@ -120,8 +111,6 @@ export default function EmployeeDashboard() {
                   : "Employee"}
               </span>
 <<<<<<< HEAD
-=======
->>>>>>> 819c511ce486a6353829f2805eb90ecdf071faa3
 >>>>>>> 614e3dc5d896ce340e10987b715fcc5204d54c2f
             </div>
           </div>
@@ -183,7 +172,6 @@ export default function EmployeeDashboard() {
             )}
           </div>
 
-<<<<<<< HEAD
           {!loading && dashboard && (
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-10">
               <div className="emp-card-box">
@@ -261,7 +249,6 @@ export default function EmployeeDashboard() {
                   </tbody>
                 </table>
               </div>
-=======
 <<<<<<< HEAD
           {!loading && dashboard && (
             <div className="emp-card-box mb-10">
@@ -345,8 +332,6 @@ export default function EmployeeDashboard() {
                   )}
                 </tbody>
               </table>
->>>>>>> 819c511ce486a6353829f2805eb90ecdf071faa3
->>>>>>> 614e3dc5d896ce340e10987b715fcc5204d54c2f
             </div>
           )}
 
@@ -386,9 +371,7 @@ export default function EmployeeDashboard() {
                   alt={employeeProfile.firstName || "Employee"}
                   className="profile-avatar-large"
                 />
-<<<<<<< HEAD
 =======
-<<<<<<< HEAD
 >>>>>>> 614e3dc5d896ce340e10987b715fcc5204d54c2f
                 <div>
                   <p className="profile-name">
@@ -411,33 +394,26 @@ export default function EmployeeDashboard() {
                     Download Payslip
                   </button>
                 </div>
-=======
-=======
-                <p className="profile-name">
+<p className="profile-name">
                   {employeeProfile.firstName || employeeProfile.lastName
                     ? `${employeeProfile.firstName || ""} ${employeeProfile.lastName || ""}`.trim()
                     : "Employee"}
                 </p>
                 <p className="profile-role">{employeeProfile.designationName || "Employee"}</p>
                 <div className="profile-dept-info">
->>>>>>> 819c511ce486a6353829f2805eb90ecdf071faa3
                   <span>Department</span>
                   <span>{employeeProfile.departmentName || "—"}</span>
                 </div>
-<<<<<<< HEAD
                 <div className="w-full space-y-3 pt-2">
                   <button className="btn-apply-leave">Apply Leave</button>
                   <button className="btn-download-payslip">Download Payslip</button>
                 </div>
-=======
-                <button className="btn-apply-leave" onClick={handleApplyLeave}>
+<button className="btn-apply-leave" onClick={handleApplyLeave}>
                   Apply Leave
                 </button>
                 <button className="btn-download-payslip" onClick={handleDownloadPayslip}>
                   Download Payslip
                 </button>
->>>>>>> 819c511ce486a6353829f2805eb90ecdf071faa3
->>>>>>> 614e3dc5d896ce340e10987b715fcc5204d54c2f
               </div>
             </div>
           </div>

@@ -1,21 +1,16 @@
 import { useState, useEffect } from "react";
-<<<<<<< HEAD
 import api from "../api";
 import Pagination from "../components/Pagination";
-=======
 // styles are loaded globally via src/index.css (Tailwind + custom styles)
->>>>>>> 819c511ce486a6353829f2805eb90ecdf071faa3
 import {
   ShieldCheck,
   Plus,
   Trash2,
   Users,
   UserCheck,
-<<<<<<< HEAD
   Award,
   AlertCircle,
   Edit,
-<<<<<<< HEAD
   X,
   Search,
   MoreVertical
@@ -67,11 +62,8 @@ const PERMISSION_GRID_MAPPING = [
     key: "profile",
     actions: { view: true, create: false, edit: true, delete: false, export: false }
   }
-=======
-  X
-=======
-  AlertCircle
->>>>>>> 819c511ce486a6353829f2805eb90ecdf071faa3
+X
+AlertCircle
 } from "lucide-react";
 
 const ALL_SYSTEM_PERMISSIONS = [
@@ -87,7 +79,6 @@ const ALL_SYSTEM_PERMISSIONS = [
   "notice",
   "profile"
   
->>>>>>> 614e3dc5d896ce340e10987b715fcc5204d54c2f
 ];
 
 export default function Roles() {
@@ -97,7 +88,6 @@ export default function Roles() {
   const [roleName, setRoleName] = useState("");
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
-<<<<<<< HEAD
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 6;
 
@@ -106,8 +96,7 @@ export default function Roles() {
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [selectedRole, setSelectedRole] = useState(null);
   const [editPermissions, setEditPermissions] = useState([]);
-=======
-  const [userSearch, setUserSearch] = useState("");
+const [userSearch, setUserSearch] = useState("");
   const [selectedUser, setSelectedUser] = useState(null);
   const [selectedRole, setSelectedRole] = useState("");
   const [selectedPermissions, setSelectedPermissions] = useState([]);
@@ -121,7 +110,6 @@ export default function Roles() {
       ? { Authorization: `Bearer ${token}`, "Content-Type": "application/json" }
       : { "Content-Type": "application/json" };
   }
->>>>>>> 819c511ce486a6353829f2805eb90ecdf071faa3
 
   // Employees Redesign Search and Menu States
   const [searchTerm, setSearchTerm] = useState("");
@@ -133,13 +121,11 @@ export default function Roles() {
     setLoading(true);
     setError("");
     try {
-<<<<<<< HEAD
       const rolesData = await api.getRoles();
       const usersData = await api.getAllUsers();
       const employeesData = await api.getAllEmployees();
 
       if (rolesData) setRoles(rolesData.roles || []);
-<<<<<<< HEAD
 
       const loadedEmployees = employeesData?.employees || employeesData || [];
       const mapped = (usersData?.users || []).map((u, idx) => {
@@ -157,10 +143,8 @@ export default function Roles() {
         };
       });
       setUsers(mapped);
-=======
-      if (usersData) setUsers(usersData.users || []);
-=======
-      const [rolesRes, usersRes] = await Promise.all([
+if (usersData) setUsers(usersData.users || []);
+const [rolesRes, usersRes] = await Promise.all([
         fetch(`${API_BASE_URL}/roles`, { headers: getHeaders() }),
         fetch(`${API_BASE_URL}/auth`, { headers: getHeaders() })
       ]);
@@ -179,8 +163,6 @@ export default function Roles() {
       } else {
         setError(usersData.message || "Failed to fetch users");
       }
->>>>>>> 819c511ce486a6353829f2805eb90ecdf071faa3
->>>>>>> 614e3dc5d896ce340e10987b715fcc5204d54c2f
     } catch (err) {
       console.error(err);
       setError("Failed to fetch data from server");
@@ -191,7 +173,6 @@ export default function Roles() {
 
   useEffect(() => {
     fetchData();
-<<<<<<< HEAD
 
     // Close actions dropdown when clicking elsewhere
     const handleOutsideClick = () => {
@@ -207,12 +188,10 @@ export default function Roles() {
   useEffect(() => {
     setCurrentPage(1);
   }, [searchTerm]);
-=======
-    fetchUsers();
+fetchUsers();
   }, []);
 
   const showUserSearchResults = users.length > 0 || searchSubmitted || userSearch.trim().length > 0;
->>>>>>> 614e3dc5d896ce340e10987b715fcc5204d54c2f
 
   const handleAddRole = async (e) => {
     e.preventDefault();
@@ -285,7 +264,6 @@ export default function Roles() {
     }
   };
 
-<<<<<<< HEAD
   const handleRemovePermissions = async (user) => {
     if (!user.role) {
       setError("This employee does not have an assigned role.");
@@ -312,10 +290,6 @@ export default function Roles() {
       setError("Failed to remove permissions");
     }
   };
-
-=======
-<<<<<<< HEAD
->>>>>>> 614e3dc5d896ce340e10987b715fcc5204d54c2f
   const openEditPermissions = (role) => {
     setSelectedRole(role);
     let initialPerms = [...(role.permissions || [])];
@@ -345,12 +319,9 @@ export default function Roles() {
     if (updated.includes(permString)) {
       updated = updated.filter(p => p !== permString);
     } else {
-<<<<<<< HEAD
       updated.push(permString);
-=======
-      setEditPermissions([...editPermissions, permission]);
-=======
-  const fetchUsers = async (query = "") => {
+setEditPermissions([...editPermissions, permission]);
+const fetchUsers = async (query = "") => {
     setError("");
     try {
       const url = `${API_BASE_URL}/auth${query ? `?q=${encodeURIComponent(query)}` : ""}`;
@@ -481,8 +452,6 @@ export default function Roles() {
       setError("Failed to update user access.");
     } finally {
       setLoading(false);
->>>>>>> 819c511ce486a6353829f2805eb90ecdf071faa3
->>>>>>> 614e3dc5d896ce340e10987b715fcc5204d54c2f
     }
 
     // Manage top-level key matching backend expectations:
@@ -574,19 +543,16 @@ export default function Roles() {
       )}
 
       {/* Stats Grid */}
-<<<<<<< HEAD
       <div className="stats-grid" style={{ marginBottom: "24px" }}>
         <div className="stat-card stat-card-indigo">
           <div className="stat-header">
             <div className="stat-icon-box total-employees-icon">
               <ShieldCheck size={20} />
-=======
-      <div className="stats-grid mb-6">
+<div className="stats-grid mb-6">
         <div className="stat-card">
           <div className="stat-header">
             <div className="stat-icon-box total-employees-icon bg-emerald-800">
               <ShieldCheck size={20} color="#ffffff" />
->>>>>>> 819c511ce486a6353829f2805eb90ecdf071faa3
             </div>
             <div>
               <p className="stat-label">Admins</p>
@@ -598,15 +564,11 @@ export default function Roles() {
 
         <div className="stat-card stat-card-blue">
           <div className="stat-header">
-<<<<<<< HEAD
             <div className="stat-icon-box depts-icon">
               <Users size={20} />
-<<<<<<< HEAD
-=======
 =======
             <div className="stat-icon-box depts-icon bg-emerald-600">
               <Users size={20} color="#ffffff" />
->>>>>>> 819c511ce486a6353829f2805eb90ecdf071faa3
 >>>>>>> 614e3dc5d896ce340e10987b715fcc5204d54c2f
             </div>
             <div>
@@ -619,7 +581,6 @@ export default function Roles() {
       </div>
 
       {/* Main Content Layout */}
-<<<<<<< HEAD
       <div className="w-full">
         {/* Employees Permissions Card */}
         <div className="employee-permissions-card">
@@ -640,8 +601,7 @@ export default function Roles() {
               />
             </div>
           </div>
-=======
-      <div className="grid lg:grid-cols-[2fr_1fr] gap-6 items-start">
+<div className="grid lg:grid-cols-[2fr_1fr] gap-6 items-start">
         
         {/* Roles Table */}
         <div className="bg-white rounded-xl p-6 shadow-sm">
@@ -659,8 +619,7 @@ export default function Roles() {
                   <th>ROLE</th>
                   <th className="table-center-col">STATUS</th>
                   <th className="table-actions-col" style={{ width: "80px" }}>ACTIONS</th>
-=======
-          {error && (
+{error && (
             <div className="flex items-center gap-2 text-rose-700 bg-rose-50 p-3 rounded-md mb-4">
               <AlertCircle size={16} />
               <span>{error}</span>
@@ -670,37 +629,28 @@ export default function Roles() {
           {success && (
             <div className="text-emerald-800 bg-emerald-50 p-3 rounded-md mb-4">{success}</div>
           )}
->>>>>>> 819c511ce486a6353829f2805eb90ecdf071faa3
 
           <div className="overflow-auto rounded-md border border-slate-100">
             <table className="min-w-full divide-y">
               <thead>
                 <tr>
-<<<<<<< HEAD
                   <th>ROLE NAME</th>
                   <th>PERMISSIONS GRANTED</th>
                   <th>EMPLOYEE NAME(S)</th>
                   <th>FROM-TO DATE</th>
                   <th style={{ textAlign: "center" }}>MEMBERS</th>
                   <th style={{ textAlign: "right", paddingRight: "24px" }}>ACTIONS</th>
-=======
-                  <th className="px-4 py-3">ROLE NAME</th>
+<th className="px-4 py-3">ROLE NAME</th>
                   <th className="px-4 py-3">PERMISSIONS GRANTED</th>
                   <th className="px-4 py-3 text-center">MEMBERS</th>
                   <th className="px-4 py-3 text-right">ACTIONS</th>
->>>>>>> 819c511ce486a6353829f2805eb90ecdf071faa3
->>>>>>> 614e3dc5d896ce340e10987b715fcc5204d54c2f
                 </tr>
               </thead>
               <tbody>
                 {loading ? (
                   <tr>
-<<<<<<< HEAD
                     <td colSpan="7" style={{ textAlign: "center", padding: "30px 0" }}>Loading employees...</td>
-=======
-<<<<<<< HEAD
                     <td colSpan="6" style={{ textAlign: "center", padding: "30px 0" }}>Loading roles...</td>
->>>>>>> 614e3dc5d896ce340e10987b715fcc5204d54c2f
                   </tr>
                 ) : filteredUsers.length === 0 ? (
                   <tr>
@@ -753,7 +703,6 @@ export default function Roles() {
                                   setIsViewModalOpen(true);
                                 }}
                               >
-<<<<<<< HEAD
                                 View Permissions
                               </button>
                               <button
@@ -778,10 +727,8 @@ export default function Roles() {
                               </button>
                             </div>
                           )}
-=======
-                                <span style={{ width: "6px", height: "6px", borderRadius: "9999px", backgroundColor: "#0f766e" }} />
-=======
-                    <td colSpan="4" className="text-center py-8">Loading roles...</td>
+<span style={{ width: "6px", height: "6px", borderRadius: "9999px", backgroundColor: "#0f766e" }} />
+<td colSpan="4" className="text-center py-8">Loading roles...</td>
                   </tr>
                 ) : roles.length === 0 ? (
                   <tr>
@@ -799,7 +746,6 @@ export default function Roles() {
                             {role.permissions.map((p, idx) => (
                               <div key={idx} className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-slate-200 bg-slate-50 text-slate-700 text-sm font-semibold">
                                 <span className="w-1.5 h-1.5 rounded-full bg-emerald-700" />
->>>>>>> 819c511ce486a6353829f2805eb90ecdf071faa3
                                 <span>{p}</span>
                               </div>
                             ))}
@@ -808,7 +754,6 @@ export default function Roles() {
                           <span className="text-sm text-slate-500">No permissions configured</span>
                         )}
                       </td>
-<<<<<<< HEAD
                       <td style={{ color: "#475569", fontSize: "13px" }}>
                         {getRoleUserNames(role.name)}
                       </td>
@@ -836,17 +781,14 @@ export default function Roles() {
                           >
                             <Trash2 size={16} />
                           </button>
->>>>>>> 614e3dc5d896ce340e10987b715fcc5204d54c2f
                         </div>
-=======
-                      <td className="px-4 py-3 text-center">
+<td className="px-4 py-3 text-center">
                         <span className="text-sm font-semibold text-emerald-700">{getRoleUserCount(role.name)}</span>
                       </td>
                       <td className="px-4 py-3 text-right">
                         <button onClick={() => handleDeleteRole(role._id)} className="text-rose-600 hover:text-rose-800">
                           <Trash2 size={16} />
                         </button>
->>>>>>> 819c511ce486a6353829f2805eb90ecdf071faa3
                       </td>
                     </tr>
                   ))
@@ -871,7 +813,6 @@ export default function Roles() {
         </div>
       </div>
 
-<<<<<<< HEAD
       {/* Add Role Modal Dialog */}
       {isAddModalOpen && (
         <div className="modal-backdrop">
@@ -1068,7 +1009,6 @@ export default function Roles() {
           </div>
         </div>
       )}
-<<<<<<< HEAD
       {/* View Permissions Modal Dialog */}
       {isViewModalOpen && viewingUser && (
         <div className="modal-backdrop">
@@ -1151,9 +1091,7 @@ export default function Roles() {
           </div>
         </div>
       )}
-=======
-=======
-        {/* User Access Assignment Card */}
+{/* User Access Assignment Card */}
         <div className="bg-white rounded-xl p-6 shadow-sm">
           <h2 className="text-lg font-semibold mb-2">Assign User Access</h2>
           <p className="text-sm text-slate-500 mb-4">Search users by name or email, choose a role, and grant permissions saved on the employee record.</p>
@@ -1240,8 +1178,6 @@ export default function Roles() {
           </form>
         </div>
       </div>
->>>>>>> 819c511ce486a6353829f2805eb90ecdf071faa3
->>>>>>> 614e3dc5d896ce340e10987b715fcc5204d54c2f
     </div>
   );
 }

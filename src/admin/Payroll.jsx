@@ -1,5 +1,4 @@
 import { useState, useEffect } from "react";
-<<<<<<< HEAD
 =======
 // styles are loaded globally via src/index.css (Tailwind + custom styles)
 >>>>>>> 819c511ce486a6353829f2805eb90ecdf071faa3
@@ -377,19 +376,16 @@ export default function Payroll() {
             </div>
 
             {/* Stats Widget */}
-<<<<<<< HEAD
             <div className="stats-grid" style={{ marginBottom: "24px" }}>
                 <div className="stat-card stat-card-green">
                     <div className="stat-header">
                         <div className="stat-icon-plain" style={{ color: "#065f46" }}>
                             <ArrowUpRight size={22} />
-=======
-            <div className="stats-grid mb-6">
+<div className="stats-grid mb-6">
                 <div className="stat-card">
                     <div className="stat-header">
                         <div className="stat-icon-box bg-emerald-800">
                             <ArrowUpRight size={20} color="#ffffff" />
->>>>>>> 614e3dc5d896ce340e10987b715fcc5204d54c2f
                         </div>
                         <div>
                             <p className="stat-label">Total Disbursed (Paid)</p>
@@ -401,13 +397,10 @@ export default function Payroll() {
 
                 <div className="stat-card stat-card-amber">
                     <div className="stat-header">
-<<<<<<< HEAD
                         <div className="stat-icon-plain" style={{ color: "#d97706" }}>
                             <Clock size={22} />
-=======
-                        <div className="stat-icon-box bg-amber-600">
+<div className="stat-icon-box bg-amber-600">
                             <Clock size={20} color="#ffffff" />
->>>>>>> 614e3dc5d896ce340e10987b715fcc5204d54c2f
                         </div>
                         <div>
                             <p className="stat-label">Total Outstandings (Pending)</p>
@@ -419,13 +412,10 @@ export default function Payroll() {
 
                 <div className="stat-card stat-card-teal">
                     <div className="stat-header">
-<<<<<<< HEAD
                         <div className="stat-icon-plain" style={{ color: "#0d9488" }}>
                             <Percent size={22} />
-=======
-                        <div className="stat-icon-box bg-emerald-700">
+<div className="stat-icon-box bg-emerald-700">
                             <Percent size={20} color="#ffffff" />
->>>>>>> 614e3dc5d896ce340e10987b715fcc5204d54c2f
                         </div>
                         <div>
                             <p className="stat-label">Processed Months</p>
@@ -447,7 +437,6 @@ export default function Payroll() {
                 <div className="text-emerald-800 bg-emerald-50 p-3 rounded-md mb-5">{success}</div>
             )}
 
-<<<<<<< HEAD
             {/* Payroll List Full Width */}
             <div className="w-full">
                 <div className="employee-directory-card" style={{ padding: "24px" }}>
@@ -464,8 +453,7 @@ export default function Payroll() {
                                 }}
                                 style={{ padding: "6px 12px", borderRadius: "6px", border: "1px solid #cbd5e1", fontSize: "13px", backgroundColor: "#ffffff" }}
                             >
-=======
-            {/* Main Grid split */}
+{/* Main Grid split */}
             <div className="grid lg:grid-cols-[2.3fr_1fr] gap-6 items-start">
 
                 {/* Payroll List */}
@@ -476,13 +464,11 @@ export default function Payroll() {
                         {/* Local Filter controls */}
                         <div className="flex gap-2">
                             <select value={searchYear} onChange={(e) => setSearchYear(e.target.value)} className="px-3 py-2 rounded-md border border-slate-300 text-sm bg-white">
->>>>>>> 819c511ce486a6353829f2805eb90ecdf071faa3
                                 <option value="All Years">All Years</option>
                                 <option value="2025">2025</option>
                                 <option value="2026">2026</option>
                                 <option value="2027">2027</option>
                             </select>
-<<<<<<< HEAD
                             <select
                                 value={searchMonth}
                                 onChange={(e) => {
@@ -491,9 +477,7 @@ export default function Payroll() {
                                 }}
                                 style={{ padding: "6px 12px", borderRadius: "6px", border: "1px solid #cbd5e1", fontSize: "13px", backgroundColor: "#ffffff" }}
                             >
-=======
-                            <select value={searchMonth} onChange={(e) => setSearchMonth(e.target.value)} className="px-3 py-2 rounded-md border border-slate-300 text-sm bg-white">
->>>>>>> 819c511ce486a6353829f2805eb90ecdf071faa3
+<select value={searchMonth} onChange={(e) => setSearchMonth(e.target.value)} className="px-3 py-2 rounded-md border border-slate-300 text-sm bg-white">
                                 <option value="All Months">All Months</option>
                                 {[["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]][0].map(m => (
                                     <option key={m} value={m}>{m}</option>
@@ -506,7 +490,6 @@ export default function Payroll() {
                         <table className="min-w-full divide-y">
                             <thead>
                                 <tr>
-<<<<<<< HEAD
                                     <th>EMPLOYEE</th>
                                     <th>PERIOD</th>
                                     <th className="table-number-col">BASIC (₹)</th>
@@ -515,7 +498,6 @@ export default function Payroll() {
                                     <th className="table-number-col">NET PAID (₹)</th>
                                     <th className="table-center-col">STATUS</th>
                                     <th className="table-actions-col">ACTIONS</th>
-=======
 <<<<<<< HEAD
                                     <th style={{ padding: "8px 12px" }}>EMPLOYEE</th>
                                     <th style={{ padding: "8px 12px" }}>PERIOD</th>
@@ -525,8 +507,7 @@ export default function Payroll() {
                                     <th style={{ padding: "8px 12px", textAlign: "right" }}>NET PAID (₹)</th>
                                     <th style={{ padding: "8px 12px", textAlign: "center" }}>STATUS</th>
                                     <th style={{ padding: "8px 12px", textAlign: "right" }}>ACTIONS</th>
-=======
-                                    <th className="px-4 py-3">EMPLOYEE</th>
+<th className="px-4 py-3">EMPLOYEE</th>
                                     <th className="px-4 py-3">PERIOD</th>
                                     <th className="px-4 py-3 text-right">BASIC ($)</th>
                                     <th className="px-4 py-3 text-right">REDUCTION ($)</th>
@@ -534,8 +515,6 @@ export default function Payroll() {
                                     <th className="px-4 py-3 text-right">NET PAID ($)</th>
                                     <th className="px-4 py-3 text-center">STATUS</th>
                                     <th className="px-4 py-3 text-right">ACTIONS</th>
->>>>>>> 819c511ce486a6353829f2805eb90ecdf071faa3
->>>>>>> 614e3dc5d896ce340e10987b715fcc5204d54c2f
                                 </tr>
                             </thead>
                             <tbody>
@@ -548,26 +527,19 @@ export default function Payroll() {
                                         <td colSpan="8" className="text-center py-8">No payroll records found matching filters.</td>
                                     </tr>
                                 ) : (
-<<<<<<< HEAD
                                     paginatedPayrolls.map((payroll) => (
                                         <tr key={payroll._id} className="employee-row">
                                             <td style={{ padding: "8px 12px" }}>
-=======
-                                    filteredPayrolls.map((payroll) => (
+filteredPayrolls.map((payroll) => (
                                         <tr key={payroll._id} className="border-b last:border-b-0">
                                             <td className="px-4 py-3">
->>>>>>> 819c511ce486a6353829f2805eb90ecdf071faa3
                                                 <div>
                                                     <p className="font-semibold text-slate-900 text-sm">{payroll.employeeId?.firstName} {payroll.employeeId?.lastName}</p>
                                                     <p className="text-xs text-slate-500">{payroll.employeeId?.employeeId}</p>
                                                 </div>
                                             </td>
-<<<<<<< HEAD
                                             <td>
-=======
-<<<<<<< HEAD
                                             <td style={{ padding: "8px 12px" }}>
->>>>>>> 614e3dc5d896ce340e10987b715fcc5204d54c2f
                                                 <span style={{ fontSize: "13px", fontWeight: "600", color: "#475569" }}>
                                                     {payroll.month} {payroll.year}
                                                 </span>
@@ -616,8 +588,7 @@ export default function Payroll() {
                                                         }}
                                                         title="Print Pay Slip / Save as PDF"
                                                     >
-=======
-                                            <td className="px-4 py-3">
+<td className="px-4 py-3">
                                                 <span className="text-sm font-medium text-slate-600">{payroll.month} {payroll.year}</span>
                                             </td>
                                             <td className="px-4 py-3 text-right font-semibold">{(payroll.basicSalary || 0).toLocaleString()}</td>
@@ -632,7 +603,6 @@ export default function Payroll() {
                                             <td className="px-4 py-3 text-right">
                                                 <div className="flex gap-2 justify-end">
                                                     <button onClick={() => handleDownloadPayslip(payroll)} className="px-2 py-1 rounded-md bg-slate-100 text-slate-700 text-sm font-semibold flex items-center gap-2" title="Print Pay Slip / Save as PDF">
->>>>>>> 819c511ce486a6353829f2805eb90ecdf071faa3
                                                         <Download size={14} />
                                                         <span>Slip</span>
                                                     </button>
@@ -680,7 +650,6 @@ export default function Payroll() {
                 </div>
             </div>
 
-<<<<<<< HEAD
             {/* Process Salary Modal */}
             {isAddModalOpen && (
                 <div className="modal-backdrop">
@@ -749,8 +718,7 @@ export default function Payroll() {
                                     placeholder="e.g. 50000"
                                     required
                                 />
-=======
-                {/* Process Salary Form */}
+{/* Process Salary Form */}
                 <div className="bg-white rounded-xl p-6 shadow-sm">
                     <h2 className="text-lg font-semibold mb-4">Process Salary</h2>
                     <form onSubmit={handleAddPayroll}>
@@ -774,10 +742,8 @@ export default function Payroll() {
                             <div>
                                 <label className="block text-xs font-semibold uppercase text-slate-600 mb-2">Year*</label>
                                 <input type="number" value={year} onChange={(e)=>setYear(e.target.value)} placeholder="e.g. 2026" className="w-full px-3 py-2 rounded-md border border-slate-300" />
->>>>>>> 819c511ce486a6353829f2805eb90ecdf071faa3
                             </div>
 
-<<<<<<< HEAD
                             <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "10px" }}>
                                 <div className="form-group">
                                     <label>Allowance (₹)</label>
@@ -846,8 +812,7 @@ export default function Payroll() {
                                         onChange={(e) => setPaymentDate(e.target.value)}
                                     />
                                 </div>
-=======
-                        <div className="mb-3">
+<div className="mb-3">
                             <label className="block text-xs font-semibold uppercase text-slate-600 mb-2">Basic Salary* ($)</label>
                             <input type="number" value={basicSalary} onChange={(e)=>setBasicSalary(e.target.value)} placeholder="e.g. 5000" className="w-full px-3 py-2 rounded-md border border-slate-300" />
                         </div>
@@ -879,10 +844,8 @@ export default function Payroll() {
                             <div className="p-3 bg-emerald-50 border border-emerald-200 rounded-md mb-3 flex justify-between items-center text-sm">
                                 <span className="font-semibold text-emerald-700">Estimated Net:</span>
                                 <span className="font-bold text-emerald-700">${getCalculatedNet().toLocaleString("en-US", { minimumFractionDigits: 2 })}</span>
->>>>>>> 819c511ce486a6353829f2805eb90ecdf071faa3
                             </div>
 
-<<<<<<< HEAD
                             <div className="modal-actions">
                                 <button
                                     type="button"
@@ -904,8 +867,7 @@ export default function Payroll() {
                     </div>
                 </div>
             )}
-=======
-                        <div className="grid grid-cols-[1fr_1.2fr] gap-2 mb-5">
+<div className="grid grid-cols-[1fr_1.2fr] gap-2 mb-5">
                             <div>
                                 <label className="block text-xs font-semibold uppercase text-slate-600 mb-2">Payment Status*</label>
                                 <select value={paymentStatus} onChange={(e)=>setPaymentStatus(e.target.value)} className="w-full px-3 py-2 rounded-md border border-slate-300">
@@ -927,7 +889,6 @@ export default function Payroll() {
                 </div>
 
             </div>
->>>>>>> 819c511ce486a6353829f2805eb90ecdf071faa3
         </div>
     );
 }

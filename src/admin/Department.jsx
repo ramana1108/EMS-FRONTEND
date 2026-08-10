@@ -1,6 +1,4 @@
-<<<<<<< HEAD
 =======
-<<<<<<< HEAD
 >>>>>>> 614e3dc5d896ce340e10987b715fcc5204d54c2f
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
@@ -24,9 +22,7 @@ export default function Departments() {
   const navigate = useNavigate();
   const [departments, setDepartments] = useState([]);
   const [showProfileInfo, setShowProfileInfo] = useState(false);
-=======
-  const [departments, setDepartments] = useState(INITIAL_DEMO_DATA);
-=======
+const [departments, setDepartments] = useState(INITIAL_DEMO_DATA);
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import api from "../api";
@@ -35,8 +31,6 @@ const Departments = () => {
   const navigate = useNavigate();
   const [departments, setDepartments] = useState([]);
   const [showProfileInfo, setShowProfileInfo] = useState(false);
->>>>>>> 819c511ce486a6353829f2805eb90ecdf071faa3
->>>>>>> 614e3dc5d896ce340e10987b715fcc5204d54c2f
   const [searchQuery, setSearchQuery] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingId, setEditingId] = useState(null);
@@ -66,22 +60,17 @@ const Departments = () => {
 
   const fetchDashboardCounts = async () => {
     try {
-<<<<<<< HEAD
 =======
-<<<<<<< HEAD
       const data = await api.getAdminDashboard();
       if (data && data.dashboard) {
         setBackendTotalDepartments(data.dashboard.totalDepartments || 0);
         setBackendTotalEmployees(data.dashboard.totalEmployees || 0);
-=======
 >>>>>>> 614e3dc5d896ce340e10987b715fcc5204d54c2f
       const res = await api.getAdminDashboard();
       if (res?.dashboard) {
         setBackendTotalDepartments(res.dashboard.totalDepartments || 0);
         setBackendTotalEmployees(res.dashboard.totalEmployees || 0);
 <<<<<<< HEAD
-=======
->>>>>>> 819c511ce486a6353829f2805eb90ecdf071faa3
 >>>>>>> 614e3dc5d896ce340e10987b715fcc5204d54c2f
       }
     } catch (error) {
@@ -92,13 +81,10 @@ const Departments = () => {
   const fetchDepartments = async () => {
     setLoading(true);
     try {
-<<<<<<< HEAD
 =======
 <<<<<<< HEAD
       const data = await api.getDepartments();
       if (data) setDepartments(data.departments || data.data || []);
-=======
->>>>>>> 614e3dc5d896ce340e10987b715fcc5204d54c2f
       const res = await api.getDepartments();
       if (Array.isArray(res)) {
         setDepartments(res);
@@ -107,9 +93,7 @@ const Departments = () => {
       } else if (res?.data) {
         setDepartments(res.data);
       }
-<<<<<<< HEAD
 =======
->>>>>>> 819c511ce486a6353829f2805eb90ecdf071faa3
 >>>>>>> 614e3dc5d896ce340e10987b715fcc5204d54c2f
     } catch (error) {
       console.warn("Backend API offline or failed to fetch departments:", error);
@@ -126,14 +110,12 @@ const Departments = () => {
     setSelectedDepartment(department);
 
     try {
-<<<<<<< HEAD
       const res = await api.getDepartmentEmployees(department._id);
       if (Array.isArray(res)) {
         setSelectedDepartmentEmployees(res);
       } else {
         setSelectedDepartmentEmployees(res?.employees || res?.data || []);
       }
-=======
 <<<<<<< HEAD
       console.debug("fetchDepartmentEmployees: department", department._id);
       // Some environments may not expose the department-specific endpoint correctly.
@@ -149,13 +131,10 @@ const Departments = () => {
       });
       console.debug("fetchDepartmentEmployees: filtered count", filtered.length);
       setSelectedDepartmentEmployees(filtered);
-=======
-      const res = await api.getDepartmentEmployees(department._id);
+const res = await api.getDepartmentEmployees(department._id);
       if (res?.employees) setSelectedDepartmentEmployees(res.employees);
       else if (res?.employees === undefined && Array.isArray(res)) setSelectedDepartmentEmployees(res);
       else setSelectedDepartmentEmployees(res.employees || []);
->>>>>>> 819c511ce486a6353829f2805eb90ecdf071faa3
->>>>>>> 614e3dc5d896ce340e10987b715fcc5204d54c2f
     } catch (error) {
       console.warn(error);
       setEmployeesError("Could not load department employees.");
@@ -236,19 +215,15 @@ const Departments = () => {
 
     if (editingId) {
       try {
-<<<<<<< HEAD
         const data = await api.updateDepartment(editingId, formData);
 
         if (data?.department) {
           await fetchDepartments();
           await fetchDashboardCounts();
-=======
-<<<<<<< HEAD
         const res = await api.updateDepartment(editingId, formData);
         if (res && res.department) {
           setDepartments((prev) => prev.map((d) => (d._id === editingId ? res.department : d)));
           fetchDashboardCounts();
->>>>>>> 614e3dc5d896ce340e10987b715fcc5204d54c2f
         } else {
           setErrorMsg(data?.message || "Failed to update department.");
           return;
@@ -269,14 +244,11 @@ const Departments = () => {
           return;
         }
       } catch (err) {
-<<<<<<< HEAD
         setErrorMsg(err?.message || "Failed to create department.");
         return;
-=======
-        const newDept = { ...formData, _id: "temp-" + Math.random().toString(36).substring(2, 9) };
+const newDept = { ...formData, _id: "temp-" + Math.random().toString(36).substring(2, 9) };
         setDepartments((prev) => [newDept, ...prev]);
-=======
-        const data = await api.updateDepartment(editingId, formData);
+const data = await api.updateDepartment(editingId, formData);
 
         if (data?.department) {
           await fetchDepartments();
@@ -303,8 +275,6 @@ const Departments = () => {
       } catch (err) {
         setErrorMsg(err?.message || "Failed to create department.");
         return;
->>>>>>> 819c511ce486a6353829f2805eb90ecdf071faa3
->>>>>>> 614e3dc5d896ce340e10987b715fcc5204d54c2f
       }
     }
 
@@ -316,20 +286,14 @@ const Departments = () => {
     if (!window.confirm("Are you sure you want to delete this department?")) return;
 
     try {
-<<<<<<< HEAD
       await api.deleteDepartment(id);
       await fetchDepartments();
       await fetchDashboardCounts();
-=======
-<<<<<<< HEAD
       const res = await api.deleteDepartment(id);
       if (res) fetchDashboardCounts();
-=======
-      await api.deleteDepartment(id);
+await api.deleteDepartment(id);
       await fetchDepartments();
       await fetchDashboardCounts();
->>>>>>> 819c511ce486a6353829f2805eb90ecdf071faa3
->>>>>>> 614e3dc5d896ce340e10987b715fcc5204d54c2f
     } catch (err) {
       setErrorMsg(err?.message || "Failed to delete department.");
     }
@@ -348,7 +312,6 @@ const Departments = () => {
             onChange={(e) => setSearchQuery(e.target.value)}
           />
         </div>
-<<<<<<< HEAD
         <div className="header-right relative" style={{ display: "flex", alignItems: "center", gap: "16px" }}>
           <button className="icon-btn" title="Notifications" onClick={() => navigate("/admin/notices") }>
             <Bell size={18} />
@@ -372,14 +335,11 @@ const Departments = () => {
           <button className="btn-add-dept" onClick={handleOpenAddModal} style={{ display: "flex", alignItems: "center", gap: "6px" }}>
             <Plus size={16} />
             <span>Add Department</span>
-=======
-<<<<<<< HEAD
         <div className="header-right" style={{ display: "flex", alignItems: "center", gap: "16px" }}>
           <button className="btn-add-dept" onClick={handleOpenAddModal} style={{ display: "flex", alignItems: "center", gap: "6px" }}>
             <Plus size={16} />
             <span>Add Department</span>
-=======
-        <div className="header-right relative">
+<div className="header-right relative">
           <button className="icon-btn" title="Notifications" onClick={() => navigate("/admin/notices") }>
             🔔
           </button>
@@ -401,8 +361,6 @@ const Departments = () => {
           )}
           <button className="btn-add-dept" onClick={handleOpenAddModal}>
             + Add Department
->>>>>>> 819c511ce486a6353829f2805eb90ecdf071faa3
->>>>>>> 614e3dc5d896ce340e10987b715fcc5204d54c2f
           </button>
         </div>
       </div>

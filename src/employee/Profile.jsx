@@ -1,5 +1,4 @@
 import React, { useState, useEffect, useRef } from "react";
-<<<<<<< HEAD
 =======
 // styles are loaded globally via src/index.css (Tailwind + custom styles)
 >>>>>>> 819c511ce486a6353829f2805eb90ecdf071faa3
@@ -341,39 +340,30 @@ export default function Profile() {
                     <div className="text-sm font-semibold text-slate-900">EMS Portal</div>
                 </div>
 
-<<<<<<< HEAD
-=======
-                {/* Top Header Bar */}
+{/* Top Header Bar */}
 <<<<<<< HEAD
                 <div className="emp-top-header" style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "32px", padding: "0 10px" }}>
                     <div style={{ visibility: "hidden" }}>Placeholder</div>
-=======
-                <div className="flex justify-between items-center mb-8 px-2">
+<div className="flex justify-between items-center mb-8 px-2">
                     <div className="invisible">Placeholder</div>
 
                     <div className="flex items-center gap-2 bg-white px-3 py-1 rounded-xl border border-slate-200 font-bold text-black">
                         <div className="w-8 h-8 rounded-full bg-emerald-800 text-white flex items-center justify-center text-xs font-bold">{getInitials(formData.firstName + " " + formData.lastName)}</div>
                         <span>{formData.firstName} {formData.lastName}</span>
                     </div>
->>>>>>> 819c511ce486a6353829f2805eb90ecdf071faa3
                 </div>
 
->>>>>>> 614e3dc5d896ce340e10987b715fcc5204d54c2f
                 {/* Page Content */}
                 <div className="flex-1 px-2">
 
-<<<<<<< HEAD
                     <div className="page-header" style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "24px", marginTop: "24px" }}>
-=======
-                    <div className="page-header flex justify-between items-center mb-6">
->>>>>>> 614e3dc5d896ce340e10987b715fcc5204d54c2f
+<div className="page-header flex justify-between items-center mb-6">
                         <div>
                             <h1 className="text-3xl md:text-4xl font-extrabold text-slate-900 m-0">My Profile</h1>
                             <p className="text-sm text-slate-500 mt-1">Manage your personal details and contact settings</p>
                         </div>
                     </div>
 
-<<<<<<< HEAD
                     {success && (
                         <div style={{ display: "flex", alignItems: "center", gap: "8px", color: "#065f46", backgroundColor: "#ecfdf5", padding: "12px 16px", borderRadius: "10px", marginBottom: "20px", fontSize: "14px", fontWeight: "600", border: "1px solid #a7f3d0" }}>
                             <CheckCircle size={16} />
@@ -397,8 +387,7 @@ export default function Profile() {
                             <div className="emp-card-box" style={{ padding: "24px", display: "flex", flexDirection: "column", alignItems: "center", backgroundColor: "var(--card-bg, #ffffff)" }}>
                                 <div style={{ position: "relative", marginBottom: "16px" }}>
                                     <div
-=======
-                    {
+{
                         success && (
                             <div className="flex items-center gap-2 text-emerald-800 bg-emerald-50 px-4 py-3 rounded-lg mb-5 text-sm font-semibold border border-emerald-100">
                                 <CheckCircle size={16} />
@@ -423,7 +412,6 @@ export default function Profile() {
                             <div className="grid lg:grid-cols-[1.2fr_2.5fr] gap-6 items-start">
 
                                 {/* Left Profile Summary Card Container */}
-<<<<<<< HEAD
                                 <div className="emp-card-box" style={{ padding: "24px", display: "flex", flexDirection: "column", alignItems: "center", backgroundColor: "var(--card-bg)" }}>
                                     <div style={{ position: "relative", marginBottom: "16px" }}>
                                         <div
@@ -443,11 +431,9 @@ export default function Profile() {
                                                 overflow: "hidden"
                                             }}
                                         >
-=======
-                                <div className="bg-white p-6 rounded-xl flex flex-col items-center">
+<div className="bg-white p-6 rounded-xl flex flex-col items-center">
                                     <div className="relative mb-4">
                                         <div className="w-[100px] h-[100px] rounded-full bg-emerald-900 text-white text-[36px] font-extrabold flex items-center justify-center border-4 border-emerald-500 shadow-lg overflow-hidden">
->>>>>>> 819c511ce486a6353829f2805eb90ecdf071faa3
                                             {previewImage || employee?.profileImage ? (
                                                 <img src={previewImage || employee.profileImage} alt="Profile" className="w-full h-full object-cover" />
                                             ) : (
@@ -494,7 +480,6 @@ export default function Profile() {
                                     </p>
 
                                     <span
->>>>>>> 614e3dc5d896ce340e10987b715fcc5204d54c2f
                                         style={{
                                             width: "100px",
                                             height: "100px",
@@ -560,7 +545,6 @@ export default function Profile() {
                                     {designationName}
                                 </p>
 
-<<<<<<< HEAD
                                 <span
                                     style={{
                                         backgroundColor: "#ecfdf5",
@@ -579,8 +563,6 @@ export default function Profile() {
                                     <span style={{ width: "6px", height: "6px", backgroundColor: "#10b981", borderRadius: "50%" }} />
                                     {employee?.status || "Active"} Employee
                                 </span>
-=======
-<<<<<<< HEAD
                                 {/* Right Tabbed Form Cards Container */}
                                 <div className="emp-card-box">
                                     <div className="border-b border-slate-200 dark:border-slate-800/80 pb-4 mb-6">
@@ -654,8 +636,7 @@ export default function Profile() {
 
                                         {/* Form Footer Action */}
                                         <div className="flex justify-end pt-4 border-t border-slate-200 dark:border-slate-800/80">
-=======
-                                {/* Right Profile Form Container */}
+{/* Right Profile Form Container */}
                                 <div className="emp-card-box" style={{ padding: "24px", backgroundColor: "#ffffff" }}>
                                     <form onSubmit={handleSave}>
                                         <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
@@ -685,7 +666,6 @@ export default function Profile() {
                                                     </select>
                                                 </div>
                                             </div>
->>>>>>> 614e3dc5d896ce340e10987b715fcc5204d54c2f
 
                                 <div style={{ width: "100%", borderTop: "1px solid #f1f5f9", paddingTop: "16px", fontSize: "13px" }}>
                                     <div style={{ display: "flex", justifyContent: "space-between", padding: "8px 0" }}>
@@ -703,7 +683,6 @@ export default function Profile() {
                                 </div>
                             </div>
 
-<<<<<<< HEAD
                             {/* Right Profile Summary Cards */}
                             <div className="space-y-6">
                                 <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm shadow-slate-200/70">
@@ -1072,8 +1051,7 @@ export default function Profile() {
                                         </button>
                                     </div>
                                 </form>
-=======
-                                            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "16px" }}>
+<div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "16px" }}>
                                                 <div>
                                                     <label style={{ display: "block", fontSize: "11px", fontWeight: "700", textTransform: "uppercase", color: "#475569", marginBottom: "4px" }}>Email</label>
                                                     <input
@@ -1168,7 +1146,6 @@ export default function Profile() {
                                         </div>
 
                                         <div style={{ marginTop: "24px", paddingTop: "16px", borderTop: "1px solid #f1f5f9", display: "flex", justifyContent: "flex-end" }}>
->>>>>>> 819c511ce486a6353829f2805eb90ecdf071faa3
                                             <button
                                                 type="submit"
                                                 disabled={saving}
@@ -1182,7 +1159,6 @@ export default function Profile() {
 <<<<<<< HEAD
 =======
 
->>>>>>> 819c511ce486a6353829f2805eb90ecdf071faa3
 >>>>>>> 614e3dc5d896ce340e10987b715fcc5204d54c2f
                             </div>
                         </div>

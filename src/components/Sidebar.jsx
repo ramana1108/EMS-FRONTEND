@@ -42,36 +42,25 @@ export default function Sidebar({ activeTab, setActiveTab, isOpen, setIsOpen }) 
     const user = typeof window !== "undefined" ? JSON.parse(localStorage.getItem("user") || "{}") : {};
     const userName = user.name || "User";
 
-<<<<<<< HEAD
     // user.role can be a plain string or a populated role object ({ name: "..." })
     // depending on which endpoint hydrated it, so handle both shapes.
-=======
-<<<<<<< HEAD
->>>>>>> 614e3dc5d896ce340e10987b715fcc5204d54c2f
     const roleName = typeof user.role === "string"
         ? user.role.trim().toLowerCase()
         : typeof user.role === "object" && user.role !== null && user.role.name
             ? String(user.role.name).trim().toLowerCase()
             : "";
-<<<<<<< HEAD
-
-=======
-=======
->>>>>>> 819c511ce486a6353829f2805eb90ecdf071faa3
 >>>>>>> 614e3dc5d896ce340e10987b715fcc5204d54c2f
     const rawPermissions = Array.isArray(user.permissions)
         ? user.permissions
         : typeof user.permissions === "string"
             ? user.permissions.split(",").map((perm) => perm.trim()).filter(Boolean)
             : [];
-<<<<<<< HEAD
 
     const userRole = roleName || "admin";
 
     // Role-based defaults (used when explicit permissions are not provided).
     // hr and manager use the same permission keys as employee since they share
     // the employee-facing menu/routes (see useEmployeeMenu below).
-=======
 <<<<<<< HEAD
     const defaultPermissions = roleName === "admin"
         ? menuItems.map((item) => item.permission)
@@ -93,13 +82,11 @@ export default function Sidebar({ activeTab, setActiveTab, isOpen, setIsOpen }) 
     const userRole = String(user.role || "").toLowerCase();
 
     // Role-based defaults when explicit permissions are absent.
->>>>>>> 614e3dc5d896ce340e10987b715fcc5204d54c2f
     const rolePermissionMap = {
         admin: menuItems.map((i) => i.permission).filter(Boolean),
         employee: ["dashboard", "attendance", "notice", "leave", "payroll", "profile"],
     };
 
-<<<<<<< HEAD
     const effectivePermissions = rawPermissions.length > 0 ? rawPermissions : (rolePermissionMap[userRole] || ["dashboard"]);
 
     // Determine which menu set to use (employee-facing vs admin-facing).
@@ -111,8 +98,7 @@ export default function Sidebar({ activeTab, setActiveTab, isOpen, setIsOpen }) 
     const visibleMenuItems = useEmployeeMenu
         ? employeeMenuItems.filter((item) => !item.permission || effectivePermissions.includes(item.permission))
         : menuItems.filter((item) => !item.permission || effectivePermissions.includes(item.permission));
-=======
-    const effectivePermissions = rawPermissions.length > 0
+const effectivePermissions = rawPermissions.length > 0
         ? Array.from(new Set(rawPermissions.map((perm) => String(perm).toLowerCase())))
         : (rolePermissionMap[userRole] || ["dashboard"]);
 
@@ -127,8 +113,6 @@ export default function Sidebar({ activeTab, setActiveTab, isOpen, setIsOpen }) 
     const visibleMenuItems = sidebarItems.filter((item) =>
         !item.permission || effectivePermissions.includes(item.permission)
     );
->>>>>>> 819c511ce486a6353829f2805eb90ecdf071faa3
->>>>>>> 614e3dc5d896ce340e10987b715fcc5204d54c2f
 
     const handleLogout = () => {
         localStorage.removeItem("token");

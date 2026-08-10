@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 import { useState, useEffect } from "react";
 import {
   Building,
@@ -21,10 +20,8 @@ import {
   RotateCcw
 } from "lucide-react";
 import api from "../api";
-=======
 import React, { useState, useEffect } from "react";
 // styles are loaded globally via src/index.css (Tailwind + custom styles)
->>>>>>> 819c511ce486a6353829f2805eb90ecdf071faa3
 
 export default function Settings() {
   const [settingsId, setSettingsId] = useState(null);
@@ -65,15 +62,11 @@ export default function Settings() {
   const fetchSettings = async () => {
     setFetching(true);
     try {
-<<<<<<< HEAD
       const data = await api.getSettings();
       if (data && data.success) {
-=======
-<<<<<<< HEAD
       const data = await api.getSettings();
       if (data && data.success) {
-=======
-      const token = localStorage.getItem("token");
+const token = localStorage.getItem("token");
 
       const response = await fetch(API_URL, {
         headers: {
@@ -84,8 +77,6 @@ export default function Settings() {
       const data = await response.json();
 
       if (response.ok && data.success) {
->>>>>>> 819c511ce486a6353829f2805eb90ecdf071faa3
->>>>>>> 614e3dc5d896ce340e10987b715fcc5204d54c2f
         const settings = data.settings;
         setSettingsId(settings._id);
         const mappedData = {
@@ -219,23 +210,19 @@ export default function Settings() {
         adminPassword: "Verify@12345" // Backend requires adminPassword for first-time creation schema validation
       };
 
-<<<<<<< HEAD
       let response;
       if (isUpdate) {
         response = await api.updateSettings(settingsId, payload);
       } else {
         response = await api.createSettings(payload);
       }
-=======
-<<<<<<< HEAD
       let data;
       if (isUpdate) {
         data = await api.updateSettings(settingsId, payload);
       } else {
         data = await api.createSettings(payload);
       }
-=======
-      const token = localStorage.getItem("token");
+const token = localStorage.getItem("token");
 
       const response = await fetch(url, {
         method,
@@ -254,8 +241,6 @@ export default function Settings() {
           type: "success",
           message: data.message,
         });
->>>>>>> 819c511ce486a6353829f2805eb90ecdf071faa3
->>>>>>> 614e3dc5d896ce340e10987b715fcc5204d54c2f
 
       if (response && response.success) {
         setAlert({ show: true, type: "success", message: response.message || "Settings saved successfully." });
@@ -282,12 +267,8 @@ export default function Settings() {
   };
 
   return (
-<<<<<<< HEAD
     <div style={{ maxWidth: "1280px", margin: "0 auto", padding: "0 8px" }}>
-=======
-<<<<<<< HEAD
     <div>
->>>>>>> 614e3dc5d896ce340e10987b715fcc5204d54c2f
       {/* Header */}
       <div className="page-header" style={{ marginBottom: "20px", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
         <div>
@@ -340,7 +321,6 @@ export default function Settings() {
         </div>
       )}
 
-<<<<<<< HEAD
       {fetching ? (
         <div style={{ display: "flex", justifyContent: "center", alignItems: "center", padding: "80px 0" }}>
           <Loader className="animate-spin" size={32} color="#2563eb" />
@@ -641,23 +621,19 @@ export default function Settings() {
               </div>
 
             </form>
-=======
-      {/* Split Grid */}
+{/* Split Grid */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-10 items-start">
         {/* Profile Card */}
         <div className="employee-directory-card p-6">
           <div style={{ display: "flex", alignItems: "center", gap: "8px", borderBottom: "1px solid #f1f5f9", paddingBottom: "12px", marginBottom: "16px" }}>
             <Building size={20} color="#0f766e" />
             <h2 className="emp-card-title" style={{ margin: 0 }}>Company Information</h2>
-=======
-    <div className={` ${darkMode ? 'dark' : ''}`}>
+<div className={` ${darkMode ? 'dark' : ''}`}>
       <main className="p-6">
         <div className="page-header">
           <div>
             <h1 className="text-2xl font-bold">Company Settings</h1>
             <p className="text-sm text-slate-600">Manage your company information and application settings.</p>
->>>>>>> 819c511ce486a6353829f2805eb90ecdf071faa3
->>>>>>> 614e3dc5d896ce340e10987b715fcc5204d54c2f
           </div>
 
           {/* Right Column: Company Overview Preview */}
@@ -736,7 +712,6 @@ export default function Settings() {
               </div>
             </div>
 
-<<<<<<< HEAD
             {/* Separator line */}
             <div style={{ height: "1px", backgroundColor: "#f1f5f9", margin: "20px 0" }} />
 
@@ -761,21 +736,15 @@ export default function Settings() {
             </div>
 
           </div>
-
-=======
-<<<<<<< HEAD
         {/* Form Card */}
         <div className="employee-directory-card p-6">
           <div style={{ borderBottom: "1px solid #f1f5f9", paddingBottom: "12px", marginBottom: "16px" }}>
             <h2 className="emp-card-title">{settingsId ? "Update Settings" : "Configure Settings"}</h2>
-=======
-        {alert.show && (
+{alert.show && (
           <div className={`mb-4 ${alert.type === 'success' ? 'text-emerald-800 bg-emerald-50' : 'text-rose-700 bg-rose-50'} p-3 rounded-md`}> 
             <span>{alert.message}</span>
->>>>>>> 819c511ce486a6353829f2805eb90ecdf071faa3
           </div>
 
-<<<<<<< HEAD
           <form onSubmit={handleSubmit} className="enroll-form">
             <div className="form-group">
               <label>Company Name <span className="req">*</span></label>
@@ -818,8 +787,7 @@ export default function Settings() {
                 {errors.companyPhone && (
                   <div className="field-error">{errors.companyPhone}</div>
                 )}
-=======
-        <div className="grid lg:grid-cols-2 gap-6">
+<div className="grid lg:grid-cols-2 gap-6">
           <div className="bg-white rounded-xl p-6 shadow-sm">
             <div className="mb-4">
               <h3 className="text-base font-semibold text-slate-900">Company Information</h3>
@@ -899,11 +867,9 @@ export default function Settings() {
                 <label className="block text-sm font-medium mb-1">Company Phone *</label>
                 <input type="text" name="companyPhone" maxLength={10} value={formData.companyPhone} onChange={handleChange} placeholder="Enter Phone Number" className="w-full px-3 py-2 rounded-md border border-slate-300" />
                 {errors.companyPhone && <small className="text-rose-600">{errors.companyPhone}</small>}
->>>>>>> 819c511ce486a6353829f2805eb90ecdf071faa3
               </div>
             </div>
 
-<<<<<<< HEAD
             <div className="form-group">
               <label>Company Address <span className="req">*</span></label>
               <textarea
@@ -958,8 +924,7 @@ export default function Settings() {
                 {errors.country && (
                   <div className="field-error">{errors.country}</div>
                 )}
-=======
-              <div className="mb-3">
+<div className="mb-3">
                 <label className="block text-sm font-medium mb-1">Company Address *</label>
                 <textarea name="companyAddress" rows="3" value={formData.companyAddress} onChange={handleChange} placeholder="Enter Company Address" className="w-full px-3 py-2 rounded-md border border-slate-300" />
                 {errors.companyAddress && <small className="text-rose-600">{errors.companyAddress}</small>}
@@ -981,11 +946,9 @@ export default function Settings() {
                 <label className="block text-sm font-medium mb-1">Country *</label>
                 <input type="text" name="country" value={formData.country} onChange={handleChange} placeholder="Enter Country" className="w-full px-3 py-2 rounded-md border border-slate-300" />
                 {errors.country && <small className="text-rose-600">{errors.country}</small>}
->>>>>>> 819c511ce486a6353829f2805eb90ecdf071faa3
               </div>
             </div>
 
-<<<<<<< HEAD
 
 
             <button
@@ -1007,8 +970,7 @@ export default function Settings() {
               )}
             </button>
           </form>
-=======
-              <div className="mb-3">
+<div className="mb-3">
                 <label className="block text-sm font-medium mb-1">Admin Password *</label>
                 <div className="flex gap-2">
                   <input type={showPassword ? 'text' : 'password'} name="adminPassword" value={formData.adminPassword} onChange={handleChange} placeholder="Enter Admin Password" className="flex-1 px-3 py-2 rounded-md border border-slate-300" />
@@ -1024,8 +986,6 @@ export default function Settings() {
               </div>
             </form>
           </div>
->>>>>>> 819c511ce486a6353829f2805eb90ecdf071faa3
->>>>>>> 614e3dc5d896ce340e10987b715fcc5204d54c2f
         </div>
       )}
     </div>

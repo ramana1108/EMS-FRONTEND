@@ -506,41 +506,32 @@ export default function Dashboard() {
         {/* Employee Distribution Pie Chart */}
         <div className="card-box">
           <h2 className="card-title">Employee Distribution Pie Chart</h2>
-<<<<<<< HEAD
           <div style={{ display: 'flex', alignItems: 'center', gap: 16, padding: '12px 0' }}>
             <div style={{ width: 150, height: 150, display: 'flex', alignItems: 'center', justifyContent: 'center', position: 'relative' }}>
-=======
-<<<<<<< HEAD
 
           <div className="donut-center-container">
             <div className="donut-graphic">
               208
             </div>
           </div>
-=======
-          <div className="flex items-center gap-4 py-3">
+<div className="flex items-center gap-4 py-3">
             <div className="w-[150px] h-[150px] flex items-center justify-center relative">
->>>>>>> 614e3dc5d896ce340e10987b715fcc5204d54c2f
               {(() => {
                 const total = departments && departments.reduce ? departments.reduce((acc, d) => acc + (d.employeeCount || 0), 0) : 0;
                 const slices = (departments && departments.length > 0 ? departments : []).slice(0, 6);
                 const colors = ['#064E3B', '#F97316', '#059669', '#D97706', '#0EA5A4', '#10B981'];
                 if (total <= 0 || slices.length === 0) {
                   return (
-<<<<<<< HEAD
                     <div style={{ width: 120, height: 120, borderRadius: '50%', background: 'conic-gradient(#10B981 0deg, #D1FAE5 360deg)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                       <div style={{ fontWeight: 700, fontSize: 22 }}>{total}</div>
                     </div>
                   );
                 }
-=======
-                    <div className="w-[120px] h-[120px] rounded-full flex items-center justify-center" style={{ background: 'conic-gradient(#10B981 0deg, #D1FAE5 360deg)' }}>
+<div className="w-[120px] h-[120px] rounded-full flex items-center justify-center" style={{ background: 'conic-gradient(#10B981 0deg, #D1FAE5 360deg)' }}>
                       <div className="font-bold text-[22px]">{total}</div>
                     </div>
                   );
                 }
->>>>>>> 819c511ce486a6353829f2805eb90ecdf071faa3
->>>>>>> 614e3dc5d896ce340e10987b715fcc5204d54c2f
 
                 // build conic-gradient stops
                 let angleSoFar = 0;

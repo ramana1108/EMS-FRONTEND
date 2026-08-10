@@ -1,5 +1,4 @@
 import { useState, useEffect } from "react";
-<<<<<<< HEAD
 =======
 // styles are loaded globally via src/index.css (Tailwind + custom styles)
 >>>>>>> 819c511ce486a6353829f2805eb90ecdf071faa3
@@ -101,9 +100,6 @@ export default function Attendance() {
     const fetchLeaves = async () => {
         try {
 <<<<<<< HEAD
-=======
-<<<<<<< HEAD
->>>>>>> 614e3dc5d896ce340e10987b715fcc5204d54c2f
             const res = await fetch(`${API_BASE_URL}/leave`, { headers: getHeaders() });
             const data = await res.json();
             if (res.ok) {
@@ -114,10 +110,7 @@ export default function Attendance() {
         } catch (err) {
             console.error(err);
             setError("Failed to connect to leave endpoint");
-<<<<<<< HEAD
-=======
-=======
-            const res = await fetch(`${API_BASE_URL}/api/leaves`, {
+const res = await fetch(`${API_BASE_URL}/api/leaves`, {
                 headers: getHeaders(),
             });
             const data = await res.json();
@@ -126,8 +119,6 @@ export default function Attendance() {
             }
         } catch (err) {
             console.error(err);
->>>>>>> 819c511ce486a6353829f2805eb90ecdf071faa3
->>>>>>> 614e3dc5d896ce340e10987b715fcc5204d54c2f
         }
     };
 
@@ -212,10 +203,7 @@ export default function Attendance() {
 
         try {
             setLoading(true);
-<<<<<<< HEAD
             const res = await fetch(`${API_BASE_URL}/leave`, {
-=======
-<<<<<<< HEAD
             const dates = [];
             let current = new Date(start);
             while (current <= end) {
@@ -237,9 +225,7 @@ export default function Attendance() {
                         notes: `Leave: ${leaveReason}`,
                     }),
                 });
-=======
-            const res = await fetch(`${API_BASE_URL}/api/leaves`, {
->>>>>>> 614e3dc5d896ce340e10987b715fcc5204d54c2f
+const res = await fetch(`${API_BASE_URL}/api/leaves`, {
                 method: "POST",
                 headers: getHeaders(),
                 body: JSON.stringify({
@@ -249,9 +235,7 @@ export default function Attendance() {
                     toDate: leaveTo,
                     reason: leaveReason,
                 }),
-<<<<<<< HEAD
 =======
->>>>>>> 819c511ce486a6353829f2805eb90ecdf071faa3
 >>>>>>> 614e3dc5d896ce340e10987b715fcc5204d54c2f
             });
 
@@ -263,21 +247,16 @@ export default function Attendance() {
                 setLeaveFrom("");
                 setLeaveTo("");
                 setLeaveReason("");
-<<<<<<< HEAD
                 setLeaveType("Casual Leave");
                 setIsLeaveModalOpen(false);
                 setCurrentLeavePage(1);
                 fetchLeaves();
-=======
 <<<<<<< HEAD
                 setIsLeaveModalOpen(false);
                 setCurrentLeavePage(1);
                 fetchAttendance();
-=======
-                setLeaveType("Casual Leave");
+setLeaveType("Casual Leave");
                 fetchLeaves();
->>>>>>> 819c511ce486a6353829f2805eb90ecdf071faa3
->>>>>>> 614e3dc5d896ce340e10987b715fcc5204d54c2f
             } else {
                 setError(data.message || "Failed to submit leave request");
             }
@@ -332,9 +311,7 @@ export default function Attendance() {
         }
     };
 
-<<<<<<< HEAD
 =======
-<<<<<<< HEAD
     const handleUpdateLeaveStatus = async (id, status) => {
         setError("");
         setSuccess("");
@@ -356,34 +333,24 @@ export default function Attendance() {
             setError(`Failed to ${status.toLowerCase()} leave`);
         }
     };
-
-=======
 >>>>>>> 819c511ce486a6353829f2805eb90ecdf071faa3
->>>>>>> 614e3dc5d896ce340e10987b715fcc5204d54c2f
     const handleDeleteLeave = async (id) => {
         if (!window.confirm("Are you sure you want to delete this leave request?")) return;
         setError("");
         setSuccess("");
         try {
+            const res = await fetch(`${API_BASE_URL}/leave/${id}`, {
+                method: 'DELETE',
 <<<<<<< HEAD
             const res = await fetch(`${API_BASE_URL}/leave/${id}`, {
                 method: 'DELETE',
-=======
-<<<<<<< HEAD
-            const res = await fetch(`${API_BASE_URL}/leave/${id}`, {
-                method: 'DELETE',
-=======
-            const res = await fetch(`${API_BASE_URL}/api/leaves/${id}`, {
+const res = await fetch(`${API_BASE_URL}/api/leaves/${id}`, {
                 method: "DELETE",
->>>>>>> 819c511ce486a6353829f2805eb90ecdf071faa3
->>>>>>> 614e3dc5d896ce340e10987b715fcc5204d54c2f
                 headers: getHeaders(),
             });
             const data = await res.json();
             if (res.ok) {
-<<<<<<< HEAD
 =======
-<<<<<<< HEAD
 >>>>>>> 614e3dc5d896ce340e10987b715fcc5204d54c2f
                 setSuccess('Leave deleted successfully');
                 fetchLeaves();
@@ -394,9 +361,7 @@ export default function Attendance() {
             console.error(err);
             setError('Failed to delete leave');
 <<<<<<< HEAD
-=======
-=======
-                setSuccess("Leave request deleted successfully.");
+setSuccess("Leave request deleted successfully.");
                 fetchLeaves();
             } else {
                 setError(data.message || "Failed to delete leave request");
@@ -404,8 +369,6 @@ export default function Attendance() {
         } catch (err) {
             console.error(err);
             setError("Failed to delete leave request");
->>>>>>> 819c511ce486a6353829f2805eb90ecdf071faa3
->>>>>>> 614e3dc5d896ce340e10987b715fcc5204d54c2f
         }
     };
 
@@ -431,10 +394,8 @@ export default function Attendance() {
         return matchesEmp && matchesDate;
     });
 
-<<<<<<< HEAD
     // Attendance stats
-=======
-    // Reset page when filters change
+// Reset page when filters change
     useEffect(() => {
         setCurrentPage(1);
     }, [filterEmpId, filterDate, records]);
@@ -443,7 +404,6 @@ export default function Attendance() {
     const pagedRecords = filteredRecords.slice((currentPage - 1) * pageSize, currentPage * pageSize);
 
     // Calculate statistics
->>>>>>> 819c511ce486a6353829f2805eb90ecdf071faa3
     const totalLeaves = records.filter(r => r.status === "Leave").length;
     const presentCount = records.filter(r => r.status === "Present").length;
     const absentCount = records.filter(r => r.status === "Absent").length;
@@ -468,7 +428,6 @@ export default function Attendance() {
                     <p className="text-sm text-slate-600">Track clock-in times, worked hours, and log employee leave requests.</p>
                 </div>
 
-<<<<<<< HEAD
                 <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
                     {/* Tab Switcher */}
                     <div style={{ display: "flex", backgroundColor: "#e2e8f0", padding: "4px", borderRadius: "8px", gap: "4px" }}>
@@ -529,8 +488,7 @@ export default function Attendance() {
                     >
                         <Plus size={16} />
                         <span>{activeTab === "attendance" ? "Log Attendance" : "Record Leave"}</span>
-=======
-                {/* Tab Switcher */}
+{/* Tab Switcher */}
                 <div className="flex bg-slate-200 p-1 rounded-md gap-1">
                     <button
                         onClick={() => setActiveTab("attendance")}
@@ -543,25 +501,21 @@ export default function Attendance() {
                         className={`px-4 py-2 text-sm font-semibold rounded-md transition ${activeTab === "leave" ? 'bg-white text-emerald-700 shadow' : 'text-slate-600'}`}
                     >
                         Leave Management
->>>>>>> 819c511ce486a6353829f2805eb90ecdf071faa3
                     </button>
                 </div>
             </div>
 
             {/* Stats Widgets */}
-<<<<<<< HEAD
             <div className="stats-grid" style={{ marginBottom: "24px" }}>
                 <div className="stat-card stat-card-green">
                     <div className="stat-header">
                         <div className="stat-icon-plain" style={{ color: "#065f46" }}>
                             <UserCheck size={22} />
-=======
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
                 <div className="bg-white rounded-xl p-4 shadow-sm">
                     <div className="flex items-center gap-3">
                         <div className="p-2 rounded-lg bg-emerald-800">
                             <UserCheck size={18} color="#ffffff" />
->>>>>>> 614e3dc5d896ce340e10987b715fcc5204d54c2f
                         </div>
                         <div>
                             <p className="text-xs text-slate-500">Present Logs</p>
@@ -570,17 +524,14 @@ export default function Attendance() {
                     </div>
                 </div>
 
-<<<<<<< HEAD
                 <div className="stat-card stat-card-blue">
                     <div className="stat-header">
                         <div className="stat-icon-plain" style={{ color: "#0891b2" }}>
                             <Clock size={22} />
-=======
-                <div className="bg-white rounded-xl p-4 shadow-sm">
+<div className="bg-white rounded-xl p-4 shadow-sm">
                     <div className="flex items-center gap-3">
                         <div className="p-2 rounded-lg bg-sky-500">
                             <Clock size={18} color="#ffffff" />
->>>>>>> 614e3dc5d896ce340e10987b715fcc5204d54c2f
                         </div>
                         <div>
                             <p className="text-xs text-slate-500">Half Days</p>
@@ -589,17 +540,14 @@ export default function Attendance() {
                     </div>
                 </div>
 
-<<<<<<< HEAD
                 <div className="stat-card stat-card-rose">
                     <div className="stat-header">
                         <div className="stat-icon-plain" style={{ color: "#b91c1c" }}>
                             <AlertCircle size={22} />
-=======
-                <div className="bg-white rounded-xl p-4 shadow-sm">
+<div className="bg-white rounded-xl p-4 shadow-sm">
                     <div className="flex items-center gap-3">
                         <div className="p-2 rounded-lg bg-rose-700">
                             <AlertCircle size={18} color="#ffffff" />
->>>>>>> 614e3dc5d896ce340e10987b715fcc5204d54c2f
                         </div>
                         <div>
                             <p className="text-xs text-slate-500">Absences</p>
@@ -608,17 +556,14 @@ export default function Attendance() {
                     </div>
                 </div>
 
-<<<<<<< HEAD
                 <div className="stat-card stat-card-indigo">
                     <div className="stat-header">
                         <div className="stat-icon-plain" style={{ color: "#8b5cf6" }}>
                             <Calendar size={22} />
-=======
-                <div className="bg-white rounded-xl p-4 shadow-sm">
+<div className="bg-white rounded-xl p-4 shadow-sm">
                     <div className="flex items-center gap-3">
                         <div className="p-2 rounded-lg bg-violet-600">
                             <Calendar size={18} color="#ffffff" />
->>>>>>> 614e3dc5d896ce340e10987b715fcc5204d54c2f
                         </div>
                         <div>
                             <p className="text-xs text-slate-500">Total Leaves Taken</p>
@@ -642,12 +587,9 @@ export default function Attendance() {
             )}
 
             {activeTab === "attendance" ? (
-<<<<<<< HEAD
                 <div className="w-full">
-=======
-                <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 items-start">
+<div className="grid grid-cols-1 lg:grid-cols-3 gap-6 items-start">
 
->>>>>>> 819c511ce486a6353829f2805eb90ecdf071faa3
                     {/* Logs View */}
                     <div className="employee-directory-card lg:col-span-2 bg-white rounded-xl p-6 shadow-sm">
                         <div className="flex items-center justify-between flex-wrap gap-4 mb-4">
@@ -659,30 +601,24 @@ export default function Attendance() {
                                     type="text"
                                     placeholder="Emp ID or Name..."
                                     value={filterEmpId}
-<<<<<<< HEAD
                                     onChange={(e) => {
                                         setFilterEmpId(e.target.value);
                                         setCurrentAttendancePage(1);
                                     }}
                                     style={{ padding: "6px 12px", borderRadius: "6px", border: "1px solid #cbd5e1", fontSize: "13px" }}
-=======
-                                    onChange={(e) => setFilterEmpId(e.target.value)}
+onChange={(e) => setFilterEmpId(e.target.value)}
                                     className="px-3 py-2 rounded-md border border-slate-300 text-sm"
->>>>>>> 819c511ce486a6353829f2805eb90ecdf071faa3
                                 />
                                 <input
                                     type="date"
                                     value={filterDate}
-<<<<<<< HEAD
                                     onChange={(e) => {
                                         setFilterDate(e.target.value);
                                         setCurrentAttendancePage(1);
                                     }}
                                     style={{ padding: "6px 12px", borderRadius: "6px", border: "1px solid #cbd5e1", fontSize: "13px" }}
-=======
-                                    onChange={(e) => setFilterDate(e.target.value)}
+onChange={(e) => setFilterDate(e.target.value)}
                                     className="px-3 py-2 rounded-md border border-slate-300 text-sm"
->>>>>>> 819c511ce486a6353829f2805eb90ecdf071faa3
                                 />
                             </div>
                         </div>
@@ -691,7 +627,6 @@ export default function Attendance() {
                             <table className="min-w-full divide-y">
                                 <thead>
                                     <tr>
-<<<<<<< HEAD
                                         <th>EMPLOYEE</th>
                                         <th>DEPARTMENT</th>
                                         <th className="table-center-col">DATE</th>
@@ -700,8 +635,6 @@ export default function Attendance() {
                                         <th className="table-center-col">HOURS</th>
                                         <th className="table-center-col">STATUS</th>
                                         <th className="table-actions-col">ACTIONS</th>
-=======
-<<<<<<< HEAD
                                         <th style={{ padding: "4px 8px" }}>EMPLOYEE</th>
                                         <th style={{ padding: "4px 8px" }}>DEPARTMENT</th>
                                         <th style={{ padding: "4px 8px", textAlign: "center" }}>DATE</th>
@@ -710,8 +643,7 @@ export default function Attendance() {
                                         <th style={{ padding: "4px 8px", textAlign: "center" }}>HOURS</th>
                                         <th style={{ padding: "4px 8px", textAlign: "center" }}>STATUS</th>
                                         <th style={{ padding: "4px 8px", textAlign: "right" }}>ACTIONS</th>
-=======
-                                        <th className="px-3 py-3">EMPLOYEE</th>
+<th className="px-3 py-3">EMPLOYEE</th>
                                         <th className="px-3 py-3">DEPARTMENT</th>
                                         <th className="px-3 py-3 text-center">DATE</th>
                                         <th className="px-3 py-3 text-center">IN</th>
@@ -719,8 +651,6 @@ export default function Attendance() {
                                         <th className="px-3 py-3 text-center">HOURS</th>
                                         <th className="px-3 py-3 text-center">STATUS</th>
                                         <th className="px-3 py-3 text-right">ACTIONS</th>
->>>>>>> 819c511ce486a6353829f2805eb90ecdf071faa3
->>>>>>> 614e3dc5d896ce340e10987b715fcc5204d54c2f
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -733,21 +663,17 @@ export default function Attendance() {
                                             <td colSpan="8" className="text-center py-8">No records registered matching search criteria.</td>
                                         </tr>
                                     ) : (
-<<<<<<< HEAD
                                         paginatedRecords.map((rec) => (
                                             <tr key={rec._id} className="employee-row">
                                                 <td style={{ padding: "4px 8px" }}>
-=======
-                                        pagedRecords.map((rec) => (
+pagedRecords.map((rec) => (
                                             <tr key={rec._id} className="border-b last:border-b-0">
                                                 <td className="px-4 py-3">
->>>>>>> 819c511ce486a6353829f2805eb90ecdf071faa3
                                                     <div>
                                                         <p className="font-semibold text-slate-900 text-sm">{rec.employeeName}</p>
                                                         <p className="text-xs text-slate-500">{rec.employeeCode}</p>
                                                     </div>
                                                 </td>
-<<<<<<< HEAD
                                                 <td style={{ padding: "4px 8px" }}>
                                                     <span style={{ fontSize: "12px", fontWeight: "600", color: "#475569" }}>{rec.departmentName}</span>
                                                 </td>
@@ -789,8 +715,7 @@ export default function Attendance() {
                                                         style={{ border: "none", background: "none", cursor: "pointer", color: "#b91c1c" }}
                                                         title="Delete Record"
                                                     >
-=======
-                                                <td className="px-4 py-3">
+<td className="px-4 py-3">
                                                     <span className="text-sm font-medium text-slate-600">{rec.departmentName}</span>
                                                 </td>
                                                 <td className="px-4 py-3 text-center">{formatDate(rec.attendanceDate)}</td>
@@ -804,7 +729,6 @@ export default function Attendance() {
                                                 </td>
                                                 <td className="px-4 py-3 text-right">
                                                     <button onClick={() => handleDeleteRecord(rec._id)} title="Delete Record" className="text-rose-600 hover:text-rose-800">
->>>>>>> 819c511ce486a6353829f2805eb90ecdf071faa3
                                                         <Trash2 size={16} />
                                                     </button>
                                                 </td>
@@ -814,7 +738,6 @@ export default function Attendance() {
                                 </tbody>
                             </table>
                         </div>
-<<<<<<< HEAD
 
                         {/* Pagination controls for Attendance */}
                         {attendanceTotalPages > 1 && (
@@ -845,8 +768,7 @@ export default function Attendance() {
                                 </div>
                             </div>
                         )}
-=======
-                        {/* Pagination Controls */}
+{/* Pagination Controls */}
                         <div className="flex items-center justify-between mt-3">
                             <div className="flex items-center gap-2">
                                 <button onClick={() => setCurrentPage((p) => Math.max(1, p - 1))} disabled={currentPage === 1} className="px-3 py-1 rounded-md border bg-white disabled:opacity-60">
@@ -868,7 +790,6 @@ export default function Attendance() {
                                 </select>
                             </div>
                         </div>
->>>>>>> 819c511ce486a6353829f2805eb90ecdf071faa3
                     </div>
                 </div>
             ) : (
@@ -878,7 +799,6 @@ export default function Attendance() {
                     <div className="employee-directory-card" style={{ padding: "24px" }}>
                         <h2 className="emp-card-title" style={{ marginBottom: "16px" }}>Leave Logs</h2>
 
-<<<<<<< HEAD
                         <div className="table-responsive">
                             <table className="employee-table">
                                 <thead>
@@ -1025,8 +945,7 @@ export default function Attendance() {
                                     onChange={(e) => setSelectedEmpId(e.target.value)}
                                     required
                                 >
-=======
-                    {/* Record Attendance Form */}
+{/* Record Attendance Form */}
                     <div className="emp-card-box bg-white rounded-xl p-6 shadow-sm">
                         <h2 className="text-lg font-semibold mb-4">Log Attendance</h2>
                         <form onSubmit={handleAddAttendance}>
@@ -1034,7 +953,6 @@ export default function Attendance() {
                             <div className="mb-3">
                                 <label className="block text-xs font-semibold uppercase text-slate-600 mb-1">Employee*</label>
                                 <select value={selectedEmpId} onChange={(e) => setSelectedEmpId(e.target.value)} className="w-full px-3 py-2 rounded-md border border-slate-300 bg-white">
->>>>>>> 819c511ce486a6353829f2805eb90ecdf071faa3
                                     <option value="">Select Employee...</option>
                                     {employees.map(emp => (
                                         <option key={emp._id} value={emp._id}>{emp.firstName} {emp.lastName} ({emp.employeeId})</option>
@@ -1042,7 +960,6 @@ export default function Attendance() {
                                 </select>
                             </div>
 
-<<<<<<< HEAD
                             <div className="form-group">
                                 <label>Attendance Date <span className="req">*</span></label>
                                 <input
@@ -1060,8 +977,7 @@ export default function Attendance() {
                                     onChange={(e) => setStatus(e.target.value)}
                                     required
                                 >
-=======
-                            <div className="mb-3">
+<div className="mb-3">
                                 <label className="block text-xs font-semibold uppercase text-slate-600 mb-1">Attendance Date*</label>
                                 <input type="date" value={attendanceDate} onChange={(e) => setAttendanceDate(e.target.value)} className="w-full px-3 py-2 rounded-md border border-slate-300" />
                             </div>
@@ -1069,7 +985,6 @@ export default function Attendance() {
                             <div className="mb-3">
                                 <label className="block text-xs font-semibold uppercase text-slate-600 mb-1">Shift Status*</label>
                                 <select value={status} onChange={(e) => setStatus(e.target.value)} className="w-full px-3 py-2 rounded-md border border-slate-300 bg-white">
->>>>>>> 819c511ce486a6353829f2805eb90ecdf071faa3
                                     <option value="Present">Present</option>
                                     <option value="Half Day">Half Day</option>
                                     <option value="Absent">Absent</option>
@@ -1079,7 +994,6 @@ export default function Attendance() {
 
                             {(status === "Present" || status === "Half Day") && (
                                 <>
-<<<<<<< HEAD
                                     <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "10px" }}>
                                         <div className="form-group">
                                             <label>In Time</label>
@@ -1107,8 +1021,7 @@ export default function Attendance() {
                                             value={workedHours}
                                             onChange={(e) => setWorkedHours(e.target.value)}
                                         />
-=======
-                                    <div className="grid grid-cols-2 gap-2 mb-3">
+<div className="grid grid-cols-2 gap-2 mb-3">
                                         <div>
                                             <label className="block text-xs font-semibold uppercase text-slate-600 mb-1">In Time</label>
                                             <input type="time" value={checkInTime} onChange={(e) => setCheckInTime(e.target.value)} className="w-full px-3 py-2 rounded-md border border-slate-300" />
@@ -1122,12 +1035,10 @@ export default function Attendance() {
                                     <div className="mb-3">
                                         <label className="block text-xs font-semibold uppercase text-slate-600 mb-1">Worked Hours</label>
                                         <input type="number" step="0.1" value={workedHours} onChange={(e) => setWorkedHours(e.target.value)} className="w-full px-3 py-2 rounded-md border border-slate-300" />
->>>>>>> 819c511ce486a6353829f2805eb90ecdf071faa3
                                     </div>
                                 </>
                             )}
 
-<<<<<<< HEAD
                             <div className="form-group">
                                 <label>Administrator Notes</label>
                                 <input
@@ -1155,8 +1066,7 @@ export default function Attendance() {
                                     <span>Log Attendance</span>
                                 </button>
                             </div>
-=======
-                            <div className="mb-4">
+<div className="mb-4">
                                 <label className="block text-xs font-semibold uppercase text-slate-600 mb-1">Administrator Notes</label>
                                 <input type="text" value={notes} onChange={(e) => setNotes(e.target.value)} className="w-full px-3 py-2 rounded-md border border-slate-300" placeholder="e.g. Cleared by HR" />
                             </div>
@@ -1165,13 +1075,11 @@ export default function Attendance() {
                                 <Plus size={16} />
                                 <span>Log Attendance</span>
                             </button>
->>>>>>> 819c511ce486a6353829f2805eb90ecdf071faa3
                         </form>
                     </div>
                 </div>
             )}
 
-<<<<<<< HEAD
             {/* Record Leave Modal */}
             {isLeaveModalOpen && (
                 <div className="modal-backdrop">
@@ -1180,8 +1088,6 @@ export default function Attendance() {
                             <div>
                                 <h2>Record Leave</h2>
                                 <p className="modal-subtitle">Submit a leave request on behalf of an employee.</p>
-=======
-<<<<<<< HEAD
             {/* Record Leave Modal */}
             {isLeaveModalOpen && (
                 <div className="modal-backdrop">
@@ -1190,7 +1096,6 @@ export default function Attendance() {
                             <div>
                                 <h2>Record Leave</h2>
                                 <p className="modal-subtitle">Logs approved leave days for an employee.</p>
->>>>>>> 614e3dc5d896ce340e10987b715fcc5204d54c2f
                             </div>
                             <button
                                 className="btn-close"
@@ -1198,15 +1103,12 @@ export default function Attendance() {
                             >
                                 <X size={20} />
                             </button>
-<<<<<<< HEAD
                         </div>
 
                         <form onSubmit={handleApplyLeave} className="enroll-form">
                             <div className="form-group">
                                 <label>Employee <span className="req">*</span></label>
-=======
-=======
-                    {/* Leaves Table */}
+{/* Leaves Table */}
                     <div className="employee-directory-card" style={{ padding: "24px" }}>
                         <h2 className="emp-card-title" style={{ marginBottom: "16px" }}>Leave Requests</h2>
 
@@ -1297,15 +1199,12 @@ export default function Attendance() {
                                     )}
                                 </tbody>
                             </table>
->>>>>>> 819c511ce486a6353829f2805eb90ecdf071faa3
                         </div>
 
-<<<<<<< HEAD
                         <form onSubmit={handleApplyLeave} className="enroll-form">
                             <div className="form-group">
                                 <label>Employee <span className="req">*</span></label>
-=======
-                    {/* Request / Record Leave Form */}
+{/* Request / Record Leave Form */}
                     <div className="emp-card-box" style={{ padding: "24px" }}>
                         <h2 className="emp-card-title" style={{ marginBottom: "8px" }}>Create Leave Request</h2>
                         <p style={{ fontSize: "12px", color: "#64748b", marginBottom: "16px" }}>Submit a leave request on behalf of an employee, then approve or reject from the leave list.</p>
@@ -1313,8 +1212,6 @@ export default function Attendance() {
 
                             <div style={{ marginBottom: "12px" }}>
                                 <label style={{ display: "block", fontSize: "11px", fontWeight: "700", textTransform: "uppercase", color: "#475569", marginBottom: "4px" }}>Employee*</label>
->>>>>>> 819c511ce486a6353829f2805eb90ecdf071faa3
->>>>>>> 614e3dc5d896ce340e10987b715fcc5204d54c2f
                                 <select
                                     value={leaveEmpId}
                                     onChange={(e) => setLeaveEmpId(e.target.value)}
@@ -1329,18 +1226,13 @@ export default function Attendance() {
                                 </select>
                             </div>
 
-<<<<<<< HEAD
                             <div className="form-group">
                                 <label>Leave Type <span className="req">*</span></label>
-=======
-<<<<<<< HEAD
                             <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "10px" }}>
                                 <div className="form-group">
                                     <label>From Date <span className="req">*</span></label>
-=======
-                            <div style={{ marginBottom: "12px" }}>
+<div style={{ marginBottom: "12px" }}>
                                 <label style={{ display: "block", fontSize: "11px", fontWeight: "700", textTransform: "uppercase", color: "#475569", marginBottom: "4px" }}>Leave Type*</label>
->>>>>>> 614e3dc5d896ce340e10987b715fcc5204d54c2f
                                 <select
                                     value={leaveType}
                                     onChange={(e) => setLeaveType(e.target.value)}
@@ -1354,16 +1246,12 @@ export default function Attendance() {
                                 </select>
                             </div>
 
-<<<<<<< HEAD
                             <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "10px" }}>
                                 <div className="form-group">
                                     <label>From Date <span className="req">*</span></label>
-=======
-                            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "10px", marginBottom: "12px" }}>
+<div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "10px", marginBottom: "12px" }}>
                                 <div>
                                     <label style={{ display: "block", fontSize: "11px", fontWeight: "700", textTransform: "uppercase", color: "#475569", marginBottom: "4px" }}>From Date*</label>
->>>>>>> 819c511ce486a6353829f2805eb90ecdf071faa3
->>>>>>> 614e3dc5d896ce340e10987b715fcc5204d54c2f
                                     <input
                                         type="date"
                                         value={leaveFrom}
@@ -1393,9 +1281,7 @@ export default function Attendance() {
                                 />
                             </div>
 
-<<<<<<< HEAD
 =======
-<<<<<<< HEAD
 >>>>>>> 614e3dc5d896ce340e10987b715fcc5204d54c2f
                             <div className="modal-actions">
                                 <button
@@ -1415,17 +1301,13 @@ export default function Attendance() {
                                 </button>
                             </div>
 <<<<<<< HEAD
-=======
-=======
-                            <button
+<button
                                 type="submit"
                                 style={{ width: "100%", padding: "10px", backgroundColor: "#065f46", color: "#ffffff", border: "none", borderRadius: "6px", fontWeight: "600", fontSize: "14px", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", gap: "8px" }}
                             >
                                 <CheckCircle size={16} />
                                 <span>Submit Leave Request</span>
                             </button>
->>>>>>> 819c511ce486a6353829f2805eb90ecdf071faa3
->>>>>>> 614e3dc5d896ce340e10987b715fcc5204d54c2f
                         </form>
                     </div>
                 </div>
