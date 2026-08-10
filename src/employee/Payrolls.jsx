@@ -1,4 +1,8 @@
 import React, { useState, useEffect } from "react";
+<<<<<<< HEAD
+=======
+// styles are loaded globally via src/index.css (Tailwind + custom styles)
+>>>>>>> 819c511ce486a6353829f2805eb90ecdf071faa3
 import Sidebar from "../components/Sidebar";
 import {
     Wallet,

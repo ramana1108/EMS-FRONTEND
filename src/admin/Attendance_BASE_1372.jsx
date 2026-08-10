@@ -1,8 +1,4 @@
 import { useState, useEffect } from "react";
-<<<<<<< HEAD
-=======
-// styles are loaded globally via src/index.css (Tailwind + custom styles)
->>>>>>> 819c511ce486a6353829f2805eb90ecdf071faa3
 import {
     Calendar,
     Clock,
@@ -50,13 +46,11 @@ export default function Attendance() {
     const [leaveTo, setLeaveTo] = useState("");
     const [leaveReason, setLeaveReason] = useState("");
     const [leaveType, setLeaveType] = useState("Casual Leave");
+    const [leaves, setLeaves] = useState([]);
 
     // Search/Filters
     const [filterEmpId, setFilterEmpId] = useState("");
     const [filterDate, setFilterDate] = useState("");
-    // Pagination
-    const [currentPage, setCurrentPage] = useState(1);
-    const [pageSize, setPageSize] = useState(10);
 
     const API_BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
 
@@ -100,10 +94,17 @@ export default function Attendance() {
 
     const fetchLeaves = async () => {
         try {
-<<<<<<< HEAD
-=======
-<<<<<<< HEAD
->>>>>>> 614e3dc5d896ce340e10987b715fcc5204d54c2f
+<<<<<<<<< Temporary merge branch 1
+            const res = await fetch(`${API_BASE_URL}/api/leaves`, {
+                headers: getHeaders(),
+            });
+            const data = await res.json();
+            if (res.ok) {
+                setLeaves(data.leaves || []);
+            }
+        } catch (err) {
+            console.error(err);
+=========
             const res = await fetch(`${API_BASE_URL}/leave`, { headers: getHeaders() });
             const data = await res.json();
             if (res.ok) {
@@ -114,20 +115,7 @@ export default function Attendance() {
         } catch (err) {
             console.error(err);
             setError("Failed to connect to leave endpoint");
-<<<<<<< HEAD
-=======
-=======
-            const res = await fetch(`${API_BASE_URL}/api/leaves`, {
-                headers: getHeaders(),
-            });
-            const data = await res.json();
-            if (res.ok) {
-                setLeaves(data.leaves || []);
-            }
-        } catch (err) {
-            console.error(err);
->>>>>>> 819c511ce486a6353829f2805eb90ecdf071faa3
->>>>>>> 614e3dc5d896ce340e10987b715fcc5204d54c2f
+>>>>>>>>> Temporary merge branch 2
         }
     };
 
@@ -212,10 +200,18 @@ export default function Attendance() {
 
         try {
             setLoading(true);
-<<<<<<< HEAD
-            const res = await fetch(`${API_BASE_URL}/leave`, {
-=======
-<<<<<<< HEAD
+<<<<<<<<< Temporary merge branch 1
+            const res = await fetch(`${API_BASE_URL}/api/leaves`, {
+                method: "POST",
+                headers: getHeaders(),
+                body: JSON.stringify({
+                    employeeId: leaveEmpId,
+                    leaveType,
+                    fromDate: leaveFrom,
+                    toDate: leaveTo,
+                    reason: leaveReason,
+                }),
+=========
             const dates = [];
             let current = new Date(start);
             while (current <= end) {
@@ -237,22 +233,7 @@ export default function Attendance() {
                         notes: `Leave: ${leaveReason}`,
                     }),
                 });
-=======
-            const res = await fetch(`${API_BASE_URL}/api/leaves`, {
->>>>>>> 614e3dc5d896ce340e10987b715fcc5204d54c2f
-                method: "POST",
-                headers: getHeaders(),
-                body: JSON.stringify({
-                    employeeId: leaveEmpId,
-                    leaveType,
-                    fromDate: leaveFrom,
-                    toDate: leaveTo,
-                    reason: leaveReason,
-                }),
-<<<<<<< HEAD
-=======
->>>>>>> 819c511ce486a6353829f2805eb90ecdf071faa3
->>>>>>> 614e3dc5d896ce340e10987b715fcc5204d54c2f
+>>>>>>>>> Temporary merge branch 2
             });
 
             const data = await res.json();
@@ -263,21 +244,14 @@ export default function Attendance() {
                 setLeaveFrom("");
                 setLeaveTo("");
                 setLeaveReason("");
-<<<<<<< HEAD
+<<<<<<<<< Temporary merge branch 1
                 setLeaveType("Casual Leave");
-                setIsLeaveModalOpen(false);
-                setCurrentLeavePage(1);
                 fetchLeaves();
-=======
-<<<<<<< HEAD
+=========
                 setIsLeaveModalOpen(false);
                 setCurrentLeavePage(1);
                 fetchAttendance();
-=======
-                setLeaveType("Casual Leave");
-                fetchLeaves();
->>>>>>> 819c511ce486a6353829f2805eb90ecdf071faa3
->>>>>>> 614e3dc5d896ce340e10987b715fcc5204d54c2f
+>>>>>>>>> Temporary merge branch 2
             } else {
                 setError(data.message || "Failed to submit leave request");
             }
@@ -288,25 +262,46 @@ export default function Attendance() {
         }
     };
 
-    const handleUpdateLeaveStatus = async (id, status) => {
-        setError("");
-        setSuccess("");
+    const handleApproveLeave = async (id) => {
+        if (!window.confirm("Approve this leave request?")) return;
         try {
-            const res = await fetch(`${API_BASE_URL}/leave/${id}`, {
-                method: 'PUT',
+            const res = await fetch(`${API_BASE_URL}/api/leaves/${id}`, {
+                method: "PUT",
                 headers: getHeaders(),
-                body: JSON.stringify({ status }),
+                body: JSON.stringify({ status: "Approved" }),
             });
             const data = await res.json();
             if (res.ok) {
-                setSuccess(`Leave ${status} successfully.`);
+                setSuccess("Leave approved.");
                 fetchLeaves();
+                fetchAttendance();
             } else {
-                setError(data.message || `Failed to ${status.toLowerCase()} leave`);
+                setError(data.message || "Failed to approve leave");
             }
         } catch (err) {
             console.error(err);
-            setError(`Failed to ${status.toLowerCase()} leave`);
+            setError("Failed to update leave status");
+        }
+    };
+
+    const handleRejectLeave = async (id) => {
+        if (!window.confirm("Reject this leave request?")) return;
+        try {
+            const res = await fetch(`${API_BASE_URL}/api/leaves/${id}`, {
+                method: "PUT",
+                headers: getHeaders(),
+                body: JSON.stringify({ status: "Rejected" }),
+            });
+            const data = await res.json();
+            if (res.ok) {
+                setSuccess("Leave rejected.");
+                fetchLeaves();
+            } else {
+                setError(data.message || "Failed to reject leave");
+            }
+        } catch (err) {
+            console.error(err);
+            setError("Failed to update leave status");
         }
     };
 
@@ -332,9 +327,8 @@ export default function Attendance() {
         }
     };
 
-<<<<<<< HEAD
-=======
-<<<<<<< HEAD
+<<<<<<<<< Temporary merge branch 1
+=========
     const handleUpdateLeaveStatus = async (id, status) => {
         setError("");
         setSuccess("");
@@ -357,45 +351,24 @@ export default function Attendance() {
         }
     };
 
-=======
->>>>>>> 819c511ce486a6353829f2805eb90ecdf071faa3
->>>>>>> 614e3dc5d896ce340e10987b715fcc5204d54c2f
+>>>>>>>>> Temporary merge branch 2
     const handleDeleteLeave = async (id) => {
         if (!window.confirm("Are you sure you want to delete this leave request?")) return;
         setError("");
         setSuccess("");
         try {
-<<<<<<< HEAD
-            const res = await fetch(`${API_BASE_URL}/leave/${id}`, {
-                method: 'DELETE',
-=======
-<<<<<<< HEAD
-            const res = await fetch(`${API_BASE_URL}/leave/${id}`, {
-                method: 'DELETE',
-=======
+<<<<<<<<< Temporary merge branch 1
             const res = await fetch(`${API_BASE_URL}/api/leaves/${id}`, {
                 method: "DELETE",
->>>>>>> 819c511ce486a6353829f2805eb90ecdf071faa3
->>>>>>> 614e3dc5d896ce340e10987b715fcc5204d54c2f
+=========
+            const res = await fetch(`${API_BASE_URL}/leave/${id}`, {
+                method: 'DELETE',
+>>>>>>>>> Temporary merge branch 2
                 headers: getHeaders(),
             });
             const data = await res.json();
             if (res.ok) {
-<<<<<<< HEAD
-=======
-<<<<<<< HEAD
->>>>>>> 614e3dc5d896ce340e10987b715fcc5204d54c2f
-                setSuccess('Leave deleted successfully');
-                fetchLeaves();
-            } else {
-                setError(data.message || 'Failed to delete leave');
-            }
-        } catch (err) {
-            console.error(err);
-            setError('Failed to delete leave');
-<<<<<<< HEAD
-=======
-=======
+<<<<<<<<< Temporary merge branch 1
                 setSuccess("Leave request deleted successfully.");
                 fetchLeaves();
             } else {
@@ -404,8 +377,16 @@ export default function Attendance() {
         } catch (err) {
             console.error(err);
             setError("Failed to delete leave request");
->>>>>>> 819c511ce486a6353829f2805eb90ecdf071faa3
->>>>>>> 614e3dc5d896ce340e10987b715fcc5204d54c2f
+=========
+                setSuccess('Leave deleted successfully');
+                fetchLeaves();
+            } else {
+                setError(data.message || 'Failed to delete leave');
+            }
+        } catch (err) {
+            console.error(err);
+            setError('Failed to delete leave');
+>>>>>>>>> Temporary merge branch 2
         }
     };
 
@@ -431,19 +412,7 @@ export default function Attendance() {
         return matchesEmp && matchesDate;
     });
 
-<<<<<<< HEAD
     // Attendance stats
-=======
-    // Reset page when filters change
-    useEffect(() => {
-        setCurrentPage(1);
-    }, [filterEmpId, filterDate, records]);
-
-    const totalPages = Math.max(1, Math.ceil(filteredRecords.length / pageSize));
-    const pagedRecords = filteredRecords.slice((currentPage - 1) * pageSize, currentPage * pageSize);
-
-    // Calculate statistics
->>>>>>> 819c511ce486a6353829f2805eb90ecdf071faa3
     const totalLeaves = records.filter(r => r.status === "Leave").length;
     const presentCount = records.filter(r => r.status === "Present").length;
     const absentCount = records.filter(r => r.status === "Absent").length;
@@ -462,13 +431,12 @@ export default function Attendance() {
     return (
         <div className="p-6">
             {/* Page Header */}
-            <div className="flex items-center justify-between mb-6">
+            <div className="page-header" style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "24px" }}>
                 <div>
-                    <h1 className="text-2xl font-bold text-slate-900">Attendance & Leaves</h1>
-                    <p className="text-sm text-slate-600">Track clock-in times, worked hours, and log employee leave requests.</p>
+                    <h1 className="dashboard-title">Attendance & Leaves</h1>
+                    <p className="dashboard-subtitle">Track clock-in times, worked hours, and log employee leave requests.</p>
                 </div>
 
-<<<<<<< HEAD
                 <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
                     {/* Tab Switcher */}
                     <div style={{ display: "flex", backgroundColor: "#e2e8f0", padding: "4px", borderRadius: "8px", gap: "4px" }}>
@@ -529,179 +497,113 @@ export default function Attendance() {
                     >
                         <Plus size={16} />
                         <span>{activeTab === "attendance" ? "Log Attendance" : "Record Leave"}</span>
-=======
-                {/* Tab Switcher */}
-                <div className="flex bg-slate-200 p-1 rounded-md gap-1">
-                    <button
-                        onClick={() => setActiveTab("attendance")}
-                        className={`px-4 py-2 text-sm font-semibold rounded-md transition ${activeTab === "attendance" ? 'bg-white text-emerald-700 shadow' : 'text-slate-600'}`}
-                    >
-                        Attendance Logs
-                    </button>
-                    <button
-                        onClick={() => setActiveTab("leave")}
-                        className={`px-4 py-2 text-sm font-semibold rounded-md transition ${activeTab === "leave" ? 'bg-white text-emerald-700 shadow' : 'text-slate-600'}`}
-                    >
-                        Leave Management
->>>>>>> 819c511ce486a6353829f2805eb90ecdf071faa3
                     </button>
                 </div>
             </div>
 
             {/* Stats Widgets */}
-<<<<<<< HEAD
             <div className="stats-grid" style={{ marginBottom: "24px" }}>
-                <div className="stat-card stat-card-green">
+                <div className="stat-card">
                     <div className="stat-header">
-                        <div className="stat-icon-plain" style={{ color: "#065f46" }}>
-                            <UserCheck size={22} />
-=======
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-                <div className="bg-white rounded-xl p-4 shadow-sm">
-                    <div className="flex items-center gap-3">
-                        <div className="p-2 rounded-lg bg-emerald-800">
-                            <UserCheck size={18} color="#ffffff" />
->>>>>>> 614e3dc5d896ce340e10987b715fcc5204d54c2f
+                        <div className="stat-icon-box active-staff-icon" style={{ backgroundColor: "#065f46" }}>
+                            <UserCheck size={20} color="#ffffff" />
                         </div>
                         <div>
-                            <p className="text-xs text-slate-500">Present Logs</p>
-                            <p className="text-lg font-bold">{presentCount}</p>
+                            <p className="stat-label">Present Logs</p>
+                            <p className="stat-value">{presentCount}</p>
                         </div>
                     </div>
+                    <p className="stat-description">Present status entries</p>
                 </div>
 
-<<<<<<< HEAD
-                <div className="stat-card stat-card-blue">
+                <div className="stat-card">
                     <div className="stat-header">
-                        <div className="stat-icon-plain" style={{ color: "#0891b2" }}>
-                            <Clock size={22} />
-=======
-                <div className="bg-white rounded-xl p-4 shadow-sm">
-                    <div className="flex items-center gap-3">
-                        <div className="p-2 rounded-lg bg-sky-500">
-                            <Clock size={18} color="#ffffff" />
->>>>>>> 614e3dc5d896ce340e10987b715fcc5204d54c2f
+                        <div className="stat-icon-box depts-icon" style={{ backgroundColor: "#0891b2" }}>
+                            <Clock size={20} color="#ffffff" />
                         </div>
                         <div>
-                            <p className="text-xs text-slate-500">Half Days</p>
-                            <p className="text-lg font-bold">{halfDayCount}</p>
+                            <p className="stat-label">Half Days</p>
+                            <p className="stat-value">{halfDayCount}</p>
                         </div>
                     </div>
+                    <p className="stat-description">Half-day shifts tracked</p>
                 </div>
 
-<<<<<<< HEAD
-                <div className="stat-card stat-card-rose">
+                <div className="stat-card">
                     <div className="stat-header">
-                        <div className="stat-icon-plain" style={{ color: "#b91c1c" }}>
-                            <AlertCircle size={22} />
-=======
-                <div className="bg-white rounded-xl p-4 shadow-sm">
-                    <div className="flex items-center gap-3">
-                        <div className="p-2 rounded-lg bg-rose-700">
-                            <AlertCircle size={18} color="#ffffff" />
->>>>>>> 614e3dc5d896ce340e10987b715fcc5204d54c2f
+                        <div className="stat-icon-box total-employees-icon" style={{ backgroundColor: "#b91c1c" }}>
+                            <AlertCircle size={20} color="#ffffff" />
                         </div>
                         <div>
-                            <p className="text-xs text-slate-500">Absences</p>
-                            <p className="text-lg font-bold">{absentCount}</p>
+                            <p className="stat-label">Absences</p>
+                            <p className="stat-value">{absentCount}</p>
                         </div>
                     </div>
+                    <p className="stat-description">Unexcused absence logs</p>
                 </div>
 
-<<<<<<< HEAD
-                <div className="stat-card stat-card-indigo">
+                <div className="stat-card">
                     <div className="stat-header">
-                        <div className="stat-icon-plain" style={{ color: "#8b5cf6" }}>
-                            <Calendar size={22} />
-=======
-                <div className="bg-white rounded-xl p-4 shadow-sm">
-                    <div className="flex items-center gap-3">
-                        <div className="p-2 rounded-lg bg-violet-600">
-                            <Calendar size={18} color="#ffffff" />
->>>>>>> 614e3dc5d896ce340e10987b715fcc5204d54c2f
+                        <div className="stat-icon-box depts-icon" style={{ backgroundColor: "#8b5cf6" }}>
+                            <Calendar size={20} color="#ffffff" />
                         </div>
                         <div>
-                            <p className="text-xs text-slate-500">Total Leaves Taken</p>
-                            <p className="text-lg font-bold">{totalLeaves}</p>
+                            <p className="stat-label">Total Leaves Taken</p>
+                            <p className="stat-value">{totalLeaves}</p>
                         </div>
                     </div>
+                    <p className="stat-description">Approved leave days</p>
                 </div>
             </div>
 
             {error && (
-                <div className="flex items-center gap-2 text-red-700 bg-red-50 p-3 rounded-md mb-4 text-sm">
+                <div style={{ display: "flex", alignItems: "center", gap: "8px", color: "#b91c1c", backgroundColor: "#fef2f2", padding: "12px", borderRadius: "8px", marginBottom: "20px", fontSize: "14px" }}>
                     <AlertCircle size={16} />
                     <span>{error}</span>
                 </div>
             )}
 
             {success && (
-                <div className="text-emerald-800 bg-emerald-50 p-3 rounded-md mb-4 text-sm">
+                <div style={{ color: "#065f46", backgroundColor: "#ecfdf5", padding: "12px", borderRadius: "8px", marginBottom: "20px", fontSize: "14px" }}>
                     {success}
                 </div>
             )}
 
             {activeTab === "attendance" ? (
-<<<<<<< HEAD
                 <div className="w-full">
-=======
-                <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 items-start">
-
->>>>>>> 819c511ce486a6353829f2805eb90ecdf071faa3
                     {/* Logs View */}
-                    <div className="employee-directory-card lg:col-span-2 bg-white rounded-xl p-6 shadow-sm">
-                        <div className="flex items-center justify-between flex-wrap gap-4 mb-4">
-                            <h2 className="text-lg font-semibold m-0">Attendance Log Panel</h2>
+                    <div className="employee-directory-card" style={{ padding: "24px" }}>
+                        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "10px", marginBottom: "16px" }}>
+                            <h2 className="emp-card-title" style={{ margin: 0 }}>Attendance Log Panel</h2>
 
                             {/* Search Filters */}
-                            <div className="flex gap-2">
+                            <div style={{ display: "flex", gap: "8px" }}>
                                 <input
                                     type="text"
                                     placeholder="Emp ID or Name..."
                                     value={filterEmpId}
-<<<<<<< HEAD
                                     onChange={(e) => {
                                         setFilterEmpId(e.target.value);
                                         setCurrentAttendancePage(1);
                                     }}
                                     style={{ padding: "6px 12px", borderRadius: "6px", border: "1px solid #cbd5e1", fontSize: "13px" }}
-=======
-                                    onChange={(e) => setFilterEmpId(e.target.value)}
-                                    className="px-3 py-2 rounded-md border border-slate-300 text-sm"
->>>>>>> 819c511ce486a6353829f2805eb90ecdf071faa3
                                 />
                                 <input
                                     type="date"
                                     value={filterDate}
-<<<<<<< HEAD
                                     onChange={(e) => {
                                         setFilterDate(e.target.value);
                                         setCurrentAttendancePage(1);
                                     }}
                                     style={{ padding: "6px 12px", borderRadius: "6px", border: "1px solid #cbd5e1", fontSize: "13px" }}
-=======
-                                    onChange={(e) => setFilterDate(e.target.value)}
-                                    className="px-3 py-2 rounded-md border border-slate-300 text-sm"
->>>>>>> 819c511ce486a6353829f2805eb90ecdf071faa3
                                 />
                             </div>
                         </div>
 
-                        <div className="overflow-auto max-h-[520px] rounded-md border border-slate-100">
-                            <table className="min-w-full divide-y">
+                        <div className="table-responsive">
+                            <table className="employee-table">
                                 <thead>
                                     <tr>
-<<<<<<< HEAD
-                                        <th>EMPLOYEE</th>
-                                        <th>DEPARTMENT</th>
-                                        <th className="table-center-col">DATE</th>
-                                        <th className="table-center-col">IN</th>
-                                        <th className="table-center-col">OUT</th>
-                                        <th className="table-center-col">HOURS</th>
-                                        <th className="table-center-col">STATUS</th>
-                                        <th className="table-actions-col">ACTIONS</th>
-=======
-<<<<<<< HEAD
                                         <th style={{ padding: "4px 8px" }}>EMPLOYEE</th>
                                         <th style={{ padding: "4px 8px" }}>DEPARTMENT</th>
                                         <th style={{ padding: "4px 8px", textAlign: "center" }}>DATE</th>
@@ -710,44 +612,26 @@ export default function Attendance() {
                                         <th style={{ padding: "4px 8px", textAlign: "center" }}>HOURS</th>
                                         <th style={{ padding: "4px 8px", textAlign: "center" }}>STATUS</th>
                                         <th style={{ padding: "4px 8px", textAlign: "right" }}>ACTIONS</th>
-=======
-                                        <th className="px-3 py-3">EMPLOYEE</th>
-                                        <th className="px-3 py-3">DEPARTMENT</th>
-                                        <th className="px-3 py-3 text-center">DATE</th>
-                                        <th className="px-3 py-3 text-center">IN</th>
-                                        <th className="px-3 py-3 text-center">OUT</th>
-                                        <th className="px-3 py-3 text-center">HOURS</th>
-                                        <th className="px-3 py-3 text-center">STATUS</th>
-                                        <th className="px-3 py-3 text-right">ACTIONS</th>
->>>>>>> 819c511ce486a6353829f2805eb90ecdf071faa3
->>>>>>> 614e3dc5d896ce340e10987b715fcc5204d54c2f
                                     </tr>
                                 </thead>
                                 <tbody>
                                     {loading ? (
                                         <tr>
-                                            <td colSpan="8" className="text-center py-8">Loading logs...</td>
+                                            <td colSpan="8" style={{ textAlign: "center", padding: "30px 0" }}>Loading logs...</td>
                                         </tr>
                                     ) : paginatedRecords.length === 0 ? (
                                         <tr>
-                                            <td colSpan="8" className="text-center py-8">No records registered matching search criteria.</td>
+                                            <td colSpan="8" style={{ textAlign: "center", padding: "30px 0" }}>No records registered matching search criteria.</td>
                                         </tr>
                                     ) : (
-<<<<<<< HEAD
                                         paginatedRecords.map((rec) => (
                                             <tr key={rec._id} className="employee-row">
                                                 <td style={{ padding: "4px 8px" }}>
-=======
-                                        pagedRecords.map((rec) => (
-                                            <tr key={rec._id} className="border-b last:border-b-0">
-                                                <td className="px-4 py-3">
->>>>>>> 819c511ce486a6353829f2805eb90ecdf071faa3
                                                     <div>
-                                                        <p className="font-semibold text-slate-900 text-sm">{rec.employeeName}</p>
-                                                        <p className="text-xs text-slate-500">{rec.employeeCode}</p>
+                                                        <p style={{ fontWeight: "700", color: "#1e293b", fontSize: "14px" }}>{rec.employeeName}</p>
+                                                        <p style={{ fontSize: "11px", color: "#64748b" }}>{rec.employeeCode}</p>
                                                     </div>
                                                 </td>
-<<<<<<< HEAD
                                                 <td style={{ padding: "4px 8px" }}>
                                                     <span style={{ fontSize: "12px", fontWeight: "600", color: "#475569" }}>{rec.departmentName}</span>
                                                 </td>
@@ -789,22 +673,6 @@ export default function Attendance() {
                                                         style={{ border: "none", background: "none", cursor: "pointer", color: "#b91c1c" }}
                                                         title="Delete Record"
                                                     >
-=======
-                                                <td className="px-4 py-3">
-                                                    <span className="text-sm font-medium text-slate-600">{rec.departmentName}</span>
-                                                </td>
-                                                <td className="px-4 py-3 text-center">{formatDate(rec.attendanceDate)}</td>
-                                                <td className="px-4 py-3 text-center font-semibold">{rec.checkInTime || "--:--"}</td>
-                                                <td className="px-4 py-3 text-center font-semibold">{rec.checkOutTime || "--:--"}</td>
-                                                <td className="px-4 py-3 text-center font-bold text-emerald-700">{rec.workedHours || 0}</td>
-                                                <td className="px-4 py-3 text-center">
-                                                    <span className={`inline-block px-2 py-1 text-xs font-semibold rounded-full ${rec.status === 'Present' ? 'bg-emerald-50 text-emerald-700' : rec.status === 'Half Day' ? 'bg-sky-50 text-sky-700' : rec.status === 'Leave' ? 'bg-violet-50 text-violet-700' : 'bg-rose-50 text-rose-700'}`}>
-                                                        {rec.status}
-                                                    </span>
-                                                </td>
-                                                <td className="px-4 py-3 text-right">
-                                                    <button onClick={() => handleDeleteRecord(rec._id)} title="Delete Record" className="text-rose-600 hover:text-rose-800">
->>>>>>> 819c511ce486a6353829f2805eb90ecdf071faa3
                                                         <Trash2 size={16} />
                                                     </button>
                                                 </td>
@@ -814,7 +682,6 @@ export default function Attendance() {
                                 </tbody>
                             </table>
                         </div>
-<<<<<<< HEAD
 
                         {/* Pagination controls for Attendance */}
                         {attendanceTotalPages > 1 && (
@@ -845,30 +712,6 @@ export default function Attendance() {
                                 </div>
                             </div>
                         )}
-=======
-                        {/* Pagination Controls */}
-                        <div className="flex items-center justify-between mt-3">
-                            <div className="flex items-center gap-2">
-                                <button onClick={() => setCurrentPage((p) => Math.max(1, p - 1))} disabled={currentPage === 1} className="px-3 py-1 rounded-md border bg-white disabled:opacity-60">
-                                    Previous
-                                </button>
-                                <button onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))} disabled={currentPage === totalPages} className="px-3 py-1 rounded-md border bg-white disabled:opacity-60">
-                                    Next
-                                </button>
-                                <span className="text-sm text-slate-600">Page {currentPage} of {totalPages}</span>
-                            </div>
-
-                            <div className="flex items-center gap-2">
-                                <label className="text-sm text-slate-600">Rows per page:</label>
-                                <select value={pageSize} onChange={(e) => { setPageSize(Number(e.target.value)); setCurrentPage(1); }} className="px-2 py-1 rounded-md border">
-                                    <option value={5}>5</option>
-                                    <option value={10}>10</option>
-                                    <option value={20}>20</option>
-                                    <option value={50}>50</option>
-                                </select>
-                            </div>
-                        </div>
->>>>>>> 819c511ce486a6353829f2805eb90ecdf071faa3
                     </div>
                 </div>
             ) : (
@@ -878,16 +721,15 @@ export default function Attendance() {
                     <div className="employee-directory-card" style={{ padding: "24px" }}>
                         <h2 className="emp-card-title" style={{ marginBottom: "16px" }}>Leave Logs</h2>
 
-<<<<<<< HEAD
                         <div className="table-responsive">
                             <table className="employee-table">
                                 <thead>
                                     <tr>
-                                        <th>EMPLOYEE</th>
-                                        <th className="table-center-col">LEAVE DATE</th>
-                                        <th>LEAVE REASON</th>
-                                        <th className="table-center-col">STATUS</th>
-                                        <th className="table-actions-col">ACTIONS</th>
+                                        <th style={{ padding: "4px 8px" }}>EMPLOYEE</th>
+                                        <th style={{ padding: "4px 8px", textAlign: "center" }}>LEAVE DATE</th>
+                                        <th style={{ padding: "4px 8px" }}>LEAVE REASON</th>
+                                        <th style={{ padding: "4px 8px", textAlign: "center" }}>STATUS</th>
+                                        <th style={{ padding: "4px 8px", textAlign: "right" }}>ACTIONS</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -1003,7 +845,7 @@ export default function Attendance() {
             {/* Log Attendance Modal */}
             {isAddModalOpen && (
                 <div className="modal-backdrop">
-                    <div className="modal-content-card-wide">
+                    <div className="modal-content-card" style={{ maxWidth: "500px" }}>
                         <div className="modal-header">
                             <div>
                                 <h2>Log Attendance</h2>
@@ -1025,24 +867,15 @@ export default function Attendance() {
                                     onChange={(e) => setSelectedEmpId(e.target.value)}
                                     required
                                 >
-=======
-                    {/* Record Attendance Form */}
-                    <div className="emp-card-box bg-white rounded-xl p-6 shadow-sm">
-                        <h2 className="text-lg font-semibold mb-4">Log Attendance</h2>
-                        <form onSubmit={handleAddAttendance}>
-
-                            <div className="mb-3">
-                                <label className="block text-xs font-semibold uppercase text-slate-600 mb-1">Employee*</label>
-                                <select value={selectedEmpId} onChange={(e) => setSelectedEmpId(e.target.value)} className="w-full px-3 py-2 rounded-md border border-slate-300 bg-white">
->>>>>>> 819c511ce486a6353829f2805eb90ecdf071faa3
                                     <option value="">Select Employee...</option>
                                     {employees.map(emp => (
-                                        <option key={emp._id} value={emp._id}>{emp.firstName} {emp.lastName} ({emp.employeeId})</option>
+                                        <option key={emp._id} value={emp._id}>
+                                            {emp.firstName} {emp.lastName} ({emp.employeeId})
+                                        </option>
                                     ))}
                                 </select>
                             </div>
 
-<<<<<<< HEAD
                             <div className="form-group">
                                 <label>Attendance Date <span className="req">*</span></label>
                                 <input
@@ -1060,16 +893,6 @@ export default function Attendance() {
                                     onChange={(e) => setStatus(e.target.value)}
                                     required
                                 >
-=======
-                            <div className="mb-3">
-                                <label className="block text-xs font-semibold uppercase text-slate-600 mb-1">Attendance Date*</label>
-                                <input type="date" value={attendanceDate} onChange={(e) => setAttendanceDate(e.target.value)} className="w-full px-3 py-2 rounded-md border border-slate-300" />
-                            </div>
-
-                            <div className="mb-3">
-                                <label className="block text-xs font-semibold uppercase text-slate-600 mb-1">Shift Status*</label>
-                                <select value={status} onChange={(e) => setStatus(e.target.value)} className="w-full px-3 py-2 rounded-md border border-slate-300 bg-white">
->>>>>>> 819c511ce486a6353829f2805eb90ecdf071faa3
                                     <option value="Present">Present</option>
                                     <option value="Half Day">Half Day</option>
                                     <option value="Absent">Absent</option>
@@ -1079,7 +902,6 @@ export default function Attendance() {
 
                             {(status === "Present" || status === "Half Day") && (
                                 <>
-<<<<<<< HEAD
                                     <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "10px" }}>
                                         <div className="form-group">
                                             <label>In Time</label>
@@ -1107,27 +929,10 @@ export default function Attendance() {
                                             value={workedHours}
                                             onChange={(e) => setWorkedHours(e.target.value)}
                                         />
-=======
-                                    <div className="grid grid-cols-2 gap-2 mb-3">
-                                        <div>
-                                            <label className="block text-xs font-semibold uppercase text-slate-600 mb-1">In Time</label>
-                                            <input type="time" value={checkInTime} onChange={(e) => setCheckInTime(e.target.value)} className="w-full px-3 py-2 rounded-md border border-slate-300" />
-                                        </div>
-                                        <div>
-                                            <label className="block text-xs font-semibold uppercase text-slate-600 mb-1">Out Time</label>
-                                            <input type="time" value={checkOutTime} onChange={(e) => setCheckOutTime(e.target.value)} className="w-full px-3 py-2 rounded-md border border-slate-300" />
-                                        </div>
-                                    </div>
-
-                                    <div className="mb-3">
-                                        <label className="block text-xs font-semibold uppercase text-slate-600 mb-1">Worked Hours</label>
-                                        <input type="number" step="0.1" value={workedHours} onChange={(e) => setWorkedHours(e.target.value)} className="w-full px-3 py-2 rounded-md border border-slate-300" />
->>>>>>> 819c511ce486a6353829f2805eb90ecdf071faa3
                                     </div>
                                 </>
                             )}
 
-<<<<<<< HEAD
                             <div className="form-group">
                                 <label>Administrator Notes</label>
                                 <input
@@ -1155,57 +960,12 @@ export default function Attendance() {
                                     <span>Log Attendance</span>
                                 </button>
                             </div>
-=======
-                            <div className="mb-4">
-                                <label className="block text-xs font-semibold uppercase text-slate-600 mb-1">Administrator Notes</label>
-                                <input type="text" value={notes} onChange={(e) => setNotes(e.target.value)} className="w-full px-3 py-2 rounded-md border border-slate-300" placeholder="e.g. Cleared by HR" />
-                            </div>
-
-                            <button type="submit" className="w-full px-4 py-2 bg-emerald-700 text-white rounded-md font-semibold flex items-center justify-center gap-2">
-                                <Plus size={16} />
-                                <span>Log Attendance</span>
-                            </button>
->>>>>>> 819c511ce486a6353829f2805eb90ecdf071faa3
                         </form>
                     </div>
                 </div>
             )}
 
-<<<<<<< HEAD
-            {/* Record Leave Modal */}
-            {isLeaveModalOpen && (
-                <div className="modal-backdrop">
-                    <div className="modal-content-card-wide">
-                        <div className="modal-header">
-                            <div>
-                                <h2>Record Leave</h2>
-                                <p className="modal-subtitle">Submit a leave request on behalf of an employee.</p>
-=======
-<<<<<<< HEAD
-            {/* Record Leave Modal */}
-            {isLeaveModalOpen && (
-                <div className="modal-backdrop">
-                    <div className="modal-content-card" style={{ maxWidth: "500px" }}>
-                        <div className="modal-header">
-                            <div>
-                                <h2>Record Leave</h2>
-                                <p className="modal-subtitle">Logs approved leave days for an employee.</p>
->>>>>>> 614e3dc5d896ce340e10987b715fcc5204d54c2f
-                            </div>
-                            <button
-                                className="btn-close"
-                                onClick={() => setIsLeaveModalOpen(false)}
-                            >
-                                <X size={20} />
-                            </button>
-<<<<<<< HEAD
-                        </div>
-
-                        <form onSubmit={handleApplyLeave} className="enroll-form">
-                            <div className="form-group">
-                                <label>Employee <span className="req">*</span></label>
-=======
-=======
+<<<<<<<<< Temporary merge branch 1
                     {/* Leaves Table */}
                     <div className="employee-directory-card" style={{ padding: "24px" }}>
                         <h2 className="emp-card-title" style={{ marginBottom: "16px" }}>Leave Requests</h2>
@@ -1297,14 +1057,26 @@ export default function Attendance() {
                                     )}
                                 </tbody>
                             </table>
->>>>>>> 819c511ce486a6353829f2805eb90ecdf071faa3
+=========
+            {/* Record Leave Modal */}
+            {isLeaveModalOpen && (
+                <div className="modal-backdrop">
+                    <div className="modal-content-card" style={{ maxWidth: "500px" }}>
+                        <div className="modal-header">
+                            <div>
+                                <h2>Record Leave</h2>
+                                <p className="modal-subtitle">Logs approved leave days for an employee.</p>
+                            </div>
+                            <button
+                                className="btn-close"
+                                onClick={() => setIsLeaveModalOpen(false)}
+                            >
+                                <X size={20} />
+                            </button>
+>>>>>>>>> Temporary merge branch 2
                         </div>
 
-<<<<<<< HEAD
-                        <form onSubmit={handleApplyLeave} className="enroll-form">
-                            <div className="form-group">
-                                <label>Employee <span className="req">*</span></label>
-=======
+<<<<<<<<< Temporary merge branch 1
                     {/* Request / Record Leave Form */}
                     <div className="emp-card-box" style={{ padding: "24px" }}>
                         <h2 className="emp-card-title" style={{ marginBottom: "8px" }}>Create Leave Request</h2>
@@ -1313,8 +1085,11 @@ export default function Attendance() {
 
                             <div style={{ marginBottom: "12px" }}>
                                 <label style={{ display: "block", fontSize: "11px", fontWeight: "700", textTransform: "uppercase", color: "#475569", marginBottom: "4px" }}>Employee*</label>
->>>>>>> 819c511ce486a6353829f2805eb90ecdf071faa3
->>>>>>> 614e3dc5d896ce340e10987b715fcc5204d54c2f
+=========
+                        <form onSubmit={handleApplyLeave} className="enroll-form">
+                            <div className="form-group">
+                                <label>Employee <span className="req">*</span></label>
+>>>>>>>>> Temporary merge branch 2
                                 <select
                                     value={leaveEmpId}
                                     onChange={(e) => setLeaveEmpId(e.target.value)}
@@ -1329,21 +1104,13 @@ export default function Attendance() {
                                 </select>
                             </div>
 
-<<<<<<< HEAD
-                            <div className="form-group">
-                                <label>Leave Type <span className="req">*</span></label>
-=======
-<<<<<<< HEAD
-                            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "10px" }}>
-                                <div className="form-group">
-                                    <label>From Date <span className="req">*</span></label>
-=======
+<<<<<<<<< Temporary merge branch 1
                             <div style={{ marginBottom: "12px" }}>
                                 <label style={{ display: "block", fontSize: "11px", fontWeight: "700", textTransform: "uppercase", color: "#475569", marginBottom: "4px" }}>Leave Type*</label>
->>>>>>> 614e3dc5d896ce340e10987b715fcc5204d54c2f
                                 <select
                                     value={leaveType}
                                     onChange={(e) => setLeaveType(e.target.value)}
+                                    style={{ width: "100%", padding: "8px 12px", borderRadius: "6px", border: "1px solid #cbd5e1", backgroundColor: "#ffffff" }}
                                 >
                                     <option value="Casual Leave">Casual Leave</option>
                                     <option value="Sick Leave">Sick Leave</option>
@@ -1354,16 +1121,14 @@ export default function Attendance() {
                                 </select>
                             </div>
 
-<<<<<<< HEAD
-                            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "10px" }}>
-                                <div className="form-group">
-                                    <label>From Date <span className="req">*</span></label>
-=======
                             <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "10px", marginBottom: "12px" }}>
                                 <div>
                                     <label style={{ display: "block", fontSize: "11px", fontWeight: "700", textTransform: "uppercase", color: "#475569", marginBottom: "4px" }}>From Date*</label>
->>>>>>> 819c511ce486a6353829f2805eb90ecdf071faa3
->>>>>>> 614e3dc5d896ce340e10987b715fcc5204d54c2f
+=========
+                            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "10px" }}>
+                                <div className="form-group">
+                                    <label>From Date <span className="req">*</span></label>
+>>>>>>>>> Temporary merge branch 2
                                     <input
                                         type="date"
                                         value={leaveFrom}
@@ -1393,10 +1158,15 @@ export default function Attendance() {
                                 />
                             </div>
 
-<<<<<<< HEAD
-=======
-<<<<<<< HEAD
->>>>>>> 614e3dc5d896ce340e10987b715fcc5204d54c2f
+<<<<<<<<< Temporary merge branch 1
+                            <button
+                                type="submit"
+                                style={{ width: "100%", padding: "10px", backgroundColor: "#065f46", color: "#ffffff", border: "none", borderRadius: "6px", fontWeight: "600", fontSize: "14px", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", gap: "8px" }}
+                            >
+                                <CheckCircle size={16} />
+                                <span>Submit Leave Request</span>
+                            </button>
+=========
                             <div className="modal-actions">
                                 <button
                                     type="button"
@@ -1411,21 +1181,10 @@ export default function Attendance() {
                                     className="btn-enroll-employee"
                                 >
                                     <CheckCircle size={16} />
-                                    <span>Submit Leave Request</span>
+                                    <span>Save Approved Leave</span>
                                 </button>
                             </div>
-<<<<<<< HEAD
-=======
-=======
-                            <button
-                                type="submit"
-                                style={{ width: "100%", padding: "10px", backgroundColor: "#065f46", color: "#ffffff", border: "none", borderRadius: "6px", fontWeight: "600", fontSize: "14px", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", gap: "8px" }}
-                            >
-                                <CheckCircle size={16} />
-                                <span>Submit Leave Request</span>
-                            </button>
->>>>>>> 819c511ce486a6353829f2805eb90ecdf071faa3
->>>>>>> 614e3dc5d896ce340e10987b715fcc5204d54c2f
+>>>>>>>>> Temporary merge branch 2
                         </form>
                     </div>
                 </div>

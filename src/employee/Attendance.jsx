@@ -1,4 +1,8 @@
 import React, { useState, useEffect } from "react";
+<<<<<<< HEAD
+=======
+// styles are loaded globally via src/index.css (Tailwind + custom styles)
+>>>>>>> 819c511ce486a6353829f2805eb90ecdf071faa3
 import Sidebar from "../components/Sidebar";
 import {
     Calendar,
@@ -137,11 +141,10 @@ export default function Attendance() {
             <div className="lg:pl-[260px] flex flex-col min-h-screen">
 
                 {/* Mobile Header */}
-                <div className="sticky top-0 z-30 flex items-center justify-between border-b border-slate-200/80 bg-white/95 px-4 py-3 backdrop-blur-xl lg:hidden" style={{ minHeight: "60px" }}>
+                <div className="sticky top-0 z-30 flex items-center justify-between border-b border-slate-200/80 bg-white/95 px-4 py-3 backdrop-blur-xl lg:hidden min-h-[60px]">
                     <button
                         onClick={() => setIsOpen(true)}
-                        className="inline-flex h-11 w-11 items-center justify-center rounded-2xl bg-[#043e30] text-white shadow-sm shadow-[#043e30]/10"
-                        style={{ border: "none", cursor: "pointer" }}
+                        className="inline-flex h-11 w-11 items-center justify-center rounded-2xl bg-emerald-900 text-white shadow-sm border-0 cursor-pointer"
                         aria-label="Open sidebar"
                     >
                         <Menu size={20} />
@@ -150,23 +153,46 @@ export default function Attendance() {
                 </div>
 
                 {/* Top Header Bar */}
+<<<<<<< HEAD
                 <div className="emp-top-header flex justify-between items-center mb-8 px-2.5">
                     <div className="emp-search-box" style={{ visibility: "hidden" }}>
                         <Search size={18} color="#64748b" />
                         <input type="text" placeholder="Search..." className="emp-search-input" />
+=======
+                <div className="flex justify-between items-center mb-8 px-2">
+                    <div className="flex items-center gap-2 bg-white px-4 py-2 rounded-xl border border-slate-200 w-[320px] hidden">
+                        <Search size={18} color="#64748b" />
+                        <input type="text" placeholder="Search..." className="border-none outline-none bg-transparent w-full" />
+                    </div>
+
+                    <div className="flex items-center gap-2 bg-white px-3 py-1 rounded-xl border border-slate-200 font-bold text-black">
+                        <div className="w-8 h-8 rounded-full bg-emerald-800 text-white flex items-center justify-center text-xs font-bold">
+                            {getInitials(user?.name || "Akshaya Mehta")}
+                        </div>
+                        <span>{user?.name || "Akshaya Mehta"}</span>
+>>>>>>> 819c511ce486a6353829f2805eb90ecdf071faa3
                     </div>
                 </div>
 
                 {/* Page Content */}
+<<<<<<< HEAD
                 <div style={{ flex: 1, padding: "0 10px" }}>
                     <div className="page-header flex justify-between items-center mb-6">
                         <div>
                             <h1 className="dashboard-title text-3xl font-extrabold text-slate-900 dark:text-white m-0">Attendance</h1>
                             <p className="dashboard-subtitle text-sm text-slate-500 dark:text-slate-400 mt-1">Track your daily attendance and work hours</p>
+=======
+                <div className="flex-1 px-2">
+                    <div className="page-header flex justify-between items-center mb-6">
+                        <div>
+                            <h1 className="text-3xl md:text-4xl font-extrabold text-slate-900 m-0">Attendance</h1>
+                            <p className="text-sm text-slate-500 mt-1">Track your daily attendance and work hours</p>
+>>>>>>> 819c511ce486a6353829f2805eb90ecdf071faa3
                         </div>
                     </div>
 
                     {/* Stats Grid */}
+<<<<<<< HEAD
                     <div className="emp-stats-grid">
                         {/* Present */}
                         <div className="emp-stat-card stat-card-green">
@@ -205,21 +231,59 @@ export default function Attendance() {
                             <p className="emp-stat-value">
                                 {stats.leave} <span className="text-sm font-medium text-slate-500 dark:text-slate-400">Days</span>
                             </p>
+=======
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 mb-8">
+                        <div className="bg-white p-5 rounded-lg border border-slate-200">
+                            <div className="flex justify-between items-center mb-2">
+                                <span className="text-sm font-semibold text-slate-500">Present</span>
+                                <div className="bg-emerald-50 text-emerald-700 px-2 py-1 rounded-md">
+                                    <CheckSquare size={18} />
+                                </div>
+                            </div>
+                            <p className="text-2xl font-extrabold text-slate-900 m-0">{stats.present} <span className="text-sm font-medium text-slate-500">Days</span></p>
+                        </div>
+
+                        <div className="bg-white p-5 rounded-lg border border-slate-200">
+                            <div className="flex justify-between items-center mb-2">
+                                <span className="text-sm font-semibold text-slate-500">Absent</span>
+                                <div className="bg-rose-50 text-rose-700 px-2 py-1 rounded-md">
+                                    <XSquare size={18} />
+                                </div>
+                            </div>
+                            <p className="text-2xl font-extrabold text-slate-900 m-0">{stats.absent} <span className="text-sm font-medium text-slate-500">Days</span></p>
+                        </div>
+
+                        <div className="bg-white p-5 rounded-lg border border-slate-200">
+                            <div className="flex justify-between items-center mb-2">
+                                <span className="text-sm font-semibold text-slate-500">Leave</span>
+                                <div className="bg-sky-50 text-sky-700 px-2 py-1 rounded-md">
+                                    <Plane size={18} />
+                                </div>
+                            </div>
+                            <p className="text-2xl font-extrabold text-slate-900 m-0">{stats.leave} <span className="text-sm font-medium text-slate-500">Days</span></p>
+>>>>>>> 819c511ce486a6353829f2805eb90ecdf071faa3
                         </div>
                     </div>
 
                     {/* Attendance Records Box */}
+<<<<<<< HEAD
                     <div className="employee-directory-card">
                         {/* Header controls bar */}
                         <div className="filters-row flex justify-between items-center px-6 py-5 border-b border-slate-100 dark:border-slate-800/60 bg-slate-50/30 dark:bg-slate-950/5">
                             <h2 className="emp-card-title" style={{ margin: 0, fontSize: "18px", fontWeight: "800", color: "#000000" }}>Attendance Records</h2>
+=======
+                    <div className="bg-white rounded-xl border border-slate-200">
 
-                            <div style={{ display: "flex", gap: "12px", alignItems: "center" }}>
+                        {/* Header controls bar */}
+                        <div className="flex justify-between items-center p-5 border-b border-slate-100">
+                            <h2 className="m-0 text-lg font-extrabold text-slate-900">Attendance Records</h2>
+>>>>>>> 819c511ce486a6353829f2805eb90ecdf071faa3
+
+                            <div className="flex gap-3 items-center">
                                 <select
                                     value={selectedMonthYear}
                                     onChange={(e) => setSelectedMonthYear(e.target.value)}
-                                    className="filter-select"
-                                    style={{ border: "1px solid #cbd5e1", borderRadius: "10px", padding: "8px 16px", fontSize: "13px", fontWeight: "700", color: "#0f172a", outline: "none", cursor: "pointer", backgroundColor: "#ffffff" }}
+                                    className="border border-slate-200 rounded-lg px-4 py-2 text-sm font-bold text-slate-900 outline-none cursor-pointer bg-white"
                                 >
                                     {monthYearOptions.map((opt) => (
                                         <option key={opt} value={opt}>{opt}</option>
@@ -227,8 +291,7 @@ export default function Attendance() {
                                 </select>
 
                                 <button
-                                    className="action-icon-btn"
-                                    style={{ display: "flex", alignItems: "center", gap: "6px", backgroundColor: "#ffffff", border: "1px solid #cbd5e1", borderRadius: "10px", padding: "8px 16px", fontSize: "13px", fontWeight: "700", color: "#475569", cursor: "pointer" }}
+                                    className="flex items-center gap-2 bg-white border border-slate-200 rounded-lg px-4 py-2 text-sm font-bold text-slate-700 cursor-pointer"
                                 >
                                     <Filter size={14} />
                                     <span>Filter</span>
@@ -238,6 +301,7 @@ export default function Attendance() {
 
                         {/* Table */}
                         <div className="table-responsive">
+<<<<<<< HEAD
                             <table className="employee-table" style={{ borderCollapse: "collapse" }}>
                                 <thead>
                                     <tr style={{ borderBottom: "1px solid #e2e8f0" }}>
@@ -247,6 +311,17 @@ export default function Attendance() {
                                         <th style={{ padding: "4px 8px", textAlign: "left", fontSize: "11px", fontWeight: "700", color: "#64748b", textTransform: "uppercase" }}>Clock In</th>
                                         <th style={{ padding: "4px 8px", textAlign: "left", fontSize: "11px", fontWeight: "700", color: "#64748b", textTransform: "uppercase" }}>Clock Out</th>
                                         <th style={{ padding: "4px 8px", textAlign: "left", fontSize: "11px", fontWeight: "700", color: "#64748b", textTransform: "uppercase" }}>Worked Hours</th>
+=======
+                            <table className="min-w-full table-auto">
+                                <thead>
+                                    <tr className="border-b border-slate-200">
+                                        <th className="px-6 py-3 text-left text-xs font-bold text-slate-500 uppercase">Date</th>
+                                        <th className="px-6 py-3 text-left text-xs font-bold text-slate-500 uppercase">Day</th>
+                                        <th className="px-6 py-3 text-left text-xs font-bold text-slate-500 uppercase">Status</th>
+                                        <th className="px-6 py-3 text-left text-xs font-bold text-slate-500 uppercase">Clock In</th>
+                                        <th className="px-6 py-3 text-left text-xs font-bold text-slate-500 uppercase">Clock Out</th>
+                                        <th className="px-6 py-3 text-left text-xs font-bold text-slate-500 uppercase">Worked Hours</th>
+>>>>>>> 819c511ce486a6353829f2805eb90ecdf071faa3
                                     </tr>
                                 </thead>
                                 <tbody>

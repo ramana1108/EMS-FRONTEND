@@ -1,3 +1,7 @@
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+>>>>>>> 614e3dc5d896ce340e10987b715fcc5204d54c2f
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import {
@@ -16,9 +20,23 @@ import {
 import api from "../api";
 
 export default function Departments() {
+<<<<<<< HEAD
   const navigate = useNavigate();
   const [departments, setDepartments] = useState([]);
   const [showProfileInfo, setShowProfileInfo] = useState(false);
+=======
+  const [departments, setDepartments] = useState(INITIAL_DEMO_DATA);
+=======
+import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import api from "../api";
+
+const Departments = () => {
+  const navigate = useNavigate();
+  const [departments, setDepartments] = useState([]);
+  const [showProfileInfo, setShowProfileInfo] = useState(false);
+>>>>>>> 819c511ce486a6353829f2805eb90ecdf071faa3
+>>>>>>> 614e3dc5d896ce340e10987b715fcc5204d54c2f
   const [searchQuery, setSearchQuery] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingId, setEditingId] = useState(null);
@@ -48,10 +66,23 @@ export default function Departments() {
 
   const fetchDashboardCounts = async () => {
     try {
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+      const data = await api.getAdminDashboard();
+      if (data && data.dashboard) {
+        setBackendTotalDepartments(data.dashboard.totalDepartments || 0);
+        setBackendTotalEmployees(data.dashboard.totalEmployees || 0);
+=======
+>>>>>>> 614e3dc5d896ce340e10987b715fcc5204d54c2f
       const res = await api.getAdminDashboard();
       if (res?.dashboard) {
         setBackendTotalDepartments(res.dashboard.totalDepartments || 0);
         setBackendTotalEmployees(res.dashboard.totalEmployees || 0);
+<<<<<<< HEAD
+=======
+>>>>>>> 819c511ce486a6353829f2805eb90ecdf071faa3
+>>>>>>> 614e3dc5d896ce340e10987b715fcc5204d54c2f
       }
     } catch (error) {
       console.warn("Unable to load dashboard totals from backend:", error);
@@ -61,6 +92,13 @@ export default function Departments() {
   const fetchDepartments = async () => {
     setLoading(true);
     try {
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+      const data = await api.getDepartments();
+      if (data) setDepartments(data.departments || data.data || []);
+=======
+>>>>>>> 614e3dc5d896ce340e10987b715fcc5204d54c2f
       const res = await api.getDepartments();
       if (Array.isArray(res)) {
         setDepartments(res);
@@ -69,6 +107,10 @@ export default function Departments() {
       } else if (res?.data) {
         setDepartments(res.data);
       }
+<<<<<<< HEAD
+=======
+>>>>>>> 819c511ce486a6353829f2805eb90ecdf071faa3
+>>>>>>> 614e3dc5d896ce340e10987b715fcc5204d54c2f
     } catch (error) {
       console.warn("Backend API offline or failed to fetch departments:", error);
     } finally {
@@ -84,12 +126,36 @@ export default function Departments() {
     setSelectedDepartment(department);
 
     try {
+<<<<<<< HEAD
       const res = await api.getDepartmentEmployees(department._id);
       if (Array.isArray(res)) {
         setSelectedDepartmentEmployees(res);
       } else {
         setSelectedDepartmentEmployees(res?.employees || res?.data || []);
       }
+=======
+<<<<<<< HEAD
+      console.debug("fetchDepartmentEmployees: department", department._id);
+      // Some environments may not expose the department-specific endpoint correctly.
+      // Fall back to fetching all employees and filtering by departmentId for reliability.
+      const all = await api.getAllEmployees();
+      const list = (all && all.employees) || (all && all.data) || all || [];
+      console.debug("fetchDepartmentEmployees: all employees count", list.length);
+      const filtered = list.filter((e) => {
+        // departmentId may be object or string
+        const dep = e.departmentId && (e.departmentId._id || e.departmentId);
+        console.debug("compare", String(dep), String(department._id));
+        return String(dep) === String(department._id);
+      });
+      console.debug("fetchDepartmentEmployees: filtered count", filtered.length);
+      setSelectedDepartmentEmployees(filtered);
+=======
+      const res = await api.getDepartmentEmployees(department._id);
+      if (res?.employees) setSelectedDepartmentEmployees(res.employees);
+      else if (res?.employees === undefined && Array.isArray(res)) setSelectedDepartmentEmployees(res);
+      else setSelectedDepartmentEmployees(res.employees || []);
+>>>>>>> 819c511ce486a6353829f2805eb90ecdf071faa3
+>>>>>>> 614e3dc5d896ce340e10987b715fcc5204d54c2f
     } catch (error) {
       console.warn(error);
       setEmployeesError("Could not load department employees.");
@@ -170,6 +236,46 @@ export default function Departments() {
 
     if (editingId) {
       try {
+<<<<<<< HEAD
+        const data = await api.updateDepartment(editingId, formData);
+
+        if (data?.department) {
+          await fetchDepartments();
+          await fetchDashboardCounts();
+=======
+<<<<<<< HEAD
+        const res = await api.updateDepartment(editingId, formData);
+        if (res && res.department) {
+          setDepartments((prev) => prev.map((d) => (d._id === editingId ? res.department : d)));
+          fetchDashboardCounts();
+>>>>>>> 614e3dc5d896ce340e10987b715fcc5204d54c2f
+        } else {
+          setErrorMsg(data?.message || "Failed to update department.");
+          return;
+        }
+      } catch (err) {
+        setErrorMsg(err?.message || "Failed to update department.");
+        return;
+      }
+    } else {
+      try {
+        const data = await api.createDepartment(formData);
+
+        if (data?.department) {
+          await fetchDepartments();
+          await fetchDashboardCounts();
+        } else {
+          setErrorMsg(data?.message || "Failed to create department.");
+          return;
+        }
+      } catch (err) {
+<<<<<<< HEAD
+        setErrorMsg(err?.message || "Failed to create department.");
+        return;
+=======
+        const newDept = { ...formData, _id: "temp-" + Math.random().toString(36).substring(2, 9) };
+        setDepartments((prev) => [newDept, ...prev]);
+=======
         const data = await api.updateDepartment(editingId, formData);
 
         if (data?.department) {
@@ -197,6 +303,8 @@ export default function Departments() {
       } catch (err) {
         setErrorMsg(err?.message || "Failed to create department.");
         return;
+>>>>>>> 819c511ce486a6353829f2805eb90ecdf071faa3
+>>>>>>> 614e3dc5d896ce340e10987b715fcc5204d54c2f
       }
     }
 
@@ -208,9 +316,20 @@ export default function Departments() {
     if (!window.confirm("Are you sure you want to delete this department?")) return;
 
     try {
+<<<<<<< HEAD
       await api.deleteDepartment(id);
       await fetchDepartments();
       await fetchDashboardCounts();
+=======
+<<<<<<< HEAD
+      const res = await api.deleteDepartment(id);
+      if (res) fetchDashboardCounts();
+=======
+      await api.deleteDepartment(id);
+      await fetchDepartments();
+      await fetchDashboardCounts();
+>>>>>>> 819c511ce486a6353829f2805eb90ecdf071faa3
+>>>>>>> 614e3dc5d896ce340e10987b715fcc5204d54c2f
     } catch (err) {
       setErrorMsg(err?.message || "Failed to delete department.");
     }
@@ -229,6 +348,7 @@ export default function Departments() {
             onChange={(e) => setSearchQuery(e.target.value)}
           />
         </div>
+<<<<<<< HEAD
         <div className="header-right relative" style={{ display: "flex", alignItems: "center", gap: "16px" }}>
           <button className="icon-btn" title="Notifications" onClick={() => navigate("/admin/notices") }>
             <Bell size={18} />
@@ -252,6 +372,37 @@ export default function Departments() {
           <button className="btn-add-dept" onClick={handleOpenAddModal} style={{ display: "flex", alignItems: "center", gap: "6px" }}>
             <Plus size={16} />
             <span>Add Department</span>
+=======
+<<<<<<< HEAD
+        <div className="header-right" style={{ display: "flex", alignItems: "center", gap: "16px" }}>
+          <button className="btn-add-dept" onClick={handleOpenAddModal} style={{ display: "flex", alignItems: "center", gap: "6px" }}>
+            <Plus size={16} />
+            <span>Add Department</span>
+=======
+        <div className="header-right relative">
+          <button className="icon-btn" title="Notifications" onClick={() => navigate("/admin/notices") }>
+            🔔
+          </button>
+          <div className="admin-badge cursor-pointer flex items-center gap-2" onClick={() => setShowProfileInfo((prev) => !prev)}>
+            <span className="badge-avatar">AB</span>
+            <span className="badge-text">admin</span>
+          </div>
+          {showProfileInfo && (
+            <div className="absolute right-0 top-full mt-2 w-56 bg-white border border-slate-200 rounded-lg shadow-lg p-3 z-30">
+              <div className="flex items-center gap-3 mb-2">
+                <div className="w-9 h-9 rounded-full bg-emerald-700 text-white flex items-center justify-center font-bold">AB</div>
+                <div>
+                  <div className="font-bold">Admin</div>
+                  <div className="text-xs text-slate-500">Administrator</div>
+                </div>
+              </div>
+              <button className="w-full rounded-md py-2 bg-emerald-700 text-white" onClick={() => { navigate("/admin/settings"); setShowProfileInfo(false); }}>View Profile Settings</button>
+            </div>
+          )}
+          <button className="btn-add-dept" onClick={handleOpenAddModal}>
+            + Add Department
+>>>>>>> 819c511ce486a6353829f2805eb90ecdf071faa3
+>>>>>>> 614e3dc5d896ce340e10987b715fcc5204d54c2f
           </button>
         </div>
       </div>
@@ -409,29 +560,32 @@ export default function Departments() {
               No employees assigned to this department.
             </p>
           ) : (
-            <div className="employees-table-wrapper">
-              <table className="employees-table">
-                <thead>
-                  <tr>
-                    <th style={{ padding: "4px 8px" }}>Name</th>
-                    <th style={{ padding: "4px 8px" }}>Email</th>
-                    <th style={{ padding: "4px 8px" }}>Phone</th>
-                    <th style={{ padding: "4px 8px" }}>Designation</th>
-                    <th style={{ padding: "4px 8px" }}>Status</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {selectedDepartmentEmployees.map((employee) => (
-                    <tr key={employee._id}>
-                      <td style={{ padding: "4px 8px" }}>{`${employee.firstName || ""} ${employee.lastName || ""}`.trim() || "—"}</td>
-                      <td style={{ padding: "4px 8px" }}>{employee.email || "—"}</td>
-                      <td style={{ padding: "4px 8px" }}>{employee.phone || "—"}</td>
-                      <td style={{ padding: "4px 8px" }}>{employee.designationId?.name || employee.designationId || "—"}</td>
-                      <td style={{ padding: "4px 8px" }}>{employee.status || "—"}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
+            <div className="employees-cards-grid" style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(240px,1fr))", gap: 16 }}>
+              {selectedDepartmentEmployees.map((employee) => {
+                const initials = `${(employee.firstName || "").charAt(0)}${(employee.lastName || "").charAt(0)}`.toUpperCase();
+                return (
+                  <div key={employee._id} className="employee-card" style={{ background: "rgba(255,255,255,0.02)", border: "1px solid rgba(255,255,255,0.03)", padding: 12, borderRadius: 12, display: "flex", gap: 12, alignItems: "center" }}>
+                    <div style={{ width: 48, height: 48, borderRadius: 12, background: "linear-gradient(135deg,#065f46,#10b981)", display: "flex", alignItems: "center", justifyContent: "center", color: "white", fontWeight: 800, fontSize: 14 }}>
+                      {initials || "—"}
+                    </div>
+                    <div style={{ flex: 1 }}>
+                      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                        <div>
+                          <div style={{ fontWeight: 800, color: "#e6eef8" }}>{`${employee.firstName || ""} ${employee.lastName || ""}`.trim() || "—"}</div>
+                          <div style={{ fontSize: 12, color: "#94a3b8" }}>{employee.designationId?.name || employee.designationId || "—"}</div>
+                        </div>
+                        <div style={{ textAlign: "right" }}>
+                          <div style={{ fontSize: 12, color: "#94a3b8" }}>{employee.status || "—"}</div>
+                        </div>
+                      </div>
+                      <div style={{ marginTop: 8, display: "flex", gap: 12, fontSize: 13, color: "#cbd5e1" }}>
+                        <div>{employee.email || "—"}</div>
+                        <div style={{ opacity: 0.9 }}>{employee.phone || "—"}</div>
+                      </div>
+                    </div>
+                  </div>
+                );
+              })}
             </div>
           )}
         </div>

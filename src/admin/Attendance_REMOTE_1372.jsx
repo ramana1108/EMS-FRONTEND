@@ -50,6 +50,7 @@ export default function Attendance() {
     const [leaveTo, setLeaveTo] = useState("");
     const [leaveReason, setLeaveReason] = useState("");
     const [leaveType, setLeaveType] = useState("Casual Leave");
+    const [leaves, setLeaves] = useState([]);
 
     // Search/Filters
     const [filterEmpId, setFilterEmpId] = useState("");
@@ -101,9 +102,6 @@ export default function Attendance() {
     const fetchLeaves = async () => {
         try {
 <<<<<<< HEAD
-=======
-<<<<<<< HEAD
->>>>>>> 614e3dc5d896ce340e10987b715fcc5204d54c2f
             const res = await fetch(`${API_BASE_URL}/leave`, { headers: getHeaders() });
             const data = await res.json();
             if (res.ok) {
@@ -114,8 +112,6 @@ export default function Attendance() {
         } catch (err) {
             console.error(err);
             setError("Failed to connect to leave endpoint");
-<<<<<<< HEAD
-=======
 =======
             const res = await fetch(`${API_BASE_URL}/api/leaves`, {
                 headers: getHeaders(),
@@ -127,7 +123,6 @@ export default function Attendance() {
         } catch (err) {
             console.error(err);
 >>>>>>> 819c511ce486a6353829f2805eb90ecdf071faa3
->>>>>>> 614e3dc5d896ce340e10987b715fcc5204d54c2f
         }
     };
 
@@ -213,9 +208,6 @@ export default function Attendance() {
         try {
             setLoading(true);
 <<<<<<< HEAD
-            const res = await fetch(`${API_BASE_URL}/leave`, {
-=======
-<<<<<<< HEAD
             const dates = [];
             let current = new Date(start);
             while (current <= end) {
@@ -239,7 +231,6 @@ export default function Attendance() {
                 });
 =======
             const res = await fetch(`${API_BASE_URL}/api/leaves`, {
->>>>>>> 614e3dc5d896ce340e10987b715fcc5204d54c2f
                 method: "POST",
                 headers: getHeaders(),
                 body: JSON.stringify({
@@ -249,10 +240,7 @@ export default function Attendance() {
                     toDate: leaveTo,
                     reason: leaveReason,
                 }),
-<<<<<<< HEAD
-=======
 >>>>>>> 819c511ce486a6353829f2805eb90ecdf071faa3
->>>>>>> 614e3dc5d896ce340e10987b715fcc5204d54c2f
             });
 
             const data = await res.json();
@@ -264,12 +252,6 @@ export default function Attendance() {
                 setLeaveTo("");
                 setLeaveReason("");
 <<<<<<< HEAD
-                setLeaveType("Casual Leave");
-                setIsLeaveModalOpen(false);
-                setCurrentLeavePage(1);
-                fetchLeaves();
-=======
-<<<<<<< HEAD
                 setIsLeaveModalOpen(false);
                 setCurrentLeavePage(1);
                 fetchAttendance();
@@ -277,7 +259,6 @@ export default function Attendance() {
                 setLeaveType("Casual Leave");
                 fetchLeaves();
 >>>>>>> 819c511ce486a6353829f2805eb90ecdf071faa3
->>>>>>> 614e3dc5d896ce340e10987b715fcc5204d54c2f
             } else {
                 setError(data.message || "Failed to submit leave request");
             }
@@ -288,25 +269,46 @@ export default function Attendance() {
         }
     };
 
-    const handleUpdateLeaveStatus = async (id, status) => {
-        setError("");
-        setSuccess("");
+    const handleApproveLeave = async (id) => {
+        if (!window.confirm("Approve this leave request?")) return;
         try {
-            const res = await fetch(`${API_BASE_URL}/leave/${id}`, {
-                method: 'PUT',
+            const res = await fetch(`${API_BASE_URL}/api/leaves/${id}`, {
+                method: "PUT",
                 headers: getHeaders(),
-                body: JSON.stringify({ status }),
+                body: JSON.stringify({ status: "Approved" }),
             });
             const data = await res.json();
             if (res.ok) {
-                setSuccess(`Leave ${status} successfully.`);
+                setSuccess("Leave approved.");
                 fetchLeaves();
+                fetchAttendance();
             } else {
-                setError(data.message || `Failed to ${status.toLowerCase()} leave`);
+                setError(data.message || "Failed to approve leave");
             }
         } catch (err) {
             console.error(err);
-            setError(`Failed to ${status.toLowerCase()} leave`);
+            setError("Failed to update leave status");
+        }
+    };
+
+    const handleRejectLeave = async (id) => {
+        if (!window.confirm("Reject this leave request?")) return;
+        try {
+            const res = await fetch(`${API_BASE_URL}/api/leaves/${id}`, {
+                method: "PUT",
+                headers: getHeaders(),
+                body: JSON.stringify({ status: "Rejected" }),
+            });
+            const data = await res.json();
+            if (res.ok) {
+                setSuccess("Leave rejected.");
+                fetchLeaves();
+            } else {
+                setError(data.message || "Failed to reject leave");
+            }
+        } catch (err) {
+            console.error(err);
+            setError("Failed to update leave status");
         }
     };
 
@@ -333,8 +335,6 @@ export default function Attendance() {
     };
 
 <<<<<<< HEAD
-=======
-<<<<<<< HEAD
     const handleUpdateLeaveStatus = async (id, status) => {
         setError("");
         setSuccess("");
@@ -359,7 +359,6 @@ export default function Attendance() {
 
 =======
 >>>>>>> 819c511ce486a6353829f2805eb90ecdf071faa3
->>>>>>> 614e3dc5d896ce340e10987b715fcc5204d54c2f
     const handleDeleteLeave = async (id) => {
         if (!window.confirm("Are you sure you want to delete this leave request?")) return;
         setError("");
@@ -369,22 +368,14 @@ export default function Attendance() {
             const res = await fetch(`${API_BASE_URL}/leave/${id}`, {
                 method: 'DELETE',
 =======
-<<<<<<< HEAD
-            const res = await fetch(`${API_BASE_URL}/leave/${id}`, {
-                method: 'DELETE',
-=======
             const res = await fetch(`${API_BASE_URL}/api/leaves/${id}`, {
                 method: "DELETE",
 >>>>>>> 819c511ce486a6353829f2805eb90ecdf071faa3
->>>>>>> 614e3dc5d896ce340e10987b715fcc5204d54c2f
                 headers: getHeaders(),
             });
             const data = await res.json();
             if (res.ok) {
 <<<<<<< HEAD
-=======
-<<<<<<< HEAD
->>>>>>> 614e3dc5d896ce340e10987b715fcc5204d54c2f
                 setSuccess('Leave deleted successfully');
                 fetchLeaves();
             } else {
@@ -393,8 +384,6 @@ export default function Attendance() {
         } catch (err) {
             console.error(err);
             setError('Failed to delete leave');
-<<<<<<< HEAD
-=======
 =======
                 setSuccess("Leave request deleted successfully.");
                 fetchLeaves();
@@ -405,7 +394,6 @@ export default function Attendance() {
             console.error(err);
             setError("Failed to delete leave request");
 >>>>>>> 819c511ce486a6353829f2805eb90ecdf071faa3
->>>>>>> 614e3dc5d896ce340e10987b715fcc5204d54c2f
         }
     };
 
@@ -549,19 +537,11 @@ export default function Attendance() {
             </div>
 
             {/* Stats Widgets */}
-<<<<<<< HEAD
-            <div className="stats-grid" style={{ marginBottom: "24px" }}>
-                <div className="stat-card stat-card-green">
-                    <div className="stat-header">
-                        <div className="stat-icon-plain" style={{ color: "#065f46" }}>
-                            <UserCheck size={22} />
-=======
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
                 <div className="bg-white rounded-xl p-4 shadow-sm">
                     <div className="flex items-center gap-3">
                         <div className="p-2 rounded-lg bg-emerald-800">
                             <UserCheck size={18} color="#ffffff" />
->>>>>>> 614e3dc5d896ce340e10987b715fcc5204d54c2f
                         </div>
                         <div>
                             <p className="text-xs text-slate-500">Present Logs</p>
@@ -570,17 +550,10 @@ export default function Attendance() {
                     </div>
                 </div>
 
-<<<<<<< HEAD
-                <div className="stat-card stat-card-blue">
-                    <div className="stat-header">
-                        <div className="stat-icon-plain" style={{ color: "#0891b2" }}>
-                            <Clock size={22} />
-=======
                 <div className="bg-white rounded-xl p-4 shadow-sm">
                     <div className="flex items-center gap-3">
                         <div className="p-2 rounded-lg bg-sky-500">
                             <Clock size={18} color="#ffffff" />
->>>>>>> 614e3dc5d896ce340e10987b715fcc5204d54c2f
                         </div>
                         <div>
                             <p className="text-xs text-slate-500">Half Days</p>
@@ -589,17 +562,10 @@ export default function Attendance() {
                     </div>
                 </div>
 
-<<<<<<< HEAD
-                <div className="stat-card stat-card-rose">
-                    <div className="stat-header">
-                        <div className="stat-icon-plain" style={{ color: "#b91c1c" }}>
-                            <AlertCircle size={22} />
-=======
                 <div className="bg-white rounded-xl p-4 shadow-sm">
                     <div className="flex items-center gap-3">
                         <div className="p-2 rounded-lg bg-rose-700">
                             <AlertCircle size={18} color="#ffffff" />
->>>>>>> 614e3dc5d896ce340e10987b715fcc5204d54c2f
                         </div>
                         <div>
                             <p className="text-xs text-slate-500">Absences</p>
@@ -608,17 +574,10 @@ export default function Attendance() {
                     </div>
                 </div>
 
-<<<<<<< HEAD
-                <div className="stat-card stat-card-indigo">
-                    <div className="stat-header">
-                        <div className="stat-icon-plain" style={{ color: "#8b5cf6" }}>
-                            <Calendar size={22} />
-=======
                 <div className="bg-white rounded-xl p-4 shadow-sm">
                     <div className="flex items-center gap-3">
                         <div className="p-2 rounded-lg bg-violet-600">
                             <Calendar size={18} color="#ffffff" />
->>>>>>> 614e3dc5d896ce340e10987b715fcc5204d54c2f
                         </div>
                         <div>
                             <p className="text-xs text-slate-500">Total Leaves Taken</p>
@@ -692,16 +651,6 @@ export default function Attendance() {
                                 <thead>
                                     <tr>
 <<<<<<< HEAD
-                                        <th>EMPLOYEE</th>
-                                        <th>DEPARTMENT</th>
-                                        <th className="table-center-col">DATE</th>
-                                        <th className="table-center-col">IN</th>
-                                        <th className="table-center-col">OUT</th>
-                                        <th className="table-center-col">HOURS</th>
-                                        <th className="table-center-col">STATUS</th>
-                                        <th className="table-actions-col">ACTIONS</th>
-=======
-<<<<<<< HEAD
                                         <th style={{ padding: "4px 8px" }}>EMPLOYEE</th>
                                         <th style={{ padding: "4px 8px" }}>DEPARTMENT</th>
                                         <th style={{ padding: "4px 8px", textAlign: "center" }}>DATE</th>
@@ -720,7 +669,6 @@ export default function Attendance() {
                                         <th className="px-3 py-3 text-center">STATUS</th>
                                         <th className="px-3 py-3 text-right">ACTIONS</th>
 >>>>>>> 819c511ce486a6353829f2805eb90ecdf071faa3
->>>>>>> 614e3dc5d896ce340e10987b715fcc5204d54c2f
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -883,11 +831,11 @@ export default function Attendance() {
                             <table className="employee-table">
                                 <thead>
                                     <tr>
-                                        <th>EMPLOYEE</th>
-                                        <th className="table-center-col">LEAVE DATE</th>
-                                        <th>LEAVE REASON</th>
-                                        <th className="table-center-col">STATUS</th>
-                                        <th className="table-actions-col">ACTIONS</th>
+                                        <th style={{ padding: "4px 8px" }}>EMPLOYEE</th>
+                                        <th style={{ padding: "4px 8px", textAlign: "center" }}>LEAVE DATE</th>
+                                        <th style={{ padding: "4px 8px" }}>LEAVE REASON</th>
+                                        <th style={{ padding: "4px 8px", textAlign: "center" }}>STATUS</th>
+                                        <th style={{ padding: "4px 8px", textAlign: "right" }}>ACTIONS</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -1003,7 +951,7 @@ export default function Attendance() {
             {/* Log Attendance Modal */}
             {isAddModalOpen && (
                 <div className="modal-backdrop">
-                    <div className="modal-content-card-wide">
+                    <div className="modal-content-card" style={{ maxWidth: "500px" }}>
                         <div className="modal-header">
                             <div>
                                 <h2>Log Attendance</h2>
@@ -1175,22 +1123,11 @@ export default function Attendance() {
             {/* Record Leave Modal */}
             {isLeaveModalOpen && (
                 <div className="modal-backdrop">
-                    <div className="modal-content-card-wide">
-                        <div className="modal-header">
-                            <div>
-                                <h2>Record Leave</h2>
-                                <p className="modal-subtitle">Submit a leave request on behalf of an employee.</p>
-=======
-<<<<<<< HEAD
-            {/* Record Leave Modal */}
-            {isLeaveModalOpen && (
-                <div className="modal-backdrop">
                     <div className="modal-content-card" style={{ maxWidth: "500px" }}>
                         <div className="modal-header">
                             <div>
                                 <h2>Record Leave</h2>
                                 <p className="modal-subtitle">Logs approved leave days for an employee.</p>
->>>>>>> 614e3dc5d896ce340e10987b715fcc5204d54c2f
                             </div>
                             <button
                                 className="btn-close"
@@ -1198,13 +1135,6 @@ export default function Attendance() {
                             >
                                 <X size={20} />
                             </button>
-<<<<<<< HEAD
-                        </div>
-
-                        <form onSubmit={handleApplyLeave} className="enroll-form">
-                            <div className="form-group">
-                                <label>Employee <span className="req">*</span></label>
-=======
 =======
                     {/* Leaves Table */}
                     <div className="employee-directory-card" style={{ padding: "24px" }}>
@@ -1314,7 +1244,6 @@ export default function Attendance() {
                             <div style={{ marginBottom: "12px" }}>
                                 <label style={{ display: "block", fontSize: "11px", fontWeight: "700", textTransform: "uppercase", color: "#475569", marginBottom: "4px" }}>Employee*</label>
 >>>>>>> 819c511ce486a6353829f2805eb90ecdf071faa3
->>>>>>> 614e3dc5d896ce340e10987b715fcc5204d54c2f
                                 <select
                                     value={leaveEmpId}
                                     onChange={(e) => setLeaveEmpId(e.target.value)}
@@ -1330,20 +1259,16 @@ export default function Attendance() {
                             </div>
 
 <<<<<<< HEAD
-                            <div className="form-group">
-                                <label>Leave Type <span className="req">*</span></label>
-=======
-<<<<<<< HEAD
                             <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "10px" }}>
                                 <div className="form-group">
                                     <label>From Date <span className="req">*</span></label>
 =======
                             <div style={{ marginBottom: "12px" }}>
                                 <label style={{ display: "block", fontSize: "11px", fontWeight: "700", textTransform: "uppercase", color: "#475569", marginBottom: "4px" }}>Leave Type*</label>
->>>>>>> 614e3dc5d896ce340e10987b715fcc5204d54c2f
                                 <select
                                     value={leaveType}
                                     onChange={(e) => setLeaveType(e.target.value)}
+                                    style={{ width: "100%", padding: "8px 12px", borderRadius: "6px", border: "1px solid #cbd5e1", backgroundColor: "#ffffff" }}
                                 >
                                     <option value="Casual Leave">Casual Leave</option>
                                     <option value="Sick Leave">Sick Leave</option>
@@ -1354,16 +1279,10 @@ export default function Attendance() {
                                 </select>
                             </div>
 
-<<<<<<< HEAD
-                            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "10px" }}>
-                                <div className="form-group">
-                                    <label>From Date <span className="req">*</span></label>
-=======
                             <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "10px", marginBottom: "12px" }}>
                                 <div>
                                     <label style={{ display: "block", fontSize: "11px", fontWeight: "700", textTransform: "uppercase", color: "#475569", marginBottom: "4px" }}>From Date*</label>
 >>>>>>> 819c511ce486a6353829f2805eb90ecdf071faa3
->>>>>>> 614e3dc5d896ce340e10987b715fcc5204d54c2f
                                     <input
                                         type="date"
                                         value={leaveFrom}
@@ -1394,9 +1313,6 @@ export default function Attendance() {
                             </div>
 
 <<<<<<< HEAD
-=======
-<<<<<<< HEAD
->>>>>>> 614e3dc5d896ce340e10987b715fcc5204d54c2f
                             <div className="modal-actions">
                                 <button
                                     type="button"
@@ -1411,11 +1327,9 @@ export default function Attendance() {
                                     className="btn-enroll-employee"
                                 >
                                     <CheckCircle size={16} />
-                                    <span>Submit Leave Request</span>
+                                    <span>Save Approved Leave</span>
                                 </button>
                             </div>
-<<<<<<< HEAD
-=======
 =======
                             <button
                                 type="submit"
@@ -1425,7 +1339,6 @@ export default function Attendance() {
                                 <span>Submit Leave Request</span>
                             </button>
 >>>>>>> 819c511ce486a6353829f2805eb90ecdf071faa3
->>>>>>> 614e3dc5d896ce340e10987b715fcc5204d54c2f
                         </form>
                     </div>
                 </div>

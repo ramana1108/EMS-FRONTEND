@@ -1,6 +1,9 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "../App.css"; // Clean separate CSS file imported here
+import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import {
   LayoutDashboard,
   Building2,
@@ -71,7 +74,12 @@ export default function Dashboard() {
     const stored = localStorage.getItem("user");
     if (stored) {
       try {
-        return JSON.parse(stored);
+        const parsed = JSON.parse(stored);
+        // Normalize role to a displayable string if it's an object
+        if (parsed && parsed.role && typeof parsed.role === "object") {
+          parsed.role = parsed.role.name || parsed.role.role || JSON.stringify(parsed.role);
+        }
+        return parsed;
       } catch (e) {
         console.error(e);
       }
@@ -190,8 +198,8 @@ export default function Dashboard() {
   return (
     <div>
       {/* Top Header Bar */}
-      <div className="top-header" style={{ position: "relative" }}>
-        <div className="search-box" style={{ position: "relative" }}>
+      <div className="top-header relative">
+        <div className="search-box relative">
           <Search size={18} color="#64748b" />
           <input
             type="text"
@@ -202,92 +210,40 @@ export default function Dashboard() {
             onKeyDown={handleSearchKeyDown}
           />
           {searchSuggestions.length > 0 && (
-            <div
-              style={{
-                position: "absolute",
-                top: "100%",
-                left: 0,
-                right: 0,
-                background: "#ffffff",
-                border: "1px solid #e5e7eb",
-                borderRadius: "12px",
-                marginTop: "8px",
-                zIndex: 20,
-                boxShadow: "0 10px 30px rgba(15, 23, 42, 0.08)",
-                maxHeight: "280px",
-                overflowY: "auto"
-              }}
-            >
+            <div className="absolute top-full left-0 right-0 bg-white border border-slate-200 rounded-xl mt-2 z-20 shadow-lg max-h-72 overflow-y-auto">
               {searchSuggestions.map((item, idx) => (
-                <button
-                  key={`${item.type}-${item.label}-${idx}`}
-                  onClick={() => handleSearchSelect(item)}
-                  style={{
-                    width: "100%",
-                    textAlign: "left",
-                    padding: "12px 16px",
-                    display: "flex",
-                    justifyContent: "space-between",
-                    gap: "10px",
-                    border: "none",
-                    background: "transparent",
-                    cursor: "pointer",
-                    color: "#0f172a"
-                  }}
-                >
+                <button key={`${item.type}-${item.label}-${idx}`} onClick={() => handleSearchSelect(item)} className="w-full text-left px-4 py-3 flex justify-between gap-2 bg-transparent border-0 cursor-pointer text-slate-900">
                   <span>{item.label}</span>
-                  <span style={{ color: "#475569", fontSize: "12px" }}>
-                    {item.type === "page" ? "Page" : "Employee"}
-                  </span>
+                  <span className="text-slate-500 text-xs">{item.type === "page" ? "Page" : "Employee"}</span>
                 </button>
               ))}
             </div>
           )}
         </div>
 
-        <div className="header-right" style={{ position: "relative" }}>
+        <div className="header-right relative">
           <button className="icon-btn" onClick={() => navigate("/admin/notices") }>
             <Bell size={18} />
           </button>
+            <div className="admin-profile-badge">
           <div
-            className="admin-profile-badge"
+            className="admin-profile-badge cursor-pointer flex items-center gap-2"
             onClick={() => setShowProfileInfo((prev) => !prev)}
-            style={{ cursor: "pointer" }}
           >
-            <div className="admin-avatar-small">{getInitials(user.name)}</div>
-            <span>{user.role || "ADMIN"}</span>
+                        <div className="admin-avatar-small">{getInitials(user.name)}</div>
+            <span>{typeof user.role === "string" ? user.role : String(user.role || "ADMIN")}</span>
           </div>
           {showProfileInfo && (
-            <div style={{
-              position: "absolute",
-              right: 0,
-              top: "100%",
-              marginTop: "10px",
-              width: "240px",
-              background: "#ffffff",
-              border: "1px solid #e5e7eb",
-              borderRadius: "14px",
-              boxShadow: "0 12px 30px rgba(15, 23, 42, 0.12)",
-              padding: "16px",
-              zIndex: 30
-            }}>
-              <div style={{ display: "flex", alignItems: "center", gap: "12px", marginBottom: "12px" }}>
-                <div style={{ width: "40px", height: "40px", borderRadius: "50%", backgroundColor: "#0f766e", color: "#ffffff", display: "flex", alignItems: "center", justifyContent: "center", fontWeight: 700 }}>{getInitials(user.name)}</div>
+            <div className="absolute right-0 top-full mt-2 w-60 bg-white border rounded-lg shadow-lg p-4 z-30">
+              <div className="flex items-center gap-3 mb-3">
+                <div className="w-10 h-10 rounded-full bg-emerald-700 text-white flex items-center justify-center font-bold">{getInitials(user.name)}</div>
                 <div>
-                  <div style={{ fontWeight: 700 }}>{user.name || "Admin"}</div>
-                  <div style={{ fontSize: "12px", color: "#475569" }}>{user.role || "Admin"}</div>
+                  <div className="font-bold">{user.name || "Admin"}</div>
+                  <div className="text-xs text-slate-500">{user.role || "Admin"}</div>
                 </div>
               </div>
-              <div style={{ fontSize: "13px", color: "#334155", marginBottom: "12px" }}><strong>Email:</strong> {user.email || "-"}</div>
-              <button
-                style={{ width: "100%", border: "none", borderRadius: "10px", padding: "10px", background: "#0f766e", color: "#ffffff", cursor: "pointer" }}
-                onClick={() => {
-                  navigate("/admin/settings");
-                  setShowProfileInfo(false);
-                }}
-              >
-                View Profile Settings
-              </button>
+              <div className="text-sm text-slate-700 mb-3"><strong>Email:</strong> {user.email || "-"}</div>
+              <button className="w-full rounded-md py-2 bg-emerald-700 text-white" onClick={() => { navigate("/admin/settings"); setShowProfileInfo(false); }}>View Profile Settings</button>
             </div>
           )}
         </div>
@@ -312,6 +268,7 @@ export default function Dashboard() {
             <div className="summary-card stat-card-green">
               <div className="stat-header">
                 <div className="stat-icon-box">
+                <div className="stat-icon-box" style={{ backgroundColor: "#075d31", color: "#065f46" }}>
                   <Users size={20} />
                 </div>
                 <div>
@@ -386,51 +343,30 @@ export default function Dashboard() {
         {/* Quick Actions */}
         <div className="card-box">
           <h2 className="card-title" style={{ marginBottom: "16px" }}>Quick  Actions</h2>
+          <h2 className="card-title mb-4">Quick Actions</h2>
           <div className="action-buttons-stack">
-            <button
-              className="btn-action"
-              style={{ justifyContent: "space-between" }}
-              onClick={() => navigate("/admin/employee")}
-            >
-              <span><Plus size={16} /> Add Employee</span>
-              <span style={{ background: "#e0f2fe", color: "#0369a1", borderRadius: "9999px", padding: "4px 10px", fontSize: "12px", fontWeight: 700 }}>
-                {dashboard ? dashboard.totalEmployees : "--"}
-              </span>
+            <button className="btn-action flex justify-between items-center" onClick={() => navigate("/admin/employee") }>
+              <span className="flex items-center gap-2"><Plus size={16} /> Add Employee</span>
+              <span className="rounded-full px-2 py-1 text-xs font-bold bg-sky-100 text-sky-700">{dashboard ? dashboard.totalEmployees : "--"}</span>
             </button>
-            <button
-              className="btn-action"
-              style={{ justifyContent: "space-between" }}
-              onClick={() => navigate("/admin/payroll")}
-            >
-              <span><Plus size={16} /> Create Payroll</span>
-              <span style={{ background: "#ecfdf5", color: "#166534", borderRadius: "9999px", padding: "4px 10px", fontSize: "12px", fontWeight: 700 }}>
-                {dashboard ? dashboard.totalPayrolls : "--"}
-              </span>
+            <button className="btn-action flex justify-between items-center" onClick={() => navigate("/admin/payroll") }>
+              <span className="flex items-center gap-2"><Plus size={16} /> Create Payroll</span>
+              <span className="rounded-full px-2 py-1 text-xs font-bold bg-emerald-50 text-emerald-700">{dashboard ? dashboard.totalPayrolls : "--"}</span>
             </button>
-            <button
-              className="btn-action"
-              style={{ justifyContent: "space-between" }}
-              onClick={() => navigate("/admin/roles")}
-            >
-              <span><Plus size={16} /> Create Manager</span>
-              <span style={{ background: "#fef3c7", color: "#92400e", borderRadius: "9999px", padding: "4px 10px", fontSize: "12px", fontWeight: 700 }}>
-                {dashboard ? dashboard.totalManagers : "--"}
-              </span>
+            <button className="btn-action flex justify-between items-center" onClick={() => navigate("/admin/roles") }>
+              <span className="flex items-center gap-2"><Plus size={16} /> Create Manager</span>
+              <span className="rounded-full px-2 py-1 text-xs font-bold bg-amber-100 text-amber-700">{dashboard ? dashboard.totalManagers : "--"}</span>
             </button>
-            <button
-              className="btn-action"
-              style={{ justifyContent: "space-between" }}
-              onClick={() => navigate("/admin/notices")}
-            >
-              <span><FileText size={16} /> Create Notice</span>
-              <span style={{ background: "#ede9fe", color: "#5b21b6", borderRadius: "9999px", padding: "4px 10px", fontSize: "12px", fontWeight: 700 }}>
-                {dashboard ? dashboard.totalNotices : "--"}
-              </span>
+            <button className="btn-action flex justify-between items-center" onClick={() => navigate("/admin/notices") }>
+              <span className="flex items-center gap-2"><FileText size={16} /> Create Notice</span>
+              <span className="rounded-full px-2 py-1 text-xs font-bold bg-violet-100 text-violet-700">{dashboard ? dashboard.totalNotices : "--"}</span>
             </button>
           </div>
         </div>
 
         {/* Employees List */}
+        {/* Employees List */}
+        {/* Managers / Recent Employees List */}
         <div className="card-box">
           <div className="card-header-row">
             <h2 className="card-title">Employees</h2>
@@ -455,6 +391,22 @@ export default function Dashboard() {
                     <p className="manager-role">{mgr.role.replace("Manager Directory", "Staff").replace("Director", "Staff").replace("Toster Manager", "Staff").replace("Esstetor", "Staff")}</p>
                   </div>
                   <button className="btn-contact">View</button>
+            {dashboard && dashboard.recentEmployees && dashboard.recentEmployees.map((emp, index) => (
+              <div key={emp._id || index} className="manager-item">
+                <div>
+                  <p className="manager-name">{emp.firstName} {emp.lastName}</p>
+                  <p className="manager-role">{emp.employeeId}</p>
+                </div>
+                <button className="btn-contact">View</button>
+              </div>
+            ))}
+            {(!dashboard || !dashboard.recentEmployees || dashboard.recentEmployees.length === 0) && managers.map((mgr, index) => (
+            {!dashboard && managers.map((mgr, index) => (
+              <div key={index} className="manager-item">
+                <div>
+                  <p className="manager-name">{mgr.name.replace("Directory", "Employee").replace("Toster Manager", "Staff").replace("Director", "Staff").replace("Manager", "Staff")}</p>
+                  <p className="manager-role">{mgr.role.replace("Manager Directory", "Staff").replace("Director", "Staff").replace("Toster Manager", "Staff").replace("Esstetor", "Staff")}</p>
+>>>>>>> 614e3dc5d896ce340e10987b715fcc5204d54c2f
                 </div>
               ))
             )}
@@ -470,6 +422,47 @@ export default function Dashboard() {
         <div className="card-box">
           <h2 className="card-title">Attendance Analytics Bar Chart</h2>
           <div className="chart-bars-container" style={{ display: 'flex', gap: 12, padding: '16px 0' }}>
+
+        {/* Attendance Analytics Bar Chart */}
+        <div className="card-box">
+          <h2 className="card-title">Attendance Analytics Bar Chart</h2>
+
+          <div className="chart-bars-container">
+            <div className="bar-pair">
+              <div className="bar-dark" style={{ height: "60%" }}></div>
+              <div className="bar-emerald" style={{ height: "40%" }}></div>
+            </div>
+            <div className="bar-pair">
+              <div className="bar-dark" style={{ height: "75%" }}></div>
+              <div className="bar-emerald" style={{ height: "30%" }}></div>
+            </div>
+            <div className="bar-pair">
+              <div className="bar-dark" style={{ height: "90%" }}></div>
+              <div className="bar-emerald" style={{ height: "50%" }}></div>
+            </div>
+            <div className="bar-pair">
+              <div className="bar-dark" style={{ height: "50%" }}></div>
+              <div className="bar-emerald" style={{ height: "45%" }}></div>
+            </div>
+            <div className="bar-pair">
+              <div className="bar-dark" style={{ height: "85%" }}></div>
+              <div className="bar-emerald" style={{ height: "60%" }}></div>
+            </div>
+          </div>
+
+          <div className="chart-months-row">
+            <span>Jan</span>
+            <span>Feb</span>
+            <span>Mar</span>
+            <span>Apr</span>
+            <span>May</span>
+=======
+        
+        {/* Attendance Analytics Bar Chart (breakdown for today) */}
+        <div className="card-box">
+          <h2 className="card-title">Attendance Analytics Bar Chart</h2>
+          <div className="chart-bars-container flex gap-3 py-4">
+>>>>>>> 614e3dc5d896ce340e10987b715fcc5204d54c2f
             {dashboard ? (
               (() => {
                 const bars = [
@@ -490,12 +483,22 @@ export default function Dashboard() {
                       <div style={{ marginTop: 8, fontWeight: 700 }}>{b.value || 0}</div>
                       <div style={{ fontSize: 12, color: '#6b7280' }}>{b.label}</div>
                       <div style={{ fontSize: 12, color: '#9ca3af' }}>{pct}%</div>
+=======
+                    <div key={i} className="flex-1 text-center">
+                      <div className="flex items-end justify-center" style={{ height: maxPx + 20 }}>
+                        <div style={{ width: 40, height: heightPx || 6, background: b.color, borderRadius: 8, transition: 'height 300ms ease' }} />
+                      </div>
+                      <div className="mt-2 font-bold">{b.value || 0}</div>
+                      <div className="text-xs text-slate-500">{b.label}</div>
+                      <div className="text-xs text-slate-400">{pct}%</div>
                     </div>
                   );
                 });
               })()
             ) : (
-              <div style={{ padding: 20 }}>No attendance data</div>
+              <div className="p-5">No attendance data</div>
+            )}
+              <div className="p-5">No attendance data</div>
             )}
           </div>
         </div>
@@ -503,19 +506,41 @@ export default function Dashboard() {
         {/* Employee Distribution Pie Chart */}
         <div className="card-box">
           <h2 className="card-title">Employee Distribution Pie Chart</h2>
+<<<<<<< HEAD
           <div style={{ display: 'flex', alignItems: 'center', gap: 16, padding: '12px 0' }}>
             <div style={{ width: 150, height: 150, display: 'flex', alignItems: 'center', justifyContent: 'center', position: 'relative' }}>
+=======
+<<<<<<< HEAD
+
+          <div className="donut-center-container">
+            <div className="donut-graphic">
+              208
+            </div>
+          </div>
+=======
+          <div className="flex items-center gap-4 py-3">
+            <div className="w-[150px] h-[150px] flex items-center justify-center relative">
+>>>>>>> 614e3dc5d896ce340e10987b715fcc5204d54c2f
               {(() => {
                 const total = departments && departments.reduce ? departments.reduce((acc, d) => acc + (d.employeeCount || 0), 0) : 0;
                 const slices = (departments && departments.length > 0 ? departments : []).slice(0, 6);
                 const colors = ['#064E3B', '#F97316', '#059669', '#D97706', '#0EA5A4', '#10B981'];
                 if (total <= 0 || slices.length === 0) {
                   return (
+<<<<<<< HEAD
                     <div style={{ width: 120, height: 120, borderRadius: '50%', background: 'conic-gradient(#10B981 0deg, #D1FAE5 360deg)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                       <div style={{ fontWeight: 700, fontSize: 22 }}>{total}</div>
                     </div>
                   );
                 }
+=======
+                    <div className="w-[120px] h-[120px] rounded-full flex items-center justify-center" style={{ background: 'conic-gradient(#10B981 0deg, #D1FAE5 360deg)' }}>
+                      <div className="font-bold text-[22px]">{total}</div>
+                    </div>
+                  );
+                }
+>>>>>>> 819c511ce486a6353829f2805eb90ecdf071faa3
+>>>>>>> 614e3dc5d896ce340e10987b715fcc5204d54c2f
 
                 // build conic-gradient stops
                 let angleSoFar = 0;
@@ -528,27 +553,27 @@ export default function Dashboard() {
                 }).join(', ');
 
                 return (
-                  <div style={{ width: 120, height: 120, borderRadius: '50%', background: `conic-gradient(${stops})`, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                    <div style={{ position: 'absolute', fontWeight: 700, fontSize: 22 }}>{total}</div>
+                  <div className="w-[120px] h-[120px] rounded-full flex items-center justify-center" style={{ background: `conic-gradient(${stops})` }}>
+                    <div className="absolute font-bold text-[22px]">{total}</div>
                   </div>
                 );
               })()}
             </div>
 
-            <div className="donut-legend-grid" style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+            <div className="donut-legend-grid flex flex-col gap-2">
               {departments && departments.length > 0 ? (
                 departments.slice(0,4).map((d, i) => (
-                  <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                    <span style={{ width: 12, height: 12, borderRadius: 3, background: ['#064E3B','#F97316','#059669','#D97706'][i % 4] }}></span>
-                    <span style={{ color: '#111827' }}>{d.departmentName} ({d.employeeCount || 0})</span>
+                  <div key={i} className="flex items-center gap-2">
+                    <span className="w-3 h-3 rounded-sm" style={{ background: ['#064E3B','#F97316','#059669','#D97706'][i % 4] }}></span>
+                    <span className="text-slate-900">{d.departmentName} ({d.employeeCount || 0})</span>
                   </div>
                 ))
               ) : (
                 <>
-                  <span style={{ display: 'flex', alignItems: 'center', gap: 8 }}><span style={{ width: 12, height: 12, borderRadius: 3, background: '#064E3B' }}></span> Production</span>
-                  <span style={{ display: 'flex', alignItems: 'center', gap: 8 }}><span style={{ width: 12, height: 12, borderRadius: 3, background: '#F97316' }}></span> Sales</span>
-                  <span style={{ display: 'flex', alignItems: 'center', gap: 8 }}><span style={{ width: 12, height: 12, borderRadius: 3, background: '#059669' }}></span> IT</span>
-                  <span style={{ display: 'flex', alignItems: 'center', gap: 8 }}><span style={{ width: 12, height: 12, borderRadius: 3, background: '#D97706' }}></span> Admin</span>
+                  <span className="flex items-center gap-2"><span className="w-3 h-3 rounded-sm" style={{ background: '#064E3B' }}></span> Production</span>
+                  <span className="flex items-center gap-2"><span className="w-3 h-3 rounded-sm" style={{ background: '#F97316' }}></span> Sales</span>
+                  <span className="flex items-center gap-2"><span className="w-3 h-3 rounded-sm" style={{ background: '#059669' }}></span> IT</span>
+                  <span className="flex items-center gap-2"><span className="w-3 h-3 rounded-sm" style={{ background: '#D97706' }}></span> Admin</span>
                 </>
               )}
             </div>
