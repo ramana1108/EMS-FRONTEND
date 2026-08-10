@@ -1,9 +1,6 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "../App.css"; // Clean separate CSS file imported here
-import React, { useEffect, useState } from "react";
-import React, { useEffect, useMemo, useState } from "react";
-import { useNavigate } from "react-router-dom";
 import {
   LayoutDashboard,
   Building2,
@@ -19,42 +16,14 @@ import {
   FileText
 } from "lucide-react";
 
-// Stat Cards Data
-const stats = [
-  {
-    label: "Total Employees",
-    value: "208",
-    icon: Users,
-    description: "Review your employee roster and attendance at a glance."
-  },
-  {
-    label: "Departments",
-    value: "13",
-    icon: Building2,
-    description: "Manage department structures and team ownership."
-  },
-  {
-    label: "Attendance Today",
-    value: "186",
-    icon: Users,
-    description: "Track daily presence and absence summaries."
-  },
-  {
-    label: "Monthly Payroll",
-    value: "₹10,65,000",
-    icon: Wallet,
-    description: "Verify payroll processing and payment status."
-  }
-];
-
-// Company Notices List
+// Company Notices List (fallback when dashboard data hasn't loaded yet)
 const notices = [
   "Annual Performance Review 2026 - Submit self-evaluations by Friday.",
   "Independence Day Holiday Notice - Office closed on August 15th.",
   "New Health Insurance Policy - Updated coverage forms in portal."
 ];
 
-// Managers List
+// Managers List (fallback when no recent employees are available yet)
 const managers = [
   { name: "Jumn Denner", role: "Manager Directory" },
   { name: "Brank Kahter", role: "Director" },
@@ -138,6 +107,7 @@ export default function Dashboard() {
     load();
     return () => (mounted = false);
   }, []);
+
   const searchItems = [
     { type: "page", label: "Employee Directory", path: "/admin/employee" },
     { type: "page", label: "Attendance", path: "/admin/attendance" },
@@ -222,30 +192,32 @@ export default function Dashboard() {
         </div>
 
         <div className="header-right relative">
-          <button className="icon-btn" onClick={() => navigate("/admin/notices") }>
+          <button className="icon-btn" onClick={() => navigate("/admin/notices")}>
             <Bell size={18} />
           </button>
-            <div className="admin-profile-badge">
-          <div
-            className="admin-profile-badge cursor-pointer flex items-center gap-2"
-            onClick={() => setShowProfileInfo((prev) => !prev)}
-          >
-                        <div className="admin-avatar-small">{getInitials(user.name)}</div>
-            <span>{typeof user.role === "string" ? user.role : String(user.role || "ADMIN")}</span>
-          </div>
-          {showProfileInfo && (
-            <div className="absolute right-0 top-full mt-2 w-60 bg-white border rounded-lg shadow-lg p-4 z-30">
-              <div className="flex items-center gap-3 mb-3">
-                <div className="w-10 h-10 rounded-full bg-emerald-700 text-white flex items-center justify-center font-bold">{getInitials(user.name)}</div>
-                <div>
-                  <div className="font-bold">{user.name || "Admin"}</div>
-                  <div className="text-xs text-slate-500">{user.role || "Admin"}</div>
-                </div>
-              </div>
-              <div className="text-sm text-slate-700 mb-3"><strong>Email:</strong> {user.email || "-"}</div>
-              <button className="w-full rounded-md py-2 bg-emerald-700 text-white" onClick={() => { navigate("/admin/settings"); setShowProfileInfo(false); }}>View Profile Settings</button>
+
+          <div className="admin-profile-badge relative">
+            <div
+              className="cursor-pointer flex items-center gap-2"
+              onClick={() => setShowProfileInfo((prev) => !prev)}
+            >
+              <div className="admin-avatar-small">{getInitials(user.name)}</div>
+              <span>{typeof user.role === "string" ? user.role : String(user.role || "ADMIN")}</span>
             </div>
-          )}
+            {showProfileInfo && (
+              <div className="absolute right-0 top-full mt-2 w-60 bg-white border rounded-lg shadow-lg p-4 z-30">
+                <div className="flex items-center gap-3 mb-3">
+                  <div className="w-10 h-10 rounded-full bg-emerald-700 text-white flex items-center justify-center font-bold">{getInitials(user.name)}</div>
+                  <div>
+                    <div className="font-bold">{user.name || "Admin"}</div>
+                    <div className="text-xs text-slate-500">{user.role || "Admin"}</div>
+                  </div>
+                </div>
+                <div className="text-sm text-slate-700 mb-3"><strong>Email:</strong> {user.email || "-"}</div>
+                <button className="w-full rounded-md py-2 bg-emerald-700 text-white" onClick={() => { navigate("/admin/settings"); setShowProfileInfo(false); }}>View Profile Settings</button>
+              </div>
+            )}
+          </div>
         </div>
       </div>
 
@@ -267,7 +239,6 @@ export default function Dashboard() {
           <>
             <div className="summary-card stat-card-green">
               <div className="stat-header">
-                <div className="stat-icon-box">
                 <div className="stat-icon-box" style={{ backgroundColor: "#075d31", color: "#065f46" }}>
                   <Users size={20} />
                 </div>
@@ -327,7 +298,7 @@ export default function Dashboard() {
         {/* Company Notices */}
         <div className="card-box">
           <div className="card-header-row">
-            <h2 className="card-title">Company  Notices</h2>
+            <h2 className="card-title">Company Notices</h2>
             <span className="view-all-link">View All</span>
           </div>
           <ul className="notices-list">
@@ -342,30 +313,27 @@ export default function Dashboard() {
 
         {/* Quick Actions */}
         <div className="card-box">
-          <h2 className="card-title" style={{ marginBottom: "16px" }}>Quick  Actions</h2>
           <h2 className="card-title mb-4">Quick Actions</h2>
           <div className="action-buttons-stack">
-            <button className="btn-action flex justify-between items-center" onClick={() => navigate("/admin/employee") }>
+            <button className="btn-action flex justify-between items-center" onClick={() => navigate("/admin/employee")}>
               <span className="flex items-center gap-2"><Plus size={16} /> Add Employee</span>
               <span className="rounded-full px-2 py-1 text-xs font-bold bg-sky-100 text-sky-700">{dashboard ? dashboard.totalEmployees : "--"}</span>
             </button>
-            <button className="btn-action flex justify-between items-center" onClick={() => navigate("/admin/payroll") }>
+            <button className="btn-action flex justify-between items-center" onClick={() => navigate("/admin/payroll")}>
               <span className="flex items-center gap-2"><Plus size={16} /> Create Payroll</span>
               <span className="rounded-full px-2 py-1 text-xs font-bold bg-emerald-50 text-emerald-700">{dashboard ? dashboard.totalPayrolls : "--"}</span>
             </button>
-            <button className="btn-action flex justify-between items-center" onClick={() => navigate("/admin/roles") }>
+            <button className="btn-action flex justify-between items-center" onClick={() => navigate("/admin/roles")}>
               <span className="flex items-center gap-2"><Plus size={16} /> Create Manager</span>
               <span className="rounded-full px-2 py-1 text-xs font-bold bg-amber-100 text-amber-700">{dashboard ? dashboard.totalManagers : "--"}</span>
             </button>
-            <button className="btn-action flex justify-between items-center" onClick={() => navigate("/admin/notices") }>
+            <button className="btn-action flex justify-between items-center" onClick={() => navigate("/admin/notices")}>
               <span className="flex items-center gap-2"><FileText size={16} /> Create Notice</span>
               <span className="rounded-full px-2 py-1 text-xs font-bold bg-violet-100 text-violet-700">{dashboard ? dashboard.totalNotices : "--"}</span>
             </button>
           </div>
         </div>
 
-        {/* Employees List */}
-        {/* Employees List */}
         {/* Managers / Recent Employees List */}
         <div className="card-box">
           <div className="card-header-row">
@@ -391,22 +359,6 @@ export default function Dashboard() {
                     <p className="manager-role">{mgr.role.replace("Manager Directory", "Staff").replace("Director", "Staff").replace("Toster Manager", "Staff").replace("Esstetor", "Staff")}</p>
                   </div>
                   <button className="btn-contact">View</button>
-            {dashboard && dashboard.recentEmployees && dashboard.recentEmployees.map((emp, index) => (
-              <div key={emp._id || index} className="manager-item">
-                <div>
-                  <p className="manager-name">{emp.firstName} {emp.lastName}</p>
-                  <p className="manager-role">{emp.employeeId}</p>
-                </div>
-                <button className="btn-contact">View</button>
-              </div>
-            ))}
-            {(!dashboard || !dashboard.recentEmployees || dashboard.recentEmployees.length === 0) && managers.map((mgr, index) => (
-            {!dashboard && managers.map((mgr, index) => (
-              <div key={index} className="manager-item">
-                <div>
-                  <p className="manager-name">{mgr.name.replace("Directory", "Employee").replace("Toster Manager", "Staff").replace("Director", "Staff").replace("Manager", "Staff")}</p>
-                  <p className="manager-role">{mgr.role.replace("Manager Directory", "Staff").replace("Director", "Staff").replace("Toster Manager", "Staff").replace("Esstetor", "Staff")}</p>
->>>>>>> 614e3dc5d896ce340e10987b715fcc5204d54c2f
                 </div>
               ))
             )}
@@ -421,48 +373,7 @@ export default function Dashboard() {
         {/* Attendance Analytics Bar Chart (breakdown for today) */}
         <div className="card-box">
           <h2 className="card-title">Attendance Analytics Bar Chart</h2>
-          <div className="chart-bars-container" style={{ display: 'flex', gap: 12, padding: '16px 0' }}>
-
-        {/* Attendance Analytics Bar Chart */}
-        <div className="card-box">
-          <h2 className="card-title">Attendance Analytics Bar Chart</h2>
-
-          <div className="chart-bars-container">
-            <div className="bar-pair">
-              <div className="bar-dark" style={{ height: "60%" }}></div>
-              <div className="bar-emerald" style={{ height: "40%" }}></div>
-            </div>
-            <div className="bar-pair">
-              <div className="bar-dark" style={{ height: "75%" }}></div>
-              <div className="bar-emerald" style={{ height: "30%" }}></div>
-            </div>
-            <div className="bar-pair">
-              <div className="bar-dark" style={{ height: "90%" }}></div>
-              <div className="bar-emerald" style={{ height: "50%" }}></div>
-            </div>
-            <div className="bar-pair">
-              <div className="bar-dark" style={{ height: "50%" }}></div>
-              <div className="bar-emerald" style={{ height: "45%" }}></div>
-            </div>
-            <div className="bar-pair">
-              <div className="bar-dark" style={{ height: "85%" }}></div>
-              <div className="bar-emerald" style={{ height: "60%" }}></div>
-            </div>
-          </div>
-
-          <div className="chart-months-row">
-            <span>Jan</span>
-            <span>Feb</span>
-            <span>Mar</span>
-            <span>Apr</span>
-            <span>May</span>
-=======
-        
-        {/* Attendance Analytics Bar Chart (breakdown for today) */}
-        <div className="card-box">
-          <h2 className="card-title">Attendance Analytics Bar Chart</h2>
           <div className="chart-bars-container flex gap-3 py-4">
->>>>>>> 614e3dc5d896ce340e10987b715fcc5204d54c2f
             {dashboard ? (
               (() => {
                 const bars = [
@@ -474,16 +385,8 @@ export default function Dashboard() {
                 const maxPx = 120; // max bar pixel height
                 return bars.map((b, i) => {
                   const heightPx = Math.round((b.value / maxValue) * maxPx);
-                  const pct = maxValue > 0 ? Math.round((b.value / ( (dashboard.presentToday||0) + (dashboard.absentToday||0) + (dashboard.leaveToday||0) )) * 100) : 0;
+                  const pct = maxValue > 0 ? Math.round((b.value / ((dashboard.presentToday || 0) + (dashboard.absentToday || 0) + (dashboard.leaveToday || 0))) * 100) : 0;
                   return (
-                    <div key={i} style={{ flex: 1, textAlign: 'center' }}>
-                      <div style={{ height: maxPx + 20, display: 'flex', alignItems: 'flex-end', justifyContent: 'center' }}>
-                        <div style={{ width: 40, height: heightPx || 6, background: b.color, borderRadius: 8, transition: 'height 300ms ease' }} />
-                      </div>
-                      <div style={{ marginTop: 8, fontWeight: 700 }}>{b.value || 0}</div>
-                      <div style={{ fontSize: 12, color: '#6b7280' }}>{b.label}</div>
-                      <div style={{ fontSize: 12, color: '#9ca3af' }}>{pct}%</div>
-=======
                     <div key={i} className="flex-1 text-center">
                       <div className="flex items-end justify-center" style={{ height: maxPx + 20 }}>
                         <div style={{ width: 40, height: heightPx || 6, background: b.color, borderRadius: 8, transition: 'height 300ms ease' }} />
@@ -498,23 +401,13 @@ export default function Dashboard() {
             ) : (
               <div className="p-5">No attendance data</div>
             )}
-              <div className="p-5">No attendance data</div>
-            )}
           </div>
         </div>
 
         {/* Employee Distribution Pie Chart */}
         <div className="card-box">
           <h2 className="card-title">Employee Distribution Pie Chart</h2>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 16, padding: '12px 0' }}>
-            <div style={{ width: 150, height: 150, display: 'flex', alignItems: 'center', justifyContent: 'center', position: 'relative' }}>
-
-          <div className="donut-center-container">
-            <div className="donut-graphic">
-              208
-            </div>
-          </div>
-<div className="flex items-center gap-4 py-3">
+          <div className="flex items-center gap-4 py-3">
             <div className="w-[150px] h-[150px] flex items-center justify-center relative">
               {(() => {
                 const total = departments && departments.reduce ? departments.reduce((acc, d) => acc + (d.employeeCount || 0), 0) : 0;
@@ -522,12 +415,7 @@ export default function Dashboard() {
                 const colors = ['#064E3B', '#F97316', '#059669', '#D97706', '#0EA5A4', '#10B981'];
                 if (total <= 0 || slices.length === 0) {
                   return (
-                    <div style={{ width: 120, height: 120, borderRadius: '50%', background: 'conic-gradient(#10B981 0deg, #D1FAE5 360deg)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                      <div style={{ fontWeight: 700, fontSize: 22 }}>{total}</div>
-                    </div>
-                  );
-                }
-<div className="w-[120px] h-[120px] rounded-full flex items-center justify-center" style={{ background: 'conic-gradient(#10B981 0deg, #D1FAE5 360deg)' }}>
+                    <div className="w-[120px] h-[120px] rounded-full flex items-center justify-center" style={{ background: 'conic-gradient(#10B981 0deg, #D1FAE5 360deg)' }}>
                       <div className="font-bold text-[22px]">{total}</div>
                     </div>
                   );
@@ -551,11 +439,11 @@ export default function Dashboard() {
               })()}
             </div>
 
-            <div className="donut-legend-grid flex flex-col gap-2">
+            <div className="flex flex-col gap-2">
               {departments && departments.length > 0 ? (
-                departments.slice(0,4).map((d, i) => (
+                departments.slice(0, 4).map((d, i) => (
                   <div key={i} className="flex items-center gap-2">
-                    <span className="w-3 h-3 rounded-sm" style={{ background: ['#064E3B','#F97316','#059669','#D97706'][i % 4] }}></span>
+                    <span className="w-3 h-3 rounded-sm" style={{ background: ['#064E3B', '#F97316', '#059669', '#D97706'][i % 4] }}></span>
                     <span className="text-slate-900">{d.departmentName} ({d.employeeCount || 0})</span>
                   </div>
                 ))

@@ -95,6 +95,15 @@ function RequireAccess({ allowedRoles = [], allowedPermissions = [], children })
   return <Navigate to={defaultRouteForUser(user)} replace />;
 }
 
+function RequireRole({ allowedRoles = [], children }) {
+  const user = getStoredUser();
+  if (!user) return <Navigate to="/" replace />;
+  if (isAllowedRole(user, allowedRoles)) {
+    return children;
+  }
+  return <Navigate to={defaultRouteForUser(user)} replace />;
+}
+
 function AppContent() {
   const [activeTab, setActiveTab] = useState("Dashboard");
   const location = useLocation();
@@ -272,9 +281,10 @@ function AppContent() {
         path="/employee/dashboard"
         element={
           <RequireRole allowedRoles={["employee"]}>
-<RequireAccess allowedPermissions={["dashboard"]}>
-            <EmployeeDashboard />
-          </RequireAccess>
+            <RequireAccess allowedPermissions={["dashboard"]}>
+              <EmployeeDashboard />
+            </RequireAccess>
+          </RequireRole>
         }
       />
 
@@ -283,9 +293,10 @@ function AppContent() {
         path="/employee/announcements"
         element={
           <RequireRole allowedRoles={["employee"]}>
-<RequireAccess allowedPermissions={["notice"]}>
-            <EmployeeAnnouncements />
-          </RequireAccess>
+            <RequireAccess allowedPermissions={["notice"]}>
+              <EmployeeAnnouncements />
+            </RequireAccess>
+          </RequireRole>
         }
       />
 
@@ -294,9 +305,10 @@ function AppContent() {
         path="/employee/attendance"
         element={
           <RequireRole allowedRoles={["employee"]}>
-<RequireAccess allowedPermissions={["attendance"]}>
-            <EmployeeAttendance />
-          </RequireAccess>
+            <RequireAccess allowedPermissions={["attendance"]}>
+              <EmployeeAttendance />
+            </RequireAccess>
+          </RequireRole>
         }
       />
 
@@ -305,9 +317,10 @@ function AppContent() {
         path="/employee/leave"
         element={
           <RequireRole allowedRoles={["employee"]}>
-<RequireAccess allowedPermissions={["leave"]}>
-            <EmployeeLeavemanagement />
-          </RequireAccess>
+            <RequireAccess allowedPermissions={["leave"]}>
+              <EmployeeLeavemanagement />
+            </RequireAccess>
+          </RequireRole>
         }
       />
 
@@ -316,9 +329,10 @@ function AppContent() {
         path="/employee/payroll"
         element={
           <RequireRole allowedRoles={["employee"]}>
-<RequireAccess allowedPermissions={["payroll"]}>
-            <EmployeePayrolls />
-          </RequireAccess>
+            <RequireAccess allowedPermissions={["payroll"]}>
+              <EmployeePayrolls />
+            </RequireAccess>
+          </RequireRole>
         }
       />
 
@@ -327,9 +341,10 @@ function AppContent() {
         path="/employee/profile"
         element={
           <RequireRole allowedRoles={["employee"]}>
-<RequireAccess allowedPermissions={["profile"]}>
-            <EmployeeProfile />
-          </RequireAccess>
+            <RequireAccess allowedPermissions={["profile"]}>
+              <EmployeeProfile />
+            </RequireAccess>
+          </RequireRole>
         }
       />
       <Route

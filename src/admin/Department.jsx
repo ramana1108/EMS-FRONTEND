@@ -1,5 +1,3 @@
-=======
->>>>>>> 614e3dc5d896ce340e10987b715fcc5204d54c2f
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import {
@@ -13,21 +11,11 @@ import {
   Trash2,
   X,
   Plus,
-  Loader
+  Loader,
 } from "lucide-react";
 import api from "../api";
 
 export default function Departments() {
-<<<<<<< HEAD
-  const navigate = useNavigate();
-  const [departments, setDepartments] = useState([]);
-  const [showProfileInfo, setShowProfileInfo] = useState(false);
-const [departments, setDepartments] = useState(INITIAL_DEMO_DATA);
-import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
-import api from "../api";
-
-const Departments = () => {
   const navigate = useNavigate();
   const [departments, setDepartments] = useState([]);
   const [showProfileInfo, setShowProfileInfo] = useState(false);
@@ -52,7 +40,6 @@ const Departments = () => {
     description: "",
   });
 
-  // Fetch Departments from Express API
   useEffect(() => {
     fetchDepartments();
     fetchDashboardCounts();
@@ -60,18 +47,10 @@ const Departments = () => {
 
   const fetchDashboardCounts = async () => {
     try {
-=======
-      const data = await api.getAdminDashboard();
-      if (data && data.dashboard) {
-        setBackendTotalDepartments(data.dashboard.totalDepartments || 0);
-        setBackendTotalEmployees(data.dashboard.totalEmployees || 0);
->>>>>>> 614e3dc5d896ce340e10987b715fcc5204d54c2f
       const res = await api.getAdminDashboard();
       if (res?.dashboard) {
         setBackendTotalDepartments(res.dashboard.totalDepartments || 0);
         setBackendTotalEmployees(res.dashboard.totalEmployees || 0);
-<<<<<<< HEAD
->>>>>>> 614e3dc5d896ce340e10987b715fcc5204d54c2f
       }
     } catch (error) {
       console.warn("Unable to load dashboard totals from backend:", error);
@@ -81,10 +60,6 @@ const Departments = () => {
   const fetchDepartments = async () => {
     setLoading(true);
     try {
-=======
-<<<<<<< HEAD
-      const data = await api.getDepartments();
-      if (data) setDepartments(data.departments || data.data || []);
       const res = await api.getDepartments();
       if (Array.isArray(res)) {
         setDepartments(res);
@@ -93,8 +68,6 @@ const Departments = () => {
       } else if (res?.data) {
         setDepartments(res.data);
       }
-=======
->>>>>>> 614e3dc5d896ce340e10987b715fcc5204d54c2f
     } catch (error) {
       console.warn("Backend API offline or failed to fetch departments:", error);
     } finally {
@@ -116,25 +89,6 @@ const Departments = () => {
       } else {
         setSelectedDepartmentEmployees(res?.employees || res?.data || []);
       }
-<<<<<<< HEAD
-      console.debug("fetchDepartmentEmployees: department", department._id);
-      // Some environments may not expose the department-specific endpoint correctly.
-      // Fall back to fetching all employees and filtering by departmentId for reliability.
-      const all = await api.getAllEmployees();
-      const list = (all && all.employees) || (all && all.data) || all || [];
-      console.debug("fetchDepartmentEmployees: all employees count", list.length);
-      const filtered = list.filter((e) => {
-        // departmentId may be object or string
-        const dep = e.departmentId && (e.departmentId._id || e.departmentId);
-        console.debug("compare", String(dep), String(department._id));
-        return String(dep) === String(department._id);
-      });
-      console.debug("fetchDepartmentEmployees: filtered count", filtered.length);
-      setSelectedDepartmentEmployees(filtered);
-const res = await api.getDepartmentEmployees(department._id);
-      if (res?.employees) setSelectedDepartmentEmployees(res.employees);
-      else if (res?.employees === undefined && Array.isArray(res)) setSelectedDepartmentEmployees(res);
-      else setSelectedDepartmentEmployees(res.employees || []);
     } catch (error) {
       console.warn(error);
       setEmployeesError("Could not load department employees.");
@@ -172,6 +126,7 @@ const res = await api.getDepartmentEmployees(department._id);
       [name]: name === "employeeCount" ? Number(value) : value,
     }));
   };
+
   const handleOpenAddModal = () => {
     setEditingId(null);
     setFormData({
@@ -216,40 +171,6 @@ const res = await api.getDepartmentEmployees(department._id);
     if (editingId) {
       try {
         const data = await api.updateDepartment(editingId, formData);
-
-        if (data?.department) {
-          await fetchDepartments();
-          await fetchDashboardCounts();
-        const res = await api.updateDepartment(editingId, formData);
-        if (res && res.department) {
-          setDepartments((prev) => prev.map((d) => (d._id === editingId ? res.department : d)));
-          fetchDashboardCounts();
-        } else {
-          setErrorMsg(data?.message || "Failed to update department.");
-          return;
-        }
-      } catch (err) {
-        setErrorMsg(err?.message || "Failed to update department.");
-        return;
-      }
-    } else {
-      try {
-        const data = await api.createDepartment(formData);
-
-        if (data?.department) {
-          await fetchDepartments();
-          await fetchDashboardCounts();
-        } else {
-          setErrorMsg(data?.message || "Failed to create department.");
-          return;
-        }
-      } catch (err) {
-        setErrorMsg(err?.message || "Failed to create department.");
-        return;
-const newDept = { ...formData, _id: "temp-" + Math.random().toString(36).substring(2, 9) };
-        setDepartments((prev) => [newDept, ...prev]);
-const data = await api.updateDepartment(editingId, formData);
-
         if (data?.department) {
           await fetchDepartments();
           await fetchDashboardCounts();
@@ -264,7 +185,6 @@ const data = await api.updateDepartment(editingId, formData);
     } else {
       try {
         const data = await api.createDepartment(formData);
-
         if (data?.department) {
           await fetchDepartments();
           await fetchDashboardCounts();
@@ -289,11 +209,6 @@ const data = await api.updateDepartment(editingId, formData);
       await api.deleteDepartment(id);
       await fetchDepartments();
       await fetchDashboardCounts();
-      const res = await api.deleteDepartment(id);
-      if (res) fetchDashboardCounts();
-await api.deleteDepartment(id);
-      await fetchDepartments();
-      await fetchDashboardCounts();
     } catch (err) {
       setErrorMsg(err?.message || "Failed to delete department.");
     }
@@ -313,7 +228,7 @@ await api.deleteDepartment(id);
           />
         </div>
         <div className="header-right relative" style={{ display: "flex", alignItems: "center", gap: "16px" }}>
-          <button className="icon-btn" title="Notifications" onClick={() => navigate("/admin/notices") }>
+          <button className="icon-btn" title="Notifications" onClick={() => navigate("/admin/notices")}>
             <Bell size={18} />
           </button>
           <div className="admin-badge cursor-pointer flex items-center gap-2" onClick={() => setShowProfileInfo((prev) => !prev)}>
@@ -329,38 +244,20 @@ await api.deleteDepartment(id);
                   <div className="text-xs text-slate-500">Administrator</div>
                 </div>
               </div>
-              <button className="w-full rounded-md py-2 bg-emerald-700 text-white" onClick={() => { navigate("/admin/settings"); setShowProfileInfo(false); }}>View Profile Settings</button>
+              <button
+                className="w-full rounded-md py-2 bg-emerald-700 text-white"
+                onClick={() => {
+                  navigate("/admin/settings");
+                  setShowProfileInfo(false);
+                }}
+              >
+                View Profile Settings
+              </button>
             </div>
           )}
           <button className="btn-add-dept" onClick={handleOpenAddModal} style={{ display: "flex", alignItems: "center", gap: "6px" }}>
             <Plus size={16} />
             <span>Add Department</span>
-        <div className="header-right" style={{ display: "flex", alignItems: "center", gap: "16px" }}>
-          <button className="btn-add-dept" onClick={handleOpenAddModal} style={{ display: "flex", alignItems: "center", gap: "6px" }}>
-            <Plus size={16} />
-            <span>Add Department</span>
-<div className="header-right relative">
-          <button className="icon-btn" title="Notifications" onClick={() => navigate("/admin/notices") }>
-            🔔
-          </button>
-          <div className="admin-badge cursor-pointer flex items-center gap-2" onClick={() => setShowProfileInfo((prev) => !prev)}>
-            <span className="badge-avatar">AB</span>
-            <span className="badge-text">admin</span>
-          </div>
-          {showProfileInfo && (
-            <div className="absolute right-0 top-full mt-2 w-56 bg-white border border-slate-200 rounded-lg shadow-lg p-3 z-30">
-              <div className="flex items-center gap-3 mb-2">
-                <div className="w-9 h-9 rounded-full bg-emerald-700 text-white flex items-center justify-center font-bold">AB</div>
-                <div>
-                  <div className="font-bold">Admin</div>
-                  <div className="text-xs text-slate-500">Administrator</div>
-                </div>
-              </div>
-              <button className="w-full rounded-md py-2 bg-emerald-700 text-white" onClick={() => { navigate("/admin/settings"); setShowProfileInfo(false); }}>View Profile Settings</button>
-            </div>
-          )}
-          <button className="btn-add-dept" onClick={handleOpenAddModal}>
-            + Add Department
           </button>
         </div>
       </div>
@@ -368,9 +265,7 @@ await api.deleteDepartment(id);
       {/* Page Heading */}
       <div className="page-header" style={{ marginBottom: "24px" }}>
         <h1 className="page-title">Departments</h1>
-        <p className="page-subtitle">
-          Manage department structures, leadership, and team allocations.
-        </p>
+        <p className="page-subtitle">Manage department structures, leadership, and team allocations.</p>
       </div>
 
       {/* Stats Cards Row */}
@@ -412,8 +307,11 @@ await api.deleteDepartment(id);
       {/* Main Table Card */}
       <div className="table-card" style={{ padding: "24px" }}>
         <div className="table-header" style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "16px" }}>
-          <h3 style={{ margin: 0 }}>All Departments List</h3>
-          <span className="badge-dept-count" style={{ padding: "4px 10px", borderRadius: "12px", backgroundColor: "#ecfdf5", color: "#065f46", fontSize: "12px", fontWeight: "700" }}>
+          <h3 style={{ margin: 0 , color: "black" }}>All Departments List</h3>
+          <span
+            className="badge-dept-count"
+            style={{ padding: "4px 10px", borderRadius: "12px", backgroundColor: "#ecfdf5", color: "#065f46", fontSize: "12px", fontWeight: "700" }}
+          >
             {displayedTotalDepartments} Departments
           </span>
         </div>
@@ -432,7 +330,13 @@ await api.deleteDepartment(id);
               </tr>
             </thead>
             <tbody>
-              {filteredDepartments.length === 0 ? (
+              {loading ? (
+                <tr>
+                  <td colSpan="7" className="empty-row" style={{ textAlign: "center", padding: "30px 0" }}>
+                    Loading departments...
+                  </td>
+                </tr>
+              ) : filteredDepartments.length === 0 ? (
                 <tr>
                   <td colSpan="7" className="empty-row" style={{ textAlign: "center", padding: "30px 0" }}>
                     No departments found. Click "+ Add Department" to add a new department.
@@ -451,10 +355,18 @@ await api.deleteDepartment(id);
                           {shortId}
                         </span>
                       </td>
-                      <td className="font-bold text-dark" style={{ padding: "4px 8px", fontWeight: "700" }}>{dept.departmentName}</td>
-                      <td className="font-semibold" style={{ padding: "4px 8px", fontWeight: "600" }}>{dept.headName}</td>
-                      <td className="text-muted" style={{ padding: "4px 8px", color: "#64748b" }}>{dept.headDesignation}</td>
-                      <td className="description-cell" style={{ padding: "4px 8px" }}>{dept.description}</td>
+                      <td className="font-bold text-dark" style={{ padding: "4px 8px", fontWeight: "700" }}>
+                        {dept.departmentName}
+                      </td>
+                      <td className="font-semibold" style={{ padding: "4px 8px", fontWeight: "600", color: "#9ea0a5" }}>
+                        {dept.headName}
+                      </td>
+                      <td className="text-muted" style={{ padding: "4px 8px", color: "#64748b" }}>
+                        {dept.headDesignation}
+                      </td>
+                      <td className="description-cell" style={{ padding: "4px 8px" }}>
+                        {dept.description}
+                      </td>
                       <td style={{ padding: "4px 8px" }}>
                         <span className="emp-count-pill" style={{ display: "inline-flex", alignItems: "center", gap: "4px" }}>
                           <User size={12} /> {dept.employeeCount || 0}
@@ -501,9 +413,11 @@ await api.deleteDepartment(id);
         <div className="department-employees-panel" style={{ marginTop: "24px" }}>
           <div className="panel-header" style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "16px" }}>
             <h3 style={{ margin: 0 }}>Employees in {selectedDepartment.departmentName}</h3>
-            <span className="badge-employee-count" style={{ padding: "4px 10px", borderRadius: "12px", backgroundColor: "#ecfdf5", color: "#065f46", fontSize: "12px", fontWeight: "700" }}>
-              {selectedDepartmentEmployees.length} employee
-              {selectedDepartmentEmployees.length === 1 ? "" : "s"}
+            <span
+              className="badge-employee-count"
+              style={{ padding: "4px 10px", borderRadius: "12px", backgroundColor: "#ecfdf5", color: "#065f46", fontSize: "12px", fontWeight: "700" }}
+            >
+              {selectedDepartmentEmployees.length} employee{selectedDepartmentEmployees.length === 1 ? "" : "s"}
             </span>
           </div>
 
@@ -512,7 +426,9 @@ await api.deleteDepartment(id);
               <Loader className="animate-spin" size={20} color="#0f766e" />
             </div>
           ) : employeesError ? (
-            <p className="error-message" style={{ color: "#b91c1c", backgroundColor: "#fef2f2", padding: "10px", borderRadius: "6px" }}>{employeesError}</p>
+            <p className="error-message" style={{ color: "#b91c1c", backgroundColor: "#fef2f2", padding: "10px", borderRadius: "6px" }}>
+              {employeesError}
+            </p>
           ) : selectedDepartmentEmployees.length === 0 ? (
             <p className="empty-row" style={{ textAlign: "center", padding: "20px 0", color: "#64748b" }}>
               No employees assigned to this department.
@@ -522,21 +438,42 @@ await api.deleteDepartment(id);
               {selectedDepartmentEmployees.map((employee) => {
                 const initials = `${(employee.firstName || "").charAt(0)}${(employee.lastName || "").charAt(0)}`.toUpperCase();
                 return (
-                  <div key={employee._id} className="employee-card" style={{ background: "rgba(255,255,255,0.02)", border: "1px solid rgba(255,255,255,0.03)", padding: 12, borderRadius: 12, display: "flex", gap: 12, alignItems: "center" }}>
-                    <div style={{ width: 48, height: 48, borderRadius: 12, background: "linear-gradient(135deg,#065f46,#10b981)", display: "flex", alignItems: "center", justifyContent: "center", color: "white", fontWeight: 800, fontSize: 14 }}>
+                  <div
+                    key={employee._id}
+                    className="employee-card"
+                    style={{ background: "#fff", border: "1px solid #e2e8f0", padding: 12, borderRadius: 12, display: "flex", gap: 12, alignItems: "center" }}
+                  >
+                    <div
+                      style={{
+                        width: 48,
+                        height: 48,
+                        borderRadius: 12,
+                        background: "linear-gradient(135deg,#065f46,#10b981)",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        color: "white",
+                        fontWeight: 800,
+                        fontSize: 14,
+                      }}
+                    >
                       {initials || "—"}
                     </div>
                     <div style={{ flex: 1 }}>
                       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
                         <div>
-                          <div style={{ fontWeight: 800, color: "#e6eef8" }}>{`${employee.firstName || ""} ${employee.lastName || ""}`.trim() || "—"}</div>
-                          <div style={{ fontSize: 12, color: "#94a3b8" }}>{employee.designationId?.name || employee.designationId || "—"}</div>
+                          <div style={{ fontWeight: 800, color: "#0f172a" }}>
+                            {`${employee.firstName || ""} ${employee.lastName || ""}`.trim() || "—"}
+                          </div>
+                          <div style={{ fontSize: 12, color: "#64748b" }}>
+                            {employee.designationId?.name || employee.designationId || "—"}
+                          </div>
                         </div>
                         <div style={{ textAlign: "right" }}>
-                          <div style={{ fontSize: 12, color: "#94a3b8" }}>{employee.status || "—"}</div>
+                          <div style={{ fontSize: 12, color: "#64748b" }}>{employee.status || "—"}</div>
                         </div>
                       </div>
-                      <div style={{ marginTop: 8, display: "flex", gap: 12, fontSize: 13, color: "#cbd5e1" }}>
+                      <div style={{ marginTop: 8, display: "flex", gap: 12, fontSize: 13, color: "#334155" }}>
                         <div>{employee.email || "—"}</div>
                         <div style={{ opacity: 0.9 }}>{employee.phone || "—"}</div>
                       </div>
@@ -551,17 +488,14 @@ await api.deleteDepartment(id);
 
       {/* Add / Edit Department Modal Dialog */}
       {isModalOpen && (
-        <div className="modal-backdrop">
+        <div className="modal-backdrop" style={{ backgroundColor: "rgba(0,0,0,0.5)" }}>
           <div className="modal-content-card-wide">
             <div className="modal-header">
               <div>
                 <h2>{editingId ? "Edit Department" : "Add New Department"}</h2>
                 <p className="modal-subtitle">Configure organizational groups and heads.</p>
               </div>
-              <button
-                className="btn-close"
-                onClick={() => setIsModalOpen(false)}
-              >
+              <button className="btn-close" onClick={() => setIsModalOpen(false)}>
                 <X size={20} />
               </button>
             </div>
@@ -572,7 +506,7 @@ await api.deleteDepartment(id);
               </div>
             )}
 
-            <form onSubmit={handleSubmit} className="enroll-form">
+            <form onSubmit={handleSubmit} className="enroll-form" style={{backgroundColor: "#f9fafb", padding: "16px", borderRadius: "8px"}}>
               <div className="form-grid-2">
                 <div className="form-group">
                   <label>
@@ -625,7 +559,7 @@ await api.deleteDepartment(id);
                     name="headDesignation"
                     value={formData.headDesignation}
                     onChange={handleInputChange}
-                    placeholder="e.g. Manager... "
+                    placeholder="e.g. Manager..."
                     required
                   />
                 </div>
@@ -647,11 +581,7 @@ await api.deleteDepartment(id);
               </div>
 
               <div className="modal-actions">
-                <button
-                  type="button"
-                  className="btn-cancel"
-                  onClick={() => setIsModalOpen(false)}
-                >
+                <button type="button" className="btn-cancel" onClick={() => setIsModalOpen(false)}>
                   Cancel
                 </button>
                 <button type="submit" className="btn-save">

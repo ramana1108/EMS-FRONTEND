@@ -1,19 +1,14 @@
 import { useState, useEffect } from "react";
-=======
 // styles are loaded globally via src/index.css (Tailwind + custom styles)
->>>>>>> 819c511ce486a6353829f2805eb90ecdf071faa3
 import {
     Calendar,
     Clock,
     UserCheck,
-    MapPin,
     AlertCircle,
     Plus,
     Trash2,
     CheckCircle,
-    X,
-    FileSpreadsheet,
-    FileText
+    X
 } from "lucide-react";
 
 export default function Attendance() {
@@ -29,7 +24,7 @@ export default function Attendance() {
     const [isAddModalOpen, setIsAddModalOpen] = useState(false);
     const [isLeaveModalOpen, setIsLeaveModalOpen] = useState(false);
 
-    // Pagination
+    // Pagination (shared page size, separate page per tab)
     const [currentAttendancePage, setCurrentAttendancePage] = useState(1);
     const [currentLeavePage, setCurrentLeavePage] = useState(1);
     const itemsPerPage = 10;
@@ -53,9 +48,6 @@ export default function Attendance() {
     // Search/Filters
     const [filterEmpId, setFilterEmpId] = useState("");
     const [filterDate, setFilterDate] = useState("");
-    // Pagination
-    const [currentPage, setCurrentPage] = useState(1);
-    const [pageSize, setPageSize] = useState(10);
 
     const API_BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
 
@@ -99,7 +91,6 @@ export default function Attendance() {
 
     const fetchLeaves = async () => {
         try {
-<<<<<<< HEAD
             const res = await fetch(`${API_BASE_URL}/leave`, { headers: getHeaders() });
             const data = await res.json();
             if (res.ok) {
@@ -110,15 +101,6 @@ export default function Attendance() {
         } catch (err) {
             console.error(err);
             setError("Failed to connect to leave endpoint");
-const res = await fetch(`${API_BASE_URL}/api/leaves`, {
-                headers: getHeaders(),
-            });
-            const data = await res.json();
-            if (res.ok) {
-                setLeaves(data.leaves || []);
-            }
-        } catch (err) {
-            console.error(err);
         }
     };
 
@@ -143,6 +125,11 @@ const res = await fetch(`${API_BASE_URL}/api/leaves`, {
             setWorkedHours(diff.toFixed(1));
         }
     }, [checkInTime, checkOutTime]);
+
+    // Reset attendance page when filters or data change
+    useEffect(() => {
+        setCurrentAttendancePage(1);
+    }, [filterEmpId, filterDate, records]);
 
     const handleAddAttendance = async (e) => {
         e.preventDefault();
@@ -201,31 +188,9 @@ const res = await fetch(`${API_BASE_URL}/api/leaves`, {
             return;
         }
 
+        setLoading(true);
         try {
-            setLoading(true);
             const res = await fetch(`${API_BASE_URL}/leave`, {
-            const dates = [];
-            let current = new Date(start);
-            while (current <= end) {
-                dates.push(new Date(current));
-                current.setDate(current.getDate() + 1);
-            }
-
-            const requests = dates.map(dateStr => {
-                return fetch(`${API_BASE_URL}/attendance`, {
-                    method: "POST",
-                    headers: getHeaders(),
-                    body: JSON.stringify({
-                        employeeId: leaveEmpId,
-                        attendanceDate: dateStr,
-                        status: "Leave",
-                        checkInTime: null,
-                        checkOutTime: null,
-                        workedHours: 0,
-                        notes: `Leave: ${leaveReason}`,
-                    }),
-                });
-const res = await fetch(`${API_BASE_URL}/api/leaves`, {
                 method: "POST",
                 headers: getHeaders(),
                 body: JSON.stringify({
@@ -235,8 +200,6 @@ const res = await fetch(`${API_BASE_URL}/api/leaves`, {
                     toDate: leaveTo,
                     reason: leaveReason,
                 }),
-=======
->>>>>>> 614e3dc5d896ce340e10987b715fcc5204d54c2f
             });
 
             const data = await res.json();
@@ -251,12 +214,6 @@ const res = await fetch(`${API_BASE_URL}/api/leaves`, {
                 setIsLeaveModalOpen(false);
                 setCurrentLeavePage(1);
                 fetchLeaves();
-<<<<<<< HEAD
-                setIsLeaveModalOpen(false);
-                setCurrentLeavePage(1);
-                fetchAttendance();
-setLeaveType("Casual Leave");
-                fetchLeaves();
             } else {
                 setError(data.message || "Failed to submit leave request");
             }
@@ -267,25 +224,25 @@ setLeaveType("Casual Leave");
         }
     };
 
-    const handleUpdateLeaveStatus = async (id, status) => {
+    const handleUpdateLeaveStatus = async (id, newStatus) => {
         setError("");
         setSuccess("");
         try {
             const res = await fetch(`${API_BASE_URL}/leave/${id}`, {
-                method: 'PUT',
+                method: "PUT",
                 headers: getHeaders(),
-                body: JSON.stringify({ status }),
+                body: JSON.stringify({ status: newStatus }),
             });
             const data = await res.json();
             if (res.ok) {
-                setSuccess(`Leave ${status} successfully.`);
+                setSuccess(`Leave ${newStatus.toLowerCase()} successfully.`);
                 fetchLeaves();
             } else {
-                setError(data.message || `Failed to ${status.toLowerCase()} leave`);
+                setError(data.message || `Failed to ${newStatus.toLowerCase()} leave`);
             }
         } catch (err) {
             console.error(err);
-            setError(`Failed to ${status.toLowerCase()} leave`);
+            setError(`Failed to ${newStatus.toLowerCase()} leave`);
         }
     };
 
@@ -311,57 +268,18 @@ setLeaveType("Casual Leave");
         }
     };
 
-=======
-    const handleUpdateLeaveStatus = async (id, status) => {
-        setError("");
-        setSuccess("");
-        try {
-            const res = await fetch(`${API_BASE_URL}/leave/${id}`, {
-                method: 'PUT',
-                headers: getHeaders(),
-                body: JSON.stringify({ status }),
-            });
-            const data = await res.json();
-            if (res.ok) {
-                setSuccess(`Leave ${status} successfully.`);
-                fetchLeaves();
-            } else {
-                setError(data.message || `Failed to ${status.toLowerCase()} leave`);
-            }
-        } catch (err) {
-            console.error(err);
-            setError(`Failed to ${status.toLowerCase()} leave`);
-        }
-    };
->>>>>>> 819c511ce486a6353829f2805eb90ecdf071faa3
     const handleDeleteLeave = async (id) => {
         if (!window.confirm("Are you sure you want to delete this leave request?")) return;
         setError("");
         setSuccess("");
         try {
             const res = await fetch(`${API_BASE_URL}/leave/${id}`, {
-                method: 'DELETE',
-<<<<<<< HEAD
-            const res = await fetch(`${API_BASE_URL}/leave/${id}`, {
-                method: 'DELETE',
-const res = await fetch(`${API_BASE_URL}/api/leaves/${id}`, {
                 method: "DELETE",
                 headers: getHeaders(),
             });
             const data = await res.json();
             if (res.ok) {
-=======
->>>>>>> 614e3dc5d896ce340e10987b715fcc5204d54c2f
-                setSuccess('Leave deleted successfully');
-                fetchLeaves();
-            } else {
-                setError(data.message || 'Failed to delete leave');
-            }
-        } catch (err) {
-            console.error(err);
-            setError('Failed to delete leave');
-<<<<<<< HEAD
-setSuccess("Leave request deleted successfully.");
+                setSuccess("Leave request deleted successfully.");
                 fetchLeaves();
             } else {
                 setError(data.message || "Failed to delete leave request");
@@ -394,87 +312,49 @@ setSuccess("Leave request deleted successfully.");
         return matchesEmp && matchesDate;
     });
 
-    // Attendance stats
-// Reset page when filters change
-    useEffect(() => {
-        setCurrentPage(1);
-    }, [filterEmpId, filterDate, records]);
-
-    const totalPages = Math.max(1, Math.ceil(filteredRecords.length / pageSize));
-    const pagedRecords = filteredRecords.slice((currentPage - 1) * pageSize, currentPage * pageSize);
-
     // Calculate statistics
-    const totalLeaves = records.filter(r => r.status === "Leave").length;
+    const totalLeaves = leaves.length;
     const presentCount = records.filter(r => r.status === "Present").length;
     const absentCount = records.filter(r => r.status === "Absent").length;
     const halfDayCount = records.filter(r => r.status === "Half Day").length;
 
     // Paginate attendance
-    const attendanceTotalPages = Math.ceil(filteredRecords.length / itemsPerPage);
+    const attendanceTotalPages = Math.max(1, Math.ceil(filteredRecords.length / itemsPerPage));
     const attendanceStartIndex = (currentAttendancePage - 1) * itemsPerPage;
     const paginatedRecords = filteredRecords.slice(attendanceStartIndex, attendanceStartIndex + itemsPerPage);
 
     // Paginate leaves
-    const leaveTotalPages = Math.ceil(leaves.length / itemsPerPage);
+    const leaveTotalPages = Math.max(1, Math.ceil(leaves.length / itemsPerPage));
     const leaveStartIndex = (currentLeavePage - 1) * itemsPerPage;
     const paginatedLeaves = leaves.slice(leaveStartIndex, leaveStartIndex + itemsPerPage);
 
     return (
         <div className="p-6">
             {/* Page Header */}
-            <div className="flex items-center justify-between mb-6">
+            <div className="flex items-center justify-between mb-6 flex-wrap gap-4">
                 <div>
-                    <h1 className="text-2xl font-bold text-slate-900">Attendance & Leaves</h1>
+                    <h1 className="text-2xl font-bold text-slate-900">Attendance &amp; Leaves</h1>
                     <p className="text-sm text-slate-600">Track clock-in times, worked hours, and log employee leave requests.</p>
                 </div>
 
-                <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
+                <div className="flex items-center gap-3">
                     {/* Tab Switcher */}
-                    <div style={{ display: "flex", backgroundColor: "#e2e8f0", padding: "4px", borderRadius: "8px", gap: "4px" }}>
+                    <div className="flex bg-slate-200 p-1 rounded-lg gap-1">
                         <button
-                            onClick={() => {
-                                setActiveTab("attendance");
-                                setCurrentAttendancePage(1);
-                            }}
-                            style={{
-                                padding: "8px 16px",
-                                borderRadius: "6px",
-                                border: "none",
-                                fontSize: "13px",
-                                fontWeight: "600",
-                                cursor: "pointer",
-                                backgroundColor: activeTab === "attendance" ? "#ffffff" : "transparent",
-                                color: activeTab === "attendance" ? "#0f766e" : "#475569",
-                                boxShadow: activeTab === "attendance" ? "0 1px 3px rgba(0,0,0,0.1)" : "none",
-                                transition: "all 0.15s"
-                            }}
+                            onClick={() => setActiveTab("attendance")}
+                            className={`px-4 py-2 text-[13px] font-semibold rounded-md transition-colors ${activeTab === "attendance" ? "bg-white text-emerald-700 shadow-sm" : "text-slate-600"}`}
                         >
                             Attendance Logs
                         </button>
                         <button
-                            onClick={() => {
-                                setActiveTab("leave");
-                                setCurrentLeavePage(1);
-                            }}
-                            style={{
-                                padding: "8px 16px",
-                                borderRadius: "6px",
-                                border: "none",
-                                fontSize: "13px",
-                                fontWeight: "600",
-                                cursor: "pointer",
-                                backgroundColor: activeTab === "leave" ? "#ffffff" : "transparent",
-                                color: activeTab === "leave" ? "#0f766e" : "#475569",
-                                boxShadow: activeTab === "leave" ? "0 1px 3px rgba(0,0,0,0.1)" : "none",
-                                transition: "all 0.15s"
-                            }}
+                            onClick={() => setActiveTab("leave")}
+                            className={`px-4 py-2 text-[13px] font-semibold rounded-md transition-colors ${activeTab === "leave" ? "bg-white text-emerald-700 shadow-sm" : "text-slate-600"}`}
                         >
                             Leave Management
                         </button>
                     </div>
 
                     <button
-                        className="btn-enroll-employee"
                         onClick={() => {
                             setError("");
                             setSuccess("");
@@ -484,34 +364,16 @@ setSuccess("Leave request deleted successfully.");
                                 setIsLeaveModalOpen(true);
                             }
                         }}
-                        style={{ display: "flex", alignItems: "center", gap: "8px" }}
+                        className="flex items-center gap-2 px-4 py-2 bg-emerald-800 hover:bg-emerald-900 text-white rounded-lg text-sm font-semibold"
                     >
                         <Plus size={16} />
                         <span>{activeTab === "attendance" ? "Log Attendance" : "Record Leave"}</span>
-{/* Tab Switcher */}
-                <div className="flex bg-slate-200 p-1 rounded-md gap-1">
-                    <button
-                        onClick={() => setActiveTab("attendance")}
-                        className={`px-4 py-2 text-sm font-semibold rounded-md transition ${activeTab === "attendance" ? 'bg-white text-emerald-700 shadow' : 'text-slate-600'}`}
-                    >
-                        Attendance Logs
-                    </button>
-                    <button
-                        onClick={() => setActiveTab("leave")}
-                        className={`px-4 py-2 text-sm font-semibold rounded-md transition ${activeTab === "leave" ? 'bg-white text-emerald-700 shadow' : 'text-slate-600'}`}
-                    >
-                        Leave Management
                     </button>
                 </div>
             </div>
 
             {/* Stats Widgets */}
-            <div className="stats-grid" style={{ marginBottom: "24px" }}>
-                <div className="stat-card stat-card-green">
-                    <div className="stat-header">
-                        <div className="stat-icon-plain" style={{ color: "#065f46" }}>
-                            <UserCheck size={22} />
-<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
                 <div className="bg-white rounded-xl p-4 shadow-sm">
                     <div className="flex items-center gap-3">
                         <div className="p-2 rounded-lg bg-emerald-800">
@@ -524,11 +386,7 @@ setSuccess("Leave request deleted successfully.");
                     </div>
                 </div>
 
-                <div className="stat-card stat-card-blue">
-                    <div className="stat-header">
-                        <div className="stat-icon-plain" style={{ color: "#0891b2" }}>
-                            <Clock size={22} />
-<div className="bg-white rounded-xl p-4 shadow-sm">
+                <div className="bg-white rounded-xl p-4 shadow-sm">
                     <div className="flex items-center gap-3">
                         <div className="p-2 rounded-lg bg-sky-500">
                             <Clock size={18} color="#ffffff" />
@@ -540,11 +398,7 @@ setSuccess("Leave request deleted successfully.");
                     </div>
                 </div>
 
-                <div className="stat-card stat-card-rose">
-                    <div className="stat-header">
-                        <div className="stat-icon-plain" style={{ color: "#b91c1c" }}>
-                            <AlertCircle size={22} />
-<div className="bg-white rounded-xl p-4 shadow-sm">
+                <div className="bg-white rounded-xl p-4 shadow-sm">
                     <div className="flex items-center gap-3">
                         <div className="p-2 rounded-lg bg-rose-700">
                             <AlertCircle size={18} color="#ffffff" />
@@ -556,17 +410,13 @@ setSuccess("Leave request deleted successfully.");
                     </div>
                 </div>
 
-                <div className="stat-card stat-card-indigo">
-                    <div className="stat-header">
-                        <div className="stat-icon-plain" style={{ color: "#8b5cf6" }}>
-                            <Calendar size={22} />
-<div className="bg-white rounded-xl p-4 shadow-sm">
+                <div className="bg-white rounded-xl p-4 shadow-sm">
                     <div className="flex items-center gap-3">
                         <div className="p-2 rounded-lg bg-violet-600">
                             <Calendar size={18} color="#ffffff" />
                         </div>
                         <div>
-                            <p className="text-xs text-slate-500">Total Leaves Taken</p>
+                            <p className="text-xs text-slate-500">Total Leave Requests</p>
                             <p className="text-lg font-bold">{totalLeaves}</p>
                         </div>
                     </div>
@@ -587,11 +437,10 @@ setSuccess("Leave request deleted successfully.");
             )}
 
             {activeTab === "attendance" ? (
-                <div className="w-full">
-<div className="grid grid-cols-1 lg:grid-cols-3 gap-6 items-start">
+                <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 items-start">
 
                     {/* Logs View */}
-                    <div className="employee-directory-card lg:col-span-2 bg-white rounded-xl p-6 shadow-sm">
+                    <div className="lg:col-span-2 bg-white rounded-xl p-6 shadow-sm">
                         <div className="flex items-center justify-between flex-wrap gap-4 mb-4">
                             <h2 className="text-lg font-semibold m-0">Attendance Log Panel</h2>
 
@@ -601,23 +450,13 @@ setSuccess("Leave request deleted successfully.");
                                     type="text"
                                     placeholder="Emp ID or Name..."
                                     value={filterEmpId}
-                                    onChange={(e) => {
-                                        setFilterEmpId(e.target.value);
-                                        setCurrentAttendancePage(1);
-                                    }}
-                                    style={{ padding: "6px 12px", borderRadius: "6px", border: "1px solid #cbd5e1", fontSize: "13px" }}
-onChange={(e) => setFilterEmpId(e.target.value)}
+                                    onChange={(e) => setFilterEmpId(e.target.value)}
                                     className="px-3 py-2 rounded-md border border-slate-300 text-sm"
                                 />
                                 <input
                                     type="date"
                                     value={filterDate}
-                                    onChange={(e) => {
-                                        setFilterDate(e.target.value);
-                                        setCurrentAttendancePage(1);
-                                    }}
-                                    style={{ padding: "6px 12px", borderRadius: "6px", border: "1px solid #cbd5e1", fontSize: "13px" }}
-onChange={(e) => setFilterDate(e.target.value)}
+                                    onChange={(e) => setFilterDate(e.target.value)}
                                     className="px-3 py-2 rounded-md border border-slate-300 text-sm"
                                 />
                             </div>
@@ -627,24 +466,8 @@ onChange={(e) => setFilterDate(e.target.value)}
                             <table className="min-w-full divide-y">
                                 <thead>
                                     <tr>
-                                        <th>EMPLOYEE</th>
-                                        <th>DEPARTMENT</th>
-                                        <th className="table-center-col">DATE</th>
-                                        <th className="table-center-col">IN</th>
-                                        <th className="table-center-col">OUT</th>
-                                        <th className="table-center-col">HOURS</th>
-                                        <th className="table-center-col">STATUS</th>
-                                        <th className="table-actions-col">ACTIONS</th>
-                                        <th style={{ padding: "4px 8px" }}>EMPLOYEE</th>
-                                        <th style={{ padding: "4px 8px" }}>DEPARTMENT</th>
-                                        <th style={{ padding: "4px 8px", textAlign: "center" }}>DATE</th>
-                                        <th style={{ padding: "4px 8px", textAlign: "center" }}>IN</th>
-                                        <th style={{ padding: "4px 8px", textAlign: "center" }}>OUT</th>
-                                        <th style={{ padding: "4px 8px", textAlign: "center" }}>HOURS</th>
-                                        <th style={{ padding: "4px 8px", textAlign: "center" }}>STATUS</th>
-                                        <th style={{ padding: "4px 8px", textAlign: "right" }}>ACTIONS</th>
-<th className="px-3 py-3">EMPLOYEE</th>
-                                        <th className="px-3 py-3">DEPARTMENT</th>
+                                        <th className="px-3 py-3 text-left">EMPLOYEE</th>
+                                        <th className="px-3 py-3 text-left">DEPARTMENT</th>
                                         <th className="px-3 py-3 text-center">DATE</th>
                                         <th className="px-3 py-3 text-center">IN</th>
                                         <th className="px-3 py-3 text-center">OUT</th>
@@ -664,9 +487,6 @@ onChange={(e) => setFilterDate(e.target.value)}
                                         </tr>
                                     ) : (
                                         paginatedRecords.map((rec) => (
-                                            <tr key={rec._id} className="employee-row">
-                                                <td style={{ padding: "4px 8px" }}>
-pagedRecords.map((rec) => (
                                             <tr key={rec._id} className="border-b last:border-b-0">
                                                 <td className="px-4 py-3">
                                                     <div>
@@ -674,48 +494,7 @@ pagedRecords.map((rec) => (
                                                         <p className="text-xs text-slate-500">{rec.employeeCode}</p>
                                                     </div>
                                                 </td>
-                                                <td style={{ padding: "4px 8px" }}>
-                                                    <span style={{ fontSize: "12px", fontWeight: "600", color: "#475569" }}>{rec.departmentName}</span>
-                                                </td>
-                                                <td style={{ padding: "4px 8px", textAlign: "center" }}>
-                                                    {formatDate(rec.attendanceDate)}
-                                                </td>
-                                                <td style={{ padding: "4px 8px", textAlign: "center", fontWeight: "600" }}>
-                                                    {rec.checkInTime || "--:--"}
-                                                </td>
-                                                <td style={{ padding: "4px 8px", textAlign: "center", fontWeight: "600" }}>
-                                                    {rec.checkOutTime || "--:--"}
-                                                </td>
-                                                <td style={{ padding: "4px 8px", textAlign: "center", fontWeight: "700", color: "#0f766e" }}>
-                                                    {rec.workedHours || 0}
-                                                </td>
-                                                <td style={{ padding: "4px 8px", textAlign: "center" }}>
-                                                    <span style={{
-                                                        padding: "2px 8px",
-                                                        fontSize: "11px",
-                                                        fontWeight: "750",
-                                                        borderRadius: "12px",
-                                                        display: "inline-block",
-                                                        backgroundColor:
-                                                            rec.status === "Present" ? "#ecfdf5" :
-                                                                rec.status === "Half Day" ? "#eff6ff" :
-                                                                    rec.status === "Leave" ? "#f5f3ff" : "#fef2f2",
-                                                        color:
-                                                            rec.status === "Present" ? "#065f46" :
-                                                                rec.status === "Half Day" ? "#1d4ed8" :
-                                                                    rec.status === "Leave" ? "#6d28d9" : "#b91c1c"
-                                                    }}>
-                                                        {rec.status}
-                                                    </span>
-                                                </td>
-                                                <td style={{ padding: "4px 8px", textAlign: "right" }}>
-                                                    <button
-                                                        onClick={() => handleDeleteRecord(rec._id)}
-                                                        className="action-icon-btn delete"
-                                                        style={{ border: "none", background: "none", cursor: "pointer", color: "#b91c1c" }}
-                                                        title="Delete Record"
-                                                    >
-<td className="px-4 py-3">
+                                                <td className="px-4 py-3">
                                                     <span className="text-sm font-medium text-slate-600">{rec.departmentName}</span>
                                                 </td>
                                                 <td className="px-4 py-3 text-center">{formatDate(rec.attendanceDate)}</td>
@@ -723,7 +502,7 @@ pagedRecords.map((rec) => (
                                                 <td className="px-4 py-3 text-center font-semibold">{rec.checkOutTime || "--:--"}</td>
                                                 <td className="px-4 py-3 text-center font-bold text-emerald-700">{rec.workedHours || 0}</td>
                                                 <td className="px-4 py-3 text-center">
-                                                    <span className={`inline-block px-2 py-1 text-xs font-semibold rounded-full ${rec.status === 'Present' ? 'bg-emerald-50 text-emerald-700' : rec.status === 'Half Day' ? 'bg-sky-50 text-sky-700' : rec.status === 'Leave' ? 'bg-violet-50 text-violet-700' : 'bg-rose-50 text-rose-700'}`}>
+                                                    <span className={`inline-block px-2 py-1 text-xs font-semibold rounded-full ${rec.status === "Present" ? "bg-emerald-50 text-emerald-700" : rec.status === "Half Day" ? "bg-sky-50 text-sky-700" : rec.status === "Leave" ? "bg-violet-50 text-violet-700" : "bg-rose-50 text-rose-700"}`}>
                                                         {rec.status}
                                                     </span>
                                                 </td>
@@ -741,175 +520,25 @@ pagedRecords.map((rec) => (
 
                         {/* Pagination controls for Attendance */}
                         {attendanceTotalPages > 1 && (
-                            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginTop: "16px" }}>
-                                <span style={{ fontSize: "13px", color: "#64748b" }}>
+                            <div className="flex justify-between items-center mt-4">
+                                <span className="text-[13px] text-slate-500">
                                     Showing {attendanceStartIndex + 1} to {Math.min(attendanceStartIndex + itemsPerPage, filteredRecords.length)} of {filteredRecords.length} records
                                 </span>
-                                <div style={{ display: "flex", gap: "8px" }}>
+                                <div className="flex gap-2">
                                     <button
                                         disabled={currentAttendancePage === 1}
                                         onClick={() => setCurrentAttendancePage(prev => Math.max(prev - 1, 1))}
-                                        className="btn-close"
-                                        style={{ padding: "6px 12.5px" }}
+                                        className="px-3 py-1.5 rounded-md border border-slate-300 bg-white text-sm disabled:opacity-50"
                                     >
                                         Previous
                                     </button>
-                                    <span style={{ fontSize: "14px", fontWeight: "600", alignSelf: "center" }}>
+                                    <span className="text-sm font-semibold self-center">
                                         {currentAttendancePage} of {attendanceTotalPages}
                                     </span>
                                     <button
                                         disabled={currentAttendancePage === attendanceTotalPages}
                                         onClick={() => setCurrentAttendancePage(prev => Math.min(prev + 1, attendanceTotalPages))}
-                                        className="btn-close"
-                                        style={{ padding: "6px 12.5px" }}
-                                    >
-                                        Next
-                                    </button>
-                                </div>
-                            </div>
-                        )}
-{/* Pagination Controls */}
-                        <div className="flex items-center justify-between mt-3">
-                            <div className="flex items-center gap-2">
-                                <button onClick={() => setCurrentPage((p) => Math.max(1, p - 1))} disabled={currentPage === 1} className="px-3 py-1 rounded-md border bg-white disabled:opacity-60">
-                                    Previous
-                                </button>
-                                <button onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))} disabled={currentPage === totalPages} className="px-3 py-1 rounded-md border bg-white disabled:opacity-60">
-                                    Next
-                                </button>
-                                <span className="text-sm text-slate-600">Page {currentPage} of {totalPages}</span>
-                            </div>
-
-                            <div className="flex items-center gap-2">
-                                <label className="text-sm text-slate-600">Rows per page:</label>
-                                <select value={pageSize} onChange={(e) => { setPageSize(Number(e.target.value)); setCurrentPage(1); }} className="px-2 py-1 rounded-md border">
-                                    <option value={5}>5</option>
-                                    <option value={10}>10</option>
-                                    <option value={20}>20</option>
-                                    <option value={50}>50</option>
-                                </select>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            ) : (
-                /* Leave Tab */
-                <div className="w-full">
-                    {/* Leaves Table */}
-                    <div className="employee-directory-card" style={{ padding: "24px" }}>
-                        <h2 className="emp-card-title" style={{ marginBottom: "16px" }}>Leave Logs</h2>
-
-                        <div className="table-responsive">
-                            <table className="employee-table">
-                                <thead>
-                                    <tr>
-                                        <th>EMPLOYEE</th>
-                                        <th className="table-center-col">LEAVE DATE</th>
-                                        <th>LEAVE REASON</th>
-                                        <th className="table-center-col">STATUS</th>
-                                        <th className="table-actions-col">ACTIONS</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {loading ? (
-                                        <tr>
-                                            <td colSpan="5" style={{ textAlign: "center", padding: "30px 0" }}>Loading leave logs...</td>
-                                        </tr>
-                                    ) : paginatedLeaves.length === 0 ? (
-                                        <tr>
-                                            <td colSpan="5" style={{ textAlign: "center", padding: "30px 0" }}>No approved leaves logged.</td>
-                                        </tr>
-                                    ) : (
-                                        paginatedLeaves.map((rec) => (
-                                            <tr key={rec._id} className="employee-row">
-                                                <td style={{ padding: "4px 8px" }}>
-                                                    <div>
-                                                        <p style={{ fontWeight: "700", color: "#1e293b", fontSize: "14px" }}>{rec.employeeId?.firstName} {rec.employeeId?.lastName}</p>
-                                                        <p style={{ fontSize: "11px", color: "#64748b" }}>{rec.employeeId?.employeeId}</p>
-                                                    </div>
-                                                </td>
-                                                <td style={{ padding: "4px 8px", textAlign: "center" }}>
-                                                    {formatDate(rec.fromDate)}
-                                                    {rec.toDate && rec.toDate !== rec.fromDate ? ` - ${formatDate(rec.toDate)}` : ''}
-                                                </td>
-                                                <td style={{ padding: "4px 8px", color: "#475569", fontSize: "13px" }}>
-                                                    {rec.reason || "Personal reasons"}
-                                                </td>
-                                                <td style={{ padding: "4px 8px", textAlign: "center" }}>
-                                                    <span style={{
-                                                        padding: "2px 8px",
-                                                        fontSize: "11px",
-                                                        fontWeight: "750",
-                                                        borderRadius: "12px",
-                                                        display: "inline-block",
-                                                        backgroundColor: rec.status === "Approved" ? "#ecfdf5" : rec.status === "Rejected" ? "#fef2f2" : "#fff7ed",
-                                                        color: rec.status === "Approved" ? "#065f46" : rec.status === "Rejected" ? "#b91c1c" : "#ea580c"
-                                                    }}>
-                                                        {rec.status || 'Pending'}
-                                                    </span>
-                                                </td>
-                                                <td style={{ padding: "4px 8px", textAlign: "right" }}>
-                                                    <div style={{ display: "flex", gap: "8px", justifyContent: "flex-end" }}>
-                                                        {rec.status === 'Pending' && (
-                                                            <>
-                                                                <button
-                                                                    onClick={() => handleUpdateLeaveStatus(rec._id, 'Approved')}
-                                                                    className="action-icon-btn"
-                                                                    title="Approve"
-                                                                    style={{ border: "none", background: "none", cursor: "pointer", color: "#059669" }}
-                                                                >
-                                                                    <CheckCircle size={16} />
-                                                                </button>
-                                                                <button
-                                                                    onClick={() => handleUpdateLeaveStatus(rec._id, 'Rejected')}
-                                                                    className="action-icon-btn"
-                                                                    title="Reject"
-                                                                    style={{ border: "none", background: "none", cursor: "pointer", color: "#b91c1c" }}
-                                                                >
-                                                                    <X size={16} />
-                                                                </button>
-                                                            </>
-                                                        )}
-                                                        <button
-                                                            onClick={() => handleDeleteLeave(rec._id)}
-                                                            className="action-icon-btn delete"
-                                                            title="Delete Leave"
-                                                            style={{ border: "none", background: "none", cursor: "pointer", color: "#b91c1c" }}
-                                                        >
-                                                            <Trash2 size={16} />
-                                                        </button>
-                                                    </div>
-                                                </td>
-                                            </tr>
-                                        ))
-                                    )}
-                                </tbody>
-                            </table>
-                        </div>
-
-                        {/* Pagination controls for Leaves */}
-                        {leaveTotalPages > 1 && (
-                            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginTop: "16px" }}>
-                                <span style={{ fontSize: "13px", color: "#64748b" }}>
-                                    Showing {leaveStartIndex + 1} to {Math.min(leaveStartIndex + itemsPerPage, leaves.length)} of {leaves.length} records
-                                </span>
-                                <div style={{ display: "flex", gap: "8px" }}>
-                                    <button
-                                        disabled={currentLeavePage === 1}
-                                        onClick={() => setCurrentLeavePage(prev => Math.max(prev - 1, 1))}
-                                        className="btn-close"
-                                        style={{ padding: "6px 12.5px" }}
-                                    >
-                                        Previous
-                                    </button>
-                                    <span style={{ fontSize: "14px", fontWeight: "600", alignSelf: "center" }}>
-                                        {currentLeavePage} of {leaveTotalPages}
-                                    </span>
-                                    <button
-                                        disabled={currentLeavePage === leaveTotalPages}
-                                        onClick={() => setCurrentLeavePage(prev => Math.min(prev + 1, leaveTotalPages))}
-                                        className="btn-close"
-                                        style={{ padding: "6px 12.5px" }}
+                                        className="px-3 py-1.5 rounded-md border border-slate-300 bg-white text-sm disabled:opacity-50"
                                     >
                                         Next
                                     </button>
@@ -917,42 +546,15 @@ pagedRecords.map((rec) => (
                             </div>
                         )}
                     </div>
-                </div>
-            )}
 
-            {/* Log Attendance Modal */}
-            {isAddModalOpen && (
-                <div className="modal-backdrop">
-                    <div className="modal-content-card-wide">
-                        <div className="modal-header">
-                            <div>
-                                <h2>Log Attendance</h2>
-                                <p className="modal-subtitle">Log quick daily shifts details.</p>
-                            </div>
-                            <button
-                                className="btn-close"
-                                onClick={() => setIsAddModalOpen(false)}
-                            >
-                                <X size={20} />
-                            </button>
-                        </div>
-
-                        <form onSubmit={handleAddAttendance} className="enroll-form">
-                            <div className="form-group">
-                                <label>Employee <span className="req">*</span></label>
-                                <select
-                                    value={selectedEmpId}
-                                    onChange={(e) => setSelectedEmpId(e.target.value)}
-                                    required
-                                >
-{/* Record Attendance Form */}
-                    <div className="emp-card-box bg-white rounded-xl p-6 shadow-sm">
+                    {/* Record Attendance Form */}
+                    <div className="bg-white rounded-xl p-6 shadow-sm">
                         <h2 className="text-lg font-semibold mb-4">Log Attendance</h2>
                         <form onSubmit={handleAddAttendance}>
 
                             <div className="mb-3">
                                 <label className="block text-xs font-semibold uppercase text-slate-600 mb-1">Employee*</label>
-                                <select value={selectedEmpId} onChange={(e) => setSelectedEmpId(e.target.value)} className="w-full px-3 py-2 rounded-md border border-slate-300 bg-white">
+                                <select value={selectedEmpId} onChange={(e) => setSelectedEmpId(e.target.value)} required className="w-full px-3 py-2 rounded-md border border-slate-300 bg-white">
                                     <option value="">Select Employee...</option>
                                     {employees.map(emp => (
                                         <option key={emp._id} value={emp._id}>{emp.firstName} {emp.lastName} ({emp.employeeId})</option>
@@ -960,31 +562,14 @@ pagedRecords.map((rec) => (
                                 </select>
                             </div>
 
-                            <div className="form-group">
-                                <label>Attendance Date <span className="req">*</span></label>
-                                <input
-                                    type="date"
-                                    value={attendanceDate}
-                                    onChange={(e) => setAttendanceDate(e.target.value)}
-                                    required
-                                />
-                            </div>
-
-                            <div className="form-group">
-                                <label>Shift Status <span className="req">*</span></label>
-                                <select
-                                    value={status}
-                                    onChange={(e) => setStatus(e.target.value)}
-                                    required
-                                >
-<div className="mb-3">
+                            <div className="mb-3">
                                 <label className="block text-xs font-semibold uppercase text-slate-600 mb-1">Attendance Date*</label>
-                                <input type="date" value={attendanceDate} onChange={(e) => setAttendanceDate(e.target.value)} className="w-full px-3 py-2 rounded-md border border-slate-300" />
+                                <input type="date" value={attendanceDate} onChange={(e) => setAttendanceDate(e.target.value)} required className="w-full px-3 py-2 rounded-md border border-slate-300" />
                             </div>
 
                             <div className="mb-3">
                                 <label className="block text-xs font-semibold uppercase text-slate-600 mb-1">Shift Status*</label>
-                                <select value={status} onChange={(e) => setStatus(e.target.value)} className="w-full px-3 py-2 rounded-md border border-slate-300 bg-white">
+                                <select value={status} onChange={(e) => setStatus(e.target.value)} required className="w-full px-3 py-2 rounded-md border border-slate-300 bg-white">
                                     <option value="Present">Present</option>
                                     <option value="Half Day">Half Day</option>
                                     <option value="Absent">Absent</option>
@@ -994,34 +579,7 @@ pagedRecords.map((rec) => (
 
                             {(status === "Present" || status === "Half Day") && (
                                 <>
-                                    <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "10px" }}>
-                                        <div className="form-group">
-                                            <label>In Time</label>
-                                            <input
-                                                type="time"
-                                                value={checkInTime}
-                                                onChange={(e) => setCheckInTime(e.target.value)}
-                                            />
-                                        </div>
-                                        <div className="form-group">
-                                            <label>Out Time</label>
-                                            <input
-                                                type="time"
-                                                value={checkOutTime}
-                                                onChange={(e) => setCheckOutTime(e.target.value)}
-                                            />
-                                        </div>
-                                    </div>
-
-                                    <div className="form-group">
-                                        <label>Worked Hours</label>
-                                        <input
-                                            type="number"
-                                            step="0.1"
-                                            value={workedHours}
-                                            onChange={(e) => setWorkedHours(e.target.value)}
-                                        />
-<div className="grid grid-cols-2 gap-2 mb-3">
+                                    <div className="grid grid-cols-2 gap-2 mb-3">
                                         <div>
                                             <label className="block text-xs font-semibold uppercase text-slate-600 mb-1">In Time</label>
                                             <input type="time" value={checkInTime} onChange={(e) => setCheckInTime(e.target.value)} className="w-full px-3 py-2 rounded-md border border-slate-300" />
@@ -1039,160 +597,96 @@ pagedRecords.map((rec) => (
                                 </>
                             )}
 
-                            <div className="form-group">
-                                <label>Administrator Notes</label>
-                                <input
-                                    type="text"
-                                    value={notes}
-                                    onChange={(e) => setNotes(e.target.value)}
-                                    placeholder="e.g. Cleared by HR"
-                                />
-                            </div>
-
-                            <div className="modal-actions">
-                                <button
-                                    type="button"
-                                    className="btn-close"
-                                    onClick={() => setIsAddModalOpen(false)}
-                                    style={{ padding: "8px 16px" }}
-                                >
-                                    Cancel
-                                </button>
-                                <button
-                                    type="submit"
-                                    className="btn-enroll-employee"
-                                >
-                                    <Plus size={16} />
-                                    <span>Log Attendance</span>
-                                </button>
-                            </div>
-<div className="mb-4">
+                            <div className="mb-4">
                                 <label className="block text-xs font-semibold uppercase text-slate-600 mb-1">Administrator Notes</label>
                                 <input type="text" value={notes} onChange={(e) => setNotes(e.target.value)} className="w-full px-3 py-2 rounded-md border border-slate-300" placeholder="e.g. Cleared by HR" />
                             </div>
 
-                            <button type="submit" className="w-full px-4 py-2 bg-emerald-700 text-white rounded-md font-semibold flex items-center justify-center gap-2">
+                            <button type="submit" className="w-full px-4 py-2 bg-emerald-700 hover:bg-emerald-800 text-white rounded-md font-semibold flex items-center justify-center gap-2">
                                 <Plus size={16} />
                                 <span>Log Attendance</span>
                             </button>
                         </form>
                     </div>
                 </div>
-            )}
+            ) : (
+                /* Leave Tab */
+                <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 items-start">
 
-            {/* Record Leave Modal */}
-            {isLeaveModalOpen && (
-                <div className="modal-backdrop">
-                    <div className="modal-content-card-wide">
-                        <div className="modal-header">
-                            <div>
-                                <h2>Record Leave</h2>
-                                <p className="modal-subtitle">Submit a leave request on behalf of an employee.</p>
-            {/* Record Leave Modal */}
-            {isLeaveModalOpen && (
-                <div className="modal-backdrop">
-                    <div className="modal-content-card" style={{ maxWidth: "500px" }}>
-                        <div className="modal-header">
-                            <div>
-                                <h2>Record Leave</h2>
-                                <p className="modal-subtitle">Logs approved leave days for an employee.</p>
-                            </div>
-                            <button
-                                className="btn-close"
-                                onClick={() => setIsLeaveModalOpen(false)}
-                            >
-                                <X size={20} />
-                            </button>
-                        </div>
+                    {/* Leave Requests Table */}
+                    <div className="lg:col-span-2 bg-white rounded-xl p-6 shadow-sm">
+                        <h2 className="text-lg font-semibold mb-4">Leave Requests</h2>
 
-                        <form onSubmit={handleApplyLeave} className="enroll-form">
-                            <div className="form-group">
-                                <label>Employee <span className="req">*</span></label>
-{/* Leaves Table */}
-                    <div className="employee-directory-card" style={{ padding: "24px" }}>
-                        <h2 className="emp-card-title" style={{ marginBottom: "16px" }}>Leave Requests</h2>
-
-                        <div className="table-responsive">
-                            <table className="employee-table">
+                        <div className="overflow-auto max-h-[520px] rounded-md border border-slate-100">
+                            <table className="min-w-full divide-y">
                                 <thead>
                                     <tr>
-                                        <th style={{ padding: "12px" }}>EMPLOYEE</th>
-                                        <th style={{ padding: "12px", textAlign: "center" }}>DATES</th>
-                                        <th style={{ padding: "12px" }}>REASON</th>
-                                        <th style={{ padding: "12px", textAlign: "center" }}>TYPE</th>
-                                        <th style={{ padding: "12px", textAlign: "center" }}>STATUS</th>
-                                        <th style={{ padding: "12px", textAlign: "right" }}>ACTIONS</th>
+                                        <th className="px-3 py-3 text-left">EMPLOYEE</th>
+                                        <th className="px-3 py-3 text-center">DATES</th>
+                                        <th className="px-3 py-3 text-left">REASON</th>
+                                        <th className="px-3 py-3 text-center">TYPE</th>
+                                        <th className="px-3 py-3 text-center">STATUS</th>
+                                        <th className="px-3 py-3 text-right">ACTIONS</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     {loading ? (
                                         <tr>
-                                            <td colSpan="6" style={{ textAlign: "center", padding: "30px 0" }}>Loading leave requests...</td>
+                                            <td colSpan="6" className="text-center py-8">Loading leave requests...</td>
                                         </tr>
-                                    ) : leaves.length === 0 ? (
+                                    ) : paginatedLeaves.length === 0 ? (
                                         <tr>
-                                            <td colSpan="6" style={{ textAlign: "center", padding: "30px 0" }}>No leave requests found.</td>
+                                            <td colSpan="6" className="text-center py-8">No leave requests found.</td>
                                         </tr>
                                     ) : (
-                                        leaves.map((rec) => (
-                                            <tr key={rec._id} className="employee-row">
-                                                <td style={{ padding: "12px" }}>
+                                        paginatedLeaves.map((rec) => (
+                                            <tr key={rec._id} className="border-b last:border-b-0">
+                                                <td className="px-4 py-3">
                                                     <div>
-                                                        <p style={{ fontWeight: "700", color: "#1e293b", fontSize: "14px" }}>{rec.employeeId?.firstName ? `${rec.employeeId.firstName} ${rec.employeeId.lastName}` : "Unknown"}</p>
-                                                        <p style={{ fontSize: "11px", color: "#64748b" }}>{rec.employeeId?.employeeId || "-"}</p>
+                                                        <p className="font-semibold text-slate-900 text-sm">
+                                                            {rec.employeeId?.firstName ? `${rec.employeeId.firstName} ${rec.employeeId.lastName}` : "Unknown"}
+                                                        </p>
+                                                        <p className="text-xs text-slate-500">{rec.employeeId?.employeeId || "-"}</p>
                                                     </div>
                                                 </td>
-                                                <td style={{ padding: "12px", textAlign: "center" }}>
+                                                <td className="px-4 py-3 text-center text-sm">
                                                     {formatDateDisplay(rec.fromDate)} - {formatDateDisplay(rec.toDate)}
                                                 </td>
-                                                <td style={{ padding: "12px", color: "#475569", fontSize: "13px" }}>
-                                                    {rec.reason}
-                                                </td>
-                                                <td style={{ padding: "12px", textAlign: "center", fontWeight: "600", color: "#1f2937" }}>
-                                                    {rec.leaveType}
-                                                </td>
-                                                <td style={{ padding: "12px", textAlign: "center" }}>
-                                                    <span style={{
-                                                        padding: "2px 8px",
-                                                        fontSize: "11px",
-                                                        fontWeight: "750",
-                                                        borderRadius: "12px",
-                                                        display: "inline-block",
-                                                        backgroundColor:
-                                                            rec.status === "Approved" ? "#ecfdf5" : rec.status === "Rejected" ? "#fef2f2" : "#eff6ff",
-                                                        color:
-                                                            rec.status === "Approved" ? "#065f46" : rec.status === "Rejected" ? "#b91c1c" : "#1d4ed8"
-                                                    }}>
-                                                        {rec.status}
+                                                <td className="px-4 py-3 text-sm text-slate-600">{rec.reason || "Personal reasons"}</td>
+                                                <td className="px-4 py-3 text-center text-sm font-semibold text-slate-800">{rec.leaveType}</td>
+                                                <td className="px-4 py-3 text-center">
+                                                    <span className={`inline-block px-2 py-1 text-xs font-semibold rounded-full ${rec.status === "Approved" ? "bg-emerald-50 text-emerald-700" : rec.status === "Rejected" ? "bg-rose-50 text-rose-700" : "bg-orange-50 text-orange-600"}`}>
+                                                        {rec.status || "Pending"}
                                                     </span>
                                                 </td>
-                                                <td style={{ padding: "12px", textAlign: "right", display: "flex", justifyContent: "flex-end", gap: "8px" }}>
-                                                    {rec.status === "Pending" && (
-                                                        <>
-                                                            <button
-                                                                onClick={() => handleApproveLeave(rec._id)}
-                                                                className="action-icon-btn approve"
-                                                                style={{ border: "none", background: "#22c55e", borderRadius: "8px", padding: "6px 10px", color: "#ffffff", cursor: "pointer" }}
-                                                            >
-                                                                Approve
-                                                            </button>
-                                                            <button
-                                                                onClick={() => handleRejectLeave(rec._id)}
-                                                                className="action-icon-btn reject"
-                                                                style={{ border: "none", background: "#ef4444", borderRadius: "8px", padding: "6px 10px", color: "#ffffff", cursor: "pointer" }}
-                                                            >
-                                                                Reject
-                                                            </button>
-                                                        </>
-                                                    )}
-                                                    <button
-                                                        onClick={() => handleDeleteLeave(rec._id)}
-                                                        className="action-icon-btn delete"
-                                                        style={{ border: "none", background: "none", cursor: "pointer", color: "#b91c1c" }}
-                                                        title="Delete Leave Request"
-                                                    >
-                                                        <Trash2 size={16} />
-                                                    </button>
+                                                <td className="px-4 py-3 text-right">
+                                                    <div className="flex gap-2 justify-end">
+                                                        {rec.status === "Pending" && (
+                                                            <>
+                                                                <button
+                                                                    onClick={() => handleUpdateLeaveStatus(rec._id, "Approved")}
+                                                                    title="Approve"
+                                                                    className="text-emerald-600 hover:text-emerald-800"
+                                                                >
+                                                                    <CheckCircle size={16} />
+                                                                </button>
+                                                                <button
+                                                                    onClick={() => handleUpdateLeaveStatus(rec._id, "Rejected")}
+                                                                    title="Reject"
+                                                                    className="text-rose-600 hover:text-rose-800"
+                                                                >
+                                                                    <X size={16} />
+                                                                </button>
+                                                            </>
+                                                        )}
+                                                        <button
+                                                            onClick={() => handleDeleteLeave(rec._id)}
+                                                            title="Delete Leave Request"
+                                                            className="text-rose-600 hover:text-rose-800"
+                                                        >
+                                                            <Trash2 size={16} />
+                                                        </button>
+                                                    </div>
                                                 </td>
                                             </tr>
                                         ))
@@ -1201,22 +695,44 @@ pagedRecords.map((rec) => (
                             </table>
                         </div>
 
-                        <form onSubmit={handleApplyLeave} className="enroll-form">
-                            <div className="form-group">
-                                <label>Employee <span className="req">*</span></label>
-{/* Request / Record Leave Form */}
-                    <div className="emp-card-box" style={{ padding: "24px" }}>
-                        <h2 className="emp-card-title" style={{ marginBottom: "8px" }}>Create Leave Request</h2>
-                        <p style={{ fontSize: "12px", color: "#64748b", marginBottom: "16px" }}>Submit a leave request on behalf of an employee, then approve or reject from the leave list.</p>
+                        {/* Pagination controls for Leaves */}
+                        {leaveTotalPages > 1 && (
+                            <div className="flex justify-between items-center mt-4">
+                                <span className="text-[13px] text-slate-500">
+                                    Showing {leaveStartIndex + 1} to {Math.min(leaveStartIndex + itemsPerPage, leaves.length)} of {leaves.length} records
+                                </span>
+                                <div className="flex gap-2">
+                                    <button
+                                        disabled={currentLeavePage === 1}
+                                        onClick={() => setCurrentLeavePage(prev => Math.max(prev - 1, 1))}
+                                        className="px-3 py-1.5 rounded-md border border-slate-300 bg-white text-sm disabled:opacity-50"
+                                    >
+                                        Previous
+                                    </button>
+                                    <span className="text-sm font-semibold self-center">
+                                        {currentLeavePage} of {leaveTotalPages}
+                                    </span>
+                                    <button
+                                        disabled={currentLeavePage === leaveTotalPages}
+                                        onClick={() => setCurrentLeavePage(prev => Math.min(prev + 1, leaveTotalPages))}
+                                        className="px-3 py-1.5 rounded-md border border-slate-300 bg-white text-sm disabled:opacity-50"
+                                    >
+                                        Next
+                                    </button>
+                                </div>
+                            </div>
+                        )}
+                    </div>
+
+                    {/* Request / Record Leave Form */}
+                    <div className="bg-white rounded-xl p-6 shadow-sm">
+                        <h2 className="text-lg font-semibold mb-1">Create Leave Request</h2>
+                        <p className="text-xs text-slate-500 mb-4">Submit a leave request on behalf of an employee, then approve or reject it from the list.</p>
                         <form onSubmit={handleApplyLeave}>
 
-                            <div style={{ marginBottom: "12px" }}>
-                                <label style={{ display: "block", fontSize: "11px", fontWeight: "700", textTransform: "uppercase", color: "#475569", marginBottom: "4px" }}>Employee*</label>
-                                <select
-                                    value={leaveEmpId}
-                                    onChange={(e) => setLeaveEmpId(e.target.value)}
-                                    required
-                                >
+                            <div className="mb-3">
+                                <label className="block text-xs font-semibold uppercase text-slate-600 mb-1">Employee*</label>
+                                <select value={leaveEmpId} onChange={(e) => setLeaveEmpId(e.target.value)} required className="w-full px-3 py-2 rounded-md border border-slate-300 bg-white">
                                     <option value="">Select Employee...</option>
                                     {employees.map(emp => (
                                         <option key={emp._id} value={emp._id}>
@@ -1226,17 +742,9 @@ pagedRecords.map((rec) => (
                                 </select>
                             </div>
 
-                            <div className="form-group">
-                                <label>Leave Type <span className="req">*</span></label>
-                            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "10px" }}>
-                                <div className="form-group">
-                                    <label>From Date <span className="req">*</span></label>
-<div style={{ marginBottom: "12px" }}>
-                                <label style={{ display: "block", fontSize: "11px", fontWeight: "700", textTransform: "uppercase", color: "#475569", marginBottom: "4px" }}>Leave Type*</label>
-                                <select
-                                    value={leaveType}
-                                    onChange={(e) => setLeaveType(e.target.value)}
-                                >
+                            <div className="mb-3">
+                                <label className="block text-xs font-semibold uppercase text-slate-600 mb-1">Leave Type*</label>
+                                <select value={leaveType} onChange={(e) => setLeaveType(e.target.value)} className="w-full px-3 py-2 rounded-md border border-slate-300 bg-white">
                                     <option value="Casual Leave">Casual Leave</option>
                                     <option value="Sick Leave">Sick Leave</option>
                                     <option value="Earned Leave">Earned Leave</option>
@@ -1246,68 +754,200 @@ pagedRecords.map((rec) => (
                                 </select>
                             </div>
 
-                            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "10px" }}>
-                                <div className="form-group">
-                                    <label>From Date <span className="req">*</span></label>
-<div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "10px", marginBottom: "12px" }}>
+                            <div className="grid grid-cols-2 gap-2 mb-3">
                                 <div>
-                                    <label style={{ display: "block", fontSize: "11px", fontWeight: "700", textTransform: "uppercase", color: "#475569", marginBottom: "4px" }}>From Date*</label>
-                                    <input
-                                        type="date"
-                                        value={leaveFrom}
-                                        onChange={(e) => setLeaveFrom(e.target.value)}
-                                        required
-                                    />
+                                    <label className="block text-xs font-semibold uppercase text-slate-600 mb-1">From Date*</label>
+                                    <input type="date" value={leaveFrom} onChange={(e) => setLeaveFrom(e.target.value)} required className="w-full px-3 py-2 rounded-md border border-slate-300" />
                                 </div>
-                                <div className="form-group">
-                                    <label>To Date <span className="req">*</span></label>
-                                    <input
-                                        type="date"
-                                        value={leaveTo}
-                                        onChange={(e) => setLeaveTo(e.target.value)}
-                                        required
-                                    />
+                                <div>
+                                    <label className="block text-xs font-semibold uppercase text-slate-600 mb-1">To Date*</label>
+                                    <input type="date" value={leaveTo} onChange={(e) => setLeaveTo(e.target.value)} required className="w-full px-3 py-2 rounded-md border border-slate-300" />
                                 </div>
                             </div>
 
-                            <div className="form-group">
-                                <label>Reason for Leave <span className="req">*</span></label>
+                            <div className="mb-4">
+                                <label className="block text-xs font-semibold uppercase text-slate-600 mb-1">Reason for Leave*</label>
                                 <textarea
                                     value={leaveReason}
                                     onChange={(e) => setLeaveReason(e.target.value)}
-                                    style={{ minHeight: "80px", resize: "vertical" }}
-                                    placeholder="e.g. Sickness, vacation, etc."
                                     required
+                                    placeholder="e.g. Sickness, vacation, etc."
+                                    className="w-full px-3 py-2 rounded-md border border-slate-300 min-h-[80px] resize-y"
                                 />
                             </div>
 
-=======
->>>>>>> 614e3dc5d896ce340e10987b715fcc5204d54c2f
-                            <div className="modal-actions">
+                            <button type="submit" className="w-full px-4 py-2 bg-emerald-800 hover:bg-emerald-900 text-white rounded-md font-semibold flex items-center justify-center gap-2">
+                                <CheckCircle size={16} />
+                                <span>Submit Leave Request</span>
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            )}
+
+            {/* Log Attendance Modal */}
+            {isAddModalOpen && (
+                <div className="fixed inset-0 bg-slate-900/40 backdrop-blur-sm flex justify-center items-center z-[999] p-4">
+                    <div className="bg-white rounded-2xl w-[560px] max-w-full max-h-[90vh] overflow-y-auto shadow-xl">
+                        <div className="flex justify-between items-start px-6 py-5 border-b border-slate-100">
+                            <div>
+                                <h2 className="m-0 text-lg font-bold text-slate-900">Log Attendance</h2>
+                                <p className="text-xs text-slate-500 mt-1">Log quick daily shift details.</p>
+                            </div>
+                            <button onClick={() => setIsAddModalOpen(false)} className="text-slate-500 hover:text-slate-700">
+                                <X size={20} />
+                            </button>
+                        </div>
+
+                        <form onSubmit={handleAddAttendance} className="p-6">
+                            <div className="mb-3">
+                                <label className="block text-xs font-semibold uppercase text-slate-600 mb-1">Employee*</label>
+                                <select value={selectedEmpId} onChange={(e) => setSelectedEmpId(e.target.value)} required className="w-full px-3 py-2 rounded-md border border-slate-300 bg-white">
+                                    <option value="">Select Employee...</option>
+                                    {employees.map(emp => (
+                                        <option key={emp._id} value={emp._id}>{emp.firstName} {emp.lastName} ({emp.employeeId})</option>
+                                    ))}
+                                </select>
+                            </div>
+
+                            <div className="mb-3">
+                                <label className="block text-xs font-semibold uppercase text-slate-600 mb-1">Attendance Date*</label>
+                                <input type="date" value={attendanceDate} onChange={(e) => setAttendanceDate(e.target.value)} required className="w-full px-3 py-2 rounded-md border border-slate-300" />
+                            </div>
+
+                            <div className="mb-3">
+                                <label className="block text-xs font-semibold uppercase text-slate-600 mb-1">Shift Status*</label>
+                                <select value={status} onChange={(e) => setStatus(e.target.value)} required className="w-full px-3 py-2 rounded-md border border-slate-300 bg-white">
+                                    <option value="Present">Present</option>
+                                    <option value="Half Day">Half Day</option>
+                                    <option value="Absent">Absent</option>
+                                    <option value="Leave">Leave</option>
+                                </select>
+                            </div>
+
+                            {(status === "Present" || status === "Half Day") && (
+                                <>
+                                    <div className="grid grid-cols-2 gap-2 mb-3">
+                                        <div>
+                                            <label className="block text-xs font-semibold uppercase text-slate-600 mb-1">In Time</label>
+                                            <input type="time" value={checkInTime} onChange={(e) => setCheckInTime(e.target.value)} className="w-full px-3 py-2 rounded-md border border-slate-300" />
+                                        </div>
+                                        <div>
+                                            <label className="block text-xs font-semibold uppercase text-slate-600 mb-1">Out Time</label>
+                                            <input type="time" value={checkOutTime} onChange={(e) => setCheckOutTime(e.target.value)} className="w-full px-3 py-2 rounded-md border border-slate-300" />
+                                        </div>
+                                    </div>
+
+                                    <div className="mb-3">
+                                        <label className="block text-xs font-semibold uppercase text-slate-600 mb-1">Worked Hours</label>
+                                        <input type="number" step="0.1" value={workedHours} onChange={(e) => setWorkedHours(e.target.value)} className="w-full px-3 py-2 rounded-md border border-slate-300" />
+                                    </div>
+                                </>
+                            )}
+
+                            <div className="mb-4">
+                                <label className="block text-xs font-semibold uppercase text-slate-600 mb-1">Administrator Notes</label>
+                                <input type="text" value={notes} onChange={(e) => setNotes(e.target.value)} className="w-full px-3 py-2 rounded-md border border-slate-300" placeholder="e.g. Cleared by HR" />
+                            </div>
+
+                            <div className="flex justify-end gap-3 pt-4 border-t border-slate-100">
                                 <button
                                     type="button"
-                                    className="btn-close"
-                                    onClick={() => setIsLeaveModalOpen(false)}
-                                    style={{ padding: "8px 16px" }}
+                                    onClick={() => setIsAddModalOpen(false)}
+                                    className="px-4 py-2 rounded-md border border-slate-300 bg-white text-slate-700 text-sm font-semibold"
                                 >
                                     Cancel
                                 </button>
                                 <button
                                     type="submit"
-                                    className="btn-enroll-employee"
+                                    className="flex items-center gap-2 px-4 py-2 bg-emerald-800 hover:bg-emerald-900 text-white rounded-md text-sm font-semibold"
+                                >
+                                    <Plus size={16} />
+                                    <span>Log Attendance</span>
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            )}
+
+            {/* Record Leave Modal */}
+            {isLeaveModalOpen && (
+                <div className="fixed inset-0 bg-slate-900/40 backdrop-blur-sm flex justify-center items-center z-[999] p-4">
+                    <div className="bg-white rounded-2xl w-[500px] max-w-full max-h-[90vh] overflow-y-auto shadow-xl">
+                        <div className="flex justify-between items-start px-6 py-5 border-b border-slate-100">
+                            <div>
+                                <h2 className="m-0 text-lg font-bold text-slate-900">Record Leave</h2>
+                                <p className="text-xs text-slate-500 mt-1">Submit a leave request on behalf of an employee.</p>
+                            </div>
+                            <button onClick={() => setIsLeaveModalOpen(false)} className="text-slate-500 hover:text-slate-700">
+                                <X size={20} />
+                            </button>
+                        </div>
+
+                        <form onSubmit={handleApplyLeave} className="p-6">
+                            <div className="mb-3">
+                                <label className="block text-xs font-semibold uppercase text-slate-600 mb-1">Employee*</label>
+                                <select value={leaveEmpId} onChange={(e) => setLeaveEmpId(e.target.value)} required className="w-full px-3 py-2 rounded-md border border-slate-300 bg-white">
+                                    <option value="">Select Employee...</option>
+                                    {employees.map(emp => (
+                                        <option key={emp._id} value={emp._id}>
+                                            {emp.firstName} {emp.lastName} ({emp.employeeId})
+                                        </option>
+                                    ))}
+                                </select>
+                            </div>
+
+                            <div className="mb-3">
+                                <label className="block text-xs font-semibold uppercase text-slate-600 mb-1">Leave Type*</label>
+                                <select value={leaveType} onChange={(e) => setLeaveType(e.target.value)} className="w-full px-3 py-2 rounded-md border border-slate-300 bg-white">
+                                    <option value="Casual Leave">Casual Leave</option>
+                                    <option value="Sick Leave">Sick Leave</option>
+                                    <option value="Earned Leave">Earned Leave</option>
+                                    <option value="Maternity Leave">Maternity Leave</option>
+                                    <option value="Paternity Leave">Paternity Leave</option>
+                                    <option value="Emergency Leave">Emergency Leave</option>
+                                </select>
+                            </div>
+
+                            <div className="grid grid-cols-2 gap-2 mb-3">
+                                <div>
+                                    <label className="block text-xs font-semibold uppercase text-slate-600 mb-1">From Date*</label>
+                                    <input type="date" value={leaveFrom} onChange={(e) => setLeaveFrom(e.target.value)} required className="w-full px-3 py-2 rounded-md border border-slate-300" />
+                                </div>
+                                <div>
+                                    <label className="block text-xs font-semibold uppercase text-slate-600 mb-1">To Date*</label>
+                                    <input type="date" value={leaveTo} onChange={(e) => setLeaveTo(e.target.value)} required className="w-full px-3 py-2 rounded-md border border-slate-300" />
+                                </div>
+                            </div>
+
+                            <div className="mb-4">
+                                <label className="block text-xs font-semibold uppercase text-slate-600 mb-1">Reason for Leave*</label>
+                                <textarea
+                                    value={leaveReason}
+                                    onChange={(e) => setLeaveReason(e.target.value)}
+                                    required
+                                    placeholder="e.g. Sickness, vacation, etc."
+                                    className="w-full px-3 py-2 rounded-md border border-slate-300 min-h-[80px] resize-y"
+                                />
+                            </div>
+
+                            <div className="flex justify-end gap-3 pt-4 border-t border-slate-100">
+                                <button
+                                    type="button"
+                                    onClick={() => setIsLeaveModalOpen(false)}
+                                    className="px-4 py-2 rounded-md border border-slate-300 bg-white text-slate-700 text-sm font-semibold"
+                                >
+                                    Cancel
+                                </button>
+                                <button
+                                    type="submit"
+                                    className="flex items-center gap-2 px-4 py-2 bg-emerald-800 hover:bg-emerald-900 text-white rounded-md text-sm font-semibold"
                                 >
                                     <CheckCircle size={16} />
                                     <span>Submit Leave Request</span>
                                 </button>
                             </div>
-<<<<<<< HEAD
-<button
-                                type="submit"
-                                style={{ width: "100%", padding: "10px", backgroundColor: "#065f46", color: "#ffffff", border: "none", borderRadius: "6px", fontWeight: "600", fontSize: "14px", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", gap: "8px" }}
-                            >
-                                <CheckCircle size={16} />
-                                <span>Submit Leave Request</span>
-                            </button>
                         </form>
                     </div>
                 </div>

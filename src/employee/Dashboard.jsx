@@ -1,9 +1,4 @@
 ﻿import React, { useState, useEffect } from "react";
-import "../App.css";
-import { useNavigate } from "react-router-dom";
-
-import React, { useState, useEffect } from "react";
-﻿import React, { useState, useEffect } from "react";
 // styles are loaded globally via src/index.css (Tailwind + custom styles)
 import { useNavigate } from "react-router-dom";
 import Sidebar from "../components/Sidebar";
@@ -86,11 +81,6 @@ export default function EmployeeDashboard() {
               />
             </div>
 
-=======
-            <div className="emp-user-profile-badge">
-              <div className="emp-avatar-circle">E</div>
-              <span>Employee</span>
->>>>>>> 614e3dc5d896ce340e10987b715fcc5204d54c2f
             <button
               className="icon-btn"
               title="View Notices"
@@ -99,7 +89,7 @@ export default function EmployeeDashboard() {
               <Megaphone size={18} />
             </button>
 
-            <div className="emp-user-profile-badge cursor-pointer" onClick={() => navigate("/employee/profile") }>
+            <div className="emp-user-profile-badge cursor-pointer" onClick={() => navigate("/employee/profile")}>
               <div className="emp-avatar-circle">
                 {employeeProfile.firstName || employeeProfile.lastName
                   ? `${employeeProfile.firstName?.[0] || ""}${employeeProfile.lastName?.[0] || ""}`.toUpperCase()
@@ -110,8 +100,6 @@ export default function EmployeeDashboard() {
                   ? `${employeeProfile.firstName || ""} ${employeeProfile.lastName || ""}`.trim()
                   : "Employee"}
               </span>
-<<<<<<< HEAD
->>>>>>> 614e3dc5d896ce340e10987b715fcc5204d54c2f
             </div>
           </div>
 
@@ -173,87 +161,9 @@ export default function EmployeeDashboard() {
           </div>
 
           {!loading && dashboard && (
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-10">
-              <div className="emp-card-box">
-                <div className="flex items-center justify-between gap-4 mb-5">
-                  <h2 className="emp-card-title">Today's Attendance</h2>
-                  <span className="rounded-full bg-slate-100 px-3 py-1 text-xs font-semibold text-slate-700">
-                    {dashboard.todayAttendance?.status || "No record"}
-                  </span>
-                </div>
-
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  <div className="rounded-2xl border border-slate-200 bg-transparent p-4 shadow-sm">
-                    <p className="text-xs uppercase tracking-[0.2em] text-slate-400">Check-in time</p>
-                    <p className="text-xl font-semibold text-slate-900 mt-2">
-                      {dashboard.todayAttendance?.checkInTime || "-"}
-                    </p>
-                  </div>
-                  <div className="rounded-2xl border border-slate-200 bg-transparent p-4 shadow-sm">
-                    <p className="text-xs uppercase tracking-[0.2em] text-slate-400">Check-out time</p>
-                    <p className="text-xl font-semibold text-slate-900 mt-2">
-                      {dashboard.todayAttendance?.checkOutTime || "-"}
-                    </p>
-                  </div>
-                  <div className="rounded-2xl border border-slate-200 bg-transparent p-4 shadow-sm">
-                    <p className="text-xs uppercase tracking-[0.2em] text-slate-400">Worked hours</p>
-                    <p className="text-xl font-semibold text-slate-900 mt-2">
-                      {dashboard.todayAttendance?.workedHours != null ? `${dashboard.todayAttendance.workedHours} hr` : "-"}
-                    </p>
-                  </div>
-                  <div className="rounded-2xl border border-slate-200 bg-transparent p-4 shadow-sm">
-                    <p className="text-xs uppercase tracking-[0.2em] text-slate-400">Notes</p>
-                    <p className="text-sm text-slate-700 mt-2 leading-6">
-                      {dashboard.todayAttendance?.notes || "No additional notes."}
-                    </p>
-                  </div>
-                </div>
-              </div>
-
-              <div className="emp-card-box">
-                <h2 className="emp-card-title">Attendance History</h2>
-                <table className="emp-table">
-                  <thead>
-                    <tr>
-                      <th>Date</th>
-                      <th>Status</th>
-                      <th>Activity</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {attendanceHistory.length > 0 ? (
-                      attendanceHistory.map((record) => (
-                        <tr key={record._id || record.attendanceDate}>
-                          <td>{new Date(record.attendanceDate).toLocaleDateString()}</td>
-                          <td
-                            className={
-                              record.status === "Present"
-                                ? "status-present"
-                                : record.status === "Absent"
-                                ? "status-absent"
-                                : "status-leave"
-                            }
-                          >
-                            {record.status}
-                          </td>
-                          <td>{record.activity || "—"}</td>
-                        </tr>
-                      ))
-                    ) : (
-                      <tr>
-                        <td colSpan={3} style={{ textAlign: "center", padding: "20px 0" }}>
-                          No attendance history available.
-                        </td>
-                      </tr>
-                    )}
-                  </tbody>
-                </table>
-              </div>
-<<<<<<< HEAD
-          {!loading && dashboard && (
             <div className="emp-card-box mb-10">
               <div className="flex items-center justify-between gap-4 mb-5">
-                <h2 className="emp-card-title">Attendance Summary</h2>
+                <h2 className="emp-card-title">Today's Attendance</h2>
                 <span className="rounded-full bg-slate-100 px-3 py-1 text-xs font-semibold text-slate-700">
                   {dashboard.todayAttendance?.status || "No record"}
                 </span>
@@ -285,8 +195,10 @@ export default function EmployeeDashboard() {
                   </p>
                 </div>
               </div>
-=======
-          <div className="emp-middle-grid">
+            </div>
+          )}
+
+          <div className="emp-middle-grid grid grid-cols-1 lg:grid-cols-2 gap-6 mb-10">
             <div className="emp-card-box">
               <h2 className="emp-card-title">Attendance History & Leave Status</h2>
               <div className="current-status-row">
@@ -333,9 +245,7 @@ export default function EmployeeDashboard() {
                 </tbody>
               </table>
             </div>
-          )}
 
-          <div className="emp-middle-grid grid grid-cols-1 lg:grid-cols-2 gap-6 mb-10">
             <div className="emp-card-box">
               <h2 className="emp-card-title">Company Announcements</h2>
               <div className="announcement-list">
@@ -362,53 +272,30 @@ export default function EmployeeDashboard() {
                 )}
               </div>
             </div>
+          </div>
 
-            <div className="emp-card-box">
-              <h2 className="emp-card-title">Profile Summary</h2>
-              <div className="profile-card-content space-y-4 flex flex-col items-center">
-                <img
-                  src={employeeProfile.profileImage || "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=150&auto=format&fit=crop&q=80"}
-                  alt={employeeProfile.firstName || "Employee"}
-                  className="profile-avatar-large"
-                />
-=======
->>>>>>> 614e3dc5d896ce340e10987b715fcc5204d54c2f
-                <div>
-                  <p className="profile-name">
-                    {employeeProfile.firstName || employeeProfile.lastName
-                      ? `${employeeProfile.firstName || ""} ${employeeProfile.lastName || ""}`.trim()
-                      : "Employee"}
-                  </p>
-                  <p className="profile-role">{employeeProfile.designationName || "Employee"}</p>
-                </div>
-                <div className="profile-dept-info w-full">
-<<<<<<< HEAD
-                  <span>Department</span>
-                  <span>{employeeProfile.departmentName || "—"}</span>
-                </div>
-                <div className="w-full space-y-3 pt-2">
-                  <button className="btn-apply-leave" onClick={handleApplyLeave}>
-                    Apply Leave
-                  </button>
-                  <button className="btn-download-payslip" onClick={handleDownloadPayslip}>
-                    Download Payslip
-                  </button>
-                </div>
-<p className="profile-name">
+          <div className="emp-card-box mb-10">
+            <h2 className="emp-card-title">Profile Summary</h2>
+            <div className="profile-card-content space-y-4 flex flex-col items-center">
+              <img
+                src={employeeProfile.profileImage || "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=150&auto=format&fit=crop&q=80"}
+                alt={employeeProfile.firstName || "Employee"}
+                className="profile-avatar-large"
+              />
+              <div>
+                <p className="profile-name">
                   {employeeProfile.firstName || employeeProfile.lastName
                     ? `${employeeProfile.firstName || ""} ${employeeProfile.lastName || ""}`.trim()
                     : "Employee"}
                 </p>
                 <p className="profile-role">{employeeProfile.designationName || "Employee"}</p>
-                <div className="profile-dept-info">
-                  <span>Department</span>
-                  <span>{employeeProfile.departmentName || "—"}</span>
-                </div>
-                <div className="w-full space-y-3 pt-2">
-                  <button className="btn-apply-leave">Apply Leave</button>
-                  <button className="btn-download-payslip">Download Payslip</button>
-                </div>
-<button className="btn-apply-leave" onClick={handleApplyLeave}>
+              </div>
+              <div className="profile-dept-info w-full">
+                <span>Department</span>
+                <span>{employeeProfile.departmentName || "—"}</span>
+              </div>
+              <div className="w-full space-y-3 pt-2">
+                <button className="btn-apply-leave" onClick={handleApplyLeave}>
                   Apply Leave
                 </button>
                 <button className="btn-download-payslip" onClick={handleDownloadPayslip}>

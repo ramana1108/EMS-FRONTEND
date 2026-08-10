@@ -7,6 +7,15 @@ function authHeaders() {
     : { "Content-Type": "application/json" };
 }
 
+async function parseJsonResponse(res) {
+  const text = await res.text();
+  try {
+    return text ? JSON.parse(text) : {};
+  } catch (error) {
+    return { message: text || "Invalid JSON response" };
+  }
+}
+
 export async function getAdminDashboard() {
   const token = localStorage.getItem("token");
   const path = token ? "/dashboard/admin" : "/dashboard/admin/public";
@@ -84,25 +93,13 @@ export async function getDepartments() {
   return res.json();
 }
 
-=======
-async function parseJsonResponse(res) {
-  const text = await res.text();
-  try {
-    return text ? JSON.parse(text) : {};
-  } catch (error) {
-    return { message: text || "Invalid JSON response" };
-  }
-}
-
->>>>>>> 819c511ce486a6353829f2805eb90ecdf071faa3
 export async function createDepartment(payload) {
   const res = await fetch(`${API_BASE_URL}/departments`, {
     method: "POST",
     headers: authHeaders(),
     body: JSON.stringify(payload),
   });
-  return res.json();
-const data = await parseJsonResponse(res);
+  const data = await parseJsonResponse(res);
   if (!res.ok) {
     throw new Error(data.message || "Failed to create department");
   }
@@ -115,8 +112,7 @@ export async function updateDepartment(id, payload) {
     headers: authHeaders(),
     body: JSON.stringify(payload),
   });
-  return res.json();
-const data = await parseJsonResponse(res);
+  const data = await parseJsonResponse(res);
   if (!res.ok) {
     throw new Error(data.message || "Failed to update department");
   }
@@ -128,7 +124,11 @@ export async function deleteDepartment(id) {
     method: "DELETE",
     headers: authHeaders(),
   });
-  return res.json();
+  const data = await parseJsonResponse(res);
+  if (!res.ok) {
+    throw new Error(data.message || "Failed to delete department");
+  }
+  return data;
 }
 
 export async function getDepartmentEmployees(departmentId) {
@@ -136,11 +136,6 @@ export async function getDepartmentEmployees(departmentId) {
     headers: authHeaders(),
   });
   return res.json();
-const data = await parseJsonResponse(res);
-  if (!res.ok) {
-    throw new Error(data.message || "Failed to delete department");
-  }
-  return data;
 }
 
 export async function getDesignations() {
@@ -149,7 +144,7 @@ export async function getDesignations() {
   });
   return res.json();
 }
-<<<<<<< HEAD
+
 export async function createDesignation(payload) {
   const res = await fetch(`${API_BASE_URL}/designations`, {
     method: "POST",
@@ -171,10 +166,6 @@ export async function updateDesignation(id, payload) {
 export async function deleteDesignation(id) {
   const res = await fetch(`${API_BASE_URL}/designations/${id}`, {
     method: "DELETE",
-=======
-export async function getDepartmentEmployees(departmentId) {
-  const res = await fetch(`${API_BASE_URL}/departments/department/${departmentId}`, {
->>>>>>> 614e3dc5d896ce340e10987b715fcc5204d54c2f
     headers: authHeaders(),
   });
   return res.json();
@@ -196,20 +187,11 @@ export async function getPayrolls() {
 
 export async function getProfiles() {
   const res = await fetch(`${API_BASE_URL}/profile`, {
-<<<<<<< HEAD
-export async function getRoles() {
-  const res = await fetch(`${API_BASE_URL}/roles`, {
-export async function getProfiles() {
-  const res = await fetch(`${API_BASE_URL}/profile`, {
     headers: authHeaders(),
   });
   return res.json();
 }
 
-export async function createProfile(payload) {
-  const res = await fetch(`${API_BASE_URL}/profile`, {
-export async function createRole(payload) {
-  const res = await fetch(`${API_BASE_URL}/roles`, {
 export async function createProfile(payload) {
   const res = await fetch(`${API_BASE_URL}/profile`, {
     method: "POST",
@@ -219,11 +201,6 @@ export async function createProfile(payload) {
   return res.json();
 }
 
-export async function getProfileByEmployeeId(employeeId) {
-  const res = await fetch(`${API_BASE_URL}/profile/${employeeId}`, {
-export async function deleteRole(id) {
-  const res = await fetch(`${API_BASE_URL}/roles/${id}`, {
-    method: "DELETE",
 export async function getProfileByEmployeeId(employeeId) {
   const res = await fetch(`${API_BASE_URL}/profile/${employeeId}`, {
     headers: authHeaders(),
@@ -234,10 +211,22 @@ export async function getProfileByEmployeeId(employeeId) {
 export async function updateProfile(employeeId, payload) {
   const res = await fetch(`${API_BASE_URL}/profile/${employeeId}`, {
     method: "PUT",
-export async function updateRole(id, payload) {
-  const res = await fetch(`${API_BASE_URL}/roles/${id}`, {
+    headers: authHeaders(),
+    body: JSON.stringify(payload),
+  });
+  return res.json();
+}
+
 export async function getMyProfile() {
   const res = await fetch(`${API_BASE_URL}/profile/me`, {
+    headers: authHeaders(),
+  });
+  return res.json();
+}
+
+export async function updateMyProfile(payload) {
+  const res = await fetch(`${API_BASE_URL}/profile/me`, {
+    method: "PUT",
     headers: authHeaders(),
     body: JSON.stringify(payload),
   });
@@ -270,8 +259,6 @@ export async function deleteRole(id) {
 
 export async function updateRole(id, payload) {
   const res = await fetch(`${API_BASE_URL}/roles/${id}`, {
-export async function updateMyProfile(payload) {
-  const res = await fetch(`${API_BASE_URL}/profile/me`, {
     method: "PUT",
     headers: authHeaders(),
     body: JSON.stringify(payload),
@@ -279,10 +266,9 @@ export async function updateMyProfile(payload) {
   return res.json();
 }
 
-=======
->>>>>>> 614e3dc5d896ce340e10987b715fcc5204d54c2f
-export async function getAllUsers() {
-  const res = await fetch(`${API_BASE_URL}/auth`, {
+export async function getAllUsers(query = "") {
+  const url = `${API_BASE_URL}/auth${query ? `?q=${encodeURIComponent(query)}` : ""}`;
+  const res = await fetch(url, {
     headers: authHeaders(),
   });
   return res.json();
@@ -315,9 +301,6 @@ export async function createSettings(payload) {
 
 export async function updateSettings(id, payload) {
   const res = await fetch(`${API_BASE_URL}/settings/${id}`, {
-<<<<<<< HEAD
-export async function updateProfile(employeeId, payload) {
-  const res = await fetch(`${API_BASE_URL}/profile/${employeeId}`, {
     method: "PUT",
     headers: authHeaders(),
     body: JSON.stringify(payload),
@@ -340,18 +323,14 @@ export async function getMyAttendance() {
 }
 
 export async function getMyLeaves() {
-  const res = await fetch(`${API_BASE_URL}/leave/me`, {
-  const res = await fetch(`${API_BASE_URL}/leave/me`, {
-const res = await fetch(`${API_BASE_URL}/api/leaves/me`, {
+  const res = await fetch(`${API_BASE_URL}/api/leaves/me`, {
     headers: authHeaders(),
   });
   return res.json();
 }
 
 export async function applyLeave(payload) {
-  const res = await fetch(`${API_BASE_URL}/leave`, {
-  const res = await fetch(`${API_BASE_URL}/leave`, {
-const res = await fetch(`${API_BASE_URL}/api/leaves`, {
+  const res = await fetch(`${API_BASE_URL}/api/leaves`, {
     method: "POST",
     headers: authHeaders(),
     body: JSON.stringify(payload),
@@ -360,26 +339,22 @@ const res = await fetch(`${API_BASE_URL}/api/leaves`, {
 }
 
 export async function deleteLeave(id) {
-  const res = await fetch(`${API_BASE_URL}/leave/${id}`, {
-  const res = await fetch(`${API_BASE_URL}/leave/${id}`, {
-const res = await fetch(`${API_BASE_URL}/api/leaves/${id}`, {
+  const res = await fetch(`${API_BASE_URL}/api/leaves/${id}`, {
     method: "DELETE",
     headers: authHeaders(),
   });
   return res.json();
 }
 
-=======
->>>>>>> 614e3dc5d896ce340e10987b715fcc5204d54c2f
 export async function getAllLeaves() {
-  const res = await fetch(`${API_BASE_URL}/leave`, {
+  const res = await fetch(`${API_BASE_URL}/api/leaves`, {
     headers: authHeaders(),
   });
   return res.json();
 }
 
 export async function updateLeaveStatus(id, payload) {
-  const res = await fetch(`${API_BASE_URL}/leave/${id}`, {
+  const res = await fetch(`${API_BASE_URL}/api/leaves/${id}`, {
     method: "PUT",
     headers: authHeaders(),
     body: JSON.stringify(payload),
@@ -387,8 +362,6 @@ export async function updateLeaveStatus(id, payload) {
   return res.json();
 }
 
-<<<<<<< HEAD
->>>>>>> 614e3dc5d896ce340e10987b715fcc5204d54c2f
 export async function registerUser(payload) {
   const res = await fetch(`${API_BASE_URL}/auth/register`, {
     method: "POST",
@@ -398,27 +371,11 @@ export async function registerUser(payload) {
   return res.json();
 }
 
-export async function getAllUsers(query = "") {
-  const url = `${API_BASE_URL}/auth${query ? `?q=${encodeURIComponent(query)}` : ""}`;
-  const res = await fetch(url, {
-    headers: authHeaders(),
-  });
-  return res.json();
-}
-
-export async function updateUser(id, payload) {
-  const res = await fetch(`${API_BASE_URL}/auth/${id}`, {
-    method: "PUT",
-    headers: authHeaders(),
-    body: JSON.stringify(payload),
-  });
-  return res.json();
-}
-
 export default {
   getAdminDashboard,
   getEmployeeDashboard,
   getCurrentEmployeeDashboard,
+  getCurrentUser,
   getAllEmployees,
   getEmployeeById,
   createEmployee,
@@ -439,17 +396,8 @@ export default {
   createProfile,
   getProfileByEmployeeId,
   updateProfile,
-=======
   getMyProfile,
   updateMyProfile,
-  getAttendance,
-  getMyAttendance,
-  getMyLeaves,
-  applyLeave,
-  deleteLeave,
-<<<<<<< HEAD
-  updateLeaveStatus,
-  registerUser,
   getRoles,
   createRole,
   deleteRole,
@@ -467,7 +415,4 @@ export default {
   getAllLeaves,
   updateLeaveStatus,
   registerUser,
-};
-};
-registerUser,
 };

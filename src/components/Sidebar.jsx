@@ -49,37 +49,13 @@ export default function Sidebar({ activeTab, setActiveTab, isOpen, setIsOpen }) 
         : typeof user.role === "object" && user.role !== null && user.role.name
             ? String(user.role.name).trim().toLowerCase()
             : "";
->>>>>>> 614e3dc5d896ce340e10987b715fcc5204d54c2f
     const rawPermissions = Array.isArray(user.permissions)
         ? user.permissions
         : typeof user.permissions === "string"
             ? user.permissions.split(",").map((perm) => perm.trim()).filter(Boolean)
             : [];
 
-    const userRole = roleName || "admin";
-
-    // Role-based defaults (used when explicit permissions are not provided).
-    // hr and manager use the same permission keys as employee since they share
-    // the employee-facing menu/routes (see useEmployeeMenu below).
-<<<<<<< HEAD
-    const defaultPermissions = roleName === "admin"
-        ? menuItems.map((item) => item.permission)
-        : roleName === "employee"
-            ? ["dashboard", "leave", "attendance", "payroll", "notice"]
-            : ["dashboard"];
-    const permissions = rawPermissions.length > 0 ? rawPermissions : defaultPermissions;
-    const userRole = String(user.role || "ADMIN").toLowerCase();
-
-    const isEmployeeRole = ["employee"].includes(userRole);
-    const visibleMenuItems = isEmployeeRole
-        ? (permissions.length === 0
-            ? employeeMenuItems
-            : employeeMenuItems.filter((item) => !item.permission || permissions.includes(item.permission)))
-        : (permissions.length === 0
-            ? menuItems
-            : menuItems.filter((item) => !item.permission || permissions.includes(item.permission)));
-=======
-    const userRole = String(user.role || "").toLowerCase();
+    const userRole = roleName || String(user.role || "admin").trim().toLowerCase();
 
     // Role-based defaults when explicit permissions are absent.
     const rolePermissionMap = {
@@ -87,29 +63,12 @@ export default function Sidebar({ activeTab, setActiveTab, isOpen, setIsOpen }) 
         employee: ["dashboard", "attendance", "notice", "leave", "payroll", "profile"],
     };
 
-    const effectivePermissions = rawPermissions.length > 0 ? rawPermissions : (rolePermissionMap[userRole] || ["dashboard"]);
-
-    // Determine which menu set to use (employee-facing vs admin-facing).
-    // Manager and HR share the employee-facing menu/pages, not the admin menu -
-    // the admin routes are locked to the "admin" role only, so pointing
-    // manager/hr at /admin/* paths would just bounce them straight back.
-    const useEmployeeMenu = ["employee"].includes(userRole);
-
-    const visibleMenuItems = useEmployeeMenu
-        ? employeeMenuItems.filter((item) => !item.permission || effectivePermissions.includes(item.permission))
-        : menuItems.filter((item) => !item.permission || effectivePermissions.includes(item.permission));
-const effectivePermissions = rawPermissions.length > 0
+    const effectivePermissions = rawPermissions.length > 0
         ? Array.from(new Set(rawPermissions.map((perm) => String(perm).toLowerCase())))
         : (rolePermissionMap[userRole] || ["dashboard"]);
 
-    const allMenuItems = [...menuItems, ...employeeMenuItems];
-    const uniqueMenuItems = allMenuItems.filter((item, index, self) =>
-        index === self.findIndex((other) => other.path === item.path)
-    );
-
-    const isAdminMode = userRole === "admin" || effectivePermissions.some((perm) => ["department", "designation", "employee", "role", "settings"].includes(perm));
-    const sidebarItems = isAdminMode ? menuItems : employeeMenuItems;
-
+    const useEmployeeMenu = ["employee"].includes(userRole);
+    const sidebarItems = useEmployeeMenu ? employeeMenuItems : menuItems;
     const visibleMenuItems = sidebarItems.filter((item) =>
         !item.permission || effectivePermissions.includes(item.permission)
     );

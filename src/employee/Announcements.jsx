@@ -1,7 +1,5 @@
 import React, { useState, useEffect } from "react";
-=======
 // styles are loaded globally via src/index.css (Tailwind + custom styles)
->>>>>>> 819c511ce486a6353829f2805eb90ecdf071faa3
 import Sidebar from "../components/Sidebar";
 import Pagination from "../components/Pagination";
 import {
@@ -175,11 +173,8 @@ export default function Announcements() {
                 </div>
 
                 {/* Top Header Bar */}
-<<<<<<< HEAD
                 <div className="emp-top-header flex justify-between items-center mb-8 px-2.5">
                     <div className="emp-search-box">
-<div className="flex justify-between items-center mb-8 px-2">
-                    <div className="flex items-center gap-2 bg-white px-4 py-2 rounded-xl border border-slate-200 w-[320px]">
                         <Search size={18} color="#64748b" />
                         <input
                             type="text"
@@ -187,17 +182,6 @@ export default function Announcements() {
                             value={searchTerm}
                             onChange={(e) => setSearchTerm(e.target.value)}
                             className="emp-search-input"
-                        />
-                    </div>
-                </div>
-
-                {/* Page Content */}
-                <div style={{ flex: 1, padding: "0 10px" }}>
-                    <div className="page-header flex justify-between items-center mb-6">
-                        <div>
-                            <h1 className="dashboard-title text-3xl font-extrabold text-slate-900 dark:text-white m-0">Announcements</h1>
-                            <p className="dashboard-subtitle text-sm text-slate-500 dark:text-slate-400 mt-1">Stay updated with company news and announcements</p>
-className="border-none outline-none bg-transparent w-full text-sm text-black"
                         />
                     </div>
 
@@ -210,15 +194,15 @@ className="border-none outline-none bg-transparent w-full text-sm text-black"
                 </div>
 
                 {/* Page Content */}
-                <div className="flex-1 px-2">
-                    <div className="page-header flex justify-between items-center mb-2">
+                <div style={{ flex: 1, padding: "0 10px" }}>
+                    <div className="page-header flex justify-between items-center mb-6">
                         <div>
-                            <h1 className="text-3xl md:text-4xl font-extrabold text-slate-900 m-0">Announcements</h1>
-                            <p className="text-sm text-slate-500 mt-1">Stay updated with company news and announcements</p>
+                            <h1 className="dashboard-title text-3xl font-extrabold text-slate-900 dark:text-white m-0">Announcements</h1>
+                            <p className="dashboard-subtitle text-sm text-slate-500 dark:text-slate-400 mt-1">Stay updated with company news and announcements</p>
                         </div>
                     </div>
 
-                    {/* Search/Filters Row (matches the screenshot placement) */}
+                    {/* Search/Filters Row */}
                     <div className="flex gap-3 my-6 flex-wrap">
                         <div className="flex items-center gap-2 bg-white px-4 py-2 rounded-lg border border-slate-200">
                             <Search size={16} color="#64748b" />
@@ -250,8 +234,6 @@ className="border-none outline-none bg-transparent w-full text-sm text-black"
                     {/* List display */}
                     <div className="emp-card-box">
                         <div className="announcement-list" style={{ overflow: "visible" }}>
-<div className="p-8 bg-white rounded-xl border border-slate-200">
-                        <div className="flex flex-col gap-5">
                             {loading ? (
                                 <div className="text-center text-slate-500 p-10">Loading announcements...</div>
                             ) : filteredNotices.length === 0 ? (
@@ -275,7 +257,6 @@ className="border-none outline-none bg-transparent w-full text-sm text-black"
                                                 border: "1px solid #e2e8f0",
                                                 transition: "box-shadow 0.2s"
                                             }}
-className="flex items-start gap-4 p-5 rounded-lg bg-white border border-slate-200 transition-shadow"
                                         >
                                             {/* Left Icon Pill */}
                                             <div
@@ -319,9 +300,10 @@ className="flex items-start gap-4 p-5 rounded-lg bg-white border border-slate-20
                             startItem={startIndex + 1}
                             endItem={Math.min(startIndex + itemsPerPage, filteredNotices.length)}
                             totalItems={filteredNotices.length}
-                        />                    </div>
+                        />
+                    </div>
                 </div>
             </div>
-        </div >
+        </div>
     );
 }

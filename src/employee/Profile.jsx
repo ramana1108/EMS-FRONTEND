@@ -1,7 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-=======
 // styles are loaded globally via src/index.css (Tailwind + custom styles)
->>>>>>> 819c511ce486a6353829f2805eb90ecdf071faa3
 import Sidebar from "../components/Sidebar";
 import {
     Camera,
@@ -340,24 +338,21 @@ export default function Profile() {
                     <div className="text-sm font-semibold text-slate-900">EMS Portal</div>
                 </div>
 
-{/* Top Header Bar */}
-<<<<<<< HEAD
-                <div className="emp-top-header" style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "32px", padding: "0 10px" }}>
-                    <div style={{ visibility: "hidden" }}>Placeholder</div>
-<div className="flex justify-between items-center mb-8 px-2">
-                    <div className="invisible">Placeholder</div>
-
-                    <div className="flex items-center gap-2 bg-white px-3 py-1 rounded-xl border border-slate-200 font-bold text-black">
-                        <div className="w-8 h-8 rounded-full bg-emerald-800 text-white flex items-center justify-center text-xs font-bold">{getInitials(formData.firstName + " " + formData.lastName)}</div>
-                        <span>{formData.firstName} {formData.lastName}</span>
-                    </div>
-                </div>
-
                 {/* Page Content */}
                 <div className="flex-1 px-2">
 
-                    <div className="page-header" style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "24px", marginTop: "24px" }}>
-<div className="page-header flex justify-between items-center mb-6">
+                    {/* Top Header Bar */}
+                    <div className="flex justify-between items-center mb-8 px-2 pt-6">
+                        <div className="invisible">Placeholder</div>
+                        <div className="flex items-center gap-2 bg-white px-3 py-1 rounded-xl border border-slate-200 font-bold text-black">
+                            <div className="w-8 h-8 rounded-full bg-emerald-800 text-white flex items-center justify-center text-xs font-bold">
+                                {getInitials(formData.firstName + " " + formData.lastName)}
+                            </div>
+                            <span>{formData.firstName} {formData.lastName}</span>
+                        </div>
+                    </div>
+
+                    <div className="page-header flex justify-between items-center mb-6">
                         <div>
                             <h1 className="text-3xl md:text-4xl font-extrabold text-slate-900 m-0">My Profile</h1>
                             <p className="text-sm text-slate-500 mt-1">Manage your personal details and contact settings</p>
@@ -365,142 +360,33 @@ export default function Profile() {
                     </div>
 
                     {success && (
-                        <div style={{ display: "flex", alignItems: "center", gap: "8px", color: "#065f46", backgroundColor: "#ecfdf5", padding: "12px 16px", borderRadius: "10px", marginBottom: "20px", fontSize: "14px", fontWeight: "600", border: "1px solid #a7f3d0" }}>
+                        <div className="flex items-center gap-2 text-emerald-800 bg-emerald-50 px-4 py-3 rounded-lg mb-5 text-sm font-semibold border border-emerald-100">
                             <CheckCircle size={16} />
                             <span>{success}</span>
                         </div>
                     )}
 
                     {error && (
-                        <div style={{ display: "flex", alignItems: "center", gap: "8px", color: "#b91c1c", backgroundColor: "#fef2f2", padding: "12px 16px", borderRadius: "10px", marginBottom: "20px", fontSize: "14px", fontWeight: "600", border: "1px solid #fca5a5" }}>
+                        <div className="flex items-center gap-2 text-rose-700 bg-rose-50 px-4 py-3 rounded-lg mb-5 text-sm font-semibold border border-rose-100">
                             <AlertCircle size={16} />
                             <span>{error}</span>
                         </div>
                     )}
 
                     {loading ? (
-                        <div style={{ textAlign: "center", padding: "50px", color: "#64748b" }}>Loading profile...</div>
+                        <div className="text-center text-slate-500 p-12">Loading profile...</div>
                     ) : (
-                        <div className="emp-middle-grid" style={{ display: "grid", gridTemplateColumns: "1.2fr 2.5fr", gap: "24px", alignItems: "start" }}>
+                        <div className="grid lg:grid-cols-[1.2fr_2.5fr] gap-6 items-start">
 
                             {/* Left Profile Summary Card */}
-                            <div className="emp-card-box" style={{ padding: "24px", display: "flex", flexDirection: "column", alignItems: "center", backgroundColor: "var(--card-bg, #ffffff)" }}>
-                                <div style={{ position: "relative", marginBottom: "16px" }}>
-                                    <div
-{
-                        success && (
-                            <div className="flex items-center gap-2 text-emerald-800 bg-emerald-50 px-4 py-3 rounded-lg mb-5 text-sm font-semibold border border-emerald-100">
-                                <CheckCircle size={16} />
-                                <span>{success}</span>
-                            </div>
-                        )
-                    }
-
-                    {
-                        error && (
-                            <div className="flex items-center gap-2 text-rose-700 bg-rose-50 px-4 py-3 rounded-lg mb-5 text-sm font-semibold border border-rose-100">
-                                <AlertCircle size={16} />
-                                <span>{error}</span>
-                            </div>
-                        )
-                    }
-
-                    {
-                        loading ? (
-                            <div className="text-center text-slate-500 p-12">Loading profile...</div>
-                        ) : (
-                            <div className="grid lg:grid-cols-[1.2fr_2.5fr] gap-6 items-start">
-
-                                {/* Left Profile Summary Card Container */}
-                                <div className="emp-card-box" style={{ padding: "24px", display: "flex", flexDirection: "column", alignItems: "center", backgroundColor: "var(--card-bg)" }}>
-                                    <div style={{ position: "relative", marginBottom: "16px" }}>
-                                        <div
-                                            style={{
-                                                width: "100px",
-                                                height: "100px",
-                                                borderRadius: "50%",
-                                                backgroundColor: "#043e30",
-                                                color: "#ffffff",
-                                                fontSize: "36px",
-                                                fontWeight: "800",
-                                                display: "flex",
-                                                alignItems: "center",
-                                                justifyContent: "center",
-                                                border: "4px solid #10b981",
-                                                boxShadow: "0 4px 10px rgba(0,0,0,0.1)",
-                                                overflow: "hidden"
-                                            }}
-                                        >
-<div className="bg-white p-6 rounded-xl flex flex-col items-center">
-                                    <div className="relative mb-4">
-                                        <div className="w-[100px] h-[100px] rounded-full bg-emerald-900 text-white text-[36px] font-extrabold flex items-center justify-center border-4 border-emerald-500 shadow-lg overflow-hidden">
-                                            {previewImage || employee?.profileImage ? (
-                                                <img src={previewImage || employee.profileImage} alt="Profile" className="w-full h-full object-cover" />
-                                            ) : (
-                                                getInitials(formData.firstName + " " + formData.lastName)
-                                            )}
-                                        </div>
-                                        <button
-                                            type="button"
-                                            onClick={handleCameraClick}
-                                            style={{
-                                                position: "absolute",
-                                                bottom: 0,
-                                                right: 0,
-                                                backgroundColor: "#10b981",
-                                                color: "#ffffff",
-                                                borderRadius: "50%",
-                                                width: "32px",
-                                                height: "32px",
-                                                display: "flex",
-                                                alignItems: "center",
-                                                justifyContent: "center",
-                                                border: "2px solid #ffffff",
-                                                cursor: "pointer",
-                                                boxShadow: "0 2px 5px rgba(0,0,0,0.15)"
-                                            }}
-                                            title="Change picture"
-                                        >
-                                            <Camera size={14} />
-                                        </button>
-                                        <input
-                                            type="file"
-                                            ref={fileInputRef}
-                                            onChange={handlePhotoChange}
-                                            accept="image/*"
-                                            style={{ display: "none" }}
-                                        />
-                                    </div>
-
-                                    <h3 style={{ margin: "0 0 4px 0", fontSize: "20px", fontWeight: "800", color: "#0f172a" }}>
-                                        {formData.firstName} {formData.lastName}
-                                    </h3>
-                                    <p style={{ margin: "0 0 16px 0", fontSize: "14px", color: "#64748b", fontWeight: "700" }}>
-                                        {employee?.designation || "Software Engineer"}
-                                    </p>
-
-                                    <span
-                                        style={{
-                                            width: "100px",
-                                            height: "100px",
-                                            borderRadius: "50%",
-                                            backgroundColor: "#043e30",
-                                            color: "#ffffff",
-                                            fontSize: "36px",
-                                            fontWeight: "800",
-                                            display: "flex",
-                                            alignItems: "center",
-                                            justifyContent: "center",
-                                            border: "4px solid #10b981",
-                                            boxShadow: "0 4px 10px rgba(0,0,0,0.1)",
-                                            overflow: "hidden"
-                                        }}
-                                    >
+                            <div className="bg-white p-6 rounded-xl flex flex-col items-center border border-slate-200 shadow-sm shadow-slate-200/70">
+                                <div className="relative mb-4">
+                                    <div className="w-[100px] h-[100px] rounded-full bg-emerald-900 text-white text-[36px] font-extrabold flex items-center justify-center border-4 border-emerald-500 shadow-lg overflow-hidden">
                                         {previewImage || employee?.profileImage ? (
                                             <img
                                                 src={previewImage || employee.profileImage}
                                                 alt="Profile"
-                                                style={{ width: "100%", height: "100%", objectFit: "cover" }}
+                                                className="w-full h-full object-cover"
                                             />
                                         ) : (
                                             getInitials(`${formData.firstName} ${formData.lastName}`)
@@ -509,22 +395,7 @@ export default function Profile() {
                                     <button
                                         type="button"
                                         onClick={handleCameraClick}
-                                        style={{
-                                            position: "absolute",
-                                            bottom: 0,
-                                            right: 0,
-                                            backgroundColor: "#10b981",
-                                            color: "#ffffff",
-                                            borderRadius: "50%",
-                                            width: "32px",
-                                            height: "32px",
-                                            display: "flex",
-                                            alignItems: "center",
-                                            justifyContent: "center",
-                                            border: "2px solid #ffffff",
-                                            cursor: "pointer",
-                                            boxShadow: "0 2px 5px rgba(0,0,0,0.15)"
-                                        }}
+                                        className="absolute bottom-0 right-0 bg-emerald-500 text-white rounded-full w-8 h-8 flex items-center justify-center border-2 border-white shadow cursor-pointer"
                                         title="Change picture"
                                     >
                                         <Camera size={14} />
@@ -534,180 +405,32 @@ export default function Profile() {
                                         ref={fileInputRef}
                                         onChange={handlePhotoChange}
                                         accept="image/*"
-                                        style={{ display: "none" }}
+                                        className="hidden"
                                     />
                                 </div>
 
-                                <h3 style={{ margin: "0 0 4px 0", fontSize: "20px", fontWeight: "800", color: "#0f172a" }}>
+                                <h3 className="m-0 mb-1 text-xl font-extrabold text-slate-900">
                                     {formData.firstName} {formData.lastName}
                                 </h3>
-                                <p style={{ margin: "0 0 16px 0", fontSize: "14px", color: "#64748b", fontWeight: "700" }}>
+                                <p className="m-0 mb-4 text-sm font-bold text-slate-500">
                                     {designationName}
                                 </p>
 
-                                <span
-                                    style={{
-                                        backgroundColor: "#ecfdf5",
-                                        color: "#047857",
-                                        border: "1px solid #a7f3d0",
-                                        padding: "6px 16px",
-                                        borderRadius: "20px",
-                                        fontSize: "12px",
-                                        fontWeight: "800",
-                                        marginBottom: "24px",
-                                        display: "inline-flex",
-                                        alignItems: "center",
-                                        gap: "6px"
-                                    }}
-                                >
-                                    <span style={{ width: "6px", height: "6px", backgroundColor: "#10b981", borderRadius: "50%" }} />
+                                <span className="inline-flex items-center gap-1.5 bg-emerald-50 text-emerald-700 border border-emerald-200 px-4 py-1.5 rounded-full text-xs font-extrabold">
+                                    <span className="w-1.5 h-1.5 bg-emerald-500 rounded-full" />
                                     {employee?.status || "Active"} Employee
                                 </span>
-                                {/* Right Tabbed Form Cards Container */}
-                                <div className="emp-card-box">
-                                    <div className="border-b border-slate-200 dark:border-slate-800/80 pb-4 mb-6">
-                                        <h2 className="text-xl font-extrabold text-slate-900 dark:text-white m-0">Personal Information</h2>
-                                        <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">Update your basic personal profile details</p>
-                                    </div>
-
-                                    {/* Form Elements */}
-                                    <form onSubmit={handleSave} className="space-y-5">
-                                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
-                                            <div className="form-group flex flex-col gap-2">
-                                                <label className="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">First Name <span className="text-red-500">*</span></label>
-                                                <input
-                                                    type="text"
-                                                    name="firstName"
-                                                    value={formData.firstName}
-                                                    onChange={handleChange}
-                                                    required
-                                                    className="w-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl px-4 py-3 text-sm font-semibold text-slate-800 dark:text-slate-100 outline-none transition-all focus:border-emerald-500 focus:ring-4 focus:ring-emerald-500/10"
-                                                />
-                                            </div>
-                                            <div className="form-group flex flex-col gap-2">
-                                                <label className="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Last Name <span className="text-red-500">*</span></label>
-                                                <input
-                                                    type="text"
-                                                    name="lastName"
-                                                    value={formData.lastName}
-                                                    onChange={handleChange}
-                                                    required
-                                                    className="w-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl px-4 py-3 text-sm font-semibold text-slate-800 dark:text-slate-100 outline-none transition-all focus:border-emerald-500 focus:ring-4 focus:ring-emerald-500/10"
-                                                />
-                                            </div>
-                                        </div>
-
-                                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
-                                            <div className="form-group flex flex-col gap-2">
-                                                <label className="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Date of Birth</label>
-                                                <input
-                                                    type="date"
-                                                    name="dob"
-                                                    value={formData.dob}
-                                                    onChange={handleChange}
-                                                    className="w-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl px-4 py-3 text-sm font-semibold text-slate-800 dark:text-slate-100 outline-none transition-all focus:border-emerald-500 focus:ring-4 focus:ring-emerald-500/10"
-                                                />
-                                            </div>
-                                            <div className="form-group flex flex-col gap-2">
-                                                <label className="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Gender</label>
-                                                <select
-                                                    name="gender"
-                                                    value={formData.gender}
-                                                    onChange={handleChange}
-                                                    className="w-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl px-4 py-3 text-sm font-semibold text-slate-800 dark:text-slate-100 outline-none transition-all focus:border-emerald-500 focus:ring-4 focus:ring-emerald-500/10"
-                                                >
-                                                    <option value="Male">Male</option>
-                                                    <option value="Female">Female</option>
-                                                    <option value="Other">Other</option>
-                                                </select>
-                                            </div>
-                                        </div>
-
-                                        <div className="form-group flex flex-col gap-2">
-                                            <label className="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Nationality</label>
-                                            <input
-                                                type="text"
-                                                name="nationality"
-                                                value={formData.nationality}
-                                                onChange={handleChange}
-                                                className="w-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl px-4 py-3 text-sm font-semibold text-slate-800 dark:text-slate-100 outline-none transition-all focus:border-emerald-500 focus:ring-4 focus:ring-emerald-500/10"
-                                            />
-                                        </div>
-
-                                        {/* Form Footer Action */}
-                                        <div className="flex justify-end pt-4 border-t border-slate-200 dark:border-slate-800/80">
-{/* Right Profile Form Container */}
-                                <div className="emp-card-box" style={{ padding: "24px", backgroundColor: "#ffffff" }}>
-                                    <form onSubmit={handleSave}>
-                                        <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
-                                            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "16px" }}>
-                                                <div>
-                                                    <label style={{ display: "block", fontSize: "11px", fontWeight: "700", textTransform: "uppercase", color: "#475569", marginBottom: "4px" }}>Employee ID</label>
-                                                    <input
-                                                        type="text"
-                                                        name="employeeId"
-                                                        value={formData.employeeId}
-                                                        onChange={handleChange}
-                                                        style={{ width: "100%", padding: "10px 12px", borderRadius: "8px", border: "1px solid #cbd5e1", outline: "none", fontSize: "14px", color: "#000000" }}
-                                                        required
-                                                    />
-                                                </div>
-                                                <div>
-                                                    <label style={{ display: "block", fontSize: "11px", fontWeight: "700", textTransform: "uppercase", color: "#475569", marginBottom: "4px" }}>Role</label>
-                                                    <select
-                                                        name="role"
-                                                        value={formData.role}
-                                                        onChange={handleChange}
-                                                        style={{ width: "100%", padding: "10px 12px", borderRadius: "8px", border: "1px solid #cbd5e1", backgroundColor: "#ffffff", outline: "none", fontSize: "14px", color: "#000000" }}
-                                                    >
-                                                        <option>Admin</option>
-                                                        <option>Manager</option>
-                                                        <option>Employee</option>
-                                                    </select>
-                                                </div>
-                                            </div>
-
-                                <div style={{ width: "100%", borderTop: "1px solid #f1f5f9", paddingTop: "16px", fontSize: "13px" }}>
-                                    <div style={{ display: "flex", justifyContent: "space-between", padding: "8px 0" }}>
-                                        <span style={{ color: "#64748b", fontWeight: "600" }}>Employee ID</span>
-                                        <span style={{ fontWeight: "700", color: "#0f172a" }}>{employee?.employeeId || "—"}</span>
-                                    </div>
-                                    <div style={{ display: "flex", justifyContent: "space-between", padding: "8px 0" }}>
-                                        <span style={{ color: "#64748b", fontWeight: "600" }}>Department</span>
-                                        <span style={{ fontWeight: "700", color: "#0f172a" }}>{departmentName}</span>
-                                    </div>
-                                    <div style={{ display: "flex", justifyContent: "space-between", padding: "8px 0" }}>
-                                        <span style={{ color: "#64748b", fontWeight: "600" }}>Role</span>
-                                        <span style={{ fontWeight: "700", color: "#0f172a" }}>{employee?.role || "Employee"}</span>
-                                    </div>
-                                </div>
                             </div>
 
                             {/* Right Profile Summary Cards */}
                             <div className="space-y-6">
                                 <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm shadow-slate-200/70">
-                                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "20px" }}>
+                                    <div className="flex justify-between items-center mb-5">
                                         <h2 className="m-0 text-xl font-extrabold text-slate-900">Personal Information</h2>
                                         <button
                                             type="button"
                                             onClick={openEditModal}
-                                            style={{
-                                                display: "flex",
-                                                alignItems: "center",
-                                                gap: "6px",
-                                                height: "38px",
-                                                padding: "0 16px",
-                                                borderRadius: "8px",
-                                                fontSize: "13px",
-                                                fontWeight: "600",
-                                                backgroundColor: "#2563eb",
-                                                color: "#ffffff",
-                                                border: "none",
-                                                cursor: "pointer",
-                                                transition: "background 0.2s"
-                                            }}
-                                            onMouseOver={(e) => (e.currentTarget.style.backgroundColor = "#1d4ed8")}
-                                            onMouseOut={(e) => (e.currentTarget.style.backgroundColor = "#2563eb")}
+                                            className="flex items-center gap-1.5 h-[38px] px-4 rounded-lg text-[13px] font-semibold bg-blue-600 hover:bg-blue-700 text-white border-0 cursor-pointer transition-colors"
                                         >
                                             <Pencil size={14} />
                                             <span>Edit Profile</span>
@@ -783,118 +506,76 @@ export default function Profile() {
                         </div>
                     )}
 
+                    {/* Edit Profile Modal */}
                     {isEditModalOpen && (
-                        <div
-                            style={{
-                                position: "fixed",
-                                top: 0,
-                                left: 0,
-                                right: 0,
-                                bottom: 0,
-                                backgroundColor: "rgba(15, 23, 42, 0.4)",
-                                backdropFilter: "blur(4px)",
-                                display: "flex",
-                                justifyContent: "center",
-                                alignItems: "center",
-                                zIndex: 999
-                            }}
-                        >
-                            <div
-                                style={{
-                                    backgroundColor: "var(--card-bg, #ffffff)",
-                                    borderRadius: "16px",
-                                    width: "680px",
-                                    maxWidth: "95%",
-                                    maxHeight: "90vh",
-                                    overflowY: "auto",
-                                    boxShadow: "0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)",
-                                    border: "1px solid #e2e8f0",
-                                    display: "flex",
-                                    flexDirection: "column"
-                                }}
-                            >
+                        <div className="fixed inset-0 bg-slate-900/40 backdrop-blur-sm flex justify-center items-center z-[999]">
+                            <div className="bg-white rounded-2xl w-[680px] max-w-[95%] max-h-[90vh] overflow-y-auto shadow-xl border border-slate-200 flex flex-col">
+
                                 {/* Header */}
-                                <div
-                                    style={{
-                                        display: "flex",
-                                        justifyContent: "space-between",
-                                        alignItems: "center",
-                                        padding: "20px 24px",
-                                        borderBottom: "1px solid #f1f5f9"
-                                    }}
-                                >
-                                    <h3 style={{ margin: 0, fontSize: "18px", fontWeight: "800", color: "#0f172a" }}>Edit Profile</h3>
+                                <div className="flex justify-between items-center px-6 py-5 border-b border-slate-100">
+                                    <h3 className="m-0 text-lg font-extrabold text-slate-900">Edit Profile</h3>
                                     <button
                                         type="button"
                                         onClick={() => setIsEditModalOpen(false)}
-                                        style={{
-                                            border: "none",
-                                            background: "transparent",
-                                            color: "#64748b",
-                                            cursor: "pointer",
-                                            padding: 4,
-                                            display: "flex",
-                                            alignItems: "center"
-                                        }}
+                                        className="border-0 bg-transparent text-slate-500 cursor-pointer p-1 flex items-center"
                                     >
                                         <X size={20} />
                                     </button>
                                 </div>
 
                                 {/* Modal Body */}
-                                <form onSubmit={handleSaveProfileEdit} style={{ padding: "24px" }}>
-                                    <div className="grid grid-cols-1 md:grid-cols-2" style={{ gap: "16px", marginBottom: "16px" }}>
+                                <form onSubmit={handleSaveProfileEdit} className="p-6">
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
 
-                                        {/* Personal Info */}
                                         <div>
-                                            <label style={{ display: "block", fontSize: "12px", fontWeight: "700", color: "#475569", marginBottom: "6px" }}>First Name</label>
+                                            <label className="block text-xs font-bold text-slate-600 mb-1.5">First Name</label>
                                             <input
                                                 type="text"
                                                 required
                                                 value={editForm.firstName}
                                                 onChange={(e) => setEditForm((prev) => ({ ...prev, firstName: e.target.value }))}
-                                                style={{ width: "100%", padding: "10px 14px", borderRadius: "8px", border: "1px solid #cbd5e1", fontSize: "14px" }}
+                                                className="w-full px-3.5 py-2.5 rounded-lg border border-slate-300 text-sm"
                                             />
                                         </div>
 
                                         <div>
-                                            <label style={{ display: "block", fontSize: "12px", fontWeight: "700", color: "#475569", marginBottom: "6px" }}>Last Name</label>
+                                            <label className="block text-xs font-bold text-slate-600 mb-1.5">Last Name</label>
                                             <input
                                                 type="text"
                                                 required
                                                 value={editForm.lastName}
                                                 onChange={(e) => setEditForm((prev) => ({ ...prev, lastName: e.target.value }))}
-                                                style={{ width: "100%", padding: "10px 14px", borderRadius: "8px", border: "1px solid #cbd5e1", fontSize: "14px" }}
+                                                className="w-full px-3.5 py-2.5 rounded-lg border border-slate-300 text-sm"
                                             />
                                         </div>
 
                                         <div>
-                                            <label style={{ display: "block", fontSize: "12px", fontWeight: "700", color: "#475569", marginBottom: "6px" }}>Email</label>
+                                            <label className="block text-xs font-bold text-slate-600 mb-1.5">Email</label>
                                             <input
                                                 type="email"
                                                 required
                                                 value={editForm.email}
                                                 onChange={(e) => setEditForm((prev) => ({ ...prev, email: e.target.value }))}
-                                                style={{ width: "100%", padding: "10px 14px", borderRadius: "8px", border: "1px solid #cbd5e1", fontSize: "14px" }}
+                                                className="w-full px-3.5 py-2.5 rounded-lg border border-slate-300 text-sm"
                                             />
                                         </div>
 
                                         <div>
-                                            <label style={{ display: "block", fontSize: "12px", fontWeight: "700", color: "#475569", marginBottom: "6px" }}>Phone</label>
+                                            <label className="block text-xs font-bold text-slate-600 mb-1.5">Phone</label>
                                             <input
                                                 type="text"
                                                 value={editForm.phone}
                                                 onChange={(e) => setEditForm((prev) => ({ ...prev, phone: e.target.value }))}
-                                                style={{ width: "100%", padding: "10px 14px", borderRadius: "8px", border: "1px solid #cbd5e1", fontSize: "14px" }}
+                                                className="w-full px-3.5 py-2.5 rounded-lg border border-slate-300 text-sm"
                                             />
                                         </div>
 
                                         <div>
-                                            <label style={{ display: "block", fontSize: "12px", fontWeight: "700", color: "#475569", marginBottom: "6px" }}>Gender</label>
+                                            <label className="block text-xs font-bold text-slate-600 mb-1.5">Gender</label>
                                             <select
                                                 value={editForm.gender}
                                                 onChange={(e) => setEditForm((prev) => ({ ...prev, gender: e.target.value }))}
-                                                style={{ width: "100%", padding: "10px 14px", borderRadius: "8px", border: "1px solid #cbd5e1", fontSize: "14px", backgroundColor: "#ffffff" }}
+                                                className="w-full px-3.5 py-2.5 rounded-lg border border-slate-300 text-sm bg-white"
                                             >
                                                 <option value="Male">Male</option>
                                                 <option value="Female">Female</option>
@@ -903,263 +584,127 @@ export default function Profile() {
                                         </div>
 
                                         <div>
-                                            <label style={{ display: "block", fontSize: "12px", fontWeight: "700", color: "#475569", marginBottom: "6px" }}>Date of Birth</label>
+                                            <label className="block text-xs font-bold text-slate-600 mb-1.5">Date of Birth</label>
                                             <input
                                                 type="date"
                                                 value={editForm.dob}
                                                 onChange={(e) => setEditForm((prev) => ({ ...prev, dob: e.target.value }))}
-                                                style={{ width: "100%", padding: "10px 14px", borderRadius: "8px", border: "1px solid #cbd5e1", fontSize: "14px" }}
+                                                className="w-full px-3.5 py-2.5 rounded-lg border border-slate-300 text-sm"
                                             />
                                         </div>
 
                                         <div className="col-span-1 md:col-span-2">
-                                            <label style={{ display: "block", fontSize: "12px", fontWeight: "700", color: "#475569", marginBottom: "6px" }}>Address</label>
+                                            <label className="block text-xs font-bold text-slate-600 mb-1.5">Address</label>
                                             <textarea
                                                 rows={2}
                                                 value={editForm.address}
                                                 onChange={(e) => setEditForm((prev) => ({ ...prev, address: e.target.value }))}
-                                                style={{ width: "100%", padding: "10px 14px", borderRadius: "8px", border: "1px solid #cbd5e1", fontSize: "14px", resize: "vertical" }}
+                                                className="w-full px-3.5 py-2.5 rounded-lg border border-slate-300 text-sm resize-y"
                                             />
                                         </div>
 
                                         {/* Employment Info */}
                                         <div>
-                                            <label style={{ display: "block", fontSize: "12px", fontWeight: "700", color: "#475569", marginBottom: "6px" }}>Department</label>
+                                            <label className="block text-xs font-bold text-slate-600 mb-1.5">Department</label>
                                             <input
                                                 type="text"
                                                 value={editForm.department}
                                                 onChange={(e) => setEditForm((prev) => ({ ...prev, department: e.target.value }))}
-                                                style={{ width: "100%", padding: "10px 14px", borderRadius: "8px", border: "1px solid #cbd5e1", fontSize: "14px" }}
+                                                className="w-full px-3.5 py-2.5 rounded-lg border border-slate-300 text-sm"
                                             />
                                         </div>
 
                                         <div>
-                                            <label style={{ display: "block", fontSize: "12px", fontWeight: "700", color: "#475569", marginBottom: "6px" }}>Designation</label>
+                                            <label className="block text-xs font-bold text-slate-600 mb-1.5">Designation</label>
                                             <input
                                                 type="text"
                                                 value={editForm.designation}
                                                 onChange={(e) => setEditForm((prev) => ({ ...prev, designation: e.target.value }))}
-                                                style={{ width: "100%", padding: "10px 14px", borderRadius: "8px", border: "1px solid #cbd5e1", fontSize: "14px" }}
+                                                className="w-full px-3.5 py-2.5 rounded-lg border border-slate-300 text-sm"
                                             />
                                         </div>
 
                                         <div>
-                                            <label style={{ display: "block", fontSize: "12px", fontWeight: "700", color: "#475569", marginBottom: "6px" }}>Joining Date</label>
+                                            <label className="block text-xs font-bold text-slate-600 mb-1.5">Joining Date</label>
                                             <input
                                                 type="date"
                                                 value={editForm.joiningDate}
                                                 onChange={(e) => setEditForm((prev) => ({ ...prev, joiningDate: e.target.value }))}
-                                                style={{ width: "100%", padding: "10px 14px", borderRadius: "8px", border: "1px solid #cbd5e1", fontSize: "14px" }}
+                                                className="w-full px-3.5 py-2.5 rounded-lg border border-slate-300 text-sm"
                                             />
                                         </div>
 
                                         <div>
-                                            <label style={{ display: "block", fontSize: "12px", fontWeight: "700", color: "#475569", marginBottom: "6px" }}>Salary</label>
+                                            <label className="block text-xs font-bold text-slate-600 mb-1.5">Salary</label>
                                             <input
                                                 type="number"
                                                 value={editForm.salary}
                                                 onChange={(e) => setEditForm((prev) => ({ ...prev, salary: e.target.value }))}
-                                                style={{ width: "100%", padding: "10px 14px", borderRadius: "8px", border: "1px solid #cbd5e1", fontSize: "14px" }}
+                                                className="w-full px-3.5 py-2.5 rounded-lg border border-slate-300 text-sm"
                                             />
                                         </div>
 
                                         <div className="col-span-1 md:col-span-2">
-                                            <label style={{ display: "block", fontSize: "12px", fontWeight: "700", color: "#475569", marginBottom: "6px" }}>Employment Type</label>
+                                            <label className="block text-xs font-bold text-slate-600 mb-1.5">Employment Type</label>
                                             <input
                                                 type="text"
                                                 value={editForm.employmentType}
                                                 onChange={(e) => setEditForm((prev) => ({ ...prev, employmentType: e.target.value }))}
-                                                style={{ width: "100%", padding: "10px 14px", borderRadius: "8px", border: "1px solid #cbd5e1", fontSize: "14px" }}
+                                                className="w-full px-3.5 py-2.5 rounded-lg border border-slate-300 text-sm"
                                             />
                                         </div>
 
                                         {/* Read-Only Info */}
                                         <div>
-                                            <label style={{ display: "block", fontSize: "12px", fontWeight: "700", color: "#94a3b8", marginBottom: "6px" }}>Employee ID (Read-only)</label>
+                                            <label className="block text-xs font-bold text-slate-400 mb-1.5">Employee ID (Read-only)</label>
                                             <input
                                                 type="text"
                                                 disabled
                                                 value={employee?.employeeId || "—"}
-                                                style={{ width: "100%", padding: "10px 14px", borderRadius: "8px", border: "1px solid #e2e8f0", backgroundColor: "#f8fafc", color: "#64748b", fontSize: "14px", cursor: "not-allowed" }}
+                                                className="w-full px-3.5 py-2.5 rounded-lg border border-slate-200 bg-slate-50 text-slate-500 text-sm cursor-not-allowed"
                                             />
                                         </div>
 
                                         <div>
-                                            <label style={{ display: "block", fontSize: "12px", fontWeight: "700", color: "#94a3b8", marginBottom: "6px" }}>Role (Read-only)</label>
+                                            <label className="block text-xs font-bold text-slate-400 mb-1.5">Role (Read-only)</label>
                                             <input
                                                 type="text"
                                                 disabled
                                                 value={employee?.role || "Employee"}
-                                                style={{ width: "100%", padding: "10px 14px", borderRadius: "8px", border: "1px solid #e2e8f0", backgroundColor: "#f8fafc", color: "#64748b", fontSize: "14px", cursor: "not-allowed" }}
+                                                className="w-full px-3.5 py-2.5 rounded-lg border border-slate-200 bg-slate-50 text-slate-500 text-sm cursor-not-allowed"
                                             />
                                         </div>
 
                                         <div className="col-span-1 md:col-span-2">
-                                            <label style={{ display: "block", fontSize: "12px", fontWeight: "700", color: "#94a3b8", marginBottom: "6px" }}>Status (Read-only)</label>
+                                            <label className="block text-xs font-bold text-slate-400 mb-1.5">Status (Read-only)</label>
                                             <input
                                                 type="text"
                                                 disabled
                                                 value={employee?.status || "Active"}
-                                                style={{ width: "100%", padding: "10px 14px", borderRadius: "8px", border: "1px solid #e2e8f0", backgroundColor: "#f8fafc", color: "#64748b", fontSize: "14px", cursor: "not-allowed" }}
+                                                className="w-full px-3.5 py-2.5 rounded-lg border border-slate-200 bg-slate-50 text-slate-500 text-sm cursor-not-allowed"
                                             />
                                         </div>
 
                                     </div>
 
                                     {/* Actions Footer */}
-                                    <div
-                                        style={{
-                                            display: "flex",
-                                            justifyContent: "flex-end",
-                                            gap: "12px",
-                                            marginTop: "24px",
-                                            paddingTop: "16px",
-                                            borderTop: "1px solid #f1f5f9"
-                                        }}
-                                    >
+                                    <div className="flex justify-end gap-3 mt-6 pt-4 border-t border-slate-100">
                                         <button
                                             type="button"
                                             onClick={() => setIsEditModalOpen(false)}
-                                            style={{
-                                                padding: "10px 18px",
-                                                borderRadius: "8px",
-                                                border: "1px solid #cbd5e1",
-                                                backgroundColor: "#ffffff",
-                                                color: "#334155",
-                                                fontSize: "14px",
-                                                fontWeight: "600",
-                                                cursor: "pointer"
-                                            }}
+                                            className="px-[18px] py-2.5 rounded-lg border border-slate-300 bg-white text-slate-700 text-sm font-semibold cursor-pointer"
                                         >
                                             Cancel
                                         </button>
                                         <button
                                             type="submit"
                                             disabled={saving}
-                                            style={{
-                                                padding: "10px 18px",
-                                                borderRadius: "8px",
-                                                border: "none",
-                                                backgroundColor: "#2563eb",
-                                                color: "#ffffff",
-                                                fontSize: "14px",
-                                                fontWeight: "600",
-                                                cursor: saving ? "not-allowed" : "pointer"
-                                            }}
+                                            className={`px-[18px] py-2.5 rounded-lg border-0 bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold ${saving ? "cursor-not-allowed opacity-70" : "cursor-pointer"}`}
                                         >
                                             {saving ? "Saving..." : "Save Changes"}
                                         </button>
                                     </div>
                                 </form>
-<div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "16px" }}>
-                                                <div>
-                                                    <label style={{ display: "block", fontSize: "11px", fontWeight: "700", textTransform: "uppercase", color: "#475569", marginBottom: "4px" }}>Email</label>
-                                                    <input
-                                                        type="email"
-                                                        name="email"
-                                                        value={formData.email}
-                                                        onChange={handleChange}
-                                                        style={{ width: "100%", padding: "10px 12px", borderRadius: "8px", border: "1px solid #cbd5e1", outline: "none", fontSize: "14px", color: "#000000" }}
-                                                        required
-                                                    />
-                                                </div>
-                                                <div>
-                                                    <label style={{ display: "block", fontSize: "11px", fontWeight: "700", textTransform: "uppercase", color: "#475569", marginBottom: "4px" }}>Phone</label>
-                                                    <input
-                                                        type="text"
-                                                        name="phone"
-                                                        value={formData.phone}
-                                                        onChange={handleChange}
-                                                        style={{ width: "100%", padding: "10px 12px", borderRadius: "8px", border: "1px solid #cbd5e1", outline: "none", fontSize: "14px", color: "#000000" }}
-                                                        required
-                                                    />
-                                                </div>
-                                            </div>
-
-                                            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "16px" }}>
-                                                <div>
-                                                    <label style={{ display: "block", fontSize: "11px", fontWeight: "700", textTransform: "uppercase", color: "#475569", marginBottom: "4px" }}>Gender</label>
-                                                    <select name="gender" value={formData.gender} onChange={handleChange} style={{ width: "100%", padding: "10px 12px", borderRadius: "8px", border: "1px solid #cbd5e1", backgroundColor: "#ffffff", outline: "none", fontSize: "14px", color: "#000000" }}>
-                                                        <option>Male</option>
-                                                        <option>Female</option>
-                                                        <option>Other</option>
-                                                    </select>
-                                                </div>
-                                                <div>
-                                                    <label style={{ display: "block", fontSize: "11px", fontWeight: "700", textTransform: "uppercase", color: "#475569", marginBottom: "4px" }}>Date of Birth</label>
-                                                    <input type="date" name="dob" value={formData.dob} onChange={handleChange} style={{ width: "100%", padding: "10px 12px", borderRadius: "8px", border: "1px solid #cbd5e1" }} />
-                                                </div>
-                                            </div>
-
-                                            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "16px" }}>
-                                                <div>
-                                                    <label style={{ display: "block", fontSize: "11px", fontWeight: "700", textTransform: "uppercase", color: "#475569", marginBottom: "4px" }}>Department</label>
-                                                    <select name="departmentId" value={formData.departmentId} onChange={handleChange} style={{ width: "100%", padding: "10px 12px", borderRadius: "8px", border: "1px solid #cbd5e1" }}>
-                                                        <option value="">Select department</option>
-                                                        {departments.map(d => <option key={d._id} value={d._id}>{d.departmentName}</option>)}
-                                                    </select>
-                                                </div>
-                                                <div>
-                                                    <label style={{ display: "block", fontSize: "11px", fontWeight: "700", textTransform: "uppercase", color: "#475569", marginBottom: "4px" }}>Designation</label>
-                                                    <select name="designationId" value={formData.designationId} onChange={handleChange} style={{ width: "100%", padding: "10px 12px", borderRadius: "8px", border: "1px solid #cbd5e1" }}>
-                                                        <option value="">Select designation</option>
-                                                        {designations.map(d => <option key={d._id} value={d._id}>{d.designationName}</option>)}
-                                                    </select>
-                                                </div>
-                                            </div>
-
-                                            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "16px" }}>
-                                                <div>
-                                                    <label style={{ display: "block", fontSize: "11px", fontWeight: "700", textTransform: "uppercase", color: "#475569", marginBottom: "4px" }}>Salary</label>
-                                                    <input type="number" name="salary" value={formData.salary} onChange={handleChange} style={{ width: "100%", padding: "10px 12px", borderRadius: "8px", border: "1px solid #cbd5e1" }} />
-                                                </div>
-                                                <div>
-                                                    <label style={{ display: "block", fontSize: "11px", fontWeight: "700", textTransform: "uppercase", color: "#475569", marginBottom: "4px" }}>Joining Date</label>
-                                                    <input type="date" name="joiningDate" value={formData.joiningDate} onChange={handleChange} style={{ width: "100%", padding: "10px 12px", borderRadius: "8px", border: "1px solid #cbd5e1" }} />
-                                                </div>
-                                            </div>
-
-                                            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "16px" }}>
-                                                <div>
-                                                    <label style={{ display: "block", fontSize: "11px", fontWeight: "700", textTransform: "uppercase", color: "#475569", marginBottom: "4px" }}>Employment Type</label>
-                                                    <select name="employmentType" value={formData.employmentType} onChange={handleChange} style={{ width: "100%", padding: "10px 12px", borderRadius: "8px", border: "1px solid #cbd5e1" }}>
-                                                        <option>Permanent</option>
-                                                        <option>Contract</option>
-                                                        <option>Intern</option>
-                                                        <option>Full-time</option>
-                                                        <option>Part-time</option>
-                                                    </select>
-                                                </div>
-                                                <div>
-                                                    <label style={{ display: "block", fontSize: "11px", fontWeight: "700", textTransform: "uppercase", color: "#475569", marginBottom: "4px" }}>Status</label>
-                                                    <select name="status" value={formData.status} onChange={handleChange} style={{ width: "100%", padding: "10px 12px", borderRadius: "8px", border: "1px solid #cbd5e1" }}>
-                                                        <option>Active</option>
-                                                        <option>Inactive</option>
-                                                    </select>
-                                                </div>
-                                            </div>
-
-                                            <div>
-                                                <label style={{ display: "block", fontSize: "11px", fontWeight: "700", textTransform: "uppercase", color: "#475569", marginBottom: "4px" }}>Address</label>
-                                                <textarea name="address" value={formData.address} onChange={handleChange} style={{ width: "100%", padding: "8px 12px", borderRadius: "8px", border: "1px solid #cbd5e1", minHeight: "80px" }} />
-                                            </div>
-                                        </div>
-
-                                        <div style={{ marginTop: "24px", paddingTop: "16px", borderTop: "1px solid #f1f5f9", display: "flex", justifyContent: "flex-end" }}>
-                                            <button
-                                                type="submit"
-                                                disabled={saving}
-                                                className="btn-save"
-                                            >
-                                                {saving ? "Saving..." : "Save Changes"}
-                                            </button>
-                                        </div>
-                                    </form>
-                                </div>
-<<<<<<< HEAD
-=======
-
->>>>>>> 614e3dc5d896ce340e10987b715fcc5204d54c2f
                             </div>
                         </div>
                     )}

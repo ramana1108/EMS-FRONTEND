@@ -268,7 +268,7 @@
 }
 
 @utility stat-header {
-  @apply flex items-center gap-4 w-full;
+  @apply flex gap-4 w-full;
 }
 
 @utility stat-icon-box {
@@ -1304,7 +1304,7 @@
 
 .stat-header {
   display: flex;
-  align-items: center;
+  align-items: left;
   gap: 12px;
 }
 
@@ -1612,6 +1612,8 @@ background: var(--card-bg);
   display: flex;
   align-items: center;
   gap: 12px;
+}
+
 @utility stat-card {
   background: var(--card-bg);
   @apply rounded-2xl border border-slate-200 dark:border-slate-800/80 p-5 shadow-sm flex flex-col justify-between gap-3 transition-all duration-300 hover:translate-y-[-4px] hover:shadow-lg hover:shadow-emerald-500/5 hover:border-emerald-500/30;
@@ -2520,6 +2522,8 @@ background: var(--card-bg);
   font-weight: 800;
   color: var(--ems-text);
   margin: 0 0 6px 0;
+}
+
 @utility stat-icon-wrapper {
   @apply w-12 h-12 rounded-2xl flex items-center justify-center shrink-0 text-xl font-bold;
 
@@ -3499,7 +3503,7 @@ a:hover {
 .stat-header {
   display: flex;
   align-items: center;
-  gap: 0.85rem;
+  /* gap: 0.85rem; */
   margin-bottom: 0.85rem;
 }
 
