@@ -295,11 +295,11 @@ export default function Designations() {
                             <table className="employee-table">
                                 <thead>
                                     <tr>
-                                        <th style={{ padding: "4px 8px" }}>DEPARTMENT NAME</th>
-                                        <th style={{ padding: "4px 8px" }}>DESCRIPTION</th>
-                                        <th style={{ padding: "4px 8px" }}>DEPARTMENT HEAD</th>
-                                        <th style={{ padding: "4px 8px", textAlign: "center" }}>EMPLOYEES</th>
-                                        <th style={{ padding: "4px 8px", textAlign: "right" }}>ACTIONS</th>
+                                        <th>DEPARTMENT NAME</th>
+                                        <th>DESCRIPTION</th>
+                                        <th>DEPARTMENT HEAD</th>
+                                        <th className="table-center-col">EMPLOYEES</th>
+                                        <th className="table-actions-col">ACTIONS</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -329,7 +329,7 @@ export default function Designations() {
                                                         <p style={{ fontSize: "12px", color: "#8b5cf6" }}>{dept.headDesignation}</p>
                                                     </div>
                                                 </td>
-                                                <td style={{ padding: "4px 8px", textAlign: "center" }}>
+                                                <td className="table-center-col">
                                                     <span style={{ fontWeight: "700", color: "#0f766e" }}>{dept.employeeCount || 0}</span>
                                                 </td>
                                                 <td style={{ padding: "4px 8px", textAlign: "right" }}>
@@ -359,10 +359,10 @@ export default function Designations() {
                             <table className="employee-table">
                                 <thead>
                                     <tr>
-                                        <th style={{ padding: "4px 8px" }}>EMPLOYEE NAME(S)</th>
-                                        <th style={{ padding: "4px 8px" }}>DESIGNATION</th>
-                                        <th style={{ padding: "4px 8px" }}>DEPARTMENT</th>
-                                        <th style={{ padding: "4px 8px", textAlign: "right" }}>ACTIONS</th>
+                                        <th>EMPLOYEE NAME(S)</th>
+                                        <th>DESIGNATION</th>
+                                        <th>DEPARTMENT</th>
+                                        <th className="table-actions-col">ACTIONS</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -397,7 +397,7 @@ export default function Designations() {
                                                             {desig.departmentId?.departmentName || "Unassigned"}
                                                         </span>
                                                     </td>
-                                                    <td style={{ padding: "4px 8px", textAlign: "right" }}>
+                                                    <td className="table-actions-col">
                                                         <div style={{ display: "flex", gap: "8px", justifyContent: "flex-end" }}>
                                                             <button
                                                                 onClick={() => handleEditDesignationClick(desig)}
@@ -431,7 +431,7 @@ export default function Designations() {
             {/* Modal Dialog Form popup */}
             {isAddModalOpen && (
                 <div className="modal-backdrop">
-                    <div className="modal-content-card" style={{ maxWidth: "600px" }}>
+                    <div className="modal-content-card-wide">
                         <div className="modal-header">
                             <div>
                                 <h2>

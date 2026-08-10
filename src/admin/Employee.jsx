@@ -487,8 +487,8 @@ export default function Employee() {
                                 <th>NAME</th>
                                 <th>DEPARTMENT</th>
                                 <th>ROLE / EMPLOYMENT TYPE</th>
-                                <th>STATUS</th>
-                                <th style={{ textAlign: "right", paddingRight: "24px" }}>ACTIONS</th>
+                                <th className="table-center-col">STATUS</th>
+                                <th className="table-actions-col">ACTIONS</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -543,7 +543,7 @@ export default function Employee() {
                                             </span>
                                         </td>
 
-                                        <td style={{ textAlign: "right", paddingRight: "24px" }}>
+                                        <td className="table-actions-col">
                                             <div className="employee-action-buttons">
                                                 <button className="action-icon-btn" title="View details" onClick={() => handleViewClick(emp)}>
                                                     <Eye size={16} />
@@ -567,7 +567,7 @@ export default function Employee() {
             {/* ================= ENROLL / EDIT EMPLOYEE MODAL DIALOG ================= */}
             {isModalOpen && (
                 <div className="modal-backdrop">
-                    <div className="modal-content-card">
+                    <div className="modal-content-card-wide">
                         <div className="modal-header">
                             <div>
                                 <h2>{editingId ? "Edit Employee Record" : "Enroll New Employee"}</h2>
@@ -688,54 +688,6 @@ export default function Employee() {
                                     {formErrors.role && <div className="field-error">{formErrors.role}</div>}
                                 </div>
                                 <div className="form-group">
-                                    <label>Password <span className="req">*</span></label>
-                                    <div style={{ position: "relative" }}>
-                                        <input
-                                            type={showPassword ? "text" : "password"}
-                                            name="password"
-                                            value={formData.password}
-                                            onChange={handleInputChange}
-                                            className={formErrors.password ? 'input-error' : ''}
-                                            style={{ paddingRight: "40px" }}
-                                            placeholder="Min 8 chars, upper, lower, number, special"
-                                        />
-                                        <button
-                                            type="button"
-                                            onClick={() => setShowPassword(!showPassword)}
-                                            style={{ position: "absolute", right: "12px", top: "50%", transform: "translateY(-50%)", border: "none", background: "none", cursor: "pointer", display: "flex", alignItems: "center" }}
-                                        >
-                                            {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
-                                        </button>
-                                    </div>
-                                    {formErrors.password && <div className="field-error">{formErrors.password}</div>}
-                                </div>
-                            </div>
-
-                            <div className="form-group">
-                                <label>Confirm Password <span className="req">*</span></label>
-                                <div style={{ position: "relative" }}>
-                                    <input
-                                        type={showConfirmPassword ? "text" : "password"}
-                                        name="confirmPassword"
-                                        value={formData.confirmPassword}
-                                        onChange={handleInputChange}
-                                        className={formErrors.confirmPassword ? 'input-error' : ''}
-                                        style={{ paddingRight: "40px" }}
-                                        placeholder="Re-enter password"
-                                    />
-                                    <button
-                                        type="button"
-                                        onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                                        style={{ position: "absolute", right: "12px", top: "50%", transform: "translateY(-50%)", border: "none", background: "none", cursor: "pointer", display: "flex", alignItems: "center" }}
-                                    >
-                                        {showConfirmPassword ? <EyeOff size={16} /> : <Eye size={16} />}
-                                    </button>
-                                </div>
-                                {formErrors.confirmPassword && <div className="field-error">{formErrors.confirmPassword}</div>}
-                            </div>
-
-                            <div className="form-grid-2">
-                                <div className="form-group">
                                     <label>Gender <span className="req">*</span></label>
                                     <select
                                         name="gender"
@@ -750,6 +702,56 @@ export default function Employee() {
                                     </select>
                                     {formErrors.gender && <div className="field-error">{formErrors.gender}</div>}
                                 </div>
+                            </div>
+
+                            <div className="form-grid-2">
+                                <div className="form-group">
+                                    <label>Password <span className="req">*</span></label>
+                                    <div className="password-input-wrap">
+                                        <input
+                                            type={showPassword ? "text" : "password"}
+                                            name="password"
+                                            value={formData.password}
+                                            onChange={handleInputChange}
+                                            className={formErrors.password ? 'input-error' : ''}
+                                            placeholder="Min 8 chars, upper, lower, number, special"
+                                        />
+                                        <button
+                                            type="button"
+                                            className="password-toggle-btn"
+                                            onClick={() => setShowPassword(!showPassword)}
+                                            aria-label={showPassword ? "Hide password" : "Show password"}
+                                        >
+                                            {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
+                                        </button>
+                                    </div>
+                                    {formErrors.password && <div className="field-error">{formErrors.password}</div>}
+                                </div>
+                                <div className="form-group">
+                                    <label>Confirm Password <span className="req">*</span></label>
+                                    <div className="password-input-wrap">
+                                        <input
+                                            type={showConfirmPassword ? "text" : "password"}
+                                            name="confirmPassword"
+                                            value={formData.confirmPassword}
+                                            onChange={handleInputChange}
+                                            className={formErrors.confirmPassword ? 'input-error' : ''}
+                                            placeholder="Re-enter password"
+                                        />
+                                        <button
+                                            type="button"
+                                            className="password-toggle-btn"
+                                            onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                                            aria-label={showConfirmPassword ? "Hide confirm password" : "Show confirm password"}
+                                        >
+                                            {showConfirmPassword ? <EyeOff size={16} /> : <Eye size={16} />}
+                                        </button>
+                                    </div>
+                                    {formErrors.confirmPassword && <div className="field-error">{formErrors.confirmPassword}</div>}
+                                </div>
+                            </div>
+
+                            <div className="form-grid-2">
                                 <div className="form-group">
                                     <label>Date of Birth <span className="req">*</span></label>
                                     <input
@@ -761,6 +763,19 @@ export default function Employee() {
                                         required
                                     />
                                     {formErrors.dob && <div className="field-error">{formErrors.dob}</div>}
+                                </div>
+                                <div className="form-group">
+                                    <label>Address <span className="req">*</span></label>
+                                    <input
+                                        type="text"
+                                        name="address"
+                                        value={formData.address}
+                                        onChange={handleInputChange}
+                                        className={formErrors.address ? 'input-error' : ''}
+                                        placeholder="Full residential address..."
+                                        required
+                                    />
+                                    {formErrors.address && <div className="field-error">{formErrors.address}</div>}
                                 </div>
                             </div>
 
@@ -873,21 +888,6 @@ export default function Employee() {
                                     </select>
                                     {formErrors.status && <div className="field-error">{formErrors.status}</div>}
                                 </div>
-                            </div>
-
-                            {/* Full Row: Address */}
-                            <div className="form-group">
-                                <label>Address <span className="req">*</span></label>
-                                <textarea
-                                    name="address"
-                                    rows="2"
-                                    value={formData.address}
-                                    onChange={handleInputChange}
-                                    className={formErrors.address ? 'input-error' : ''}
-                                    placeholder="Full home or residential address..."
-                                    required
-                                />
-                                {formErrors.address && <div className="field-error">{formErrors.address}</div>}
                             </div>
 
                             {/* Modal Action Buttons */}

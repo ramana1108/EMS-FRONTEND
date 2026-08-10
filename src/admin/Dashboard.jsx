@@ -140,7 +140,7 @@ export default function Dashboard() {
           <>
             <div className="summary-card stat-card-green">
               <div className="stat-header">
-                <div className="stat-icon-box" style={{ backgroundColor: "#d1fae5", color: "#065f46" }}>
+                <div className="stat-icon-box">
                   <Users size={20} />
                 </div>
                 <div>
@@ -153,7 +153,7 @@ export default function Dashboard() {
 
             <div className="summary-card stat-card-blue">
               <div className="stat-header">
-                <div className="stat-icon-box" style={{ backgroundColor: "#e0f2fe", color: "#0369a1" }}>
+                <div className="stat-icon-box">
                   <Building2 size={20} />
                 </div>
                 <div>
@@ -166,7 +166,7 @@ export default function Dashboard() {
 
             <div className="summary-card stat-card-indigo">
               <div className="stat-header">
-                <div className="stat-icon-box" style={{ backgroundColor: "#e0e7ff", color: "#4f46e5" }}>
+                <div className="stat-icon-box">
                   <Users size={20} />
                 </div>
                 <div>
@@ -179,7 +179,7 @@ export default function Dashboard() {
 
             <div className="summary-card stat-card-amber">
               <div className="stat-header">
-                <div className="stat-icon-box" style={{ backgroundColor: "#fef3c7", color: "#d97706" }}>
+                <div className="stat-icon-box">
                   <Wallet size={20} />
                 </div>
                 <div>

@@ -73,7 +73,7 @@ export default function EmployeeDashboard() {
             {loading && <div>Loading...</div>}
             {!loading && dashboard && (
               <>
-                <div className="emp-stat-card">
+                <div className="emp-stat-card stat-card-green">
                   <div className="emp-stat-top">
                     <div className="emp-stat-icon-box">
                       <TrendingUp size={18} />
@@ -86,7 +86,7 @@ export default function EmployeeDashboard() {
                   <span className="emp-stat-subtext">Today&apos;s status</span>
                 </div>
 
-                <div className="emp-stat-card">
+                <div className="emp-stat-card stat-card-blue">
                   <div className="emp-stat-top">
                     <div className="emp-stat-icon-box">
                       <Calendar size={18} />
@@ -99,7 +99,7 @@ export default function EmployeeDashboard() {
                   <span className="emp-stat-subtext">Available</span>
                 </div>
 
-                <div className="emp-stat-card">
+                <div className="emp-stat-card stat-card-indigo">
                   <div className="emp-stat-top">
                     <div className="emp-stat-icon-box">
                       <DollarSign size={18} />
@@ -112,7 +112,7 @@ export default function EmployeeDashboard() {
                   <span className="emp-stat-subtext">Base salary</span>
                 </div>
 
-                <div className="emp-stat-card">
+                <div className="emp-stat-card stat-card-amber">
                   <div className="emp-stat-top">
                     <div className="emp-stat-icon-box">
                       <Megaphone size={18} />
@@ -138,25 +138,25 @@ export default function EmployeeDashboard() {
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
+                <div className="rounded-2xl border border-slate-200 bg-transparent p-4 shadow-sm">
                   <p className="text-xs uppercase tracking-[0.2em] text-slate-400">Check-in time</p>
                   <p className="text-xl font-semibold text-slate-900 mt-2">
                     {dashboard.todayAttendance?.checkInTime || "-"}
                   </p>
                 </div>
-                <div className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
+                <div className="rounded-2xl border border-slate-200 bg-transparent p-4 shadow-sm">
                   <p className="text-xs uppercase tracking-[0.2em] text-slate-400">Check-out time</p>
                   <p className="text-xl font-semibold text-slate-900 mt-2">
                     {dashboard.todayAttendance?.checkOutTime || "-"}
                   </p>
                 </div>
-                <div className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
+                <div className="rounded-2xl border border-slate-200 bg-transparent p-4 shadow-sm">
                   <p className="text-xs uppercase tracking-[0.2em] text-slate-400">Worked hours</p>
                   <p className="text-xl font-semibold text-slate-900 mt-2">
                     {dashboard.todayAttendance?.workedHours != null ? `${dashboard.todayAttendance.workedHours} hr` : "-"}
                   </p>
                 </div>
-                <div className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
+                <div className="rounded-2xl border border-slate-200 bg-transparent p-4 shadow-sm">
                   <p className="text-xs uppercase tracking-[0.2em] text-slate-400">Notes</p>
                   <p className="text-sm text-slate-700 mt-2 leading-6">
                     {dashboard.todayAttendance?.notes || "No additional notes."}

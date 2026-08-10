@@ -402,10 +402,10 @@ export default function Attendance() {
 
             {/* Stats Widgets */}
             <div className="stats-grid" style={{ marginBottom: "24px" }}>
-                <div className="stat-card">
+                <div className="stat-card stat-card-green">
                     <div className="stat-header">
-                        <div className="stat-icon-box active-staff-icon" style={{ backgroundColor: "#065f46" }}>
-                            <UserCheck size={20} color="#ffffff" />
+                        <div className="stat-icon-plain" style={{ color: "#065f46" }}>
+                            <UserCheck size={22} />
                         </div>
                         <div>
                             <p className="stat-label">Present Logs</p>
@@ -415,10 +415,10 @@ export default function Attendance() {
                     <p className="stat-description">Present status entries</p>
                 </div>
 
-                <div className="stat-card">
+                <div className="stat-card stat-card-blue">
                     <div className="stat-header">
-                        <div className="stat-icon-box depts-icon" style={{ backgroundColor: "#0891b2" }}>
-                            <Clock size={20} color="#ffffff" />
+                        <div className="stat-icon-plain" style={{ color: "#0891b2" }}>
+                            <Clock size={22} />
                         </div>
                         <div>
                             <p className="stat-label">Half Days</p>
@@ -428,10 +428,10 @@ export default function Attendance() {
                     <p className="stat-description">Half-day shifts tracked</p>
                 </div>
 
-                <div className="stat-card">
+                <div className="stat-card stat-card-rose">
                     <div className="stat-header">
-                        <div className="stat-icon-box total-employees-icon" style={{ backgroundColor: "#b91c1c" }}>
-                            <AlertCircle size={20} color="#ffffff" />
+                        <div className="stat-icon-plain" style={{ color: "#b91c1c" }}>
+                            <AlertCircle size={22} />
                         </div>
                         <div>
                             <p className="stat-label">Absences</p>
@@ -441,10 +441,10 @@ export default function Attendance() {
                     <p className="stat-description">Unexcused absence logs</p>
                 </div>
 
-                <div className="stat-card">
+                <div className="stat-card stat-card-indigo">
                     <div className="stat-header">
-                        <div className="stat-icon-box depts-icon" style={{ backgroundColor: "#8b5cf6" }}>
-                            <Calendar size={20} color="#ffffff" />
+                        <div className="stat-icon-plain" style={{ color: "#8b5cf6" }}>
+                            <Calendar size={22} />
                         </div>
                         <div>
                             <p className="stat-label">Total Leaves Taken</p>
@@ -503,14 +503,14 @@ export default function Attendance() {
                             <table className="employee-table">
                                 <thead>
                                     <tr>
-                                        <th style={{ padding: "4px 8px" }}>EMPLOYEE</th>
-                                        <th style={{ padding: "4px 8px" }}>DEPARTMENT</th>
-                                        <th style={{ padding: "4px 8px", textAlign: "center" }}>DATE</th>
-                                        <th style={{ padding: "4px 8px", textAlign: "center" }}>IN</th>
-                                        <th style={{ padding: "4px 8px", textAlign: "center" }}>OUT</th>
-                                        <th style={{ padding: "4px 8px", textAlign: "center" }}>HOURS</th>
-                                        <th style={{ padding: "4px 8px", textAlign: "center" }}>STATUS</th>
-                                        <th style={{ padding: "4px 8px", textAlign: "right" }}>ACTIONS</th>
+                                        <th>EMPLOYEE</th>
+                                        <th>DEPARTMENT</th>
+                                        <th className="table-center-col">DATE</th>
+                                        <th className="table-center-col">IN</th>
+                                        <th className="table-center-col">OUT</th>
+                                        <th className="table-center-col">HOURS</th>
+                                        <th className="table-center-col">STATUS</th>
+                                        <th className="table-actions-col">ACTIONS</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -624,11 +624,11 @@ export default function Attendance() {
                             <table className="employee-table">
                                 <thead>
                                     <tr>
-                                        <th style={{ padding: "4px 8px" }}>EMPLOYEE</th>
-                                        <th style={{ padding: "4px 8px", textAlign: "center" }}>LEAVE DATE</th>
-                                        <th style={{ padding: "4px 8px" }}>LEAVE REASON</th>
-                                        <th style={{ padding: "4px 8px", textAlign: "center" }}>STATUS</th>
-                                        <th style={{ padding: "4px 8px", textAlign: "right" }}>ACTIONS</th>
+                                        <th>EMPLOYEE</th>
+                                        <th className="table-center-col">LEAVE DATE</th>
+                                        <th>LEAVE REASON</th>
+                                        <th className="table-center-col">STATUS</th>
+                                        <th className="table-actions-col">ACTIONS</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -744,7 +744,7 @@ export default function Attendance() {
             {/* Log Attendance Modal */}
             {isAddModalOpen && (
                 <div className="modal-backdrop">
-                    <div className="modal-content-card" style={{ maxWidth: "500px" }}>
+                    <div className="modal-content-card-wide">
                         <div className="modal-header">
                             <div>
                                 <h2>Log Attendance</h2>
@@ -867,7 +867,7 @@ export default function Attendance() {
             {/* Record Leave Modal */}
             {isLeaveModalOpen && (
                 <div className="modal-backdrop">
-                    <div className="modal-content-card" style={{ maxWidth: "500px" }}>
+                    <div className="modal-content-card-wide">
                         <div className="modal-header">
                             <div>
                                 <h2>Record Leave</h2>

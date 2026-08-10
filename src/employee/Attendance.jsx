@@ -169,12 +169,12 @@ export default function Attendance() {
                     {/* Stats Grid */}
                     <div className="emp-stats-grid">
                         {/* Present */}
-                        <div className="emp-stat-card">
+                        <div className="emp-stat-card stat-card-green">
                             <div className="emp-stat-top">
-                                <span className="emp-stat-title">Present</span>
                                 <div className="emp-stat-icon-box bg-emerald-50 dark:bg-emerald-950/20 text-[#10b981]">
                                     <CheckSquare size={20} />
                                 </div>
+                                <span className="emp-stat-title">Present</span>
                             </div>
                             <p className="emp-stat-value">
                                 {stats.present} <span className="text-sm font-medium text-slate-500 dark:text-slate-400">Days</span>
@@ -182,12 +182,12 @@ export default function Attendance() {
                         </div>
 
                         {/* Absent */}
-                        <div className="emp-stat-card">
+                        <div className="emp-stat-card stat-card-rose">
                             <div className="emp-stat-top">
-                                <span className="emp-stat-title">Absent</span>
                                 <div className="emp-stat-icon-box bg-red-50 dark:bg-red-950/20 text-[#ef4444]">
                                     <XSquare size={20} />
                                 </div>
+                                <span className="emp-stat-title">Absent</span>
                             </div>
                             <p className="emp-stat-value">
                                 {stats.absent} <span className="text-sm font-medium text-slate-500 dark:text-slate-400">Days</span>
@@ -195,12 +195,12 @@ export default function Attendance() {
                         </div>
 
                         {/* Leave */}
-                        <div className="emp-stat-card">
+                        <div className="emp-stat-card stat-card-blue">
                             <div className="emp-stat-top">
-                                <span className="emp-stat-title">Leave</span>
                                 <div className="emp-stat-icon-box bg-blue-50 dark:bg-blue-950/20 text-[#3b82f6]">
                                     <Plane size={20} />
                                 </div>
+                                <span className="emp-stat-title">Leave</span>
                             </div>
                             <p className="emp-stat-value">
                                 {stats.leave} <span className="text-sm font-medium text-slate-500 dark:text-slate-400">Days</span>
@@ -287,13 +287,13 @@ export default function Attendance() {
 
                                             return (
                                                 <tr key={rec._id} className="employee-row" style={{ borderBottom: "1px solid #f1f5f9" }}>
-                                                    <td style={{ padding: "4px 8px", fontWeight: "700", color: "#0f172a", fontSize: "14px" }}>
+                                                    <td style={{ fontWeight: "700", color: "#0f172a", fontSize: "14px" }}>
                                                         {dateFormatted}
                                                     </td>
                                                     <td style={{ padding: "4px 8px", color: "#475569", fontSize: "13px", fontWeight: "600" }}>
                                                         {dayName}
                                                     </td>
-                                                    <td style={{ padding: "4px 8px" }}>
+                                                    <td className="table-center-col">
                                                         <span
                                                             style={{
                                                                 display: "inline-flex",
@@ -316,7 +316,7 @@ export default function Attendance() {
                                                     <td style={{ padding: "4px 8px", color: "#334155", fontSize: "13px" }}>
                                                         {rec.checkOutTime || "—"}
                                                     </td>
-                                                    <td style={{ padding: "4px 8px", color: "#0f172a", fontWeight: "700", fontSize: "13px" }}>
+                                                    <td className="table-center-col" style={{ color: "#0f172a", fontWeight: "700", fontSize: "13px" }}>
                                                         {formatHours(rec.workedHours)}
                                                     </td>
                                                 </tr>

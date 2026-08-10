@@ -263,7 +263,7 @@ export default function Departments() {
 
       {/* Stats Cards Row */}
       <div className="stats-row" style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: "24px", marginBottom: "24px" }}>
-        <div className="stat-card">
+        <div className="stat-card stat-card-green">
           <div className="stat-icon-wrapper green" style={{ display: "flex", alignItems: "center", justifyContent: "center" }}>
             <Building2 size={24} />
           </div>
@@ -274,7 +274,7 @@ export default function Departments() {
           </div>
         </div>
 
-        <div className="stat-card">
+        <div className="stat-card stat-card-blue">
           <div className="stat-icon-wrapper teal" style={{ display: "flex", alignItems: "center", justifyContent: "center" }}>
             <Users size={24} />
           </div>
@@ -285,7 +285,7 @@ export default function Departments() {
           </div>
         </div>
 
-        <div className="stat-card">
+        <div className="stat-card stat-card-teal">
           <div className="stat-icon-wrapper blue" style={{ display: "flex", alignItems: "center", justifyContent: "center" }}>
             <Briefcase size={24} />
           </div>
@@ -310,13 +310,13 @@ export default function Departments() {
           <table className="departments-table">
             <thead>
               <tr>
-                <th style={{ padding: "4px 8px" }}>D_ID</th>
-                <th style={{ padding: "4px 8px" }}>DEPARTMENT NAME</th>
-                <th style={{ padding: "4px 8px" }}>HEAD NAME</th>
-                <th style={{ padding: "4px 8px" }}>HEAD DESIGNATION</th>
-                <th style={{ padding: "4px 8px" }}>DESCRIPTION</th>
-                <th style={{ padding: "4px 8px" }}>NO. OF EMPLOYEES</th>
-                <th style={{ padding: "4px 8px", textAlign: "right" }}>ACTIONS</th>
+                <th>D_ID</th>
+                <th>DEPARTMENT NAME</th>
+                <th>HEAD NAME</th>
+                <th>HEAD DESIGNATION</th>
+                <th>DESCRIPTION</th>
+                <th>NO. OF EMPLOYEES</th>
+                <th>ACTIONS</th>
               </tr>
             </thead>
             <tbody>
@@ -437,7 +437,7 @@ export default function Departments() {
       {/* Add / Edit Department Modal Dialog */}
       {isModalOpen && (
         <div className="modal-backdrop">
-          <div className="modal-content-card" style={{ maxWidth: "500px" }}>
+          <div className="modal-content-card-wide">
             <div className="modal-header">
               <div>
                 <h2>{editingId ? "Edit Department" : "Add New Department"}</h2>
@@ -458,18 +458,32 @@ export default function Departments() {
             )}
 
             <form onSubmit={handleSubmit} className="enroll-form">
-              <div className="form-group">
-                <label>
-                  Department Name <span className="req">*</span>
-                </label>
-                <input
-                  type="text"
-                  name="departmentName"
-                  value={formData.departmentName}
-                  onChange={handleInputChange}
-                  placeholder="e.g. Production, Sales, IT"
-                  required
-                />
+              <div className="form-grid-2">
+                <div className="form-group">
+                  <label>
+                    Department Name <span className="req">*</span>
+                  </label>
+                  <input
+                    type="text"
+                    name="departmentName"
+                    value={formData.departmentName}
+                    onChange={handleInputChange}
+                    placeholder="e.g. Production, Sales, IT"
+                    required
+                  />
+                </div>
+
+                <div className="form-group">
+                  <label>Number of Employees</label>
+                  <input
+                    type="number"
+                    name="employeeCount"
+                    value={formData.employeeCount}
+                    onChange={handleInputChange}
+                    min="0"
+                    placeholder="0"
+                  />
+                </div>
               </div>
 
               <div className="form-grid-2">
@@ -503,29 +517,17 @@ export default function Departments() {
               </div>
 
               <div className="form-group">
-                <label>Number of Employees</label>
-                <input
-                  type="number"
-                  name="employeeCount"
-                  value={formData.employeeCount}
-                  onChange={handleInputChange}
-                  min="0"
-                  placeholder="0"
-                />
-              </div>
-
-              <div className="form-group">
                 <label>
                   Description <span className="req">*</span>
                 </label>
                 <textarea
                   name="description"
-                  rows="3"
+                  rows="2"
                   value={formData.description}
                   onChange={handleInputChange}
                   placeholder="Brief description of department duties..."
                   required
-                  style={{ minHeight: "80px", resize: "vertical" }}
+                  style={{ minHeight: "60px", resize: "vertical" }}
                 />
               </div>
 

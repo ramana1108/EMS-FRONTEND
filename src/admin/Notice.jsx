@@ -270,7 +270,7 @@ export default function Notice() {
             {/* Publish Notice Modal */}
             {isModalOpen && (
                 <div className="modal-backdrop">
-                    <div className="modal-content-card" style={{ maxWidth: "500px" }}>
+                    <div className="modal-content-card-wide">
                         <div className="modal-header">
                             <div>
                                 <h2>Publish Notice</h2>

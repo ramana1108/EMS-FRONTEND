@@ -195,6 +195,16 @@ export async function getAllUsers() {
   return res.json();
 }
 
+export async function updateUser(id, payload) {
+  const res = await fetch(`${API_BASE_URL}/auth/${id}`, {
+    method: "PUT",
+    headers: authHeaders(),
+    body: JSON.stringify(payload),
+  });
+  return res.json();
+}
+
+
 export async function getSettings() {
   const res = await fetch(`${API_BASE_URL}/settings`, {
     headers: authHeaders(),
@@ -315,6 +325,7 @@ export default {
   deleteRole,
   updateRole,
   getAllUsers,
+  updateUser,
   getSettings,
   createSettings,
   updateSettings,

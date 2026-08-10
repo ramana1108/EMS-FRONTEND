@@ -203,12 +203,12 @@ export default function Leavemanagement() {
                     {/* Stats Grid */}
                     <div className="emp-stats-grid">
                         {/* Casual Leave */}
-                        <div className="emp-stat-card">
+                        <div className="emp-stat-card stat-card-green">
                             <div className="emp-stat-top">
-                                <span className="emp-stat-title">Casual Leave</span>
                                 <div className="emp-stat-icon-box bg-emerald-50 dark:bg-emerald-950/20 text-[#10b981]">
                                     <Calendar size={20} />
                                 </div>
+                                <span className="emp-stat-title">Casual Leave</span>
                             </div>
                             <p className="emp-stat-value">
                                 {stats.casual} <span className="text-sm font-medium text-slate-500 dark:text-slate-400">Days</span>
@@ -216,12 +216,12 @@ export default function Leavemanagement() {
                         </div>
 
                         {/* Sick Leave */}
-                        <div className="emp-stat-card">
+                        <div className="emp-stat-card stat-card-amber">
                             <div className="emp-stat-top">
-                                <span className="emp-stat-title">Sick Leave</span>
                                 <div className="emp-stat-icon-box bg-orange-50 dark:bg-orange-950/20 text-[#ea580c]">
                                     <Briefcase size={20} />
                                 </div>
+                                <span className="emp-stat-title">Sick Leave</span>
                             </div>
                             <p className="emp-stat-value">
                                 {stats.sick} <span className="text-sm font-medium text-slate-500 dark:text-slate-400">Days</span>
@@ -229,12 +229,12 @@ export default function Leavemanagement() {
                         </div>
 
                         {/* Earned Leave */}
-                        <div className="emp-stat-card">
+                        <div className="emp-stat-card stat-card-teal">
                             <div className="emp-stat-top">
-                                <span className="emp-stat-title">Earned Leave</span>
                                 <div className="emp-stat-icon-box bg-teal-50 dark:bg-teal-950/20 text-teal-600 dark:text-teal-400">
                                     <Calendar size={20} />
                                 </div>
+                                <span className="emp-stat-title">Earned Leave</span>
                             </div>
                             <p className="emp-stat-value">
                                 {stats.earned} <span className="text-sm font-medium text-slate-500 dark:text-slate-400">Days</span>
@@ -242,12 +242,12 @@ export default function Leavemanagement() {
                         </div>
 
                         {/* Remaining Leave */}
-                        <div className="emp-stat-card">
+                        <div className="emp-stat-card stat-card-indigo">
                             <div className="emp-stat-top">
-                                <span className="emp-stat-title">Remaining Leave</span>
                                 <div className="emp-stat-icon-box bg-purple-50 dark:bg-purple-950/20 text-[#a855f7]">
                                     <Clock size={20} />
                                 </div>
+                                <span className="emp-stat-title">Remaining Leave</span>
                             </div>
                             <p className="emp-stat-value">
                                 {stats.remaining} <span className="text-sm font-medium text-slate-500 dark:text-slate-400">Days</span>
@@ -277,13 +277,13 @@ export default function Leavemanagement() {
                                 <table className="employee-table">
                                     <thead>
                                         <tr>
-                                            <th style={{ padding: "4px 8px" }}>Leave Type</th>
-                                            <th style={{ padding: "4px 8px" }}>From Date</th>
-                                            <th style={{ padding: "4px 8px" }}>To Date</th>
-                                            <th style={{ padding: "4px 8px" }}>Days</th>
-                                            <th style={{ padding: "4px 8px" }}>Status</th>
-                                            <th style={{ padding: "4px 8px" }}>Applied On</th>
-                                            <th style={{ padding: "4px 8px", textAlign: "right" }}>Actions</th>
+                                            <th>Leave Type</th>
+                                            <th>From Date</th>
+                                            <th>To Date</th>
+                                            <th className="table-center-col">Days</th>
+                                            <th className="table-center-col">Status</th>
+                                            <th>Applied On</th>
+                                            <th className="table-actions-col">Actions</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -309,11 +309,11 @@ export default function Leavemanagement() {
 
                                                 return (
                                                     <tr key={req.id} className="employee-row">
-                                                        <td style={{ padding: "4px 8px", fontWeight: "700", color: "#0f172a" }}>{req.leaveType}</td>
-                                                        <td style={{ padding: "4px 8px", color: "#334155" }}>{formatDateDisplay(req.fromDate)}</td>
-                                                        <td style={{ padding: "4px 8px", color: "#334155" }}>{formatDateDisplay(req.toDate)}</td>
-                                                        <td style={{ padding: "4px 8px", fontWeight: "600", color: "#0f172a" }}>{req.days}</td>
-                                                        <td style={{ padding: "4px 8px" }}>
+                                                        <td style={{ fontWeight: "700", color: "#0f172a" }}>{req.leaveType}</td>
+                                                        <td style={{ color: "#334155" }}>{formatDateDisplay(req.fromDate)}</td>
+                                                        <td style={{ color: "#334155" }}>{formatDateDisplay(req.toDate)}</td>
+                                                        <td className="table-center-col" style={{ fontWeight: "600", color: "#0f172a" }}>{req.days}</td>
+                                                        <td className="table-center-col">
                                                             <span
                                                                 style={{
                                                                     display: "inline-flex",

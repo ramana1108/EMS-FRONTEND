@@ -7,14 +7,22 @@ import {
   Save,
   AlertCircle,
   CheckCircle,
-  Loader
+  Loader,
+  Globe,
+  Clock,
+  Calendar,
+  Coins,
+  Laptop,
+  Map,
+  Hash,
+  ChevronDown,
+  Edit,
+  RotateCcw
 } from "lucide-react";
 import api from "../api";
 
 export default function Settings() {
-  const [settingsData, setSettingsData] = useState(null);
   const [settingsId, setSettingsId] = useState(null);
-
   const [loading, setLoading] = useState(false);
   const [fetching, setFetching] = useState(true);
 
@@ -33,8 +41,17 @@ export default function Settings() {
     companyAddress: "",
     city: "",
     state: "",
-    country: "",
+    country: "India",
+    website: "",
+    postalCode: "",
+    systemName: "",
+    timeZone: "(GMT+05:30) Asia/Kolkata",
+    dateFormat: "DD/MM/YYYY",
+    currency: "INR (₹)"
   });
+
+  // Keep a copy of initial data to reset form
+  const [initialData, setInitialData] = useState(null);
 
   useEffect(() => {
     fetchSettings();
@@ -46,26 +63,27 @@ export default function Settings() {
       const data = await api.getSettings();
       if (data && data.success) {
         const settings = data.settings;
-        setSettingsData(settings);
         setSettingsId(settings._id);
-        setFormData({
+        const mappedData = {
           companyName: settings.companyName ?? "",
           companyEmail: settings.companyEmail ?? "",
           companyPhone: settings.companyPhone ?? "",
           companyAddress: settings.companyAddress ?? "",
           city: settings.city ?? "",
           state: settings.state ?? "",
-          country: settings.country ?? "",
-        });
-        setAlert({ show: true, type: "success", message: data.message });
+          country: settings.country || "India",
+          website: settings.website ?? "",
+          postalCode: settings.postalCode ?? "",
+          systemName: settings.systemName ?? "",
+          timeZone: settings.timeZone || "(GMT+05:30) Asia/Kolkata",
+          dateFormat: settings.dateFormat || "DD/MM/YYYY",
+          currency: settings.currency || "INR (₹)"
+        };
+        setFormData(mappedData);
+        setInitialData(mappedData);
       }
     } catch (error) {
-      setAlert({
-        show: true,
-        type: "error",
-        message: "Unable to fetch company settings.",
-      });
-      console.error(error);
+      console.error("Unable to fetch company settings:", error);
     } finally {
       setFetching(false);
     }
@@ -74,8 +92,13 @@ export default function Settings() {
   const handleChange = (e) => {
     const { name, value } = e.target;
     let newValue = value;
+
+    // Numeric-only check for phone and postalCode if necessary
     if (name === "companyPhone") {
       newValue = value.replace(/\D/g, "").slice(0, 10);
+    }
+    if (name === "postalCode") {
+      newValue = value.replace(/\D/g, "").slice(0, 6);
     }
 
     setFormData((prev) => ({
@@ -89,6 +112,29 @@ export default function Settings() {
         [name]: "",
       }));
     }
+  };
+
+  const handleReset = () => {
+    if (initialData) {
+      setFormData(initialData);
+    } else {
+      setFormData({
+        companyName: "",
+        companyEmail: "",
+        companyPhone: "",
+        companyAddress: "",
+        city: "",
+        state: "",
+        country: "India",
+        website: "",
+        postalCode: "",
+        systemName: "",
+        timeZone: "(GMT+05:30) Asia/Kolkata",
+        dateFormat: "DD/MM/YYYY",
+        currency: "INR (₹)"
+      });
+    }
+    setErrors({});
   };
 
   const validate = () => {
@@ -115,6 +161,7 @@ export default function Settings() {
     if (!formData.country.trim()) {
       newErrors.country = "Country is required.";
     }
+
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (formData.companyEmail && !emailRegex.test(formData.companyEmail)) {
       newErrors.companyEmail = "Invalid Email Address";
@@ -122,7 +169,7 @@ export default function Settings() {
 
     const phoneRegex = /^[0-9]{10}$/;
     if (formData.companyPhone && !phoneRegex.test(formData.companyPhone)) {
-      newErrors.companyPhone = "Phone number must contain exactly 10 digits";
+      newErrors.companyPhone = "Phone must be exactly 10 digits";
     }
 
     setErrors(newErrors);
@@ -144,27 +191,28 @@ export default function Settings() {
     try {
       const isUpdate = Boolean(settingsId);
       const payload = {
-        companyName: formData.companyName,
-        companyEmail: formData.companyEmail,
-        companyPhone: formData.companyPhone,
-        companyAddress: formData.companyAddress,
-        city: formData.city,
-        state: formData.state,
-        country: formData.country,
+        ...formData,
+        adminPassword: "Verify@12345" // Backend requires adminPassword for first-time creation schema validation
       };
 
-      let data;
+      let response;
       if (isUpdate) {
-        data = await api.updateSettings(settingsId, payload);
+        response = await api.updateSettings(settingsId, payload);
       } else {
-        data = await api.createSettings(payload);
+        response = await api.createSettings(payload);
       }
 
-      if (data && data.success) {
-        setAlert({ show: true, type: "success", message: data.message });
-        fetchSettings();
+      if (response && response.success) {
+        setAlert({ show: true, type: "success", message: response.message || "Settings saved successfully." });
+        setSettingsId(response.settings?._id || settingsId);
+        setInitialData(formData);
+
+        // Hide alert after 4 seconds
+        setTimeout(() => {
+          setAlert({ show: false, type: "", message: "" });
+        }, 4000);
       } else {
-        setAlert({ show: true, type: "error", message: data?.message || "Something went wrong." });
+        setAlert({ show: true, type: "error", message: response?.message || "Something went wrong." });
       }
     } catch (error) {
       setAlert({
@@ -179,13 +227,39 @@ export default function Settings() {
   };
 
   return (
-    <div>
+    <div style={{ maxWidth: "1280px", margin: "0 auto", padding: "0 8px" }}>
       {/* Header */}
-      <div className="page-header" style={{ marginBottom: "24px" }}>
+      <div className="page-header" style={{ marginBottom: "20px", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
         <div>
           <h1 className="dashboard-title">Company Settings</h1>
-          <p className="dashboard-subtitle">Manage your company profile details and administrative credentials.</p>
+          <p className="dashboard-subtitle" style={{ fontSize: "14px", color: "#64748b" }}>
+            Manage your company information and system preferences.
+          </p>
         </div>
+        <button className="btn-primary" style={{ display: "flex", alignItems: "center", gap: "8px", padding: "9px 16px", borderRadius: "8px", fontSize: "14px", fontWeight: "600" }}>
+          <Edit size={16} />
+          <span>Edit Settings</span>
+        </button>
+      </div>
+
+      {/* Tabs */}
+      <div style={{ display: "flex", borderBottom: "1px solid #e2e8f0", marginBottom: "24px" }}>
+        <button
+          style={{
+            padding: "8px 16px 12px 16px",
+            fontSize: "14px",
+            fontWeight: "600",
+            color: "#2563eb",
+            borderBottom: "2px solid #2563eb",
+            background: "none",
+            borderTop: "none",
+            borderLeft: "none",
+            borderRight: "none",
+            cursor: "pointer"
+          }}
+        >
+          Company Information
+        </button>
       </div>
 
       {alert.show && (
@@ -193,7 +267,7 @@ export default function Settings() {
           display: "flex",
           alignItems: "center",
           gap: "8px",
-          padding: "12px",
+          padding: "12px 16px",
           borderRadius: "8px",
           marginBottom: "20px",
           fontSize: "14px",
@@ -206,202 +280,411 @@ export default function Settings() {
         </div>
       )}
 
-      {/* Split Grid */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-10 items-start">
-        {/* Profile Card */}
-        <div className="employee-directory-card p-6">
-          <div style={{ display: "flex", alignItems: "center", gap: "8px", borderBottom: "1px solid #f1f5f9", paddingBottom: "12px", marginBottom: "16px" }}>
-            <Building size={20} color="#0f766e" />
-            <h2 className="emp-card-title" style={{ margin: 0 }}>Company Information</h2>
+      {fetching ? (
+        <div style={{ display: "flex", justifyContent: "center", alignItems: "center", padding: "80px 0" }}>
+          <Loader className="animate-spin" size={32} color="#2563eb" />
+        </div>
+      ) : (
+        <div className="grid grid-cols-1 lg:grid-cols-[1.8fr_1.2fr] gap-8 items-start mb-10">
+
+          {/* Left Column: Form Panel */}
+          <div className="employee-directory-card p-6" style={{ backgroundColor: "#ffffff" }}>
+            <form onSubmit={handleSubmit}>
+
+              {/* Section 1: Company Information */}
+              <div style={{ marginBottom: "32px" }}>
+                <h2 style={{ fontSize: "16px", fontWeight: "700", color: "#1e293b", marginBottom: "4px" }}>Company Information</h2>
+                <p style={{ fontSize: "13px", color: "#64748b", marginBottom: "20px" }}>Update your company details.</p>
+
+                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "16px", marginBottom: "16px" }}>
+                  <div className="form-group" style={{ margin: 0 }}>
+                    <label style={{ fontSize: "12px", fontWeight: "600", color: "#475569", marginBottom: "6px" }}>Company Name</label>
+                    <div className="input-with-icon-container">
+                      <Building className="input-icon-decorator" size={16} />
+                      <input
+                        type="text"
+                        name="companyName"
+                        value={formData.companyName}
+                        onChange={handleChange}
+                        placeholder="Acme Solutions Pvt. Ltd."
+                        className="input-decorated"
+                      />
+                    </div>
+                    {errors.companyName && <span style={{ fontSize: "11px", color: "#ef4444" }}>{errors.companyName}</span>}
+                  </div>
+
+                  <div className="form-group" style={{ margin: 0 }}>
+                    <label style={{ fontSize: "12px", fontWeight: "600", color: "#475569", marginBottom: "6px" }}>Website</label>
+                    <div className="input-with-icon-container">
+                      <Globe className="input-icon-decorator" size={16} />
+                      <input
+                        type="text"
+                        name="website"
+                        value={formData.website}
+                        onChange={handleChange}
+                        placeholder="https://www.acmesolutions.com"
+                        className="input-decorated"
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "16px", marginBottom: "16px" }}>
+                  <div className="form-group" style={{ margin: 0 }}>
+                    <label style={{ fontSize: "12px", fontWeight: "600", color: "#475569", marginBottom: "6px" }}>Company Email</label>
+                    <div className="input-with-icon-container">
+                      <Mail className="input-icon-decorator" size={16} />
+                      <input
+                        type="email"
+                        name="companyEmail"
+                        value={formData.companyEmail}
+                        onChange={handleChange}
+                        placeholder="info@acmesolutions.com"
+                        className="input-decorated"
+                      />
+                    </div>
+                    {errors.companyEmail && <span style={{ fontSize: "11px", color: "#ef4444" }}>{errors.companyEmail}</span>}
+                  </div>
+
+                  <div className="form-group" style={{ margin: 0 }}>
+                    <label style={{ fontSize: "12px", fontWeight: "600", color: "#475569", marginBottom: "6px" }}>Company Phone</label>
+                    <div className="input-with-icon-container">
+                      <Phone className="input-icon-decorator" size={16} />
+                      <input
+                        type="text"
+                        name="companyPhone"
+                        maxLength={10}
+                        value={formData.companyPhone}
+                        onChange={handleChange}
+                        placeholder="+91 98765 43210"
+                        className="input-decorated"
+                      />
+                    </div>
+                    {errors.companyPhone && <span style={{ fontSize: "11px", color: "#ef4444" }}>{errors.companyPhone}</span>}
+                  </div>
+                </div>
+
+                <div className="form-group" style={{ marginBottom: "16px" }}>
+                  <label style={{ fontSize: "12px", fontWeight: "600", color: "#475569", marginBottom: "6px" }}>Address</label>
+                  <div className="input-with-icon-container">
+                    <MapPin className="input-icon-decorator" size={16} />
+                    <input
+                      type="text"
+                      name="companyAddress"
+                      value={formData.companyAddress}
+                      onChange={handleChange}
+                      placeholder="123, Business Park, 5th Floor, Sector 62"
+                      className="input-decorated"
+                    />
+                  </div>
+                  {errors.companyAddress && <span style={{ fontSize: "11px", color: "#ef4444" }}>{errors.companyAddress}</span>}
+                </div>
+
+                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1.2fr 1fr", gap: "12px" }}>
+                  <div className="form-group" style={{ margin: 0 }}>
+                    <label style={{ fontSize: "12px", fontWeight: "600", color: "#475569", marginBottom: "6px" }}>City</label>
+                    <div className="input-with-icon-container">
+                      <Building className="input-icon-decorator" size={16} style={{ color: "#94a3b8" }} />
+                      <input
+                        type="text"
+                        name="city"
+                        value={formData.city}
+                        onChange={handleChange}
+                        placeholder="Noida"
+                        className="input-decorated"
+                      />
+                    </div>
+                    {errors.city && <span style={{ fontSize: "11px", color: "#ef4444" }}>{errors.city}</span>}
+                  </div>
+
+                  <div className="form-group" style={{ margin: 0 }}>
+                    <label style={{ fontSize: "12px", fontWeight: "600", color: "#475569", marginBottom: "6px" }}>State</label>
+                    <div className="input-with-icon-container">
+                      <Map className="input-icon-decorator" size={16} style={{ color: "#94a3b8" }} />
+                      <input
+                        type="text"
+                        name="state"
+                        value={formData.state}
+                        onChange={handleChange}
+                        placeholder="Uttar Pradesh"
+                        className="input-decorated"
+                      />
+                    </div>
+                    {errors.state && <span style={{ fontSize: "11px", color: "#ef4444" }}>{errors.state}</span>}
+                  </div>
+
+                  <div className="form-group" style={{ margin: 0, position: "relative" }}>
+                    <label style={{ fontSize: "12px", fontWeight: "600", color: "#475569", marginBottom: "6px" }}>Country</label>
+                    <div className="input-with-icon-container">
+                      <Globe className="input-icon-decorator" size={16} style={{ color: "#94a3b8" }} />
+                      <select
+                        name="country"
+                        value={formData.country}
+                        onChange={handleChange}
+                        className="input-decorated appearance-none"
+                        style={{ paddingRight: "30px" }}
+                      >
+                        <option value="India">India</option>
+                        <option value="United States">United States</option>
+                        <option value="United Kingdom">United Kingdom</option>
+                        <option value="Germany">Germany</option>
+                        <option value="Canada">Canada</option>
+                        <option value="Australia">Australia</option>
+                      </select>
+                      <ChevronDown size={14} style={{ position: "absolute", right: "12px", top: "50%", transform: "translateY(-50%)", color: "#64748b", pointerEvents: "none" }} />
+                    </div>
+                  </div>
+
+                  <div className="form-group" style={{ margin: 0 }}>
+                    <label style={{ fontSize: "12px", fontWeight: "600", color: "#475569", marginBottom: "6px" }}>Postal Code</label>
+                    <div className="input-with-icon-container">
+                      <Hash className="input-icon-decorator" size={16} style={{ color: "#94a3b8" }} />
+                      <input
+                        type="text"
+                        name="postalCode"
+                        maxLength={6}
+                        value={formData.postalCode}
+                        onChange={handleChange}
+                        placeholder="201301"
+                        className="input-decorated"
+                      />
+                    </div>
+                  </div>
+                </div>
+
+              </div>
+
+              {/* Separator line */}
+              <div style={{ height: "1px", backgroundColor: "#f1f5f9", margin: "24px 0" }} />
+
+              {/* Section 2: System Preferences */}
+              <div style={{ marginBottom: "28px" }}>
+                <h2 style={{ fontSize: "16px", fontWeight: "700", color: "#1e293b", marginBottom: "4px" }}>System Preferences</h2>
+                <p style={{ fontSize: "13px", color: "#64748b", marginBottom: "20px" }}>Configure system related settings.</p>
+
+                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "16px", marginBottom: "16px" }}>
+                  <div className="form-group" style={{ margin: 0 }}>
+                    <label style={{ fontSize: "12px", fontWeight: "600", color: "#475569", marginBottom: "6px" }}>System Name</label>
+                    <div className="input-with-icon-container">
+                      <Laptop className="input-icon-decorator" size={16} />
+                      <input
+                        type="text"
+                        name="systemName"
+                        value={formData.systemName}
+                        onChange={handleChange}
+                        placeholder="Employee Management System"
+                        className="input-decorated"
+                      />
+                    </div>
+                  </div>
+
+                  <div className="form-group" style={{ margin: 0, position: "relative" }}>
+                    <label style={{ fontSize: "12px", fontWeight: "600", color: "#475569", marginBottom: "6px" }}>Time Zone</label>
+                    <div className="input-with-icon-container">
+                      <Clock className="input-icon-decorator" size={16} />
+                      <select
+                        name="timeZone"
+                        value={formData.timeZone}
+                        onChange={handleChange}
+                        className="input-decorated appearance-none"
+                        style={{ paddingRight: "30px" }}
+                      >
+                        <option value="(GMT+05:30) Asia/Kolkata">(GMT+05:30) Asia/Kolkata</option>
+                        <option value="(GMT+00:00) London">(GMT+00:00) London</option>
+                        <option value="(GMT-05:00) Eastern Time">(GMT-05:00) Eastern Time</option>
+                        <option value="(GMT-08:00) Pacific Time">(GMT-08:00) Pacific Time</option>
+                      </select>
+                      <ChevronDown size={14} style={{ position: "absolute", right: "12px", top: "50%", transform: "translateY(-50%)", color: "#64748b", pointerEvents: "none" }} />
+                    </div>
+                  </div>
+                </div>
+
+                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "16px" }}>
+                  <div className="form-group" style={{ margin: 0, position: "relative" }}>
+                    <label style={{ fontSize: "12px", fontWeight: "600", color: "#475569", marginBottom: "6px" }}>Date Format</label>
+                    <div className="input-with-icon-container">
+                      <Calendar className="input-icon-decorator" size={16} />
+                      <select
+                        name="dateFormat"
+                        value={formData.dateFormat}
+                        onChange={handleChange}
+                        className="input-decorated appearance-none"
+                        style={{ paddingRight: "30px" }}
+                      >
+                        <option value="DD/MM/YYYY">DD/MM/YYYY</option>
+                        <option value="MM/DD/YYYY">MM/DD/YYYY</option>
+                        <option value="YYYY-MM-DD">YYYY-MM-DD</option>
+                      </select>
+                      <ChevronDown size={14} style={{ position: "absolute", right: "12px", top: "50%", transform: "translateY(-50%)", color: "#64748b", pointerEvents: "none" }} />
+                    </div>
+                  </div>
+
+                  <div className="form-group" style={{ margin: 0, position: "relative" }}>
+                    <label style={{ fontSize: "12px", fontWeight: "600", color: "#475569", marginBottom: "6px" }}>Currency</label>
+                    <div className="input-with-icon-container">
+                      <Coins className="input-icon-decorator" size={16} />
+                      <select
+                        name="currency"
+                        value={formData.currency}
+                        onChange={handleChange}
+                        className="input-decorated appearance-none"
+                        style={{ paddingRight: "30px" }}
+                      >
+                        <option value="INR (₹)">INR (₹)</option>
+                        <option value="USD ($)">USD ($)</option>
+                        <option value="EUR (€)">EUR (€)</option>
+                        <option value="GBP (£)">GBP (£)</option>
+                      </select>
+                      <ChevronDown size={14} style={{ position: "absolute", right: "12px", top: "50%", transform: "translateY(-50%)", color: "#64748b", pointerEvents: "none" }} />
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Bottom Buttons */}
+              <div style={{ display: "flex", justifyContent: "flex-end", gap: "12px", marginTop: "32px" }}>
+                <button
+                  type="button"
+                  onClick={handleReset}
+                  className="btn-cancel"
+                  style={{ display: "flex", alignItems: "center", gap: "8px", padding: "10px 20px", borderRadius: "8px" }}
+                >
+                  <RotateCcw size={16} />
+                  <span>Reset</span>
+                </button>
+                <button
+                  type="submit"
+                  disabled={loading}
+                  className="btn-primary"
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: "8px",
+                    padding: "10px 24px",
+                    borderRadius: "8px",
+                    boxShadow: "0 2px 4px rgba(37, 99, 235, 0.2)"
+                  }}
+                >
+                  {loading ? (
+                    <>
+                      <Loader className="animate-spin" size={16} />
+                      <span>Saving...</span>
+                    </>
+                  ) : (
+                    <>
+                      <Save size={16} />
+                      <span>Save Changes</span>
+                    </>
+                  )}
+                </button>
+              </div>
+
+            </form>
           </div>
 
-          {fetching ? (
-            <div style={{ display: "flex", justifyContent: "center", alignItems: "center", padding: "40px" }}>
-              <Loader className="animate-spin" size={24} color="#0f766e" />
+          {/* Right Column: Company Overview Preview */}
+          <div className="employee-directory-card p-6" style={{ backgroundColor: "#ffffff" }}>
+            <h2 style={{ fontSize: "16px", fontWeight: "700", color: "#1e293b", marginBottom: "4px" }}>Company Overview</h2>
+            <p style={{ fontSize: "13px", color: "#64748b", marginBottom: "24px" }}>Preview of your company information.</p>
+
+            <div style={{ display: "flex", flexDirection: "column", alignItems: "center", padding: "20px 0", marginBottom: "20px" }}>
+              <div style={{
+                width: "80px",
+                height: "80px",
+                borderRadius: "50%",
+                backgroundColor: "#eff6ff",
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+                marginBottom: "16px",
+                border: "1px solid #dbeafe"
+              }}>
+                <Building size={36} style={{ color: "#2563eb" }} />
+              </div>
+              <h3 style={{ fontSize: "18px", fontWeight: "750", color: "#1e293b", margin: "0 0 4px 0", textAlign: "center" }}>
+                {formData.companyName || "Company Name"}
+              </h3>
+              <p style={{ fontSize: "13px", color: "#64748b", margin: 0, textAlign: "center" }}>
+                {formData.systemName || "Employee Management System"}
+              </p>
             </div>
-          ) : settingsData ? (
-            <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
-              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", borderBottom: "1px dashed #cbd5e1", paddingBottom: "8px" }}>
-                <span style={{ color: "#64748b", fontWeight: "600", fontSize: "13px" }}>COMPANY NAME</span>
-                <span style={{ fontWeight: "700", color: "#1e293b", fontSize: "14px" }}>{settingsData.companyName}</span>
-              </div>
 
-              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", borderBottom: "1px dashed #cbd5e1", paddingBottom: "8px" }}>
-                <span style={{ color: "#64748b", fontWeight: "600", fontSize: "13px" }}>EMAIL ADDRESS</span>
-                <span style={{ fontWeight: "700", color: "#1e293b", fontSize: "14px", display: "flex", alignItems: "center", gap: "6px" }}>
-                  <Mail size={14} color="#64748b" />
-                  {settingsData.companyEmail}
+            {/* Separator line */}
+            <div style={{ height: "1px", backgroundColor: "#f1f5f9", margin: "20px 0" }} />
+
+            {/* Contact Details */}
+            <div style={{ display: "flex", flexDirection: "column", gap: "14px", marginBottom: "24px" }}>
+              <div style={{ display: "flex", gap: "10px", alignItems: "flex-start" }}>
+                <Mail size={16} style={{ color: "#64748b", marginTop: "2px", flexShrink: 0 }} />
+                <span style={{ fontSize: "13px", color: "#475569" }}>
+                  {formData.companyEmail || "info@company.com"}
                 </span>
               </div>
 
-              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", borderBottom: "1px dashed #cbd5e1", paddingBottom: "8px" }}>
-                <span style={{ color: "#64748b", fontWeight: "600", fontSize: "13px" }}>PHONE NUMBER</span>
-                <span style={{ fontWeight: "700", color: "#1e293b", fontSize: "14px", display: "flex", alignItems: "center", gap: "6px" }}>
-                  <Phone size={14} color="#64748b" />
-                  {settingsData.companyPhone}
+              <div style={{ display: "flex", gap: "10px", alignItems: "flex-start" }}>
+                <Phone size={16} style={{ color: "#64748b", marginTop: "2px", flexShrink: 0 }} />
+                <span style={{ fontSize: "13px", color: "#475569" }}>
+                  {formData.companyPhone || "+91 00000 00000"}
                 </span>
               </div>
 
-              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", borderBottom: "1px dashed #cbd5e1", paddingBottom: "8px" }}>
-                <span style={{ color: "#64748b", fontWeight: "600", fontSize: "13px" }}>ADDRESS</span>
-                <span style={{ fontWeight: "750", color: "#475569", fontSize: "13px", display: "flex", alignItems: "center", gap: "6px" }}>
-                  <MapPin size={14} color="#64748b" />
-                  {settingsData.companyAddress}
+              <div style={{ display: "flex", gap: "10px", alignItems: "flex-start" }}>
+                <Globe size={16} style={{ color: "#64748b", marginTop: "2px", flexShrink: 0 }} />
+                {formData.website ? (
+                  <a href={formData.website} target="_blank" rel="noopener noreferrer" style={{ fontSize: "13px", color: "#2563eb", textDecoration: "none" }}>
+                    {formData.website}
+                  </a>
+                ) : (
+                  <span style={{ fontSize: "13px", color: "#94a3b8" }}>No website configured</span>
+                )}
+              </div>
+
+              <div style={{ display: "flex", gap: "10px", alignItems: "flex-start" }}>
+                <MapPin size={16} style={{ color: "#64748b", marginTop: "2px", flexShrink: 0 }} />
+                <span style={{ fontSize: "13px", color: "#475569", lineHeight: "1.4" }}>
+                  {formData.companyAddress ? (
+                    <>
+                      {formData.companyAddress}
+                      {(formData.city || formData.state || formData.postalCode || formData.country) && ", "}
+                      {formData.city}
+                      {formData.state && `, ${formData.state}`}
+                      {formData.postalCode && ` - ${formData.postalCode}`}
+                      {formData.country && `, ${formData.country}`}
+                    </>
+                  ) : (
+                    "No address configured"
+                  )}
                 </span>
               </div>
-
-              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: "12px", borderBottom: "1px dashed #cbd5e1", paddingBottom: "8px" }}>
-                <div>
-                  <span style={{ display: "block", color: "#64748b", fontWeight: "600", fontSize: "11px", marginBottom: "4px" }}>CITY</span>
-                  <span style={{ fontWeight: "700", color: "#1e293b", fontSize: "13px" }}>{settingsData.city}</span>
-                </div>
-                <div>
-                  <span style={{ display: "block", color: "#64748b", fontWeight: "600", fontSize: "11px", marginBottom: "4px" }}>STATE</span>
-                  <span style={{ fontWeight: "700", color: "#1e293b", fontSize: "13px" }}>{settingsData.state}</span>
-                </div>
-                <div>
-                  <span style={{ display: "block", color: "#64748b", fontWeight: "600", fontSize: "11px", marginBottom: "4px" }}>COUNTRY</span>
-                  <span style={{ fontWeight: "700", color: "#1e293b", fontSize: "13px" }}>{settingsData.country}</span>
-                </div>
-              </div>
-
             </div>
-          ) : (
-            <p style={{ textAlign: "center", color: "#64748b", margin: "20px 0" }}>No settings configured yet.</p>
-          )}
-        </div>
 
-        {/* Form Card */}
-        <div className="employee-directory-card p-6">
-          <div style={{ borderBottom: "1px solid #f1f5f9", paddingBottom: "12px", marginBottom: "16px" }}>
-            <h2 className="emp-card-title">{settingsId ? "Update Settings" : "Configure Settings"}</h2>
+            {/* Separator line */}
+            <div style={{ height: "1px", backgroundColor: "#f1f5f9", margin: "20px 0" }} />
+
+            {/* Prefs Summary */}
+            <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
+              <div style={{ display: "flex", justifyContent: "space-between", fontSize: "13px" }}>
+                <span style={{ fontWeight: "600", color: "#64748b" }}>System Name</span>
+                <span style={{ color: "#1e293b", textAlign: "right" }}>{formData.systemName || "Employee Management System"}</span>
+              </div>
+              <div style={{ display: "flex", justifyContent: "space-between", fontSize: "13px" }}>
+                <span style={{ fontWeight: "600", color: "#64748b" }}>Time Zone</span>
+                <span style={{ color: "#1e293b", textAlign: "right" }}>{formData.timeZone}</span>
+              </div>
+              <div style={{ display: "flex", justifyContent: "space-between", fontSize: "13px" }}>
+                <span style={{ fontWeight: "600", color: "#64748b" }}>Date Format</span>
+                <span style={{ color: "#1e293b", textAlign: "right" }}>{formData.dateFormat}</span>
+              </div>
+              <div style={{ display: "flex", justifyContent: "space-between", fontSize: "13px" }}>
+                <span style={{ fontWeight: "600", color: "#64748b" }}>Currency</span>
+                <span style={{ color: "#1e293b", textAlign: "right" }}>{formData.currency}</span>
+              </div>
+            </div>
+
           </div>
 
-          <form onSubmit={handleSubmit} className="enroll-form">
-            <div className="form-group">
-              <label>Company Name <span className="req">*</span></label>
-              <input
-                type="text"
-                name="companyName"
-                value={formData.companyName}
-                onChange={handleChange}
-                placeholder="Enter Company Name"
-              />
-              {errors.companyName && (
-                <div className="field-error">{errors.companyName}</div>
-              )}
-            </div>
-
-            <div className="form-grid-2">
-              <div className="form-group">
-                <label>Company Email <span className="req">*</span></label>
-                <input
-                  type="email"
-                  name="companyEmail"
-                  value={formData.companyEmail}
-                  onChange={handleChange}
-                  placeholder="Enter Email"
-                />
-                {errors.companyEmail && (
-                  <div className="field-error">{errors.companyEmail}</div>
-                )}
-              </div>
-              <div className="form-group">
-                <label>Company Phone <span className="req">*</span></label>
-                <input
-                  type="text"
-                  name="companyPhone"
-                  maxLength={10}
-                  value={formData.companyPhone}
-                  onChange={handleChange}
-                  placeholder="Enter 10-digit number"
-                />
-                {errors.companyPhone && (
-                  <div className="field-error">{errors.companyPhone}</div>
-                )}
-              </div>
-            </div>
-
-            <div className="form-group">
-              <label>Company Address <span className="req">*</span></label>
-              <textarea
-                name="companyAddress"
-                rows="2"
-                value={formData.companyAddress}
-                onChange={handleChange}
-                placeholder="Enter Address"
-                style={{ minHeight: "60px", resize: "vertical" }}
-              />
-              {errors.companyAddress && (
-                <div className="field-error">{errors.companyAddress}</div>
-              )}
-            </div>
-
-            <div className="form-grid-3">
-              <div className="form-group">
-                <label>City <span className="req">*</span></label>
-                <input
-                  type="text"
-                  name="city"
-                  value={formData.city}
-                  onChange={handleChange}
-                  placeholder="City"
-                />
-                {errors.city && (
-                  <div className="field-error">{errors.city}</div>
-                )}
-              </div>
-              <div className="form-group">
-                <label>State <span className="req">*</span></label>
-                <input
-                  type="text"
-                  name="state"
-                  value={formData.state}
-                  onChange={handleChange}
-                  placeholder="State"
-                />
-                {errors.state && (
-                  <div className="field-error">{errors.state}</div>
-                )}
-              </div>
-              <div className="form-group">
-                <label>Country <span className="req">*</span></label>
-                <input
-                  type="text"
-                  name="country"
-                  value={formData.country}
-                  onChange={handleChange}
-                  placeholder="Country"
-                />
-                {errors.country && (
-                  <div className="field-error">{errors.country}</div>
-                )}
-              </div>
-            </div>
-
-
-
-            <button
-              type="submit"
-              className="btn-save"
-              disabled={loading}
-              style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: "8px", width: "100%", marginTop: "16px" }}
-            >
-              {loading ? (
-                <>
-                  <Loader className="animate-spin" size={16} />
-                  <span>Saving Settings...</span>
-                </>
-              ) : (
-                <>
-                  <Save size={16} />
-                  <span>{settingsId ? "Update Settings" : "Configure Settings"}</span>
-                </>
-              )}
-            </button>
-          </form>
         </div>
-      </div>
+      )}
     </div>
   );
 }

@@ -151,12 +151,12 @@ export default function Payrolls() {
                     {/* Stats Grid representing Current/Latest Payslip breakdown */}
                     <div className="emp-stats-grid">
                         {/* Basic Salary */}
-                        <div className="emp-stat-card">
+                        <div className="emp-stat-card stat-card-green">
                             <div className="emp-stat-top">
-                                <span className="emp-stat-title">Basic Salary</span>
                                 <div className="emp-stat-icon-box bg-emerald-50 dark:bg-emerald-950/20 text-[#10b981]">
                                     <Wallet size={20} />
                                 </div>
+                                <span className="emp-stat-title">Basic Salary</span>
                             </div>
                             <p className="emp-stat-value">
                                 {formatCurrency(latestStats.basicSalary)}
@@ -167,12 +167,12 @@ export default function Payrolls() {
                         </div>
 
                         {/* Allowances */}
-                        <div className="emp-stat-card">
+                        <div className="emp-stat-card stat-card-blue">
                             <div className="emp-stat-top">
-                                <span className="emp-stat-title">Allowances</span>
                                 <div className="emp-stat-icon-box bg-blue-50 dark:bg-blue-950/20 text-[#3b82f6]">
                                     <Coins size={20} />
                                 </div>
+                                <span className="emp-stat-title">Allowances</span>
                             </div>
                             <p className="emp-stat-value">
                                 {formatCurrency(latestStats.allowance + latestStats.bonus)}
@@ -183,12 +183,12 @@ export default function Payrolls() {
                         </div>
 
                         {/* Deductions */}
-                        <div className="emp-stat-card">
+                        <div className="emp-stat-card stat-card-rose">
                             <div className="emp-stat-top">
-                                <span className="emp-stat-title">Deductions</span>
                                 <div className="emp-stat-icon-box bg-red-50 dark:bg-red-950/20 text-[#ef4444]">
                                     <CreditCard size={20} />
                                 </div>
+                                <span className="emp-stat-title">Deductions</span>
                             </div>
                             <p className="emp-stat-value">
                                 {formatCurrency(latestStats.deductions + latestStats.tax)}
@@ -199,12 +199,12 @@ export default function Payrolls() {
                         </div>
 
                         {/* Net Salary */}
-                        <div className="emp-stat-card">
+                        <div className="emp-stat-card stat-card-indigo">
                             <div className="emp-stat-top">
-                                <span className="emp-stat-title">Net Salary</span>
                                 <div className="emp-stat-icon-box bg-purple-50 dark:bg-purple-950/20 text-[#a855f7]">
                                     <Landmark size={20} />
                                 </div>
+                                <span className="emp-stat-title">Net Salary</span>
                             </div>
                             <p className="emp-stat-value">
                                 {formatCurrency(latestStats.netSalary)}
@@ -225,13 +225,13 @@ export default function Payrolls() {
                             <table className="employee-table">
                                 <thead>
                                     <tr>
-                                        <th style={{ padding: "4px 8px" }}>Month/Year</th>
-                                        <th style={{ padding: "4px 8px" }}>Basic Salary</th>
-                                        <th style={{ padding: "4px 8px" }}>Allowances</th>
-                                        <th style={{ padding: "4px 8px" }}>Deductions</th>
-                                        <th style={{ padding: "4px 8px" }}>Net Salary</th>
-                                        <th style={{ padding: "4px 8px" }}>Payment Status</th>
-                                        <th style={{ padding: "4px 8px", textAlign: "right" }}>Actions</th>
+                                        <th>Month/Year</th>
+                                        <th className="table-number-col">Basic Salary</th>
+                                        <th className="table-number-col">Allowances</th>
+                                        <th className="table-number-col">Deductions</th>
+                                        <th className="table-number-col">Net Salary</th>
+                                        <th className="table-center-col">Payment Status</th>
+                                        <th className="table-actions-col">Actions</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -251,22 +251,22 @@ export default function Payrolls() {
 
                                             return (
                                                 <tr key={pay._id} className="employee-row">
-                                                    <td style={{ padding: "4px 8px", fontWeight: "700", color: "#0f172a" }}>
+                                                    <td style={{ fontWeight: "700", color: "#0f172a" }}>
                                                         {pay.month} {pay.year}
                                                     </td>
-                                                    <td style={{ padding: "4px 8px", color: "#334155" }}>
+                                                    <td className="table-number-col" style={{ color: "#334155" }}>
                                                         {formatCurrency(pay.basicSalary)}
                                                     </td>
-                                                    <td style={{ padding: "4px 8px", color: "#059669" }}>
+                                                    <td className="table-number-col" style={{ color: "#059669" }}>
                                                         + {formatCurrency(totalAllowances)}
                                                     </td>
-                                                    <td style={{ padding: "4px 8px", color: "#dc2626" }}>
+                                                    <td className="table-number-col" style={{ color: "#dc2626" }}>
                                                         - {formatCurrency(totalDeductions)}
                                                     </td>
-                                                    <td style={{ padding: "4px 8px", fontWeight: "700", color: "#0f172a" }}>
+                                                    <td className="table-number-col" style={{ fontWeight: "700", color: "#0f172a" }}>
                                                         {formatCurrency(pay.netSalary)}
                                                     </td>
-                                                    <td style={{ padding: "4px 8px" }}>
+                                                    <td className="table-center-col">
                                                         <span
                                                             className="employee-status-badge active"
                                                             style={{

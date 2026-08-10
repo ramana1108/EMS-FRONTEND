@@ -10,7 +10,9 @@ import {
   Award,
   AlertCircle,
   Edit,
-  X
+  X,
+  Search,
+  MoreVertical
 } from "lucide-react";
 
 const ALL_SYSTEM_PERMISSIONS = [
@@ -26,6 +28,54 @@ const ALL_SYSTEM_PERMISSIONS = [
   "profile"
 ];
 
+const PERMISSION_GRID_MAPPING = [
+  {
+    module: "Dashboard",
+    key: "dashboard",
+    actions: { view: true, create: false, edit: false, delete: false, export: false }
+  },
+  {
+    module: "Departments",
+    key: "department",
+    actions: { view: true, create: true, edit: true, delete: true, export: false }
+  },
+  {
+    module: "Designations",
+    key: "designation",
+    actions: { view: true, create: true, edit: true, delete: true, export: false }
+  },
+  {
+    module: "Employees",
+    key: "employee",
+    actions: { view: true, create: true, edit: true, delete: true, export: true }
+  },
+  {
+    module: "Roles",
+    key: "role",
+    actions: { view: true, create: true, edit: true, delete: true, export: false }
+  },
+  {
+    module: "Attendance",
+    key: "attendance",
+    actions: { view: true, create: true, edit: true, delete: true, export: false }
+  },
+  {
+    module: "Payroll",
+    key: "payroll",
+    actions: { view: true, create: true, edit: true, delete: true, export: false }
+  },
+  {
+    module: "Notices",
+    key: "notice",
+    actions: { view: true, create: true, edit: true, delete: true, export: false }
+  },
+  {
+    module: "Profile",
+    key: "profile",
+    actions: { view: true, create: false, edit: true, delete: false, export: false }
+  }
+];
+
 export default function Roles() {
   const [roles, setRoles] = useState([]);
   const [users, setUsers] = useState([]);
@@ -34,7 +84,7 @@ export default function Roles() {
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 10;
+  const itemsPerPage = 6;
 
   // Modal Control States
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
@@ -42,15 +92,38 @@ export default function Roles() {
   const [selectedRole, setSelectedRole] = useState(null);
   const [editPermissions, setEditPermissions] = useState([]);
 
+  // Employees Redesign Search and Menu States
+  const [searchTerm, setSearchTerm] = useState("");
+  const [openMenuUserId, setOpenMenuUserId] = useState(null);
+  const [isViewModalOpen, setIsViewModalOpen] = useState(false);
+  const [viewingUser, setViewingUser] = useState(null);
+
   const fetchData = async () => {
     setLoading(true);
     setError("");
     try {
       const rolesData = await api.getRoles();
       const usersData = await api.getAllUsers();
+      const employeesData = await api.getAllEmployees();
 
       if (rolesData) setRoles(rolesData.roles || []);
-      if (usersData) setUsers(usersData.users || []);
+
+      const loadedEmployees = employeesData?.employees || employeesData || [];
+      const mapped = (usersData?.users || []).map((u, idx) => {
+        const emp = loadedEmployees.find(e => e.email?.toLowerCase() === u.email?.toLowerCase());
+        const defaultEmpId = `EMP${String(idx + 1).padStart(3, '0')}`;
+        return {
+          ...u,
+          employeeId: emp?.employeeId || defaultEmpId,
+          status: emp?.status || "Active",
+          gender: emp?.gender || "Male",
+          phone: emp?.phone || "",
+          address: emp?.address || "",
+          joiningDate: emp?.joiningDate || "",
+          displayName: u.displayName || u.name || (emp ? `${emp.firstName} ${emp.lastName}`.trim() : "Unnamed"),
+        };
+      });
+      setUsers(mapped);
     } catch (err) {
       console.error(err);
       setError("Failed to fetch data from server");
@@ -61,7 +134,21 @@ export default function Roles() {
 
   useEffect(() => {
     fetchData();
+
+    // Close actions dropdown when clicking elsewhere
+    const handleOutsideClick = () => {
+      setOpenMenuUserId(null);
+    };
+    document.addEventListener("click", handleOutsideClick);
+    return () => {
+      document.removeEventListener("click", handleOutsideClick);
+    };
   }, []);
+
+  // Reset page when search term changes
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [searchTerm]);
 
   const handleAddRole = async (e) => {
     e.preventDefault();
@@ -129,18 +216,78 @@ export default function Roles() {
     }
   };
 
+  const handleRemovePermissions = async (user) => {
+    if (!user.role) {
+      setError("This employee does not have an assigned role.");
+      return;
+    }
+    const confirmMessage = `Are you sure you want to remove all permissions for role "${user.role.name}" assigned to ${user.displayName}? This will clear access permissions for this role.`;
+    if (!window.confirm(confirmMessage)) return;
+
+    setError("");
+    setSuccess("");
+    try {
+      const data = await api.updateRole(user.role._id, {
+        name: user.role.name,
+        permissions: []
+      });
+      if (data && data.role) {
+        setSuccess(`Permissions removed successfully for role ${user.role.name}.`);
+        fetchData();
+      } else {
+        setError(data?.message || "Failed to remove permissions");
+      }
+    } catch (err) {
+      console.error(err);
+      setError("Failed to remove permissions");
+    }
+  };
+
   const openEditPermissions = (role) => {
     setSelectedRole(role);
-    setEditPermissions(role.permissions || []);
+    let initialPerms = [...(role.permissions || [])];
+
+    // Auto-populate helper sub-permissions if the role has the main permission key
+    PERMISSION_GRID_MAPPING.forEach(item => {
+      if (initialPerms.includes(item.key)) {
+        Object.keys(item.actions).forEach(action => {
+          if (item.actions[action]) {
+            const subKey = `${item.key}:${action}`;
+            if (!initialPerms.includes(subKey)) {
+              initialPerms.push(subKey);
+            }
+          }
+        });
+      }
+    });
+
+    setEditPermissions(initialPerms);
     setIsEditModalOpen(true);
   };
 
-  const togglePermission = (permission) => {
-    if (editPermissions.includes(permission)) {
-      setEditPermissions(editPermissions.filter(p => p !== permission));
+  const toggleGridPermission = (moduleKey, action) => {
+    const permString = `${moduleKey}:${action}`;
+    let updated = [...editPermissions];
+
+    if (updated.includes(permString)) {
+      updated = updated.filter(p => p !== permString);
     } else {
-      setEditPermissions([...editPermissions, permission]);
+      updated.push(permString);
     }
+
+    // Manage top-level key matching backend expectations:
+    // If any action for this module is checked, ensure the module key is inside the permissions list.
+    // Otherwise, remove it.
+    const hasAnyAction = updated.some(p => p.startsWith(`${moduleKey}:`));
+    if (hasAnyAction) {
+      if (!updated.includes(moduleKey)) {
+        updated.push(moduleKey);
+      }
+    } else {
+      updated = updated.filter(p => p !== moduleKey);
+    }
+
+    setEditPermissions(updated);
   };
 
   // Compute stats
@@ -158,9 +305,18 @@ export default function Roles() {
     return roleUsers.map(u => u.name).join(", ") || "—";
   };
 
-  const totalPages = Math.max(1, Math.ceil(roles.length / itemsPerPage));
+  const filteredUsers = users.filter(u => {
+    const term = searchTerm.toLowerCase();
+    const matchesId = u.employeeId?.toLowerCase().includes(term);
+    const matchesName = u.displayName?.toLowerCase().includes(term);
+    const matchesEmail = u.email?.toLowerCase().includes(term);
+    const matchesRole = u.role?.name?.toLowerCase().includes(term);
+    return matchesId || matchesName || matchesEmail || matchesRole;
+  });
+
+  const totalPages = Math.max(1, Math.ceil(filteredUsers.length / itemsPerPage));
   const startIndex = (currentPage - 1) * itemsPerPage;
-  const paginatedRoles = roles.slice(startIndex, startIndex + itemsPerPage);
+  const paginatedUsers = filteredUsers.slice(startIndex, startIndex + itemsPerPage);
 
   const getRoleFromToDate = (role) => {
     if (!role.createdAt) return "—";
@@ -238,100 +394,119 @@ export default function Roles() {
 
       {/* Main Content Layout */}
       <div className="w-full">
-        {/* Roles Table */}
-        <div className="employee-directory-card">
-          <div className="filters-row">
-            <div className="filters-left">
-              <span className="filters-label">
-                System Roles
-              </span>
+        {/* Employees Permissions Card */}
+        <div className="employee-permissions-card">
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "wrap", gap: "16px", marginBottom: "20px", width: "100%" }}>
+            <div style={{ textAlign: "left" }}>
+              <h2 className="dashboard-title" style={{ fontSize: "20px", fontWeight: "700" }}>Employees</h2>
+              <p className="dashboard-subtitle" style={{ margin: "4px 0 0 0" }}>View all employees and their role access.</p>
+            </div>
+
+            <div className="search-box" style={{ margin: 0, width: "300px", display: "flex", alignItems: "center", gap: "8px", border: "1px solid #e2e8f0", borderRadius: "10px", padding: "8px 12px", background: "#f8fafc" }}>
+              <Search size={18} color="#64748b" />
+              <input
+                type="text"
+                placeholder="Search employees..."
+                style={{ border: "none", outline: "none", width: "100%", background: "transparent", fontSize: "13px" }}
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+              />
             </div>
           </div>
 
           <div className="table-responsive">
-            <table className="employee-table">
-              <thead>
+            <table className="employee-table" style={{ borderCollapse: "collapse", width: "100%" }}>
+              <thead className="permissions-table-header">
                 <tr>
-                  <th>ROLE NAME</th>
-                  <th>PERMISSIONS GRANTED</th>
-                  <th>EMPLOYEE NAME(S)</th>
-                  <th>FROM-TO DATE</th>
-                  <th style={{ textAlign: "center" }}>MEMBERS</th>
-                  <th style={{ textAlign: "right", paddingRight: "24px" }}>ACTIONS</th>
+                  <th className="table-center-col" style={{ width: "50px" }}>#</th>
+                  <th>EMPLOYEE ID</th>
+                  <th>EMPLOYEE NAME</th>
+                  <th>EMAIL</th>
+                  <th>ROLE</th>
+                  <th className="table-center-col">STATUS</th>
+                  <th className="table-actions-col" style={{ width: "80px" }}>ACTIONS</th>
                 </tr>
               </thead>
               <tbody>
                 {loading ? (
                   <tr>
-                    <td colSpan="6" style={{ textAlign: "center", padding: "30px 0" }}>Loading roles...</td>
+                    <td colSpan="7" style={{ textAlign: "center", padding: "30px 0" }}>Loading employees...</td>
                   </tr>
-                ) : roles.length === 0 ? (
+                ) : filteredUsers.length === 0 ? (
                   <tr>
-                    <td colSpan="6" style={{ textAlign: "center", padding: "30px 0" }}>No roles registered yet.</td>
+                    <td colSpan="7" style={{ textAlign: "center", padding: "30px 0" }}>No employees found matching criteria.</td>
                   </tr>
                 ) : (
-                  paginatedRoles.map((role) => (
-                    <tr key={role._id} className="employee-row">
-                      <td>
-                        <span style={{ fontWeight: "700", textTransform: "uppercase", letterSpacing: "0.5px" }}>
-                          {role.name}
+                  paginatedUsers.map((user, idx) => (
+                    <tr key={user._id} className="employee-row" style={{ borderBottom: "1px solid #f1f5f9" }}>
+                      <td className="table-center-col" style={{ fontSize: "14px", fontWeight: "600", color: "#64748b" }}>
+                        {startIndex + idx + 1}
+                      </td>
+                      <td className="employee-id-col" style={{ fontSize: "14px", fontWeight: "600" }}>
+                        {user.employeeId}
+                      </td>
+                      <td className="employee-name-col" style={{ fontSize: "14px", fontWeight: "500" }}>
+                        {user.displayName}
+                      </td>
+                      <td className="employee-email-col" style={{ fontSize: "13px" }}>
+                        {user.email}
+                      </td>
+                      <td style={{ textAlign: "left" }}>
+                        <span className="role-pill-blue">
+                          {user.role?.name || "Employee"}
                         </span>
                       </td>
-                      <td>
-                        {role.permissions && role.permissions.length > 0 ? (
-                          <div style={{ display: "flex", flexWrap: "wrap", gap: "6px" }}>
-                            {role.permissions.map((p, idx) => (
-                              <div
-                                key={idx}
-                                style={{
-                                  display: "inline-flex",
-                                  alignItems: "center",
-                                  gap: "6px",
-                                  padding: "4px 8px",
-                                  borderRadius: "12px",
-                                  border: "1px solid #d1d5db",
-                                  backgroundColor: "#f8fafc",
-                                  color: "#334155",
-                                  fontSize: "12px",
-                                  fontWeight: "600"
+                      <td className="table-center-col">
+                        <span className={user.status?.toLowerCase() === "active" ? "status-pill-green" : "status-pill-red"}>
+                          {user.status || "Active"}
+                        </span>
+                      </td>
+                      <td className="table-actions-col" style={{ position: "relative" }}>
+                        <div className="actions-dropdown-container">
+                          <button
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              setOpenMenuUserId(openMenuUserId === user._id ? null : user._id);
+                            }}
+                            className="action-icon-btn"
+                            style={{ background: "transparent", border: "none", cursor: "pointer", padding: "8px", color: "#64748b" }}
+                          >
+                            <MoreVertical size={16} />
+                          </button>
+                          {openMenuUserId === user._id && (
+                            <div className="action-dropdown-list">
+                              <button
+                                type="button"
+                                className="action-dropdown-btn"
+                                onClick={() => {
+                                  setViewingUser(user);
+                                  setIsViewModalOpen(true);
                                 }}
                               >
-                                <span style={{ width: "6px", height: "6px", borderRadius: "9999px", backgroundColor: "#0f766e" }} />
-                                <span>{p}</span>
-                              </div>
-                            ))}
-                          </div>
-                        ) : (
-                          <span style={{ color: "#64748b", fontSize: "13px" }}>No permissions configured</span>
-                        )}
-                      </td>
-                      <td style={{ color: "#475569", fontSize: "13px" }}>
-                        {getRoleUserNames(role.name)}
-                      </td>
-                      <td style={{ color: "#475569", fontSize: "13px" }}>
-                        {getRoleFromToDate(role)}
-                      </td>
-                      <td style={{ textAlign: "center" }}>
-                        <span style={{ fontSize: "14px", fontWeight: "700", color: "#0f766e" }}>
-                          {getRoleUserCount(role.name)}
-                        </span>
-                      </td>
-                      <td style={{ textAlign: "right", paddingRight: "24px" }}>
-                        <div className="employee-action-buttons">
-                          <button
-                            onClick={() => openEditPermissions(role)}
-                            className="action-icon-btn"
-                            title="Edit Permissions"
-                          >
-                            <Edit size={16} />
-                          </button>
-                          <button
-                            onClick={() => handleDeleteRole(role._id)}
-                            className="action-icon-btn delete"
-                            title="Delete Role"
-                          >
-                            <Trash2 size={16} />
-                          </button>
+                                View Permissions
+                              </button>
+                              <button
+                                type="button"
+                                className="action-dropdown-btn"
+                                onClick={() => {
+                                  if (user.role) {
+                                    openEditPermissions(user.role);
+                                  } else {
+                                    setError("This employee does not have an assigned role to edit.");
+                                  }
+                                }}
+                              >
+                                Edit Permissions
+                              </button>
+                              <button
+                                type="button"
+                                className="action-dropdown-btn-danger"
+                                onClick={() => handleRemovePermissions(user)}
+                              >
+                                Remove Permissions
+                              </button>
+                            </div>
+                          )}
                         </div>
                       </td>
                     </tr>
@@ -340,21 +515,27 @@ export default function Roles() {
               </tbody>
             </table>
           </div>
-          <Pagination
-            currentPage={currentPage}
-            totalPages={totalPages}
-            onPageChange={setCurrentPage}
-            startItem={startIndex + 1}
-            endItem={Math.min(startIndex + itemsPerPage, roles.length)}
-            totalItems={roles.length}
-          />
+
+          <div style={{ marginTop: "16px" }}>
+            <p className="pagination-info" style={{ fontSize: "12px", color: "#64748b", textAlign: "left", marginBottom: "12px" }}>
+              Showing {startIndex + 1} to {Math.min(startIndex + itemsPerPage, filteredUsers.length)} of {filteredUsers.length} employees
+            </p>
+            <Pagination
+              currentPage={currentPage}
+              totalPages={totalPages}
+              onPageChange={setCurrentPage}
+              startItem={startIndex + 1}
+              endItem={Math.min(startIndex + itemsPerPage, filteredUsers.length)}
+              totalItems={filteredUsers.length}
+            />
+          </div>
         </div>
       </div>
 
       {/* Add Role Modal Dialog */}
       {isAddModalOpen && (
         <div className="modal-backdrop">
-          <div className="modal-content-card" style={{ maxWidth: "450px" }}>
+          <div className="modal-content-card-wide">
             <div className="modal-header">
               <div>
                 <h2>Add New Role</h2>
@@ -409,7 +590,7 @@ export default function Roles() {
       {/* Edit Permissions Modal Dialog */}
       {isEditModalOpen && selectedRole && (
         <div className="modal-backdrop">
-          <div className="modal-content-card" style={{ maxWidth: "500px" }}>
+          <div className="modal-content-card-wide" style={{ maxWidth: "1100px" }}>
             <div className="modal-header">
               <div>
                 <h2>Edit Permissions</h2>
@@ -427,42 +608,105 @@ export default function Roles() {
             </div>
 
             <form onSubmit={handleSavePermissions} className="enroll-form">
-              <div className="form-group" style={{ marginBottom: "20px" }}>
-                <label style={{ marginBottom: "12px" }}>Select Permissions Granted</label>
-                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "10px" }}>
-                  {ALL_SYSTEM_PERMISSIONS.map((perm) => {
-                    const isChecked = editPermissions.includes(perm);
-                    return (
-                      <label
-                        key={perm}
-                        style={{
-                          display: "flex",
-                          alignItems: "center",
-                          gap: "8px",
-                          padding: "10px",
-                          border: `1px solid ${isChecked ? "#10b981" : "#e2e8f0"}`,
-                          borderRadius: "8px",
-                          backgroundColor: isChecked ? "#f0fdf4" : "#ffffff",
-                          cursor: "pointer",
-                          transition: "all 0.2s"
-                        }}
-                      >
-                        <input
-                          type="checkbox"
-                          checked={isChecked}
-                          onChange={() => togglePermission(perm)}
-                          style={{ accentColor: "#10b981", width: "16px", height: "16px" }}
-                        />
-                        <span style={{ fontSize: "14px", fontWeight: "600", textTransform: "capitalize", color: isChecked ? "#065f46" : "#475569" }}>
-                          {perm}
-                        </span>
-                      </label>
-                    );
-                  })}
+              <div style={{ display: "flex", gap: "18px", alignItems: "flex-start" }}>
+                {/* Left: Employee list */}
+                <div style={{ width: "22%", border: "1px solid #e6edf3", borderRadius: "8px", padding: "12px", background: "#fff" }}>
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "8px" }}>
+                    <strong style={{ fontSize: "13px" }}>Select Employee</strong>
+                    <button type="button" onClick={() => { /* placeholder for selecting none */ }} style={{ background: "transparent", border: "none", color: "#64748b", cursor: "pointer" }}>Clear</button>
+                  </div>
+                  <div style={{ maxHeight: "360px", overflowY: "auto" }}>
+                    {users.length === 0 ? (
+                      <div style={{ color: "#64748b", fontSize: "13px" }}>No users</div>
+                    ) : (
+                      users.map(u => {
+                        const isAssigned = u.role && (u.role.name?.toLowerCase() === selectedRole.name?.toLowerCase() || u.role?._id === selectedRole._id);
+                        return (
+                          <div key={u._id} style={{ display: "flex", alignItems: "center", gap: "10px", padding: "8px", borderRadius: "6px", background: isAssigned ? "#eef2ff" : "transparent", cursor: "pointer", marginBottom: "6px" }}>
+                            <div style={{ width: 36, height: 36, borderRadius: "50%", background: "#eef2f8", display: "flex", alignItems: "center", justifyContent: "center", fontWeight: 700, color: "#0f172a" }}>
+                              {u.name ? u.name.charAt(0).toUpperCase() : "U"}
+                            </div>
+                            <div style={{ fontSize: "13px" }}>
+                              <div style={{ fontWeight: 700 }}>{u.name || "Unnamed"}</div>
+                              <div style={{ fontSize: "12px", color: "#64748b" }}>{u.email || u._id}</div>
+                            </div>
+                          </div>
+                        );
+                      })
+                    )}
+                  </div>
+                </div>
+
+                {/* Center: Permission grid */}
+                <div style={{ width: "52%", border: "1px solid #e6edf3", borderRadius: "8px", padding: "12px", background: "#fff", overflowX: "auto" }}>
+                  <h3 style={{ fontSize: "13px", fontWeight: 700, color: "#334155", marginTop: 0 }}>Choose Access</h3>
+                  <table style={{ width: "100%", borderCollapse: "collapse", fontSize: "13px" }}>
+                    <thead>
+                      <tr style={{ backgroundColor: "#f8fafc", borderBottom: "1px solid #e2e8f0" }}>
+                        <th style={{ textAlign: "left", padding: "10px 16px", fontWeight: "600", color: "#475569" }}>Module / Field</th>
+                        <th style={{ textAlign: "center", padding: "10px 8px", fontWeight: "600", color: "#475569" }}>View</th>
+                        <th style={{ textAlign: "center", padding: "10px 8px", fontWeight: "600", color: "#475569" }}>Create</th>
+                        <th style={{ textAlign: "center", padding: "10px 8px", fontWeight: "600", color: "#475569" }}>Edit</th>
+                        <th style={{ textAlign: "center", padding: "10px 8px", fontWeight: "600", color: "#475569" }}>Delete</th>
+                        <th style={{ textAlign: "center", padding: "10px 8px", fontWeight: "600", color: "#475569" }}>Export</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {PERMISSION_GRID_MAPPING.map((item, idx) => (
+                        <tr key={item.key} style={{ borderBottom: idx < PERMISSION_GRID_MAPPING.length - 1 ? "1px solid #f1f5f9" : "none" }}>
+                          <td style={{ textAlign: "left", padding: "12px 16px", fontWeight: "600", color: "#334155" }}>
+                            {item.module}
+                          </td>
+                          {["view", "create", "edit", "delete", "export"].map((action) => {
+                            const isAllowed = item.actions[action];
+                            const isChecked = editPermissions.includes(`${item.key}:${action}`);
+                            return (
+                              <td key={action} style={{ textAlign: "center", padding: "12px 8px" }}>
+                                {isAllowed ? (
+                                  <input
+                                    type="checkbox"
+                                    checked={isChecked}
+                                    onChange={() => toggleGridPermission(item.key, action)}
+                                    style={{
+                                      accentColor: "#10b981",
+                                      width: "16px",
+                                      height: "16px",
+                                      cursor: "pointer"
+                                    }}
+                                  />
+                                ) : (
+                                  <span style={{ color: "#cbd5e1", fontSize: "14px" }}>—</span>
+                                )}
+                              </td>
+                            );
+                          })}
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+
+                {/* Right: Permission summary */}
+                <div style={{ width: "24%", border: "1px solid #e6edf3", borderRadius: "8px", padding: "12px", background: "#fff" }}>
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "8px" }}>
+                    <strong style={{ fontSize: "13px" }}>Permission Summary</strong>
+                    <button type="button" onClick={() => setEditPermissions([])} style={{ background: "transparent", border: "none", color: "#2563eb", cursor: "pointer" }}>Clear All</button>
+                  </div>
+                  <div style={{ fontSize: "13px", color: "#334155", maxHeight: "320px", overflowY: "auto" }}>
+                    {PERMISSION_GRID_MAPPING.map(item => {
+                      const actions = ["view", "create", "edit", "delete", "export"].filter(a => editPermissions.includes(`${item.key}:${a}`));
+                      return (
+                        <div key={item.key} style={{ marginBottom: "10px" }}>
+                          <div style={{ fontWeight: 700, color: "#0f172a" }}>{item.module}</div>
+                          <div style={{ color: "#64748b", fontSize: "12px" }}>{actions.length > 0 ? actions.map(a => a.charAt(0).toUpperCase() + a.slice(1)).join(", ") : "No access"}</div>
+                        </div>
+                      );
+                    })}
+                  </div>
                 </div>
               </div>
 
-              <div className="modal-actions">
+              <div className="modal-actions" style={{ marginTop: "14px", display: "flex", justifyContent: "flex-end", gap: "10px" }}>
                 <button
                   type="button"
                   className="btn-cancel"
@@ -481,6 +725,88 @@ export default function Roles() {
                 </button>
               </div>
             </form>
+          </div>
+        </div>
+      )}
+      {/* View Permissions Modal Dialog */}
+      {isViewModalOpen && viewingUser && (
+        <div className="modal-backdrop">
+          <div className="modal-content-card-wide" style={{ maxWidth: "600px" }}>
+            <div className="modal-header">
+              <div>
+                <h2>View Permissions</h2>
+                <p className="modal-subtitle">
+                  Granted access permissions for Employee: <span style={{ fontWeight: "700" }}>{viewingUser.displayName}</span>
+                </p>
+              </div>
+              <button
+                className="btn-close"
+                onClick={() => {
+                  setIsViewModalOpen(false);
+                  setViewingUser(null);
+                }}
+              >
+                <X size={20} />
+              </button>
+            </div>
+
+            <div style={{ padding: "16px 0" }}>
+              <div style={{ marginBottom: "16px", textAlign: "left" }}>
+                <strong>Role:</strong> <span className="role-pill-blue" style={{ marginLeft: "8px" }}>{viewingUser.role?.name || "None"}</span>
+              </div>
+              <div style={{ maxHeight: "300px", overflowY: "auto", border: "1px solid #e2e8f0", borderRadius: "8px" }}>
+                <table style={{ width: "100%", borderCollapse: "collapse", fontSize: "13px" }}>
+                  <thead>
+                    <tr style={{ backgroundColor: "#f8fafc", borderBottom: "1px solid #e2e8f0" }}>
+                      <th style={{ textAlign: "left", padding: "10px 16px", fontWeight: "600", color: "#475569" }}>Module</th>
+                      <th style={{ textAlign: "left", padding: "10px 16px", fontWeight: "600", color: "#475569" }}>Actions Check</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {PERMISSION_GRID_MAPPING.map((item) => {
+                      const permissions = viewingUser.role?.permissions || [];
+                      const allowedActions = ["view", "create", "edit", "delete", "export"].filter(action =>
+                        permissions.includes(`${item.key}:${action}`)
+                      );
+
+                      return (
+                        <tr key={item.key} style={{ borderBottom: "1px solid #f1f5f9" }}>
+                          <td style={{ textAlign: "left", padding: "10px 16px", fontWeight: "600", color: "#334155" }}>
+                            {item.module}
+                          </td>
+                          <td style={{ textAlign: "left", padding: "10px 16px", color: "#64748b" }}>
+                            {allowedActions.length > 0 ? (
+                              <div style={{ display: "flex", gap: "6px", flexWrap: "wrap", justifyContent: "flex-start" }}>
+                                {allowedActions.map(a => (
+                                  <span key={a} style={{ backgroundColor: "#f1f5f9", padding: "2px 8px", borderRadius: "4px", fontSize: "11px", fontWeight: "600", color: "#475569", textTransform: "capitalize" }}>
+                                    {a}
+                                  </span>
+                                ))}
+                              </div>
+                            ) : (
+                              <span style={{ color: "#cbd5e1", fontStyle: "italic" }}>No access</span>
+                            )}
+                          </td>
+                        </tr>
+                      );
+                    })}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            <div className="modal-actions" style={{ display: "flex", justifyContent: "flex-end" }}>
+              <button
+                type="button"
+                className="btn-cancel"
+                onClick={() => {
+                  setIsViewModalOpen(false);
+                  setViewingUser(null);
+                }}
+              >
+                Close
+              </button>
+            </div>
           </div>
         </div>
       )}
