@@ -1,496 +1,1213 @@
-.counter {
-  font-size: 16px;
-  padding: 5px 10px;
-  border-radius: 5px;
-  color: var(--accent);
-  background: var(--accent-bg);
-  border: 2px solid transparent;
-  transition: border-color 0.3s;
-  margin-bottom: 24px;
+/* App.css - Tailwind CSS (v4) converted styles */
+@reference "tailwindcss";
 
-  &:hover {
-    border-color: var(--accent-border);
+/* Modals */
+@utility modal-backdrop {
+  @apply fixed inset-0 z-50 bg-[#090d16]/60 backdrop-blur-xl flex items-center justify-center p-4;
+}
+
+@utility modal-content-card {
+  background: var(--surface);
+  @apply rounded-3xl w-full max-w-5xl p-8 shadow-2xl border border-slate-100 dark:border-slate-800 transition-all duration-300;
+  max-height: none;
+  overflow: visible;
+}
+
+@utility modal-content-card-wide {
+  background: var(--surface);
+  @apply rounded-3xl w-full max-w-6xl p-8 shadow-2xl border border-slate-100 dark:border-slate-800 transition-all duration-300;
+  max-height: none;
+  overflow: visible;
+}
+
+@utility modal-box {
+  background: var(--surface);
+  @apply rounded-3xl w-full max-w-2xl p-8 shadow-2xl border border-slate-100 dark:border-slate-800 transition-all duration-300;
+}
+
+@utility password-input-wrap {
+  @apply relative w-full;
+
+  & input {
+    @apply w-full;
+    padding-right: 2.75rem !important;
   }
-  &:focus-visible {
-    outline: 2px solid var(--accent);
-    outline-offset: 2px;
+
+  & .password-toggle-btn {
+    @apply absolute right-3 top-1/2 -translate-y-1/2 border-0 bg-transparent cursor-pointer flex items-center justify-center text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200 p-0 z-10;
   }
 }
 
-.hero {
-  position: relative;
+@utility modal-header {
+  @apply flex justify-between items-center pb-5 border-b border-slate-100 dark:border-slate-800 mb-6;
 
-  .base,
-  .framework,
-  .vite {
-    inset-inline: 0;
-    margin: 0 auto;
-  }
-
-  .base {
-    width: 170px;
-    position: relative;
-    z-index: 0;
-  }
-
-  .framework,
-  .vite {
-    position: absolute;
-  }
-
-  .framework {
-    z-index: 1;
-    top: 34px;
-    height: 28px;
-    transform: perspective(2000px) rotateZ(300deg) rotateX(44deg) rotateY(39deg)
-      scale(1.4);
-  }
-
-  .vite {
-    z-index: 0;
-    top: 107px;
-    height: 26px;
-    width: auto;
-    transform: perspective(2000px) rotateZ(300deg) rotateX(40deg) rotateY(39deg)
-      scale(0.8);
+  & h2,
+  & h3 {
+    @apply text-xl font-extrabold text-slate-900 dark:text-white tracking-tight;
   }
 }
 
-#center {
-  display: flex;
-  flex-direction: column;
-  gap: 25px;
-  place-content: center;
-  place-items: center;
-  flex-grow: 1;
-
-  @media (max-width: 1024px) {
-    padding: 32px 20px 24px;
-    gap: 18px;
-  }
+@utility modal-subtitle {
+  @apply text-xs text-slate-400 dark:text-slate-500 mt-1.5 font-medium;
 }
 
-#next-steps {
-  display: flex;
-  border-top: 1px solid var(--border);
-  text-align: left;
+@utility btn-close {
+  @apply text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 p-2 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800 transition-all duration-200 cursor-pointer;
+}
 
-  & > div {
-    flex: 1 1 0;
-    padding: 32px;
-    @media (max-width: 1024px) {
-      padding: 24px 20px;
+/* Forms styling */
+@utility enroll-form {
+  @apply flex flex-col gap-5;
+}
+
+@utility form-grid-2 {
+  @apply grid grid-cols-1 md:grid-cols-2 gap-5;
+}
+
+@utility form-grid-3 {
+  @apply grid grid-cols-1 md:grid-cols-3 gap-5;
+}
+
+@utility form-group {
+  @apply flex flex-col gap-2;
+
+  & label {
+    @apply text-[10px] font-extrabold text-slate-400 dark:text-slate-400 uppercase tracking-widest leading-none;
+
+    & .req {
+      @apply text-red-500 ml-0.5;
     }
   }
 
-  .icon {
-    margin-bottom: 16px;
-    width: 22px;
-    height: 22px;
+  & input,
+  & select,
+  & textarea {
+    @apply px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/60 hover:bg-slate-50/40 focus:bg-white dark:focus:bg-slate-900 text-slate-800 dark:text-slate-200 text-sm outline-none transition-all focus:border-emerald-500 focus:ring-4 focus:ring-emerald-500/10 placeholder-slate-400 dark:placeholder-slate-600;
+  }
+}
+
+@utility form-field {
+  @apply flex flex-col gap-2 mb-5;
+
+  & label {
+    @apply text-[10px] font-extrabold text-slate-400 dark:text-slate-400 uppercase tracking-widest leading-none;
+
+    & .req {
+      @apply text-red-500 ml-0.5;
+    }
   }
 
-  @media (max-width: 1024px) {
-    flex-direction: column;
+  & input,
+  & select,
+  & textarea {
+    @apply px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/60 hover:bg-slate-50/40 focus:bg-white dark:focus:bg-slate-900 text-slate-800 dark:text-slate-200 text-sm outline-none transition-all focus:border-emerald-500 focus:ring-4 focus:ring-emerald-500/10 placeholder-slate-400 dark:placeholder-slate-600;
+  }
+}
+
+@utility input-error {
+  @apply border-red-500 dark:border-red-600 focus:border-red-500 focus:ring-red-500/10;
+}
+
+@utility field-error {
+  @apply text-xs font-semibold text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-950/20 px-3 py-2 rounded-lg border border-red-100 dark:border-red-950/40 mt-1.5;
+}
+
+@utility modal-actions {
+  @apply flex justify-end gap-3 pt-5 border-t border-slate-100 dark:border-slate-800 mt-6;
+}
+
+/* Sidebar Custom Glass-Deck */
+@utility sidebar {
+  @apply w-[260px] bg-gradient-to-b from-[#080f1a] to-[#041a15] text-white p-6 flex flex-col justify-between shrink-0 border-r border-emerald-950/40 shadow-2xl;
+}
+
+@utility sidebar-logo-box {
+  @apply flex items-center gap-3 mb-8;
+}
+
+@utility logo-badge {
+  @apply bg-gradient-to-br from-emerald-400 to-emerald-600 text-white font-extrabold text-lg px-3 py-2 rounded-xl shadow-lg shadow-emerald-500/10;
+}
+
+@utility logo-text {
+  @apply text-xl font-extrabold tracking-tight text-white;
+}
+
+@utility nav-list {
+  @apply flex flex-col gap-1;
+}
+
+@utility nav-item {
+  @apply flex items-center gap-3.5 px-4 py-3.5 rounded-xl text-sm font-bold text-emerald-100/60 hover:bg-emerald-800/15 hover:text-white transition-all duration-200 text-left cursor-pointer;
+
+  &.active {
+    @apply bg-gradient-to-r from-emerald-500 to-emerald-600 text-white shadow-xl shadow-emerald-500/20;
+  }
+}
+
+@utility sidebar-divider {
+  @apply my-6 border-t border-emerald-950/40;
+}
+
+@utility dept-legend-title {
+  @apply text-[10px] font-extrabold tracking-widest text-emerald-400/50 uppercase mb-3.5;
+}
+
+@utility dept-legend-item {
+  @apply flex justify-between items-center text-xs text-emerald-100/70 mb-2.5 font-semibold;
+}
+
+@utility dot {
+  @apply w-2 h-2 rounded-full inline-block mr-2;
+
+  &.dot-production {
+    @apply bg-emerald-600;
+  }
+
+  &.dot-sales {
+    @apply bg-indigo-500;
+  }
+
+  &.dot-it {
+    @apply bg-sky-400;
+  }
+
+  &.dot-admin {
+    @apply bg-rose-500;
+  }
+}
+
+@utility sidebar-user {
+  @apply pt-5 border-t border-emerald-950/40 flex items-center gap-3;
+}
+
+@utility user-avatar-badge {
+  @apply w-10 h-10 rounded-full bg-emerald-500 text-white font-extrabold flex items-center justify-center text-sm border-2 border-emerald-400/20 shadow-lg;
+}
+
+@utility user-name {
+  @apply text-sm font-extrabold text-white line-clamp-1;
+}
+
+@utility user-role {
+  @apply text-[9px] font-black text-emerald-400 uppercase tracking-widest leading-none mt-1;
+}
+
+/* Page Layout Wrappers */
+@utility main-content {
+  @apply flex-1 p-6 md:p-10 overflow-y-auto;
+}
+
+@utility top-header {
+  @apply flex justify-between items-center mb-10 gap-4;
+}
+
+@utility search-box {
+  @apply flex items-center gap-3 bg-white dark:bg-slate-900/40 px-4 py-3 rounded-2xl border border-slate-200 dark:border-slate-800/80 w-full md:w-160 shadow-sm transition-all duration-300 focus-within:border-emerald-500 focus-within:ring-4 focus-within:ring-emerald-500/10 focus-within:md:w-[50vw];
+
+  & input {
+    @apply border-none outline-none w-full text-slate-800 dark:text-slate-100 bg-transparent text-sm font-semibold placeholder-slate-400 dark:placeholder-slate-600;
+  }
+}
+
+@utility header-right {
+  @apply flex items-center gap-4;
+}
+
+@utility icon-btn {
+  @apply p-3 rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-100 shadow-sm hover:bg-slate-50 dark:hover:bg-slate-800/60 transition-all duration-300 cursor-pointer;
+}
+
+@utility admin-profile-badge {
+  @apply flex items-center gap-3 bg-white dark:bg-slate-900 px-4 py-2 rounded-2xl border border-slate-200 dark:border-slate-800/80 font-bold text-slate-800 dark:text-slate-200 text-sm shadow-sm transition-all;
+}
+
+@utility admin-avatar-small {
+  @apply w-7 h-7 rounded-lg bg-gradient-to-br from-emerald-400 to-emerald-600 text-white flex items-center justify-center text-[10px] font-extrabold shadow-md;
+}
+
+/* Page Header block */
+@utility page-header {
+  @apply flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-5 text-left;
+}
+
+@utility dashboard-title {
+  @apply text-3xl font-extrabold text-slate-900 dark:text-white tracking-tight;
+}
+
+@utility dashboard-subtitle {
+  @apply text-sm text-slate-500 dark:text-slate-400 mt-1.5 font-medium;
+}
+
+@utility status-badge {
+  @apply px-4 py-2.5 bg-emerald-50/60 dark:bg-emerald-950/20 text-emerald-700 dark:text-emerald-400 border border-emerald-100 dark:border-emerald-950/50 rounded-2xl text-xs md:text-sm font-bold shadow-sm flex items-center gap-2;
+}
+
+/* Developer Stats Grid */
+@utility stats-grid {
+  @apply grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-10;
+}
+
+@utility dashboard-summary-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 20px;
+  margin-bottom: 40px;
+}
+
+@utility summary-card {
+  @apply rounded-2xl border border-slate-200 dark:border-slate-800/80 p-5 shadow-sm flex flex-col justify-between transition-all duration-300 hover:-translate-y-1 hover:shadow-lg hover:shadow-emerald-500/5 hover:border-emerald-500/30;
+  width: 100%;
+  min-height: 140px;
+}
+
+@utility stat-card {
+  @apply rounded-2xl border border-slate-200 dark:border-slate-800/80 p-5 shadow-sm flex flex-col justify-between gap-3 transition-all duration-300 hover:translate-y-[-4px] hover:shadow-lg hover:shadow-emerald-500/5 hover:border-emerald-500/30;
+  min-height: 140px;
+  width: 100%;
+}
+
+@utility stat-header {
+  @apply flex items-center gap-4 w-full;
+}
+
+@utility stat-icon-box {
+  @apply w-12 h-12 rounded-2xl bg-transparent text-emerald-600 dark:text-emerald-400 flex items-center justify-center shrink-0;
+}
+
+@utility stat-icon-plain {
+  @apply w-12 h-12 rounded-2xl bg-transparent flex items-center justify-center shrink-0 text-2xl;
+}
+
+@utility stat-icon-wrapper {
+  @apply w-12 h-12 rounded-2xl flex items-center justify-center shrink-0 text-xl font-bold bg-transparent;
+
+  &.green {
+    @apply text-emerald-600 dark:text-emerald-400;
+  }
+
+  &.teal {
+    @apply text-teal-600 dark:text-teal-400;
+  }
+
+  &.blue {
+    @apply text-blue-600 dark:text-blue-400;
+  }
+}
+
+@utility stat-info {
+  @apply flex flex-col;
+}
+
+@utility stat-label {
+  @apply text-[10px] font-extrabold text-slate-400 dark:text-slate-500 uppercase tracking-widest leading-none;
+}
+
+@utility stat-title {
+  @apply text-[10px] font-extrabold text-slate-400 dark:text-slate-500 uppercase tracking-widest leading-none;
+}
+
+@utility stat-value {
+  @apply text-2xl font-extrabold text-slate-900 dark:text-white mt-2 tracking-tight;
+}
+
+@utility stat-number {
+  @apply text-2xl font-extrabold text-slate-900 dark:text-white mt-2 tracking-tight;
+}
+
+@utility stat-description {
+  @apply text-xs text-slate-400 dark:text-slate-500 font-medium leading-relaxed;
+}
+
+/* Dashboard Middle Grid */
+@utility middle-grid {
+  @apply grid grid-cols-1 lg:grid-cols-3 gap-6 mb-10;
+}
+
+@utility bottom-grid {
+  @apply grid grid-cols-1 lg:grid-cols-2 gap-6 mb-10;
+}
+
+@utility card-box {
+  background: transparent;
+  @apply rounded-2xl border border-slate-200/80 dark:border-slate-800/85 p-6 shadow-sm flex flex-col;
+}
+
+@utility table-card {
+  background: #ffffff;
+  @apply rounded-2xl border border-slate-200 dark:border-slate-800/80 p-6 shadow-sm;
+}
+
+@utility card-header-row {
+  @apply flex justify-between items-center mb-6;
+}
+
+@utility card-title {
+  @apply text-sm font-extrabold text-slate-900 dark:text-white uppercase tracking-wider opacity-90;
+}
+
+@utility view-all-link {
+  @apply text-xs font-bold text-emerald-500 hover:text-emerald-400 cursor-pointer transition-colors;
+}
+
+/* Quick Action Forms & Lists */
+@utility notices-list {
+  @apply flex flex-col gap-3;
+}
+
+@utility notice-item {
+  @apply bg-slate-50/50 dark:bg-slate-950/10 hover:bg-slate-50 dark:hover:bg-slate-950/20 border border-slate-100 dark:border-slate-900 p-4 rounded-xl text-xs md:text-sm text-slate-700 dark:text-slate-300 leading-relaxed font-semibold transition-all;
+}
+
+@utility action-buttons-stack {
+  @apply flex flex-col gap-3;
+}
+
+@utility btn-action {
+  @apply inline-flex items-center justify-center gap-2 p-3.5 bg-emerald-500/20 hover:bg-emerald-500/40 text-emerald-700 dark:text-emerald-400 border border-emerald-500/20 rounded-xl text-xs md:text-sm font-bold shadow-sm cursor-pointer transition-all active:scale-95 duration-200;
+
+  &.edit {
+    @apply bg-blue-50 dark:bg-blue-950/20 text-blue-600 dark:text-blue-400 border border-blue-100 dark:border-blue-950/50 hover:bg-blue-100/50 shadow-none;
+  }
+
+  &.delete {
+    @apply bg-red-50 dark:bg-red-950/20 text-red-600 dark:text-red-400 border border-red-100 dark:border-red-950/50 hover:bg-red-100/50 shadow-none;
+  }
+}
+
+@utility managers-list {
+  @apply flex flex-col gap-3.5;
+}
+
+@utility manager-item {
+  @apply flex justify-between items-center p-3 rounded-xl hover:bg-slate-50/50 dark:hover:bg-slate-950/10 transition-colors border border-transparent hover:border-slate-100 dark:hover:border-slate-900;
+}
+
+@utility manager-name {
+  @apply text-sm font-extrabold text-slate-800 dark:text-slate-200;
+}
+
+@utility manager-role {
+  @apply text-[10px] text-slate-400 dark:text-slate-500 uppercase tracking-widest mt-0.5 font-bold;
+}
+
+@utility btn-contact {
+  @apply text-xs font-bold bg-emerald-50 dark:bg-emerald-950/20 text-emerald-600 dark:text-emerald-400 px-3.5 py-2 rounded-lg hover:bg-emerald-100 dark:hover:bg-emerald-950/40 transition-colors cursor-pointer;
+}
+
+/* Directories, Filters & Columns */
+@utility employee-directory-card {
+  background: #ffffff;
+  @apply rounded-2xl border border-slate-200 dark:border-slate-800/80 shadow-sm mt-8 overflow-hidden;
+}
+
+@utility filters-row {
+  @apply flex flex-wrap justify-between items-center gap-4 px-4 py-5 border-b border-slate-100 dark:border-slate-800/60 bg-transparent;
+}
+
+@utility filters-left {
+  @apply flex flex-wrap items-center gap-3.5;
+}
+
+@utility filters-right {
+  @apply flex items-center;
+}
+
+@utility filters-label {
+  @apply text-xs font-extrabold text-slate-400 dark:text-slate-500 uppercase tracking-wider flex items-center gap-2;
+}
+
+@utility filter-select {
+  @apply bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl px-3.5 py-2 text-xs font-bold text-slate-700 dark:text-slate-300 outline-none cursor-pointer hover:border-slate-300 focus:border-emerald-500 focus:ring-4 focus:ring-emerald-500/10 transition-all;
+}
+
+@utility showing-indicator {
+  @apply text-xs font-bold text-slate-500 dark:text-slate-400;
+}
+
+@utility table-responsive {
+  @apply overflow-x-auto;
+  display: block;
+  width: 100%;
+  max-width: 100%;
+  padding-bottom: 2px;
+}
+
+@utility table-wrapper {
+  @apply overflow-x-auto;
+  display: block;
+  width: 100%;
+  max-width: 100%;
+}
+
+@utility employees-table-wrapper {
+  @apply overflow-x-auto;
+  display: block;
+  width: 100%;
+  max-width: 100%;
+}
+
+@utility employee-table {
+  @apply border-collapse text-left;
+  width: 100%;
+  max-width: 100%;
+  table-layout: auto;
+  white-space: normal;
+  word-break: break-word;
+  background: #ffffff;
+
+  & th {
+    @apply bg-slate-50 text-slate-500 dark:text-slate-400 font-semibold text-[12px] uppercase border-b border-slate-200 dark:border-slate-800/60 text-left;
+    padding: 14px 20px !important;
+    vertical-align: middle;
+    white-space: nowrap;
+  }
+
+  & th:first-child,
+  & td:first-child {
+    padding-left: 24px !important;
+  }
+
+  & th:last-child,
+  & td:last-child {
+    padding-right: 24px !important;
+  }
+
+  & td {
+    padding: 13px 20px !important;
+    vertical-align: middle;
+    white-space: normal;
+    text-align: left;
+    @apply border-b border-slate-100/80 dark:border-slate-800/30 text-sm text-slate-700 dark:text-slate-300;
+  }
+
+  & tbody tr:last-child td {
+    border-bottom: none;
+  }
+
+  & tbody tr:hover {
+    @apply bg-slate-50/70 dark:bg-slate-950/10;
+  }
+
+  & .table-number-col {
+    text-align: right;
+  }
+
+  & .table-center-col {
+    text-align: center;
+  }
+
+  & .table-actions-col {
     text-align: center;
   }
 }
 
-#docs {
-  border-right: 1px solid var(--border);
+@utility employee-row {
+  @apply hover:bg-slate-50/40 dark:hover:bg-slate-950/10 transition-colors;
+}
 
-  @media (max-width: 1024px) {
-    border-right: none;
-    border-bottom: 1px solid var(--border);
+@utility employee-avatar-wrapper {
+  @apply flex items-center gap-3.5;
+}
+
+@utility employee-avatar-circle {
+  @apply w-9 h-9 rounded-xl bg-gradient-to-br from-emerald-400 to-emerald-600 text-white font-extrabold flex items-center justify-center text-xs shrink-0 border border-emerald-300/25 shadow-md;
+}
+
+@utility employee-name-text {
+  @apply text-sm font-extrabold text-slate-800 dark:text-slate-200;
+}
+
+@utility employee-meta-text {
+  @apply text-xs text-slate-400 dark:text-slate-500 font-medium;
+}
+
+@utility employee-dept-pill {
+  @apply bg-indigo-50 dark:bg-indigo-950/20 text-indigo-700 dark:text-indigo-400 px-3 py-1 rounded-full font-bold text-xs border border-indigo-100 dark:border-indigo-950/40;
+}
+
+@utility employee-role-type {
+  @apply text-sm font-bold text-slate-800 dark:text-slate-300;
+}
+
+@utility employee-joining-date {
+  @apply text-xs text-slate-400 dark:text-slate-500 font-medium;
+}
+
+@utility employee-status-badge {
+  @apply inline-flex items-center gap-1.5 px-3 py-1 rounded-full font-bold text-xs border;
+
+  &.active {
+    @apply bg-emerald-50 dark:bg-emerald-950/20 text-emerald-700 dark:text-emerald-400 border-emerald-100 dark:border-emerald-950/40;
+  }
+
+  &.inactive {
+    @apply bg-red-50 dark:bg-red-950/20 text-red-700 dark:text-red-400 border-red-100 dark:border-red-950/40;
+  }
+
+  & .bullet {
+    @apply w-1.5 h-1.5 rounded-full inline-block;
+  }
+
+  &.active .bullet {
+    @apply bg-emerald-500;
+  }
+
+  &.inactive .bullet {
+    @apply bg-red-500;
   }
 }
 
-#next-steps ul {
-  list-style: none;
-  padding: 0;
-  display: flex;
-  gap: 8px;
-  margin: 32px 0 0;
+@utility employee-action-buttons {
+  @apply flex gap-2 justify-start;
+}
 
-  .logo {
-    height: 18px;
-  }
+@utility action-icon-btn {
+  @apply p-2 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 text-slate-400 hover:text-slate-800 dark:hover:text-slate-100 hover:bg-slate-50 dark:hover:bg-slate-800 hover:border-slate-300 dark:hover:border-slate-700 transition-all cursor-pointer;
 
-  a {
-    color: var(--text-h);
-    font-size: 16px;
-    border-radius: 6px;
-    background: var(--social-bg);
-    display: flex;
-    padding: 6px 12px;
-    align-items: center;
-    gap: 8px;
-    text-decoration: none;
-    transition: box-shadow 0.3s;
-
-    &:hover {
-      box-shadow: var(--shadow);
-    }
-    .button-icon {
-      height: 18px;
-      width: 18px;
-    }
-  }
-
-  @media (max-width: 1024px) {
-    margin-top: 20px;
-    flex-wrap: wrap;
-    justify-content: center;
-
-    li {
-      flex: 1 1 calc(50% - 8px);
-    }
-
-    a {
-      width: 100%;
-      justify-content: center;
-      box-sizing: border-box;
-    }
+  &.delete:hover {
+    @apply bg-red-50 dark:bg-red-950/20 border-red-200 dark:border-red-900/50 text-red-500;
   }
 }
 
-#spacer {
-  height: 88px;
-  border-top: 1px solid var(--border);
-  @media (max-width: 1024px) {
-    height: 48px;
-  }
+@utility pagination-controls {
+  @apply flex flex-col gap-3 md:flex-row md:items-center md:justify-between px-6 py-4 bg-transparent border-t border-slate-200 dark:border-slate-800 rounded-b-2xl;
 }
 
-.ticks {
-  position: relative;
+@utility pagination-info {
+  @apply text-xs font-semibold text-slate-500 dark:text-slate-400;
+}
+
+@utility pagination-actions {
+  @apply flex flex-wrap items-center gap-2;
+}
+
+@utility pagination-button {
+  @apply px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-all duration-200 font-semibold;
+}
+
+@utility pagination-button-current {
+  @apply bg-emerald-500 text-white border-emerald-500 shadow-sm;
+}
+
+@utility pagination-button-disabled {
+  @apply text-slate-400 bg-slate-100 dark:bg-slate-900 cursor-not-allowed border-slate-200 dark:border-slate-800;
+}
+
+/* Standalone Departments View */
+@utility departments-table {
+  @apply border-collapse text-left;
   width: 100%;
+  max-width: 100%;
+  table-layout: auto;
+  white-space: normal;
+  word-break: break-word;
+  background: #ffffff;
 
-  &::before,
-  &::after {
-    content: '';
-    position: absolute;
-    top: -4.5px;
-    border: 5px solid transparent;
+  & th {
+    @apply bg-slate-50 text-slate-500 dark:text-slate-400 font-semibold text-[12px] uppercase border-b border-slate-200 dark:border-slate-800/60 text-left;
+    padding: 14px 20px !important;
+    vertical-align: middle;
+    white-space: nowrap;
   }
 
-  &::before {
-    left: 0;
-    border-left-color: var(--border);
+  & th:first-child,
+  & td:first-child {
+    padding-left: 24px !important;
   }
-  &::after {
-    right: 0;
-    border-right-color: var(--border);
+
+  & th:last-child,
+  & td:last-child {
+    padding-right: 24px !important;
+  }
+
+  & td {
+    padding: 13px 20px !important;
+    vertical-align: middle;
+    white-space: normal;
+    text-align: left;
+    @apply border-b border-slate-100/80 dark:border-slate-800/30 text-sm text-slate-700 dark:text-slate-300;
+  }
+
+  & tbody tr:last-child td {
+    border-bottom: none;
+  }
+
+  & tbody tr:hover {
+    @apply bg-slate-50/70 dark:bg-slate-950/10 transition-all;
   }
 }
-.dashboard-page {
-  min-height: 100vh;
-  background: #f8fafc;
+
+@utility id-badge {
+  @apply font-mono bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 px-2.5 py-1 rounded-lg font-bold text-[11px] border border-slate-200/50 dark:border-slate-700/50;
 }
 
-.dashboard-card {
-  border-radius: 32px;
-  border: 1px solid rgba(148, 163, 184, 0.18);
-  background: rgba(255, 255, 255, 0.95);
-  box-shadow: 0 24px 48px rgba(15, 23, 42, 0.08);
+@utility emp-count-pill {
+  @apply bg-emerald-50 dark:bg-emerald-950/20 text-emerald-700 dark:text-emerald-400 px-2.5 py-1 rounded-full font-bold text-xs border border-emerald-100 dark:border-emerald-950/40 inline-flex items-center gap-1.5;
 }
 
-.dashboard-callout {
-  background: #ecfdf5;
-  border-radius: 24px;
-  padding: 1.5rem;
+/* Charts styling */
+@utility chart-bars-container {
+  @apply flex items-end justify-between h-48 pt-8 border-b border-slate-100 dark:border-slate-800 mx-2;
 }
 
-.dashboard-stat-card {
-  border-radius: 24px;
-  background: #f8fafc;
-  border: 1px solid rgba(148, 163, 184, 0.12);
+@utility bar-pair {
+  @apply flex gap-1 items-end h-full w-full justify-center;
 }
-/* App.css - All CSS styles for EMS Admin Dashboard */
 
-.dashboard-app {
-  display: flex;
-  min-height: 100vh;
-  background-color: #f4f7f6;
-  font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
-  color: #000000; /* Main text color set to pure black */
+@utility bar-dark {
+  @apply w-4 bg-slate-800 dark:bg-slate-700 rounded-t-lg transition-all duration-500 hover:bg-slate-700;
+}
+
+@utility bar-emerald {
+  @apply w-4 bg-emerald-500 rounded-t-lg transition-all duration-500 hover:bg-emerald-400;
+}
+
+@utility chart-months-row {
+  @apply flex justify-between font-extrabold text-[10px] tracking-widest text-slate-400 mt-3 px-2 uppercase;
+}
+
+@utility donut-center-container {
+  @apply flex justify-center my-8 relative;
+}
+
+@utility donut-graphic {
+  @apply w-40 h-40 rounded-full border-[12px] border-emerald-600 border-r-indigo-500 border-b-cyan-500 border-l-rose-500 flex flex-col items-center justify-center text-3xl font-extrabold text-slate-800 dark:text-white shadow-xl relative;
+}
+
+@utility donut-legend-grid {
+  @apply grid grid-cols-2 gap-3.5 text-xs font-bold text-slate-500 dark:text-slate-400 border-t border-slate-100 dark:border-slate-800/80 pt-5 mt-3;
+}
+
+/* Buttons theme additions */
+@utility btn-enroll-employee {
+  @apply px-4 py-2.5 bg-emerald-500/20 hover:bg-emerald-500/40 text-emerald-700 dark:text-emerald-400 border border-emerald-500/20 rounded-xl font-bold shadow-sm cursor-pointer transition-all active:scale-95 text-center flex items-center justify-center gap-2 text-sm;
+}
+
+@utility btn-add-dept {
+  @apply px-4 py-2.5 bg-emerald-500/20 hover:bg-emerald-500/40 text-emerald-700 dark:text-emerald-400 border border-emerald-500/20 rounded-full font-bold shadow-sm cursor-pointer transition-all active:scale-95 text-center inline-flex items-center justify-center gap-2 text-sm;
 }
 
 /* =========================================================
-   EMS Portal - Enroll Employee Modal & Directory Stylesheet
+   EMPLOYEE DASHBOARD CLASSES
    ========================================================= */
 
-.modal-backdrop {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: rgba(0, 0, 0, 0.45);
-  backdrop-filter: blur(4px);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 1000;
-  padding: 20px;
+@utility emp-main-content {
+  @apply p-6 md:p-10 overflow-y-auto;
 }
 
-.modal-content-card {
-  background: #ffffff;
-  border-radius: 16px;
+@utility emp-top-header {
+  @apply flex justify-between items-center mb-10 gap-4;
+}
+
+@utility emp-search-box {
+  @apply flex items-center gap-3 bg-white dark:bg-slate-900/40 px-4 py-3 rounded-2xl border border-slate-200 dark:border-slate-800/80 w-full md:w-160 shadow-sm transition-all duration-300 focus-within:border-emerald-500 focus-within:ring-4 focus-within:ring-emerald-500/10 focus-within:md:w-[50vw];
+
+  & input {
+    @apply border-none outline-none w-full text-slate-800 dark:text-slate-100 bg-transparent text-sm font-semibold placeholder-slate-400 dark:placeholder-slate-600;
+  }
+}
+
+@utility emp-user-profile-badge {
+  @apply flex items-center gap-3 bg-white dark:bg-slate-900 px-4 py-2 rounded-2xl border border-slate-200 dark:border-slate-800/80 font-bold text-slate-800 dark:text-slate-200 text-sm shadow-sm;
+}
+
+@utility emp-avatar-circle {
+  @apply w-8 h-8 rounded-xl bg-gradient-to-br from-emerald-400 to-emerald-600 text-white font-extrabold flex items-center justify-center text-[10px] shadow-md;
+}
+
+@utility emp-stats-grid {
+  @apply grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-10;
+}
+
+@utility emp-stat-card {
+  @apply rounded-2xl border border-slate-200 dark:border-slate-800/80 p-5 shadow-sm flex flex-col justify-between transition-all duration-300 hover:-translate-y-1 hover:shadow-lg hover:shadow-emerald-500/5 hover:border-emerald-500/30;
   width: 100%;
-  max-width: 680px;
-  max-height: 90vh;
-  overflow-y: auto;
-  padding: 28px;
-  box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.15);
-  box-sizing: border-box;
+  min-height: 140px;
 }
 
-.modal-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  margin-bottom: 20px;
-  border-bottom: 1px solid #f1f5f9;
-  padding-bottom: 14px;
+@utility emp-stat-top {
+  @apply flex flex-col items-start gap-3.5 mb-3;
 }
 
-.modal-header h2 { font-size: 20px; font-weight: 700; color: #0f172a; margin: 0; }
-.modal-subtitle { font-size: 13px; color: #64748b; margin-top: 4px; }
-
-.btn-close {
-  background: transparent; border: none; color: #64748b; cursor: pointer;
-  padding: 4px; border-radius: 6px; display: flex; align-items: center; justify-content: center;
+@utility emp-stat-title {
+  @apply text-[10px] font-extrabold text-slate-400 dark:text-slate-500 uppercase tracking-widest leading-none;
 }
 
-.error-alert-banner {
-  background-color: #fef2f2; border: 1px solid #fecaca; color: #dc2626;
-  padding: 10px 14px; border-radius: 8px; font-size: 13px; margin-bottom: 18px; font-weight: 500;
+@utility emp-stat-icon-box {
+  @apply w-10 h-10 rounded-xl bg-transparent text-emerald-600 dark:text-emerald-400 flex items-center justify-center;
 }
 
-.enroll-form { display: flex; flex-direction: column; gap: 16px; }
-.form-grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
-.form-grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; }
-
-.form-group { display: flex; flex-direction: column; gap: 6px; }
-.form-group label { font-size: 13px; font-weight: 600; color: #334155; }
-.form-group label .req { color: #dc2626; }
-
-.form-group input, .form-group select, .form-group textarea {
-  padding: 10px 14px; border-radius: 8px; border: 1px solid #cbd5e1;
-  font-family: inherit; font-size: 14px; color: #0f172a; outline: none; background-color: #ffffff;
+@utility emp-stat-value {
+  @apply text-2xl font-extrabold text-slate-900 dark:text-white mt-1 tracking-tight;
 }
 
-.form-group input:focus, .form-group select:focus, .form-group textarea:focus {
-  border-color: #059669; box-shadow: 0 0 0 3px rgba(5, 150, 105, 0.15);
+@utility emp-stat-subtext {
+  @apply text-[11px] font-bold text-emerald-600 dark:text-emerald-400 mt-2 flex items-center gap-1;
 }
 
-/* Input error styling for enroll form */
-.input-error {
-  border-color: #ef4444 !important;
-  box-shadow: 0 0 0 4px rgba(254, 226, 226, 0.6) !important;
+@utility emp-middle-grid {
+  @apply grid grid-cols-1 lg:grid-cols-3 gap-6 mb-10;
 }
 
-.field-error {
-  background-color: #fff1f2;
-  border: 1px solid #fecaca;
-  color: #7f1d1d;
-  padding: 8px 12px;
-  border-radius: 8px;
-  margin-top: 8px;
-  font-size: 13px;
-  font-weight: 700;
-}
-
-.modal-actions {
-  display: flex; justify-content: flex-end; gap: 12px; margin-top: 12px;
-  padding-top: 16px; border-top: 1px solid #f1f5f9;
-}
-
-.btn-cancel {
-  background-color: #f1f5f9; color: #475569; border: 1px solid #cbd5e1;
-  padding: 10px 20px; border-radius: 9999px; font-weight: 600; font-size: 14px; cursor: pointer;
-}
-
-.btn-submit {
-  background-color: #059669; color: #ffffff; border: none; padding: 10px 22px;
-  border-radius: 9999px; font-weight: 600; font-size: 14px; cursor: pointer;
-  box-shadow: 0 4px 10px rgba(5, 150, 105, 0.25);
-}
-
-.view-card { max-width: 580px; }
-.profile-details-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; padding: 12px 0; }
-.detail-item { font-size: 14px; color: #334155; background: #f8fafc; padding: 10px 14px; border-radius: 8px; border: 1px solid #e2e8f0; }
-.detail-item.full-width { grid-column: span 2; }
-.detail-item strong { color: #0f172a; }
-
-/* ================= 1. SIDEBAR STYLES ================= */
-.sidebar {
-  width: 260px;
-  background-color: #043e30; /* Dark Emerald Green */
-  color: #ffffff;
-  padding: 24px;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  flex-shrink: 0;
-}
-
-.sidebar-logo-box {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  margin-bottom: 32px;
-}
-
-.logo-badge {
-  background-color: #10b981;
-  color: #ffffff;
-  font-weight: bold;
-  font-size: 18px;
-  padding: 8px 12px;
-  border-radius: 12px;
-}
-
-.logo-text {
-  font-size: 20px;
-  font-weight: bold;
-  color: #ffffff;
-}
-
-.nav-list {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-}
-
-.nav-item {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  width: 100%;
-  padding: 12px 16px;
-  border-radius: 12px;
-  border: none;
+@utility emp-card-box {
   background: transparent;
-  color: #d1fae5;
-  font-size: 14px;
-  font-weight: 600;
-  cursor: pointer;
-  text-align: left;
-  transition: background-color 0.2s;
+  @apply rounded-2xl border border-slate-200 dark:border-slate-800/85 p-6 shadow-sm flex flex-col text-left;
 }
 
-.nav-item:hover {
-  background-color: #065f46;
-  color: #ffffff;
+@utility emp-card-title {
+  @apply text-sm font-extrabold text-slate-900 dark:text-white uppercase tracking-wider mb-6 opacity-90;
 }
 
-.nav-item.active {
-  background-color: #10b981;
-  color: #ffffff;
+@utility current-status-row {
+  @apply flex flex-col gap-1 mb-5 p-4 rounded-2xl bg-emerald-50/50 dark:bg-emerald-950/10 border border-emerald-100/50 dark:border-emerald-950/30;
 }
 
-.sidebar-divider {
-  margin: 24px 0;
-  border: 0;
-  border-top: 1px solid #065f46;
+@utility current-status-label {
+  @apply text-[10px] font-extrabold text-slate-400 dark:text-slate-500 uppercase tracking-wider;
 }
 
-.dept-legend-title {
-  font-size: 11px;
-  font-weight: bold;
-  color: #6ee7b7;
-  text-transform: uppercase;
-  margin-bottom: 12px;
-  letter-spacing: 0.5px;
+@utility current-status-value {
+  @apply text-lg font-extrabold text-emerald-600 dark:text-emerald-400;
 }
 
-.dept-legend-item {
+/* Employee Tables */
+@utility emp-table {
+  @apply w-full border-collapse text-left;
+  max-width: 100%;
+
+  & th {
+    @apply bg-transparent text-slate-500 dark:text-slate-400 font-extrabold tracking-widest text-[9px] uppercase border-b border-slate-100 dark:border-slate-800/50 text-left;
+    padding: 12px 16px !important;
+  }
+
+  & td {
+    padding: 12px 16px !important;
+    text-align: left;
+    @apply border-b border-slate-100/40 dark:border-slate-800/20 align-middle font-bold text-xs md:text-sm text-slate-800 dark:text-slate-300;
+  }
+}
+
+@utility status-present {
+  @apply text-emerald-600 dark:text-emerald-400 font-extrabold;
+}
+
+/* Announcement panel */
+@utility announcement-list {
+  @apply flex flex-col gap-3.5;
+}
+
+@utility announcement-item {
+  @apply bg-slate-50/50 dark:bg-slate-950/10 border border-slate-100 dark:border-slate-800 p-4 rounded-xl flex items-center gap-4 hover:bg-slate-50 dark:hover:bg-slate-950/20 transition-all border-l-4 border-l-emerald-500;
+}
+
+@utility announcement-icon {
+  @apply w-10 h-10 rounded-xl bg-emerald-50 dark:bg-emerald-950/20 text-emerald-600 dark:text-emerald-400 flex items-center justify-center shrink-0 shadow-sm;
+}
+
+@utility announcement-title {
+  @apply text-sm font-extrabold text-slate-800 dark:text-slate-200;
+}
+
+@utility announcement-desc {
+  @apply text-xs text-slate-500 dark:text-slate-400 mt-1 leading-relaxed;
+}
+
+@utility announcement-date {
+  @apply text-[10px] font-extrabold tracking-wider text-slate-400/80 ml-auto whitespace-nowrap uppercase;
+}
+
+/* Profile cards structures */
+@utility profile-card-content {
+  @apply flex flex-col items-center text-center p-2;
+}
+
+@utility profile-avatar-large {
+  @apply w-24 h-24 rounded-2xl border-4 border-emerald-500/20 bg-slate-100 dark:bg-slate-800 object-cover shadow-lg mb-4;
+}
+
+@utility profile-name {
+  @apply text-lg font-extrabold text-slate-900 dark:text-white tracking-tight;
+}
+
+@utility profile-role {
+  @apply text-[11px] font-bold text-emerald-600 dark:text-emerald-400 uppercase tracking-widest mt-1.5 mb-5;
+}
+
+@utility profile-dept-info {
+  @apply flex justify-between w-full py-3.5 border-y border-slate-100 dark:border-slate-800 text-xs font-bold text-slate-700 dark:text-slate-300 mb-5;
+}
+
+@utility btn-apply-leave {
+  @apply px-4 py-3 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl font-bold shadow-md cursor-pointer transition-all active:scale-95 text-center block w-full text-sm mb-3;
+}
+
+@utility btn-download-payslip {
+  @apply px-4 py-2.5 border border-emerald-500/20 text-emerald-600 dark:text-emerald-400 hover:bg-emerald-50/50 dark:hover:bg-emerald-950/15 rounded-xl font-bold text-xs shadow-sm transition-all active:scale-95 text-center block w-full;
+}
+
+/* Employee Specific Charts */
+@utility emp-chart-box {
+  background: transparent;
+  @apply rounded-2xl border border-slate-200 dark:border-slate-800/80 p-6 shadow-sm;
+}
+
+@utility emp-chart-header {
+  @apply flex justify-between items-center mb-6;
+}
+
+@utility emp-chart-metrics {
+  @apply flex gap-5 text-xs font-bold text-slate-400 dark:text-slate-500 mb-5;
+}
+
+@utility metric-highlight {
+  @apply text-emerald-600 dark:text-emerald-400 font-extrabold;
+}
+
+@utility emp-chart-bars {
+  @apply flex items-end justify-between h-48 pt-8 border-b border-slate-100 dark:border-slate-800 mx-2;
+}
+
+@utility emp-bar-pair {
+  @apply flex gap-1 items-end h-full w-full justify-center;
+}
+
+@utility emp-bar-blue {
+  @apply w-4 bg-emerald-500 rounded-t-lg transition-all duration-500 hover:bg-emerald-400;
+}
+
+@utility emp-bar-light {
+  @apply w-4 bg-slate-800 dark:bg-slate-700 rounded-t-lg transition-all duration-500 hover:bg-slate-600;
+}
+
+@utility emp-chart-months {
+  @apply flex justify-between font-extrabold text-[10px] tracking-widest text-slate-400 mt-3 px-2 uppercase;
+}
+
+/* Custom dashboard colors & form buttons */
+@utility stat-card-green {
+  @apply bg-emerald-50 dark:bg-emerald-950/25 border border-emerald-200/80 dark:border-emerald-900/40;
+}
+
+@utility stat-card-blue {
+  @apply bg-sky-50 dark:bg-sky-950/25 border border-sky-200/80 dark:border-sky-900/40;
+}
+
+@utility stat-card-indigo {
+  @apply bg-indigo-50 dark:bg-indigo-950/25 border border-indigo-200/80 dark:border-indigo-900/40;
+}
+
+@utility stat-card-amber {
+  @apply bg-amber-50 dark:bg-amber-950/25 border border-amber-200/80 dark:border-amber-900/40;
+}
+
+@utility stat-card-teal {
+  @apply bg-teal-50 dark:bg-teal-950/25 border border-teal-200/80 dark:border-teal-900/40;
+}
+
+@utility stat-card-rose {
+  @apply bg-rose-50 dark:bg-rose-950/25 border border-rose-200/80 dark:border-rose-900/40;
+}
+
+@utility profile-info-card {
+  background: transparent;
+  @apply rounded-2xl border border-slate-200 dark:border-slate-800/80 p-6 shadow-sm text-left;
+}
+
+@utility profile-info-title {
+  @apply text-base font-extrabold text-slate-900 dark:text-white mb-5 pb-3 border-b border-slate-100 dark:border-slate-800;
+}
+
+@utility profile-info-row {
+  @apply grid gap-x-6 gap-y-1 py-3 border-b border-slate-100/80 dark:border-slate-800/50 text-sm;
+  grid-template-columns: minmax(120px, 1fr) minmax(0, 2fr);
+}
+
+@utility profile-info-label {
+  @apply font-semibold text-slate-500 dark:text-slate-400;
+}
+
+@utility profile-info-value {
+  @apply font-bold text-slate-800 dark:text-slate-200 text-left;
+}
+
+@utility settings-form-card {
+  background: transparent;
+  @apply rounded-2xl border border-slate-200 dark:border-slate-800/80 p-8 shadow-sm max-w-3xl text-left;
+}
+
+@utility btn-save {
+  @apply inline-flex items-center justify-center gap-2 px-5 py-2.5 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl text-xs md:text-sm font-semibold shadow-md cursor-pointer transition-all active:scale-95 duration-200 border border-transparent;
+}
+
+@utility btn-cancel {
+  @apply inline-flex items-center justify-center gap-2 px-5 py-2.5 bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 text-slate-700 dark:text-slate-300 rounded-xl text-xs md:text-sm font-semibold shadow-sm cursor-pointer transition-all hover:bg-slate-50 dark:hover:bg-slate-800 active:scale-95 duration-200;
+}
+
+@utility stat-card-blue {
+  background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%) !important;
+  border-color: #1e40af !important;
+  color: #ffffff !important;
+
+  & .stat-label,
+  & .emp-stat-title,
+  & .stat-description,
+  & .emp-stat-subtext {
+    color: rgba(255, 255, 255, 0.8) !important;
+  }
+
+  & .stat-value,
+  & .emp-stat-value {
+    color: #ffffff !important;
+  }
+
+  & .stat-icon-box,
+  & .emp-stat-icon-box {
+    background: rgba(255, 255, 255, 0.2) !important;
+    color: #ffffff !important;
+  }
+}
+
+@utility stat-card-green {
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%) !important;
+  border-color: #047857 !important;
+  color: #ffffff !important;
+
+  & .stat-label,
+  & .emp-stat-title,
+  & .stat-description,
+  & .emp-stat-subtext {
+    color: rgba(255, 255, 255, 0.8) !important;
+  }
+
+  & .stat-value,
+  & .emp-stat-value {
+    color: #ffffff !important;
+  }
+
+  & .stat-icon-box,
+  & .emp-stat-icon-box {
+    background: rgba(255, 255, 255, 0.2) !important;
+    color: #ffffff !important;
+  }
+}
+
+@utility stat-card-yellow {
+  background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%) !important;
+  border-color: #b45309 !important;
+  color: #ffffff !important;
+
+  & .stat-label,
+  & .emp-stat-title,
+  & .stat-description,
+  & .emp-stat-subtext {
+    color: rgba(255, 255, 255, 0.87) !important;
+  }
+
+  & .stat-value,
+  & .emp-stat-value {
+    color: #ffffff !important;
+  }
+
+  & .stat-icon-box,
+  & .emp-stat-icon-box {
+    background: rgba(255, 255, 255, 0.2) !important;
+    color: #ffffff !important;
+  }
+}
+
+@utility stat-card-amber {
+  background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%) !important;
+  border-color: #b45309 !important;
+  color: #ffffff !important;
+
+  & .stat-label,
+  & .emp-stat-title,
+  & .stat-description,
+  & .emp-stat-subtext {
+    color: rgba(255, 255, 255, 0.87) !important;
+  }
+
+  & .stat-value,
+  & .emp-stat-value {
+    color: #ffffff !important;
+  }
+
+  & .stat-icon-box,
+  & .emp-stat-icon-box {
+    background: rgba(255, 255, 255, 0.2) !important;
+    color: #ffffff !important;
+  }
+}
+
+@utility stat-card-orange {
+  background: linear-gradient(135deg, #f97316 0%, #ea580c 100%) !important;
+  border-color: #c2410c !important;
+  color: #ffffff !important;
+
+  & .stat-label,
+  & .emp-stat-title,
+  & .stat-description,
+  & .emp-stat-subtext {
+    color: rgba(255, 255, 255, 0.85) !important;
+  }
+
+  & .stat-value,
+  & .emp-stat-value {
+    color: #ffffff !important;
+  }
+
+  & .stat-icon-box,
+  & .emp-stat-icon-box {
+    background: rgba(255, 255, 255, 0.2) !important;
+    color: #ffffff !important;
+  }
+}
+
+@utility stat-card-red {
+  background: linear-gradient(135deg, #e11d48 0%, #be123c 100%) !important;
+  border-color: #9f1239 !important;
+  color: #ffffff !important;
+
+  & .stat-label,
+  & .emp-stat-title,
+  & .stat-description,
+  & .emp-stat-subtext {
+    color: rgba(255, 255, 255, 0.85) !important;
+  }
+
+  & .stat-value,
+  & .emp-stat-value {
+    color: #ffffff !important;
+  }
+
+  & .stat-icon-box,
+  & .emp-stat-icon-box {
+    background: rgba(255, 255, 255, 0.2) !important;
+    color: #ffffff !important;
+  }
+}
+
+@utility stat-card-rose {
+  background: linear-gradient(135deg, #e11d48 0%, #be123c 100%) !important;
+  border-color: #9f1239 !important;
+  color: #ffffff !important;
+
+  & .stat-label,
+  & .emp-stat-title,
+  & .stat-description,
+  & .emp-stat-subtext {
+    color: rgba(255, 255, 255, 0.85) !important;
+  }
+
+  & .stat-value,
+  & .emp-stat-value {
+    color: #ffffff !important;
+  }
+
+  & .stat-icon-box,
+  & .emp-stat-icon-box {
+    background: rgba(255, 255, 255, 0.2) !important;
+    color: #ffffff !important;
+  }
+}
+
+@utility stat-card-purple {
+  background: linear-gradient(135deg, #8b5cf6 0%, #6d28d9 100%) !important;
+  border-color: #5b21b6 !important;
+  color: #ffffff !important;
+
+  & .stat-label,
+  & .emp-stat-title,
+  & .stat-description,
+  & .emp-stat-subtext {
+    color: rgba(255, 255, 255, 0.85) !important;
+  }
+
+  & .stat-value,
+  & .emp-stat-value {
+    color: #ffffff !important;
+  }
+
+  & .stat-icon-box,
+  & .emp-stat-icon-box {
+    background: rgba(255, 255, 255, 0.2) !important;
+    color: #ffffff !important;
+  }
+}
+
+@utility stat-card-indigo {
+  background: linear-gradient(135deg, #6366f1 0%, #4338ca 100%) !important;
+  border-color: #3730a3 !important;
+  color: #ffffff !important;
+
+  & .stat-label,
+  & .emp-stat-title,
+  & .stat-description,
+  & .emp-stat-subtext {
+    color: rgba(255, 255, 255, 0.85) !important;
+  }
+
+  & .stat-value,
+  & .emp-stat-value {
+    color: #ffffff !important;
+  }
+
+  & .stat-icon-box,
+  & .emp-stat-icon-box {
+    background: rgba(255, 255, 255, 0.2) !important;
+    color: #ffffff !important;
+  }
+}
+
+@utility stat-card-teal {
+  background: linear-gradient(135deg, #14b8a6 0%, #0f766e 100%) !important;
+  border-color: #115e59 !important;
+  color: #ffffff !important;
+
+  & .stat-label,
+  & .emp-stat-title,
+  & .stat-description,
+  & .emp-stat-subtext {
+    color: rgba(255, 255, 255, 0.8) !important;
+  }
+
+  & .stat-value,
+  & .emp-stat-value {
+    color: #ffffff !important;
+  }
+
+  & .stat-icon-box,
+  & .emp-stat-icon-box {
+    background: rgba(255, 255, 255, 0.2) !important;
+    color: #ffffff !important;
+  }
+}
+
+/* Settings Input Decorators */
+.input-with-icon-container {
+  position: relative;
   display: flex;
-  justify-content: space-between;
   align-items: center;
-  font-size: 13px;
-  color: #ecfdf5;
-  margin-bottom: 10px;
+  width: 100%;
 }
 
-.dot {
-  width: 10px;
-  height: 10px;
-  border-radius: 50%;
-  display: inline-block;
-  margin-right: 8px;
+.input-icon-decorator {
+  position: absolute;
+  left: 12px;
+  color: #94a3b8;
+  pointer-events: none;
 }
 
-.dot-production { background-color: #064e3b; }
-.dot-sales { background-color: #10b981; }
-.dot-it { background-color: #f59e0b; }
-.dot-admin { background-color: #f97316; }
-
-.sidebar-user {
-  padding-top: 16px;
-  border-top: 1px solid #065f46;
-  display: flex;
-  align-items: center;
-  gap: 12px;
-}
-
-.user-avatar-badge {
-  width: 38px;
-  height: 38px;
-  border-radius: 50%;
-  background-color: #10b981;
-  color: #043e30;
-  font-weight: bold;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.user-name {
-  font-size: 14px;
-  font-weight: bold;
-  color: #ffffff;
-  margin: 0;
-}
-
-.user-role {
-  font-size: 11px;
-  color: #6ee7b7;
-  margin: 0;
-}
-
-/* ================= 2. MAIN CONTENT AREA ================= */
-
-/*admin dashboard main content area*/
-.main-content {
-  flex: 1;
-  padding: 32px;
-  overflow-y: auto;
-}
-
-/* Top Header Bar */
-.top-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 32px;
-}
-
-.search-box {
-  display: flex;
-  align-items: center;
-  gap: 8px;
+.input-decorated {
+  width: 100%;
+  padding: 10px 12px 10px 38px !important;
+  font-size: 13.5px;
+  font-weight: 500;
+  color: #1e293b;
   background-color: #ffffff;
-  padding: 10px 16px;
-  border-radius: 12px;
   border: 1px solid #cbd5e1;
-  width: 320px;
-}
-
-.search-input {
-  border: none;
+  border-radius: 8px;
   outline: none;
   background: transparent;
   width: 100%;
@@ -1398,227 +2115,48 @@
   outline: none;
   cursor: pointer;
   transition: border-color 0.2s, box-shadow 0.2s;
-  min-width: 140px;
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
 }
 
-.filter-select:focus {
-  border-color: #10b981;
-  box-shadow: 0 0 0 2px rgba(16, 185, 129, 0.15);
+.input-decorated:focus {
+  border-color: #2563eb;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
 }
 
-.showing-indicator {
-  font-size: 13px;
-  font-weight: 700;
-  color: #475569;
+.input-decorated::placeholder {
+  color: #94a3b8;
+  opacity: 1;
 }
 
-/* Employee Directory Table */
-.table-responsive {
-  width: 100%;
-  overflow-x: auto;
+.dark .input-decorated {
+  background-color: #0f172a;
+  border-color: #334155;
+  color: #f8fafc;
 }
 
-.employee-table {
-  width: 100%;
-  border-collapse: collapse;
-  text-align: left;
+.dark .input-decorated:focus {
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.25);
 }
-
-.employee-table th {
-  background-color: #f8fafc;
-  color: #64748b;
-  font-size: 11px;
-  font-weight: 700;
-  letter-spacing: 0.05em;
-  padding: 14px 24px;
-  border-bottom: 1px solid #e2e8f0;
-  text-transform: uppercase;
-}
-
-.employee-table td {
-  padding: 16px 24px;
-  border-bottom: 1px solid #f1f5f9;
-  vertical-align: middle;
-}
-
-.employee-row {
-  transition: background-color 0.2s;
-}
-
-.employee-row:hover {
-  background-color: #f8fafc;
-}
-
-.employee-avatar-wrapper {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-}
-
-.employee-avatar-circle {
-  width: 38px;
-  height: 38px;
-  border-radius: 50%;
-  background-color: #10b981;
-  color: #ffffff;
-  font-weight: 700;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 13px;
-  flex-shrink: 0;
-  border: 1.5px solid #a7f3d0;
-}
-
-.employee-name-text {
-  font-size: 14px;
-  font-weight: 700;
-  color: #0f172a;
-  margin: 0;
-}
-
-.employee-meta-text {
-  font-size: 12px;
-  color: #64748b;
-  margin: 2px 0 0 0;
-}
-
-.employee-dept-pill {
-  background-color: #fef3c7;
-  color: #d97706;
-  padding: 6px 12px;
-  border-radius: 8px;
-  font-size: 12px;
-  font-weight: 700;
-  display: inline-block;
-}
-
-.employee-role-type {
-  font-size: 14px;
-  font-weight: 700;
-  color: #0f172a;
-  margin: 0;
-}
-
-.employee-joining-date {
-  font-size: 12px;
-  color: #64748b;
-  margin: 4px 0 0 0;
-}
-
-.employee-status-badge {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  padding: 6px 12px;
-  border-radius: 12px;
-  font-size: 12px;
-  font-weight: 700;
-}
-
-.employee-status-badge.active {
-  background-color: #ecfdf5;
-  color: #047857;
-}
-
-.employee-status-badge.inactive {
-  background-color: #fef2f2;
-  color: #b91c1c;
-}
-
-.employee-status-badge .bullet {
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  display: inline-block;
-}
-
-.employee-status-badge.active .bullet {
-  background-color: #10b981;
-}
-
-.employee-status-badge.inactive .bullet {
-  background-color: #ef4444;
-}
-
-/* Actions list */
-.employee-action-buttons {
-  display: flex;
-  gap: 8px;
-  justify-content: flex-end;
-}
-
-.action-icon-btn {
-  background-color: #ffffff;
-  border: 1px solid #cbd5e1;
-  color: #64748b;
-  padding: 6px;
-  border-radius: 8px;
-  cursor: pointer;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  transition: all 0.2s;
-}
-
-.action-icon-btn:hover {
-  background-color: #f1f5f9;
-  color: #0f172a;
-  border-color: #94a3b8;
-}
-
-.action-icon-btn.delete:hover {
-  background-color: #fef2f2;
-  color: #ef4444;
-  border-color: #fca5a5;
-}
-/* =========================================================
-   EMS Portal - Department Admin React Stylesheet
-   Theme: Matching Dashboard (Dark Forest Green & Emerald Accent)
-   ========================================================= */
 
 /* =========================================================
-   EMS Portal - Standalone Departments View Stylesheet
-   Theme: Matching Dashboard (Light background, green #10b981 accents)
+   EMPLOYEE PERMISSIONS PILLS & ENTERPRISE DASHBOARD STYLE
    ========================================================= */
 
-.departments-page-container {
-  width: 100%;
-  padding: 24px 32px;
-  background-color: #f3f4f6;
-  min-height: 100vh;
-  box-sizing: border-box;
-  font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
-  color: #151c27;
+@utility employee-permissions-card {
+  @apply bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800/80 rounded-2xl p-6 shadow-sm mt-8 overflow-visible;
 }
 
-/* Top Header Bar */
-.top-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 20px;
+@utility permissions-table-header {
+  @apply bg-slate-50 dark:bg-slate-950/20 border-b border-slate-100 dark:border-slate-800/60;
 }
 
-.search-box {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  background: #ffffff;
-  padding: 10px 18px;
-  border-radius: 9999px;
-  width: 340px;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
-  border: 1px solid #e5e7eb;
+@utility action-dropdown-list {
+  @apply absolute right-0 mt-1.5 w-44 bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl shadow-lg ring-1 ring-black/5 z-50 py-1 overflow-hidden;
 }
 
-.search-box input {
-  border: none;
-  outline: none;
-  width: 100%;
-  font-family: inherit;
-  font-size: 13px;
-  background: transparent;
+@utility action-dropdown-btn {
+  @apply w-full text-left px-4 py-2.5 text-xs font-bold text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-900/50 flex items-center gap-2 transition-colors cursor-pointer;
 }
 
 .header-right {
@@ -2271,4 +2809,8 @@ textarea.form-control{
 .dark-theme .theme-toggle button{
     background:#2a313d;
     color:white;
+}
+
+@utility action-dropdown-btn-danger {
+  @apply w-full text-left px-4 py-2.5 text-xs font-bold text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-950/25 flex items-center gap-2 transition-colors cursor-pointer;
 }

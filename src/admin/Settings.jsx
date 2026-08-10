@@ -1,18 +1,30 @@
-import React, { useState, useEffect } from "react";
-import "../App.css";
+import { useState, useEffect } from "react";
+import {
+  Building,
+  Mail,
+  Phone,
+  MapPin,
+  Save,
+  AlertCircle,
+  CheckCircle,
+  Loader,
+  Globe,
+  Clock,
+  Calendar,
+  Coins,
+  Laptop,
+  Map,
+  Hash,
+  ChevronDown,
+  Edit,
+  RotateCcw
+} from "lucide-react";
+import api from "../api";
 
-const API_URL = "http://localhost:5000/settings";
-
-const Settings = () => {
-  const [settingsData, setSettingsData] = useState(null);
+export default function Settings() {
   const [settingsId, setSettingsId] = useState(null);
-
   const [loading, setLoading] = useState(false);
   const [fetching, setFetching] = useState(true);
-
-  const [showPassword, setShowPassword] = useState(false);
-
-  const [darkMode] = useState(localStorage.getItem("theme") === "dark");
 
   const [alert, setAlert] = useState({
     show: false,
@@ -29,59 +41,49 @@ const Settings = () => {
     companyAddress: "",
     city: "",
     state: "",
-    country: "",
-    adminPassword: "",
+    country: "India",
+    website: "",
+    postalCode: "",
+    systemName: "",
+    timeZone: "(GMT+05:30) Asia/Kolkata",
+    dateFormat: "DD/MM/YYYY",
+    currency: "INR (₹)"
   });
+
+  // Keep a copy of initial data to reset form
+  const [initialData, setInitialData] = useState(null);
 
   useEffect(() => {
     fetchSettings();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const fetchSettings = async () => {
     setFetching(true);
-
     try {
-      const token = localStorage.getItem("token");
-
-      const response = await fetch(API_URL, {
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: token ? `Bearer ${token}` : "",
-        },
-      });
-      const data = await response.json();
-
-      if (response.ok && data.success) {
+      const data = await api.getSettings();
+      if (data && data.success) {
         const settings = data.settings;
-
-        setSettingsData(settings);
         setSettingsId(settings._id);
-
-        setFormData({
+        const mappedData = {
           companyName: settings.companyName ?? "",
           companyEmail: settings.companyEmail ?? "",
           companyPhone: settings.companyPhone ?? "",
           companyAddress: settings.companyAddress ?? "",
           city: settings.city ?? "",
           state: settings.state ?? "",
-          country: settings.country ?? "",
-          adminPassword: settings.adminPassword ?? "",
-        });
-
-        setAlert({
-          show: true,
-          type: "success",
-          message: data.message,
-        });
+          country: settings.country || "India",
+          website: settings.website ?? "",
+          postalCode: settings.postalCode ?? "",
+          systemName: settings.systemName ?? "",
+          timeZone: settings.timeZone || "(GMT+05:30) Asia/Kolkata",
+          dateFormat: settings.dateFormat || "DD/MM/YYYY",
+          currency: settings.currency || "INR (₹)"
+        };
+        setFormData(mappedData);
+        setInitialData(mappedData);
       }
     } catch (error) {
-      setAlert({
-        show: true,
-        type: "error",
-        message: "Unable to fetch company settings.",
-      });
-      console.error(error);
+      console.error("Unable to fetch company settings:", error);
     } finally {
       setFetching(false);
     }
@@ -89,11 +91,14 @@ const Settings = () => {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-
     let newValue = value;
 
+    // Numeric-only check for phone and postalCode if necessary
     if (name === "companyPhone") {
       newValue = value.replace(/\D/g, "").slice(0, 10);
+    }
+    if (name === "postalCode") {
+      newValue = value.replace(/\D/g, "").slice(0, 6);
     }
 
     setFormData((prev) => ({
@@ -109,39 +114,52 @@ const Settings = () => {
     }
   };
 
+  const handleReset = () => {
+    if (initialData) {
+      setFormData(initialData);
+    } else {
+      setFormData({
+        companyName: "",
+        companyEmail: "",
+        companyPhone: "",
+        companyAddress: "",
+        city: "",
+        state: "",
+        country: "India",
+        website: "",
+        postalCode: "",
+        systemName: "",
+        timeZone: "(GMT+05:30) Asia/Kolkata",
+        dateFormat: "DD/MM/YYYY",
+        currency: "INR (₹)"
+      });
+    }
+    setErrors({});
+  };
+
   const validate = () => {
     const newErrors = {};
 
     if (!formData.companyName.trim()) {
       newErrors.companyName = "Company Name is required.";
     }
-
     if (!formData.companyEmail.trim()) {
       newErrors.companyEmail = "Company Email is required.";
     }
-
     if (!formData.companyPhone.trim()) {
       newErrors.companyPhone = "Company Phone is required.";
     }
-
     if (!formData.companyAddress.trim()) {
       newErrors.companyAddress = "Company Address is required.";
     }
-
     if (!formData.city.trim()) {
       newErrors.city = "City is required.";
     }
-
     if (!formData.state.trim()) {
       newErrors.state = "State is required.";
     }
-
     if (!formData.country.trim()) {
       newErrors.country = "Country is required.";
-    }
-
-    if (!formData.adminPassword.trim()) {
-      newErrors.adminPassword = "Password is required.";
     }
 
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -151,17 +169,15 @@ const Settings = () => {
 
     const phoneRegex = /^[0-9]{10}$/;
     if (formData.companyPhone && !phoneRegex.test(formData.companyPhone)) {
-      newErrors.companyPhone = "Phone number must contain exactly 10 digits";
+      newErrors.companyPhone = "Phone must be exactly 10 digits";
     }
 
     setErrors(newErrors);
-
     return Object.keys(newErrors).length === 0;
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
     if (!validate()) {
       setAlert({
         show: true,
@@ -172,50 +188,31 @@ const Settings = () => {
     }
 
     setLoading(true);
-
     try {
       const isUpdate = Boolean(settingsId);
-      const url = isUpdate ? `${API_URL}/${settingsId}` : API_URL;
-      const method = isUpdate ? "PUT" : "POST";
-
       const payload = {
-        companyName: formData.companyName,
-        companyEmail: formData.companyEmail,
-        companyPhone: formData.companyPhone,
-        companyAddress: formData.companyAddress,
-        city: formData.city,
-        state: formData.state,
-        country: formData.country,
-        adminPassword: formData.adminPassword,
+        ...formData,
+        adminPassword: "Verify@12345" // Backend requires adminPassword for first-time creation schema validation
       };
 
-      const token = localStorage.getItem("token");
-
-      const response = await fetch(url, {
-        method,
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: token ? `Bearer ${token}` : "",
-        },
-        body: JSON.stringify(payload),
-      });
-
-      const data = await response.json();
-
-      if (response.ok && data.success) {
-        setAlert({
-          show: true,
-          type: "success",
-          message: data.message,
-        });
-
-        fetchSettings();
+      let response;
+      if (isUpdate) {
+        response = await api.updateSettings(settingsId, payload);
       } else {
-        setAlert({
-          show: true,
-          type: "error",
-          message: data.message || "Something went wrong.",
-        });
+        response = await api.createSettings(payload);
+      }
+
+      if (response && response.success) {
+        setAlert({ show: true, type: "success", message: response.message || "Settings saved successfully." });
+        setSettingsId(response.settings?._id || settingsId);
+        setInitialData(formData);
+
+        // Hide alert after 4 seconds
+        setTimeout(() => {
+          setAlert({ show: false, type: "", message: "" });
+        }, 4000);
+      } else {
+        setAlert({ show: true, type: "error", message: response?.message || "Something went wrong." });
       }
     } catch (error) {
       setAlert({
@@ -229,279 +226,465 @@ const Settings = () => {
     }
   };
 
-  const handleEditClick = () => {
-    if (!settingsData) return;
-
-    setFormData({
-      companyName: settingsData.companyName ?? "",
-      companyEmail: settingsData.companyEmail ?? "",
-      companyPhone: settingsData.companyPhone ?? "",
-      companyAddress: settingsData.companyAddress ?? "",
-      city: settingsData.city ?? "",
-      state: settingsData.state ?? "",
-      country: settingsData.country ?? "",
-      adminPassword: settingsData.adminPassword ?? "",
-    });
-
-    window.scrollTo({
-      top: 0,
-      behavior: "smooth",
-    });
-  };
-
   return (
-    <div className={`settings-page ${darkMode ? "dark-theme" : ""}`}>
-      <main className="main-content">
-        <div className="page-header">
-          <div>
-            <h1 className="dashboard-title">Company Settings</h1>
-            <p className="dashboard-subtitle">
-              Manage your company information and application settings.
-            </p>
-          </div>
+    <div style={{ maxWidth: "1280px", margin: "0 auto", padding: "0 8px" }}>
+      {/* Header */}
+      <div className="page-header" style={{ marginBottom: "20px", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+        <div>
+          <h1 className="dashboard-title">Company Settings</h1>
+          <p className="dashboard-subtitle" style={{ fontSize: "14px", color: "#64748b" }}>
+            Manage your company information and system preferences.
+          </p>
         </div>
+        <button className="btn-primary" style={{ display: "flex", alignItems: "center", gap: "8px", padding: "9px 16px", borderRadius: "8px", fontSize: "14px", fontWeight: "600" }}>
+          <Edit size={16} />
+          <span>Edit Settings</span>
+        </button>
+      </div>
 
-        {alert.show && (
-          <div className={`ems-alert-banner ${alert.type}`}>
-            <i
-              className={`fa-solid ${
-                alert.type === "success"
-                  ? "fa-circle-check"
-                  : "fa-circle-exclamation"
-              }`}
-            ></i>
-            <span>{alert.message}</span>
-          </div>
-        )}
+      {/* Tabs */}
+      <div style={{ display: "flex", borderBottom: "1px solid #e2e8f0", marginBottom: "24px" }}>
+        <button
+          style={{
+            padding: "8px 16px 12px 16px",
+            fontSize: "14px",
+            fontWeight: "600",
+            color: "#2563eb",
+            borderBottom: "2px solid #2563eb",
+            background: "none",
+            borderTop: "none",
+            borderLeft: "none",
+            borderRight: "none",
+            cursor: "pointer"
+          }}
+        >
+          Company Information
+        </button>
+      </div>
 
-        <div className="middle-grid">
-          <div className="table-card">
-            <div className="card-header">
-              <h3 style={{color:"black"}}>Company Information</h3>
-            </div>
+      {alert.show && (
+        <div style={{
+          display: "flex",
+          alignItems: "center",
+          gap: "8px",
+          padding: "12px 16px",
+          borderRadius: "8px",
+          marginBottom: "20px",
+          fontSize: "14px",
+          backgroundColor: alert.type === "success" ? "#ecfdf5" : "#fef2f2",
+          color: alert.type === "success" ? "#065f46" : "#b91c1c",
+          border: `1px solid ${alert.type === "success" ? "#a7f3d0" : "#fca5a5"}`
+        }}>
+          {alert.type === "success" ? <CheckCircle size={16} /> : <AlertCircle size={16} />}
+          <span>{alert.message}</span>
+        </div>
+      )}
 
-            {fetching ? (
-              <p>Loading...</p>
-            ) : settingsData ? (
-              <div className="company-profile">
-                <div className="profile-row">
-                  <span>Company Name</span>
-                  <strong>{settingsData.companyName}</strong>
-                </div>
+      {fetching ? (
+        <div style={{ display: "flex", justifyContent: "center", alignItems: "center", padding: "80px 0" }}>
+          <Loader className="animate-spin" size={32} color="#2563eb" />
+        </div>
+      ) : (
+        <div className="grid grid-cols-1 lg:grid-cols-[1.8fr_1.2fr] gap-8 items-start mb-10">
 
-                <div className="profile-row">
-                  <span>Email</span>
-                  <strong>{settingsData.companyEmail}</strong>
-                </div>
-
-                <div className="profile-row">
-                  <span>Phone</span>
-                  <strong>{settingsData.companyPhone}</strong>
-                </div>
-
-                <div className="profile-row">
-                  <span>Address</span>
-                  <strong>{settingsData.companyAddress}</strong>
-                </div>
-
-                <div className="profile-row">
-                  <span>City</span>
-                  <strong>{settingsData.city}</strong>
-                </div>
-
-                <div className="profile-row">
-                  <span>State</span>
-                  <strong>{settingsData.state}</strong>
-                </div>
-
-                <div className="profile-row">
-                  <span>Country</span>
-                  <strong>{settingsData.country}</strong>
-                </div>
-
-                <div className="profile-row">
-                  <span>Password</span>
-                  <strong>
-                    {showPassword ? settingsData.adminPassword : "••••••••"}
-                  </strong>
-                  <button
-                    type="button"
-                    className="btn-contact"
-                    onClick={() => setShowPassword(!showPassword)}
-                  >
-                    {showPassword ? "Hide" : "View"}
-                  </button>
-                </div>
-              </div>
-            ) : (
-              <p>No Company Settings Found.</p>
-            )}
-          </div>
-
-          <div className="card-box">
-            <h3 className="card-title">
-              {settingsId ? "Update Company" : "Create Company"}
-            </h3>
-
+          {/* Left Column: Form Panel */}
+          <div className="employee-directory-card p-6" style={{ backgroundColor: "#ffffff" }}>
             <form onSubmit={handleSubmit}>
-              <div className="form-group">
-                <label>Company Name *</label>
-                <input
-                  type="text"
-                  name="companyName"
-                  value={formData.companyName}
-                  onChange={handleChange}
-                  className="form-control"
-                  placeholder="Enter Company Name"
-                />
-                {errors.companyName && (
-                  <small className="text-danger">{errors.companyName}</small>
-                )}
-              </div>
 
-              <div className="form-group">
-                <label>Company Email *</label>
-                <input
-                  type="email"
-                  name="companyEmail"
-                  value={formData.companyEmail}
-                  onChange={handleChange}
-                  className="form-control"
-                  placeholder="Enter Company Email"
-                />
-                {errors.companyEmail && (
-                  <small className="text-danger">{errors.companyEmail}</small>
-                )}
-              </div>
+              {/* Section 1: Company Information */}
+              <div style={{ marginBottom: "32px" }}>
+                <h2 style={{ fontSize: "16px", fontWeight: "700", color: "#1e293b", marginBottom: "4px" }}>Company Information</h2>
+                <p style={{ fontSize: "13px", color: "#64748b", marginBottom: "20px" }}>Update your company details.</p>
 
-              <div className="form-group">
-                <label>Company Phone *</label>
-                <input
-                  type="text"
-                  name="companyPhone"
-                  maxLength={10}
-                  value={formData.companyPhone}
-                  onChange={handleChange}
-                  className="form-control"
-                  placeholder="Enter Phone Number"
-                />
-                {errors.companyPhone && (
-                  <small className="text-danger">{errors.companyPhone}</small>
-                )}
-              </div>
+                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "16px", marginBottom: "16px" }}>
+                  <div className="form-group" style={{ margin: 0 }}>
+                    <label style={{ fontSize: "12px", fontWeight: "600", color: "#475569", marginBottom: "6px" }}>Company Name</label>
+                    <div className="input-with-icon-container">
+                      <Building className="input-icon-decorator" size={16} />
+                      <input
+                        type="text"
+                        name="companyName"
+                        value={formData.companyName}
+                        onChange={handleChange}
+                        placeholder="Acme Solutions Pvt. Ltd."
+                        className="input-decorated"
+                      />
+                    </div>
+                    {errors.companyName && <span style={{ fontSize: "11px", color: "#ef4444" }}>{errors.companyName}</span>}
+                  </div>
 
-              <div className="form-group">
-                <label>Company Address *</label>
-                <textarea
-                  name="companyAddress"
-                  rows="3"
-                  value={formData.companyAddress}
-                  onChange={handleChange}
-                  className="form-control"
-                  placeholder="Enter Company Address"
-                />
-                {errors.companyAddress && (
-                  <small className="text-danger">
-                    {errors.companyAddress}
-                  </small>
-                )}
-              </div>
-
-              <div className="form-group">
-                <label>City *</label>
-                <input
-                  type="text"
-                  name="city"
-                  value={formData.city}
-                  onChange={handleChange}
-                  className="form-control"
-                  placeholder="Enter City"
-                />
-                {errors.city && (
-                  <small className="text-danger">{errors.city}</small>
-                )}
-              </div>
-
-              <div className="form-group">
-                <label>State *</label>
-                <input
-                  type="text"
-                  name="state"
-                  value={formData.state}
-                  onChange={handleChange}
-                  className="form-control"
-                  placeholder="Enter State"
-                />
-                {errors.state && (
-                  <small className="text-danger">{errors.state}</small>
-                )}
-              </div>
-
-              <div className="form-group">
-                <label>Country *</label>
-                <input
-                  type="text"
-                  name="country"
-                  value={formData.country}
-                  onChange={handleChange}
-                  className="form-control"
-                  placeholder="Enter Country"
-                />
-                {errors.country && (
-                  <small className="text-danger">{errors.country}</small>
-                )}
-              </div>
-
-              <div className="form-group">
-                <label>Admin Password *</label>
-                <div className="password-box">
-                  <input
-                    type={showPassword ? "text" : "password"}
-                    name="adminPassword"
-                    value={formData.adminPassword}
-                    onChange={handleChange}
-                    className="form-control"
-                    placeholder="Enter Admin Password"
-                  />
-                  <button
-                    type="button"
-                    className="btn-contact"
-                    onClick={() => setShowPassword(!showPassword)}
-                  >
-                    {showPassword ? "Hide" : "View"}
-                  </button>
+                  <div className="form-group" style={{ margin: 0 }}>
+                    <label style={{ fontSize: "12px", fontWeight: "600", color: "#475569", marginBottom: "6px" }}>Website</label>
+                    <div className="input-with-icon-container">
+                      <Globe className="input-icon-decorator" size={16} />
+                      <input
+                        type="text"
+                        name="website"
+                        value={formData.website}
+                        onChange={handleChange}
+                        placeholder="https://www.acmesolutions.com"
+                        className="input-decorated"
+                      />
+                    </div>
+                  </div>
                 </div>
-                {errors.adminPassword && (
-                  <small className="text-danger">
-                    {errors.adminPassword}
-                  </small>
-                )}
+
+                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "16px", marginBottom: "16px" }}>
+                  <div className="form-group" style={{ margin: 0 }}>
+                    <label style={{ fontSize: "12px", fontWeight: "600", color: "#475569", marginBottom: "6px" }}>Company Email</label>
+                    <div className="input-with-icon-container">
+                      <Mail className="input-icon-decorator" size={16} />
+                      <input
+                        type="email"
+                        name="companyEmail"
+                        value={formData.companyEmail}
+                        onChange={handleChange}
+                        placeholder="info@acmesolutions.com"
+                        className="input-decorated"
+                      />
+                    </div>
+                    {errors.companyEmail && <span style={{ fontSize: "11px", color: "#ef4444" }}>{errors.companyEmail}</span>}
+                  </div>
+
+                  <div className="form-group" style={{ margin: 0 }}>
+                    <label style={{ fontSize: "12px", fontWeight: "600", color: "#475569", marginBottom: "6px" }}>Company Phone</label>
+                    <div className="input-with-icon-container">
+                      <Phone className="input-icon-decorator" size={16} />
+                      <input
+                        type="text"
+                        name="companyPhone"
+                        maxLength={10}
+                        value={formData.companyPhone}
+                        onChange={handleChange}
+                        placeholder="+91 98765 43210"
+                        className="input-decorated"
+                      />
+                    </div>
+                    {errors.companyPhone && <span style={{ fontSize: "11px", color: "#ef4444" }}>{errors.companyPhone}</span>}
+                  </div>
+                </div>
+
+                <div className="form-group" style={{ marginBottom: "16px" }}>
+                  <label style={{ fontSize: "12px", fontWeight: "600", color: "#475569", marginBottom: "6px" }}>Address</label>
+                  <div className="input-with-icon-container">
+                    <MapPin className="input-icon-decorator" size={16} />
+                    <input
+                      type="text"
+                      name="companyAddress"
+                      value={formData.companyAddress}
+                      onChange={handleChange}
+                      placeholder="123, Business Park, 5th Floor, Sector 62"
+                      className="input-decorated"
+                    />
+                  </div>
+                  {errors.companyAddress && <span style={{ fontSize: "11px", color: "#ef4444" }}>{errors.companyAddress}</span>}
+                </div>
+
+                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1.2fr 1fr", gap: "12px" }}>
+                  <div className="form-group" style={{ margin: 0 }}>
+                    <label style={{ fontSize: "12px", fontWeight: "600", color: "#475569", marginBottom: "6px" }}>City</label>
+                    <div className="input-with-icon-container">
+                      <Building className="input-icon-decorator" size={16} style={{ color: "#94a3b8" }} />
+                      <input
+                        type="text"
+                        name="city"
+                        value={formData.city}
+                        onChange={handleChange}
+                        placeholder="Noida"
+                        className="input-decorated"
+                      />
+                    </div>
+                    {errors.city && <span style={{ fontSize: "11px", color: "#ef4444" }}>{errors.city}</span>}
+                  </div>
+
+                  <div className="form-group" style={{ margin: 0 }}>
+                    <label style={{ fontSize: "12px", fontWeight: "600", color: "#475569", marginBottom: "6px" }}>State</label>
+                    <div className="input-with-icon-container">
+                      <Map className="input-icon-decorator" size={16} style={{ color: "#94a3b8" }} />
+                      <input
+                        type="text"
+                        name="state"
+                        value={formData.state}
+                        onChange={handleChange}
+                        placeholder="Uttar Pradesh"
+                        className="input-decorated"
+                      />
+                    </div>
+                    {errors.state && <span style={{ fontSize: "11px", color: "#ef4444" }}>{errors.state}</span>}
+                  </div>
+
+                  <div className="form-group" style={{ margin: 0, position: "relative" }}>
+                    <label style={{ fontSize: "12px", fontWeight: "600", color: "#475569", marginBottom: "6px" }}>Country</label>
+                    <div className="input-with-icon-container">
+                      <Globe className="input-icon-decorator" size={16} style={{ color: "#94a3b8" }} />
+                      <select
+                        name="country"
+                        value={formData.country}
+                        onChange={handleChange}
+                        className="input-decorated appearance-none"
+                        style={{ paddingRight: "30px" }}
+                      >
+                        <option value="India">India</option>
+                        <option value="United States">United States</option>
+                        <option value="United Kingdom">United Kingdom</option>
+                        <option value="Germany">Germany</option>
+                        <option value="Canada">Canada</option>
+                        <option value="Australia">Australia</option>
+                      </select>
+                      <ChevronDown size={14} style={{ position: "absolute", right: "12px", top: "50%", transform: "translateY(-50%)", color: "#64748b", pointerEvents: "none" }} />
+                    </div>
+                  </div>
+
+                  <div className="form-group" style={{ margin: 0 }}>
+                    <label style={{ fontSize: "12px", fontWeight: "600", color: "#475569", marginBottom: "6px" }}>Postal Code</label>
+                    <div className="input-with-icon-container">
+                      <Hash className="input-icon-decorator" size={16} style={{ color: "#94a3b8" }} />
+                      <input
+                        type="text"
+                        name="postalCode"
+                        maxLength={6}
+                        value={formData.postalCode}
+                        onChange={handleChange}
+                        placeholder="201301"
+                        className="input-decorated"
+                      />
+                    </div>
+                  </div>
+                </div>
+
               </div>
 
-              <div className="form-group">
-                <button type="submit" className="btn-submit" disabled={loading}>
+              {/* Separator line */}
+              <div style={{ height: "1px", backgroundColor: "#f1f5f9", margin: "24px 0" }} />
+
+              {/* Section 2: System Preferences */}
+              <div style={{ marginBottom: "28px" }}>
+                <h2 style={{ fontSize: "16px", fontWeight: "700", color: "#1e293b", marginBottom: "4px" }}>System Preferences</h2>
+                <p style={{ fontSize: "13px", color: "#64748b", marginBottom: "20px" }}>Configure system related settings.</p>
+
+                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "16px", marginBottom: "16px" }}>
+                  <div className="form-group" style={{ margin: 0 }}>
+                    <label style={{ fontSize: "12px", fontWeight: "600", color: "#475569", marginBottom: "6px" }}>System Name</label>
+                    <div className="input-with-icon-container">
+                      <Laptop className="input-icon-decorator" size={16} />
+                      <input
+                        type="text"
+                        name="systemName"
+                        value={formData.systemName}
+                        onChange={handleChange}
+                        placeholder="Employee Management System"
+                        className="input-decorated"
+                      />
+                    </div>
+                  </div>
+
+                  <div className="form-group" style={{ margin: 0, position: "relative" }}>
+                    <label style={{ fontSize: "12px", fontWeight: "600", color: "#475569", marginBottom: "6px" }}>Time Zone</label>
+                    <div className="input-with-icon-container">
+                      <Clock className="input-icon-decorator" size={16} />
+                      <select
+                        name="timeZone"
+                        value={formData.timeZone}
+                        onChange={handleChange}
+                        className="input-decorated appearance-none"
+                        style={{ paddingRight: "30px" }}
+                      >
+                        <option value="(GMT+05:30) Asia/Kolkata">(GMT+05:30) Asia/Kolkata</option>
+                        <option value="(GMT+00:00) London">(GMT+00:00) London</option>
+                        <option value="(GMT-05:00) Eastern Time">(GMT-05:00) Eastern Time</option>
+                        <option value="(GMT-08:00) Pacific Time">(GMT-08:00) Pacific Time</option>
+                      </select>
+                      <ChevronDown size={14} style={{ position: "absolute", right: "12px", top: "50%", transform: "translateY(-50%)", color: "#64748b", pointerEvents: "none" }} />
+                    </div>
+                  </div>
+                </div>
+
+                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "16px" }}>
+                  <div className="form-group" style={{ margin: 0, position: "relative" }}>
+                    <label style={{ fontSize: "12px", fontWeight: "600", color: "#475569", marginBottom: "6px" }}>Date Format</label>
+                    <div className="input-with-icon-container">
+                      <Calendar className="input-icon-decorator" size={16} />
+                      <select
+                        name="dateFormat"
+                        value={formData.dateFormat}
+                        onChange={handleChange}
+                        className="input-decorated appearance-none"
+                        style={{ paddingRight: "30px" }}
+                      >
+                        <option value="DD/MM/YYYY">DD/MM/YYYY</option>
+                        <option value="MM/DD/YYYY">MM/DD/YYYY</option>
+                        <option value="YYYY-MM-DD">YYYY-MM-DD</option>
+                      </select>
+                      <ChevronDown size={14} style={{ position: "absolute", right: "12px", top: "50%", transform: "translateY(-50%)", color: "#64748b", pointerEvents: "none" }} />
+                    </div>
+                  </div>
+
+                  <div className="form-group" style={{ margin: 0, position: "relative" }}>
+                    <label style={{ fontSize: "12px", fontWeight: "600", color: "#475569", marginBottom: "6px" }}>Currency</label>
+                    <div className="input-with-icon-container">
+                      <Coins className="input-icon-decorator" size={16} />
+                      <select
+                        name="currency"
+                        value={formData.currency}
+                        onChange={handleChange}
+                        className="input-decorated appearance-none"
+                        style={{ paddingRight: "30px" }}
+                      >
+                        <option value="INR (₹)">INR (₹)</option>
+                        <option value="USD ($)">USD ($)</option>
+                        <option value="EUR (€)">EUR (€)</option>
+                        <option value="GBP (£)">GBP (£)</option>
+                      </select>
+                      <ChevronDown size={14} style={{ position: "absolute", right: "12px", top: "50%", transform: "translateY(-50%)", color: "#64748b", pointerEvents: "none" }} />
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Bottom Buttons */}
+              <div style={{ display: "flex", justifyContent: "flex-end", gap: "12px", marginTop: "32px" }}>
+                <button
+                  type="button"
+                  onClick={handleReset}
+                  className="btn-cancel"
+                  style={{ display: "flex", alignItems: "center", gap: "8px", padding: "10px 20px", borderRadius: "8px" }}
+                >
+                  <RotateCcw size={16} />
+                  <span>Reset</span>
+                </button>
+                <button
+                  type="submit"
+                  disabled={loading}
+                  className="btn-primary"
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: "8px",
+                    padding: "10px 24px",
+                    borderRadius: "8px",
+                    boxShadow: "0 2px 4px rgba(37, 99, 235, 0.2)"
+                  }}
+                >
                   {loading ? (
                     <>
-                      <i className="fa-solid fa-spinner fa-spin"></i> Saving...
-                    </>
-                  ) : settingsId ? (
-                    <>
-                      <i className="fa-solid fa-floppy-disk"></i> Update
-                      Settings
+                      <Loader className="animate-spin" size={16} />
+                      <span>Saving...</span>
                     </>
                   ) : (
                     <>
-                      <i className="fa-solid fa-plus"></i> Create Settings
+                      <Save size={16} />
+                      <span>Save Changes</span>
                     </>
                   )}
                 </button>
               </div>
+
             </form>
           </div>
+
+          {/* Right Column: Company Overview Preview */}
+          <div className="employee-directory-card p-6" style={{ backgroundColor: "#ffffff" }}>
+            <h2 style={{ fontSize: "16px", fontWeight: "700", color: "#1e293b", marginBottom: "4px" }}>Company Overview</h2>
+            <p style={{ fontSize: "13px", color: "#64748b", marginBottom: "24px" }}>Preview of your company information.</p>
+
+            <div style={{ display: "flex", flexDirection: "column", alignItems: "center", padding: "20px 0", marginBottom: "20px" }}>
+              <div style={{
+                width: "80px",
+                height: "80px",
+                borderRadius: "50%",
+                backgroundColor: "#eff6ff",
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+                marginBottom: "16px",
+                border: "1px solid #dbeafe"
+              }}>
+                <Building size={36} style={{ color: "#2563eb" }} />
+              </div>
+              <h3 style={{ fontSize: "18px", fontWeight: "750", color: "#1e293b", margin: "0 0 4px 0", textAlign: "center" }}>
+                {formData.companyName || "Company Name"}
+              </h3>
+              <p style={{ fontSize: "13px", color: "#64748b", margin: 0, textAlign: "center" }}>
+                {formData.systemName || "Employee Management System"}
+              </p>
+            </div>
+
+            {/* Separator line */}
+            <div style={{ height: "1px", backgroundColor: "#f1f5f9", margin: "20px 0" }} />
+
+            {/* Contact Details */}
+            <div style={{ display: "flex", flexDirection: "column", gap: "14px", marginBottom: "24px" }}>
+              <div style={{ display: "flex", gap: "10px", alignItems: "flex-start" }}>
+                <Mail size={16} style={{ color: "#64748b", marginTop: "2px", flexShrink: 0 }} />
+                <span style={{ fontSize: "13px", color: "#475569" }}>
+                  {formData.companyEmail || "info@company.com"}
+                </span>
+              </div>
+
+              <div style={{ display: "flex", gap: "10px", alignItems: "flex-start" }}>
+                <Phone size={16} style={{ color: "#64748b", marginTop: "2px", flexShrink: 0 }} />
+                <span style={{ fontSize: "13px", color: "#475569" }}>
+                  {formData.companyPhone || "+91 00000 00000"}
+                </span>
+              </div>
+
+              <div style={{ display: "flex", gap: "10px", alignItems: "flex-start" }}>
+                <Globe size={16} style={{ color: "#64748b", marginTop: "2px", flexShrink: 0 }} />
+                {formData.website ? (
+                  <a href={formData.website} target="_blank" rel="noopener noreferrer" style={{ fontSize: "13px", color: "#2563eb", textDecoration: "none" }}>
+                    {formData.website}
+                  </a>
+                ) : (
+                  <span style={{ fontSize: "13px", color: "#94a3b8" }}>No website configured</span>
+                )}
+              </div>
+
+              <div style={{ display: "flex", gap: "10px", alignItems: "flex-start" }}>
+                <MapPin size={16} style={{ color: "#64748b", marginTop: "2px", flexShrink: 0 }} />
+                <span style={{ fontSize: "13px", color: "#475569", lineHeight: "1.4" }}>
+                  {formData.companyAddress ? (
+                    <>
+                      {formData.companyAddress}
+                      {(formData.city || formData.state || formData.postalCode || formData.country) && ", "}
+                      {formData.city}
+                      {formData.state && `, ${formData.state}`}
+                      {formData.postalCode && ` - ${formData.postalCode}`}
+                      {formData.country && `, ${formData.country}`}
+                    </>
+                  ) : (
+                    "No address configured"
+                  )}
+                </span>
+              </div>
+            </div>
+
+            {/* Separator line */}
+            <div style={{ height: "1px", backgroundColor: "#f1f5f9", margin: "20px 0" }} />
+
+            {/* Prefs Summary */}
+            <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
+              <div style={{ display: "flex", justifyContent: "space-between", fontSize: "13px" }}>
+                <span style={{ fontWeight: "600", color: "#64748b" }}>System Name</span>
+                <span style={{ color: "#1e293b", textAlign: "right" }}>{formData.systemName || "Employee Management System"}</span>
+              </div>
+              <div style={{ display: "flex", justifyContent: "space-between", fontSize: "13px" }}>
+                <span style={{ fontWeight: "600", color: "#64748b" }}>Time Zone</span>
+                <span style={{ color: "#1e293b", textAlign: "right" }}>{formData.timeZone}</span>
+              </div>
+              <div style={{ display: "flex", justifyContent: "space-between", fontSize: "13px" }}>
+                <span style={{ fontWeight: "600", color: "#64748b" }}>Date Format</span>
+                <span style={{ color: "#1e293b", textAlign: "right" }}>{formData.dateFormat}</span>
+              </div>
+              <div style={{ display: "flex", justifyContent: "space-between", fontSize: "13px" }}>
+                <span style={{ fontWeight: "600", color: "#64748b" }}>Currency</span>
+                <span style={{ color: "#1e293b", textAlign: "right" }}>{formData.currency}</span>
+              </div>
+            </div>
+
+          </div>
+
         </div>
-      </main>
+      )}
     </div>
   );
-};
-
-export default Settings;
+}

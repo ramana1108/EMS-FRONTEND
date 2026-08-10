@@ -80,12 +80,12 @@ export default function Dashboard() {
   });
 
   const getInitials = (name) => {
-    if (!name) return "U";
-    const parts = name.split(" ");
+    if (!name) return "A";
+    const parts = name.trim().split(/\s+/);
     if (parts.length > 1) {
       return (parts[0][0] + parts[1][0]).toUpperCase();
     }
-    return name.slice(0, 2).toUpperCase();
+    return parts[0][0].toUpperCase();
   };
 
   useEffect(() => {
@@ -305,11 +305,11 @@ export default function Dashboard() {
       </div>
 
       {/* 1. Stat Cards Grid */}
-      <div className="stats-grid">
+      <div className="dashboard-summary-cards">
         {loading && <div>Loading dashboard...</div>}
         {!loading && dashboard && (
           <>
-            <div className="stat-card">
+            <div className="summary-card stat-card-green">
               <div className="stat-header">
                 <div className="stat-icon-box">
                   <Users size={20} />
@@ -322,7 +322,7 @@ export default function Dashboard() {
               <p className="stat-description">Review your employee roster and attendance at a glance.</p>
             </div>
 
-            <div className="stat-card">
+            <div className="summary-card stat-card-blue">
               <div className="stat-header">
                 <div className="stat-icon-box">
                   <Building2 size={20} />
@@ -335,7 +335,7 @@ export default function Dashboard() {
               <p className="stat-description">Manage department structures and team ownership.</p>
             </div>
 
-            <div className="stat-card">
+            <div className="summary-card stat-card-indigo">
               <div className="stat-header">
                 <div className="stat-icon-box">
                   <Users size={20} />
@@ -348,7 +348,7 @@ export default function Dashboard() {
               <p className="stat-description">Track daily presence and absence summaries.</p>
             </div>
 
-            <div className="stat-card">
+            <div className="summary-card stat-card-amber">
               <div className="stat-header">
                 <div className="stat-icon-box">
                   <Wallet size={20} />
@@ -366,26 +366,26 @@ export default function Dashboard() {
 
       {/* 2. Middle Section */}
       <div className="middle-grid">
-        
+
         {/* Company Notices */}
         <div className="card-box">
           <div className="card-header-row">
-            <h2 className="card-title">Company Notices</h2>
+            <h2 className="card-title">Company  Notices</h2>
             <span className="view-all-link">View All</span>
           </div>
-            <ul className="notices-list">
-              {!dashboard && notices.map((notice, index) => (
-                <li key={index} className="notice-item">{notice}</li>
-              ))}
-              {dashboard && dashboard.recentNotices && dashboard.recentNotices.map((n, i) => (
-                <li key={i} className="notice-item">{n.title}</li>
-              ))}
-            </ul>
+          <ul className="notices-list">
+            {!dashboard && notices.map((notice, index) => (
+              <li key={index} className="notice-item">{notice}</li>
+            ))}
+            {dashboard && dashboard.recentNotices && dashboard.recentNotices.map((n, i) => (
+              <li key={i} className="notice-item">{n.title}</li>
+            ))}
+          </ul>
         </div>
 
         {/* Quick Actions */}
         <div className="card-box">
-          <h2 className="card-title" style={{ marginBottom: "16px" }}>Quick Actions</h2>
+          <h2 className="card-title" style={{ marginBottom: "16px" }}>Quick  Actions</h2>
           <div className="action-buttons-stack">
             <button
               className="btn-action"
@@ -430,31 +430,34 @@ export default function Dashboard() {
           </div>
         </div>
 
-        {/* Managers / Recent Employees List */}
+        {/* Employees List */}
         <div className="card-box">
           <div className="card-header-row">
-            <h2 className="card-title">Managers</h2>
+            <h2 className="card-title">Employees</h2>
             <span className="view-all-link">View All</span>
           </div>
           <div className="managers-list">
-            {!dashboard && managers.map((mgr, index) => (
-              <div key={index} className="manager-item">
-                <div>
-                  <p className="manager-name">{mgr.name}</p>
-                  <p className="manager-role">{mgr.role}</p>
+            {dashboard && dashboard.recentEmployees && dashboard.recentEmployees.length > 0 ? (
+              dashboard.recentEmployees.map((emp, index) => (
+                <div key={emp._id || index} className="manager-item">
+                  <div>
+                    <p className="manager-name">{`${emp.firstName || ""} ${emp.lastName || ""}`.trim()}</p>
+                    <p className="manager-role">{emp.employeeId || ""}</p>
+                  </div>
+                  <button className="btn-contact">View</button>
                 </div>
-                <button className="btn-contact">Contact</button>
-              </div>
-            ))}
-            {dashboard && dashboard.recentEmployees && dashboard.recentEmployees.map((emp, idx) => (
-              <div key={idx} className="manager-item">
-                <div>
-                  <p className="manager-name">{`${emp.firstName || ''} ${emp.lastName || ''}`.trim()}</p>
-                  <p className="manager-role">{emp.employeeId || ''}</p>
+              ))
+            ) : (
+              managers.map((mgr, index) => (
+                <div key={index} className="manager-item">
+                  <div>
+                    <p className="manager-name">{mgr.name.replace("Directory", "Employee").replace("Toster Manager", "Staff").replace("Director", "Staff").replace("Manager", "Staff")}</p>
+                    <p className="manager-role">{mgr.role.replace("Manager Directory", "Staff").replace("Director", "Staff").replace("Toster Manager", "Staff").replace("Esstetor", "Staff")}</p>
+                  </div>
+                  <button className="btn-contact">View</button>
                 </div>
-                <button className="btn-contact">Contact</button>
-              </div>
-            ))}
+              ))
+            )}
           </div>
         </div>
 
@@ -462,7 +465,7 @@ export default function Dashboard() {
 
       {/* 3. Bottom Section */}
       <div className="bottom-grid">
-        
+
         {/* Attendance Analytics Bar Chart (breakdown for today) */}
         <div className="card-box">
           <h2 className="card-title">Attendance Analytics Bar Chart</h2>

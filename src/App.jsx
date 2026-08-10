@@ -46,6 +46,7 @@ function defaultRouteForUser(user) {
   const role = normalizeRole(user?.role);
   if (role === "admin") return "/admin/dashboard";
   if (["employee"].includes(role)) return "/employee/dashboard";
+  if (role === "employee") return "/employee/dashboard";
   return "/";
 }
 

@@ -1,18 +1,18 @@
 import { useState, useEffect, useMemo } from "react";
 import "../App.css";
-
 import api from "../api";
 import {
     Building2,
     Users,
-    Bell,
     Plus,
     Eye,
+    EyeOff,
     Edit,
     Trash2,
     Filter,
     Search,
-    X
+    X,
+    Bell
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
@@ -36,6 +36,8 @@ export default function Employee() {
     const [editingId, setEditingId] = useState(null);
     const [viewingEmployee, setViewingEmployee] = useState(null);
     const [formError, setFormError] = useState("");
+    const [showPassword, setShowPassword] = useState(false);
+    const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
     const [formErrors, setFormErrors] = useState({});
     const [currentUser] = useState(() => {
@@ -541,69 +543,16 @@ export default function Employee() {
                     <p className="dashboard-subtitle">Manage workforce records, roles, statuses and enroll new employees.</p>
                 </div>
                 <button
-                    className="btn-enroll-employee"
+                    className="btn-add-dept"
                     onClick={handleOpenEnrollModal}
-                    style={{ backgroundColor: "#059669", color: "#ffffff", display: "flex", alignItems: "center", gap: "8px", cursor: "pointer", borderRadius: "9999px", padding: "8px 16px", fontSize: "14px", fontWeight: "500" }}
+                    style={{ display: "flex", alignItems: "center", gap: "6px" }}
                 >
                     <Plus size={16} />
-                    <span>Enroll Employee</span>
+                    <span>Add Employee</span>
                 </button>
             </div>
 
-            {/* 4 Stat Cards Grid */}
-            <div className="stats-grid">
-                <div className="stat-card">
-                    <div className="stat-header">
-                        <div className="stat-icon-box total-employees-icon">
-                            <Users size={20} />
-                        </div>
-                        <div>
-                            <p className="stat-label">Total Employees</p>
-                            <p className="stat-value">{totalEmployeesCount}</p>
-                        </div>
-                    </div>
-                    <p className="stat-description">Registered in database</p>
-                </div>
 
-                <div className="stat-card">
-                    <div className="stat-header">
-                        <div className="stat-icon-box active-staff-icon">
-                            <Users size={20} />
-                        </div>
-                        <div>
-                            <p className="stat-label">Active Staff</p>
-                            <p className="stat-value">{activeStaffCount}</p>
-                        </div>
-                    </div>
-                    <p className="stat-description">Currently active</p>
-                </div>
-
-                <div className="stat-card">
-                    <div className="stat-header">
-                        <div className="stat-icon-box inactive-staff-icon">
-                            <Users size={20} />
-                        </div>
-                        <div>
-                            <p className="stat-label">Inactive Staff</p>
-                            <p className="stat-value">{inactiveStaffCount}</p>
-                        </div>
-                    </div>
-                    <p className="stat-description">Offboarded / On leave</p>
-                </div>
-
-                <div className="stat-card">
-                    <div className="stat-header">
-                        <div className="stat-icon-box depts-icon">
-                            <Building2 size={20} />
-                        </div>
-                        <div>
-                            <p className="stat-label">Departments</p>
-                            <p className="stat-value">{departmentsCountText}</p>
-                        </div>
-                    </div>
-                    <p className="stat-description">{departmentNamesText}</p>
-                </div>
-            </div>
 
             {/* Table Directory Section */}
             <div className="employee-directory-card">
@@ -648,8 +597,8 @@ export default function Employee() {
                                 <th>NAME</th>
                                 <th>DEPARTMENT</th>
                                 <th>ROLE / EMPLOYMENT TYPE</th>
-                                <th>STATUS</th>
-                                <th style={{ textAlign: "right", paddingRight: "24px" }}>ACTIONS</th>
+                                <th className="table-center-col">STATUS</th>
+                                <th className="table-actions-col">ACTIONS</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -704,7 +653,7 @@ export default function Employee() {
                                             </span>
                                         </td>
 
-                                        <td style={{ textAlign: "right", paddingRight: "24px" }}>
+                                        <td className="table-actions-col">
                                             <div className="employee-action-buttons">
                                                 <button className="action-icon-btn" title="View details" onClick={() => handleViewClick(emp)}>
                                                     <Eye size={16} />
@@ -728,7 +677,7 @@ export default function Employee() {
             {/* ================= ENROLL / EDIT EMPLOYEE MODAL DIALOG ================= */}
             {isModalOpen && (
                 <div className="modal-backdrop">
-                    <div className="modal-content-card">
+                    <div className="modal-content-card-wide">
                         <div className="modal-header">
                             <div>
                                 <h2>{editingId ? "Edit Employee Record" : "Enroll New Employee"}</h2>
@@ -849,34 +798,6 @@ export default function Employee() {
                                     {formErrors.role && <div className="field-error">{formErrors.role}</div>}
                                 </div>
                                 <div className="form-group">
-                                    <label>Password <span className="req">*</span></label>
-                                    <input
-                                        type="password"
-                                        name="password"
-                                        value={formData.password}
-                                        onChange={handleInputChange}
-                                        className={formErrors.password ? 'input-error' : ''}
-                                        placeholder="Min 8 chars, upper, lower, number, special"
-                                    />
-                                    {formErrors.password && <div className="field-error">{formErrors.password}</div>}
-                                </div>
-                            </div>
-
-                            <div className="form-group">
-                                <label>Confirm Password <span className="req">*</span></label>
-                                <input
-                                    type="password"
-                                    name="confirmPassword"
-                                    value={formData.confirmPassword}
-                                    onChange={handleInputChange}
-                                    className={formErrors.confirmPassword ? 'input-error' : ''}
-                                    placeholder="Re-enter password"
-                                />
-                                {formErrors.confirmPassword && <div className="field-error">{formErrors.confirmPassword}</div>}
-                            </div>
-
-                            <div className="form-grid-2">
-                                <div className="form-group">
                                     <label>Gender <span className="req">*</span></label>
                                     <select
                                         name="gender"
@@ -891,6 +812,56 @@ export default function Employee() {
                                     </select>
                                     {formErrors.gender && <div className="field-error">{formErrors.gender}</div>}
                                 </div>
+                            </div>
+
+                            <div className="form-grid-2">
+                                <div className="form-group">
+                                    <label>Password <span className="req">*</span></label>
+                                    <div className="password-input-wrap">
+                                        <input
+                                            type={showPassword ? "text" : "password"}
+                                            name="password"
+                                            value={formData.password}
+                                            onChange={handleInputChange}
+                                            className={formErrors.password ? 'input-error' : ''}
+                                            placeholder="Min 8 chars, upper, lower, number, special"
+                                        />
+                                        <button
+                                            type="button"
+                                            className="password-toggle-btn"
+                                            onClick={() => setShowPassword(!showPassword)}
+                                            aria-label={showPassword ? "Hide password" : "Show password"}
+                                        >
+                                            {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
+                                        </button>
+                                    </div>
+                                    {formErrors.password && <div className="field-error">{formErrors.password}</div>}
+                                </div>
+                                <div className="form-group">
+                                    <label>Confirm Password <span className="req">*</span></label>
+                                    <div className="password-input-wrap">
+                                        <input
+                                            type={showConfirmPassword ? "text" : "password"}
+                                            name="confirmPassword"
+                                            value={formData.confirmPassword}
+                                            onChange={handleInputChange}
+                                            className={formErrors.confirmPassword ? 'input-error' : ''}
+                                            placeholder="Re-enter password"
+                                        />
+                                        <button
+                                            type="button"
+                                            className="password-toggle-btn"
+                                            onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                                            aria-label={showConfirmPassword ? "Hide confirm password" : "Show confirm password"}
+                                        >
+                                            {showConfirmPassword ? <EyeOff size={16} /> : <Eye size={16} />}
+                                        </button>
+                                    </div>
+                                    {formErrors.confirmPassword && <div className="field-error">{formErrors.confirmPassword}</div>}
+                                </div>
+                            </div>
+
+                            <div className="form-grid-2">
                                 <div className="form-group">
                                     <label>Date of Birth <span className="req">*</span></label>
                                     <input
@@ -902,6 +873,19 @@ export default function Employee() {
                                         required
                                     />
                                     {formErrors.dob && <div className="field-error">{formErrors.dob}</div>}
+                                </div>
+                                <div className="form-group">
+                                    <label>Address <span className="req">*</span></label>
+                                    <input
+                                        type="text"
+                                        name="address"
+                                        value={formData.address}
+                                        onChange={handleInputChange}
+                                        className={formErrors.address ? 'input-error' : ''}
+                                        placeholder="Full residential address..."
+                                        required
+                                    />
+                                    {formErrors.address && <div className="field-error">{formErrors.address}</div>}
                                 </div>
                             </div>
 
@@ -1016,21 +1000,6 @@ export default function Employee() {
                                 </div>
                             </div>
 
-                            {/* Full Row: Address */}
-                            <div className="form-group">
-                                <label>Address <span className="req">*</span></label>
-                                <textarea
-                                    name="address"
-                                    rows="2"
-                                    value={formData.address}
-                                    onChange={handleInputChange}
-                                    className={formErrors.address ? 'input-error' : ''}
-                                    placeholder="Full home or residential address..."
-                                    required
-                                />
-                                {formErrors.address && <div className="field-error">{formErrors.address}</div>}
-                            </div>
-
                             {/* Modal Action Buttons */}
                             <div className="modal-actions">
                                 <button
@@ -1040,7 +1009,7 @@ export default function Employee() {
                                 >
                                     Cancel
                                 </button>
-                                <button type="submit" className="btn-submit">
+                                <button type="submit" className="btn-save">
                                     {editingId ? "Update Employee Record" : "Enroll Employee"}
                                 </button>
                             </div>

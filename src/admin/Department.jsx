@@ -1,8 +1,21 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import {
+  Search,
+  Bell,
+  Building2,
+  Users,
+  Briefcase,
+  User,
+  Edit,
+  Trash2,
+  X,
+  Plus,
+  Loader
+} from "lucide-react";
 import api from "../api";
 
-const Departments = () => {
+export default function Departments() {
   const navigate = useNavigate();
   const [departments, setDepartments] = useState([]);
   const [showProfileInfo, setShowProfileInfo] = useState(false);
@@ -49,10 +62,12 @@ const Departments = () => {
     setLoading(true);
     try {
       const res = await api.getDepartments();
-      if (res?.departments) {
-        setDepartments(res.departments);
-      } else if (Array.isArray(res)) {
+      if (Array.isArray(res)) {
         setDepartments(res);
+      } else if (res?.departments) {
+        setDepartments(res.departments);
+      } else if (res?.data) {
+        setDepartments(res.data);
       }
     } catch (error) {
       console.warn("Backend API offline or failed to fetch departments:", error);
@@ -70,9 +85,11 @@ const Departments = () => {
 
     try {
       const res = await api.getDepartmentEmployees(department._id);
-      if (res?.employees) setSelectedDepartmentEmployees(res.employees);
-      else if (res?.employees === undefined && Array.isArray(res)) setSelectedDepartmentEmployees(res);
-      else setSelectedDepartmentEmployees(res.employees || []);
+      if (Array.isArray(res)) {
+        setSelectedDepartmentEmployees(res);
+      } else {
+        setSelectedDepartmentEmployees(res?.employees || res?.data || []);
+      }
     } catch (error) {
       console.warn(error);
       setEmployeesError("Could not load department employees.");
@@ -110,7 +127,6 @@ const Departments = () => {
       [name]: name === "employeeCount" ? Number(value) : value,
     }));
   };
-
   const handleOpenAddModal = () => {
     setEditingId(null);
     setFormData({
@@ -148,9 +164,7 @@ const Departments = () => {
       !formData.headName ||
       !formData.headDesignation
     ) {
-      setErrorMsg(
-        "Department Name, Description, Head Name, and Head Designation are required."
-      );
+      setErrorMsg("Department Name, Description, Head Name and Head Designation are required");
       return;
     }
 
@@ -205,9 +219,9 @@ const Departments = () => {
   return (
     <div className="departments-page-container">
       {/* Top Search & Action Bar */}
-      <div className="top-header">
-        <div className="search-box">
-          <span className="search-icon">🔍</span>
+      <div className="top-header" style={{ marginBottom: "24px" }}>
+        <div className="search-box" style={{ display: "flex", alignItems: "center" }}>
+          <Search size={16} className="search-icon" style={{ marginRight: "8px" }} />
           <input
             type="text"
             placeholder="Search Department..."
@@ -215,9 +229,9 @@ const Departments = () => {
             onChange={(e) => setSearchQuery(e.target.value)}
           />
         </div>
-        <div className="header-right relative">
+        <div className="header-right relative" style={{ display: "flex", alignItems: "center", gap: "16px" }}>
           <button className="icon-btn" title="Notifications" onClick={() => navigate("/admin/notices") }>
-            🔔
+            <Bell size={18} />
           </button>
           <div className="admin-badge cursor-pointer flex items-center gap-2" onClick={() => setShowProfileInfo((prev) => !prev)}>
             <span className="badge-avatar">AB</span>
@@ -235,14 +249,15 @@ const Departments = () => {
               <button className="w-full rounded-md py-2 bg-emerald-700 text-white" onClick={() => { navigate("/admin/settings"); setShowProfileInfo(false); }}>View Profile Settings</button>
             </div>
           )}
-          <button className="btn-add-dept" onClick={handleOpenAddModal}>
-            + Add Department
+          <button className="btn-add-dept" onClick={handleOpenAddModal} style={{ display: "flex", alignItems: "center", gap: "6px" }}>
+            <Plus size={16} />
+            <span>Add Department</span>
           </button>
         </div>
       </div>
 
       {/* Page Heading */}
-      <div className="page-header">
+      <div className="page-header" style={{ marginBottom: "24px" }}>
         <h1 className="page-title">Departments</h1>
         <p className="page-subtitle">
           Manage department structures, leadership, and team allocations.
@@ -250,9 +265,11 @@ const Departments = () => {
       </div>
 
       {/* Stats Cards Row */}
-      <div className="stats-row">
-        <div className="stat-card">
-          <div className="stat-icon-wrapper green">🏢</div>
+      <div className="stats-row" style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: "24px", marginBottom: "24px" }}>
+        <div className="stat-card stat-card-green">
+          <div className="stat-icon-wrapper green" style={{ display: "flex", alignItems: "center", justifyContent: "center" }}>
+            <Building2 size={24} />
+          </div>
           <div className="stat-info">
             <span className="stat-title">TOTAL DEPARTMENTS</span>
             <h2 className="stat-number">{displayedTotalDepartments}</h2>
@@ -260,8 +277,10 @@ const Departments = () => {
           </div>
         </div>
 
-        <div className="stat-card">
-          <div className="stat-icon-wrapper teal">👥</div>
+        <div className="stat-card stat-card-blue">
+          <div className="stat-icon-wrapper teal" style={{ display: "flex", alignItems: "center", justifyContent: "center" }}>
+            <Users size={24} />
+          </div>
           <div className="stat-info">
             <span className="stat-title">TOTAL EMPLOYEES</span>
             <h2 className="stat-number">{displayedTotalEmployees}</h2>
@@ -269,8 +288,10 @@ const Departments = () => {
           </div>
         </div>
 
-        <div className="stat-card">
-          <div className="stat-icon-wrapper blue">👔</div>
+        <div className="stat-card stat-card-teal">
+          <div className="stat-icon-wrapper blue" style={{ display: "flex", alignItems: "center", justifyContent: "center" }}>
+            <Briefcase size={24} />
+          </div>
           <div className="stat-info">
             <span className="stat-title">DEPARTMENT HEADS</span>
             <h2 className="stat-number">{totalHeads}</h2>
@@ -280,10 +301,10 @@ const Departments = () => {
       </div>
 
       {/* Main Table Card */}
-      <div className="table-card">
-        <div className="table-header">
-          <h3>All Departments List</h3>
-          <span className="badge-dept-count">
+      <div className="table-card" style={{ padding: "24px" }}>
+        <div className="table-header" style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "16px" }}>
+          <h3 style={{ margin: 0 }}>All Departments List</h3>
+          <span className="badge-dept-count" style={{ padding: "4px 10px", borderRadius: "12px", backgroundColor: "#ecfdf5", color: "#065f46", fontSize: "12px", fontWeight: "700" }}>
             {displayedTotalDepartments} Departments
           </span>
         </div>
@@ -298,13 +319,13 @@ const Departments = () => {
                 <th>HEAD DESIGNATION</th>
                 <th>DESCRIPTION</th>
                 <th>NO. OF EMPLOYEES</th>
-                <th className="text-right">ACTIONS</th>
+                <th>ACTIONS</th>
               </tr>
             </thead>
             <tbody>
               {filteredDepartments.length === 0 ? (
                 <tr>
-                  <td colSpan="7" className="empty-row">
+                  <td colSpan="7" className="empty-row" style={{ textAlign: "center", padding: "30px 0" }}>
                     No departments found. Click "+ Add Department" to add a new department.
                   </td>
                 </tr>
@@ -316,42 +337,47 @@ const Departments = () => {
 
                   return (
                     <tr key={dept._id}>
-                      <td>
+                      <td style={{ padding: "4px 8px" }}>
                         <span className="id-badge" title={dept._id}>
                           {shortId}
                         </span>
                       </td>
-                      <td className="font-bold text-dark">{dept.departmentName}</td>
-                      <td className="font-semibold">{dept.headName}</td>
-                      <td className="text-muted">{dept.headDesignation}</td>
-                      <td className="description-cell">{dept.description}</td>
-                      <td>
-                        <span className="emp-count-pill">
-                          👤 {dept.employeeCount || 0}
+                      <td className="font-bold text-dark" style={{ padding: "4px 8px", fontWeight: "700" }}>{dept.departmentName}</td>
+                      <td className="font-semibold" style={{ padding: "4px 8px", fontWeight: "600" }}>{dept.headName}</td>
+                      <td className="text-muted" style={{ padding: "4px 8px", color: "#64748b" }}>{dept.headDesignation}</td>
+                      <td className="description-cell" style={{ padding: "4px 8px" }}>{dept.description}</td>
+                      <td style={{ padding: "4px 8px" }}>
+                        <span className="emp-count-pill" style={{ display: "inline-flex", alignItems: "center", gap: "4px" }}>
+                          <User size={12} /> {dept.employeeCount || 0}
                         </span>
                       </td>
-                      <td className="text-right">
-                        <button
-                          className="btn-action edit"
-                          onClick={() => handleEditClick(dept)}
-                          title="Edit Department"
-                        >
-                          ✏️
-                        </button>
-                        <button
-                          className="btn-action delete"
-                          onClick={() => handleDeleteClick(dept._id)}
-                          title="Delete Department"
-                        >
-                          🗑️
-                        </button>
-                        <button
-                          className="btn-action view"
-                          onClick={() => fetchDepartmentEmployees(dept)}
-                          title="View Department Employees"
-                        >
-                          👥
-                        </button>
+                      <td className="text-right" style={{ padding: "4px 8px", textAlign: "right" }}>
+                        <div style={{ display: "flex", gap: "8px", justifyContent: "flex-end" }}>
+                          <button
+                            className="btn-action edit"
+                            onClick={() => handleEditClick(dept)}
+                            title="Edit Department"
+                            style={{ padding: "6px", display: "inline-flex", alignItems: "center", justifyContent: "center" }}
+                          >
+                            <Edit size={14} />
+                          </button>
+                          <button
+                            className="btn-action delete"
+                            onClick={() => handleDeleteClick(dept._id)}
+                            title="Delete Department"
+                            style={{ padding: "6px", display: "inline-flex", alignItems: "center", justifyContent: "center" }}
+                          >
+                            <Trash2 size={14} />
+                          </button>
+                          <button
+                            className="btn-action view"
+                            onClick={() => fetchDepartmentEmployees(dept)}
+                            title="View Department Employees"
+                            style={{ padding: "6px", display: "inline-flex", alignItems: "center", justifyContent: "center" }}
+                          >
+                            <Users size={14} />
+                          </button>
+                        </div>
                       </td>
                     </tr>
                   );
@@ -363,21 +389,23 @@ const Departments = () => {
       </div>
 
       {selectedDepartment && (
-        <div className="department-employees-panel">
-          <div className="panel-header">
-            <h3>Employees in {selectedDepartment.departmentName}</h3>
-            <span className="badge-employee-count">
+        <div className="department-employees-panel" style={{ marginTop: "24px" }}>
+          <div className="panel-header" style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "16px" }}>
+            <h3 style={{ margin: 0 }}>Employees in {selectedDepartment.departmentName}</h3>
+            <span className="badge-employee-count" style={{ padding: "4px 10px", borderRadius: "12px", backgroundColor: "#ecfdf5", color: "#065f46", fontSize: "12px", fontWeight: "700" }}>
               {selectedDepartmentEmployees.length} employee
               {selectedDepartmentEmployees.length === 1 ? "" : "s"}
             </span>
           </div>
 
           {employeesLoading ? (
-            <p>Loading employees...</p>
+            <div style={{ display: "flex", justifyContent: "center", alignItems: "center", padding: "30px" }}>
+              <Loader className="animate-spin" size={20} color="#0f766e" />
+            </div>
           ) : employeesError ? (
-            <p className="error-message">{employeesError}</p>
+            <p className="error-message" style={{ color: "#b91c1c", backgroundColor: "#fef2f2", padding: "10px", borderRadius: "6px" }}>{employeesError}</p>
           ) : selectedDepartmentEmployees.length === 0 ? (
-            <p className="empty-row">
+            <p className="empty-row" style={{ textAlign: "center", padding: "20px 0", color: "#64748b" }}>
               No employees assigned to this department.
             </p>
           ) : (
@@ -385,21 +413,21 @@ const Departments = () => {
               <table className="employees-table">
                 <thead>
                   <tr>
-                    <th>Name</th>
-                    <th>Email</th>
-                    <th>Phone</th>
-                    <th>Designation</th>
-                    <th>Status</th>
+                    <th style={{ padding: "4px 8px" }}>Name</th>
+                    <th style={{ padding: "4px 8px" }}>Email</th>
+                    <th style={{ padding: "4px 8px" }}>Phone</th>
+                    <th style={{ padding: "4px 8px" }}>Designation</th>
+                    <th style={{ padding: "4px 8px" }}>Status</th>
                   </tr>
                 </thead>
                 <tbody>
                   {selectedDepartmentEmployees.map((employee) => (
                     <tr key={employee._id}>
-                      <td>{`${employee.firstName || ""} ${employee.lastName || ""}`.trim() || "—"}</td>
-                      <td>{employee.email || "—"}</td>
-                      <td>{employee.phone || "—"}</td>
-                      <td>{employee.designationId?.name || employee.designationId || "—"}</td>
-                      <td>{employee.status || "—"}</td>
+                      <td style={{ padding: "4px 8px" }}>{`${employee.firstName || ""} ${employee.lastName || ""}`.trim() || "—"}</td>
+                      <td style={{ padding: "4px 8px" }}>{employee.email || "—"}</td>
+                      <td style={{ padding: "4px 8px" }}>{employee.phone || "—"}</td>
+                      <td style={{ padding: "4px 8px" }}>{employee.designationId?.name || employee.designationId || "—"}</td>
+                      <td style={{ padding: "4px 8px" }}>{employee.status || "—"}</td>
                     </tr>
                   ))}
                 </tbody>
@@ -412,38 +440,59 @@ const Departments = () => {
       {/* Add / Edit Department Modal Dialog */}
       {isModalOpen && (
         <div className="modal-backdrop">
-          <div className="modal-box">
+          <div className="modal-content-card-wide">
             <div className="modal-header">
-              <h3>{editingId ? "Edit Department" : "Add New Department"}</h3>
+              <div>
+                <h2>{editingId ? "Edit Department" : "Add New Department"}</h2>
+                <p className="modal-subtitle">Configure organizational groups and heads.</p>
+              </div>
               <button
                 className="btn-close"
                 onClick={() => setIsModalOpen(false)}
               >
-                &times;
+                <X size={20} />
               </button>
             </div>
 
-            {errorMsg && <div className="error-message">{errorMsg}</div>}
+            {errorMsg && (
+              <div style={{ color: "#b91c1c", backgroundColor: "#fef2f2", padding: "10px", borderRadius: "6px", marginBottom: "16px", fontSize: "13px" }}>
+                {errorMsg}
+              </div>
+            )}
 
-            <form onSubmit={handleSubmit}>
-              <div className="form-field">
-                <label>
-                  Department Name <span className="text-red">*</span>
-                </label>
-                <input
-                  type="text"
-                  name="departmentName"
-                  value={formData.departmentName}
-                  onChange={handleInputChange}
-                  placeholder="e.g. Production, Sales, IT"
-                  required
-                />
+            <form onSubmit={handleSubmit} className="enroll-form">
+              <div className="form-grid-2">
+                <div className="form-group">
+                  <label>
+                    Department Name <span className="req">*</span>
+                  </label>
+                  <input
+                    type="text"
+                    name="departmentName"
+                    value={formData.departmentName}
+                    onChange={handleInputChange}
+                    placeholder="e.g. Production, Sales, IT"
+                    required
+                  />
+                </div>
+
+                <div className="form-group">
+                  <label>Number of Employees</label>
+                  <input
+                    type="number"
+                    name="employeeCount"
+                    value={formData.employeeCount}
+                    onChange={handleInputChange}
+                    min="0"
+                    placeholder="0"
+                  />
+                </div>
               </div>
 
               <div className="form-grid-2">
-                <div className="form-field">
+                <div className="form-group">
                   <label>
-                    Head Name <span className="text-red">*</span>
+                    Head Name <span className="req">*</span>
                   </label>
                   <input
                     type="text"
@@ -455,44 +504,33 @@ const Departments = () => {
                   />
                 </div>
 
-                <div className="form-field">
+                <div className="form-group">
                   <label>
-                    Head Designation <span className="text-red">*</span>
+                    Head Designation <span className="req">*</span>
                   </label>
                   <input
                     type="text"
                     name="headDesignation"
                     value={formData.headDesignation}
                     onChange={handleInputChange}
-                    placeholder="e.g. Manager, Director"
+                    placeholder="e.g. Manager... "
                     required
                   />
                 </div>
               </div>
 
-              <div className="form-field">
-                <label>Number of Employees</label>
-                <input
-                  type="number"
-                  name="employeeCount"
-                  value={formData.employeeCount}
-                  onChange={handleInputChange}
-                  min="0"
-                  placeholder="0"
-                />
-              </div>
-
-              <div className="form-field">
+              <div className="form-group">
                 <label>
-                  Description <span className="text-red">*</span>
+                  Description <span className="req">*</span>
                 </label>
                 <textarea
                   name="description"
-                  rows="3"
+                  rows="2"
                   value={formData.description}
                   onChange={handleInputChange}
                   placeholder="Brief description of department duties..."
                   required
+                  style={{ minHeight: "60px", resize: "vertical" }}
                 />
               </div>
 
@@ -504,8 +542,9 @@ const Departments = () => {
                 >
                   Cancel
                 </button>
-                <button type="submit" className="btn-submit">
-                  {editingId ? "Update Department" : "Save Department"}
+                <button type="submit" className="btn-save">
+                  <Plus size={16} />
+                  <span>{editingId ? "Update Department" : "Save Department"}</span>
                 </button>
               </div>
             </form>
@@ -514,6 +553,4 @@ const Departments = () => {
       )}
     </div>
   );
-};
-
-export default Departments;
+}

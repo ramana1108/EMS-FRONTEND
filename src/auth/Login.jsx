@@ -87,95 +87,100 @@ function Login() {
     };
 
     return (
-        <div className="min-h-screen bg-slate-50 text-slate-800">
-            <div className="flex min-h-screen flex-col lg:flex-row">
-                <div className="relative flex flex-1 items-end justify-start overflow-hidden bg-gradient-to-br from-emerald-700 via-emerald-600 to-teal-600 px-8 py-12 text-white lg:px-16 lg:py-20">
-                    <div className="absolute inset-0 bg-[url('/office_bg.png')] bg-cover bg-center opacity-25" />
-                    <div className="absolute inset-0 bg-gradient-to-r from-black/40 via-emerald-900/20 to-transparent" />
-                    <div className="relative z-10 max-w-xl">
-                        <div className="mb-6 flex items-center gap-3 rounded-full border border-white/20 bg-white/10 px-4 py-2 backdrop-blur-sm">
-                            <Briefcase size={20} className="text-emerald-200" />
-                            <span className="text-sm font-semibold tracking-[0.2em] uppercase">EMS Portal</span>
-                        </div>
-                        <h1 className="text-3xl font-bold leading-tight sm:text-4xl">Employment Management System</h1>
-                        <p className="mt-4 text-sm leading-7 text-emerald-50/90 sm:text-base">
-                            A unified, modern solution for workforce scheduling, role configuration, access control, and employee records management.
-                        </p>
-                    </div>
+        <div className="login-split-container">
+            {/* Left Decorative/Info Panel */}
+            <div className="login-left-panel">
+                <div className="login-left-branding">
+                    <Briefcase size={22} className="text-emerald-400" />
+                    <span className="text-sm font-black tracking-[0.25em] uppercase">EMS PORTAL</span>
                 </div>
+                <div className="login-left-content">
+                    <h1 className="login-left-title">Employment Management System</h1>
+                    <p className="login-left-desc">
+                        A unified, premium-grade solution for team scheduling, role configuration, access controls, and real-time employee analytics.
+                    </p>
+                </div>
+                <div className="text-xs text-white/50 font-bold tracking-wider">
+                    © 2026 EMS Corporate. All rights reserved.
+                </div>
+            </div>
 
-                <div className="flex flex-1 items-center justify-center bg-white px-6 py-10 sm:px-10 lg:px-12">
-                    <div className="w-full max-w-md rounded-2xl border border-slate-200 bg-white p-8 shadow-xl shadow-slate-200/70">
+            {/* Right Authentication Panel */}
+            <div className="login-right-panel">
+                <div className="login-right-inner">
+                    <div className="card">
                         <div className="mb-8 text-center">
-                            <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-emerald-100 text-emerald-600">
-                                <Briefcase size={28} />
+                            <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-xl bg-emerald-500/10 text-emerald-500 border border-emerald-500/20 shadow-inner">
+                                <Briefcase size={24} />
                             </div>
-                            <h2 className="text-2xl font-semibold text-slate-900" style={{ color: "#0f172a" }}>
-                                Sign In to EMS
+                            <h2 className="text-2xl font-extrabold text-slate-900 dark:text-white tracking-tight">
+                                Welcome Back
                             </h2>
-                            <p className="mt-2 text-sm text-slate-500">Enter your credentials to access your workspace.</p>
+                            <p className="mt-2 text-xs font-semibold text-slate-400 dark:text-slate-500">Enter your credentials to access your workspace.</p>
                         </div>
 
                         {error && (
-                            <div className="mb-5 flex items-start gap-3 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-600">
+                            <div className="mb-5 flex items-start gap-3 rounded-xl border border-red-200 dark:border-red-950/20 bg-red-50 dark:bg-red-950/10 px-4 py-3 text-xs md:text-sm font-semibold text-red-600 dark:text-red-400">
                                 <AlertCircle size={16} className="mt-0.5 shrink-0" />
                                 <span>{error}</span>
                             </div>
                         )}
 
                         {success && (
-                            <div className="mb-5 flex items-start gap-3 rounded-lg border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-600">
+                            <div className="mb-5 flex items-start gap-3 rounded-xl border border-emerald-250 dark:border-emerald-950/25 bg-emerald-50 dark:bg-emerald-950/10 px-4 py-3 text-xs md:text-sm font-semibold text-emerald-600 dark:text-emerald-400">
                                 <CheckCircle size={16} className="mt-0.5 shrink-0" />
                                 <span>{success}</span>
                             </div>
                         )}
 
-                        <form onSubmit={handleLogin} className="space-y-5">
-                            <div>
-                                <label className="mb-2 block text-sm font-medium text-slate-700">Email</label>
-                                <div className="relative">
-                                    <span className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-slate-400">
-                                        <User size={18} />
+                        <form onSubmit={handleLogin} className="space-y-4">
+                            <div className="form-group">
+                                <label className="form-label">Email Address</label>
+                                <div className="input-container">
+                                    <span className="input-icon">
+                                        <User size={16} />
                                     </span>
                                     <input
-                                        type="text"
-                                        className="w-full rounded-lg border border-slate-300 bg-slate-50 py-3 pl-10 pr-4 text-sm text-slate-800 outline-none transition focus:border-emerald-500 focus:ring-2 focus:ring-emerald-200"
-                                        placeholder="Enter your email"
+                                        type="email"
+                                        className="form-input"
+                                        placeholder="name@company.com"
                                         value={username}
                                         onChange={(e) => setUsername(e.target.value)}
+                                        required
                                     />
                                 </div>
                             </div>
 
-                            <div>
+                            <div className="form-group">
                                 <div className="mb-2 flex items-center justify-between">
-                                    <label className="text-sm font-medium text-slate-700">Password</label>
-                                    <a href="#" className="text-sm text-slate-500 hover:text-emerald-600">Forgot password?</a>
+                                    <label className="form-label mb-0!">Password</label>
+                                    <a href="#" className="text-xs text-slate-400 dark:text-slate-500 hover:text-emerald-500 font-bold transition-all">Forgot password?</a>
                                 </div>
-                                <div className="relative">
-                                    <span className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-slate-400">
-                                        <Lock size={18} />
+                                <div className="input-container">
+                                    <span className="input-icon">
+                                        <Lock size={16} />
                                     </span>
                                     <input
                                         type={showPassword ? "text" : "password"}
-                                        className="w-full rounded-lg border border-slate-300 bg-slate-50 py-3 pl-10 pr-12 text-sm text-slate-800 outline-none transition focus:border-emerald-500 focus:ring-2 focus:ring-emerald-200"
-                                        placeholder="Enter your password"
+                                        className="form-input pr-12"
+                                        placeholder="••••••••"
                                         value={password}
                                         onChange={(e) => setPassword(e.target.value)}
+                                        required
                                     />
                                     <button
                                         type="button"
                                         onClick={() => setShowPassword(!showPassword)}
-                                        className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600"
+                                        className="absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-650 cursor-pointer"
                                     >
-                                        {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                                        {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
                                     </button>
                                 </div>
                             </div>
 
                             <button
                                 type="submit"
-                                className="w-full rounded-lg bg-emerald-600 px-4 py-3 text-sm font-semibold text-white transition hover:bg-emerald-700 disabled:cursor-not-allowed disabled:opacity-70"
+                                className="btn btn-primary mt-2 cursor-pointer w-full bg-emerald-600 text-white rounded-xl py-3 text-sm font-bold shadow-md hover:bg-emerald-500 disabled:opacity-50"
                                 disabled={loading}
                             >
                                 {loading ? "Signing In..." : "Sign In"}

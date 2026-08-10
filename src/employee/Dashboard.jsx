@@ -112,12 +112,12 @@ export default function EmployeeDashboard() {
             {loading && <div>Loading...</div>}
             {!loading && dashboard && (
               <>
-                <div className="emp-stat-card">
+                <div className="emp-stat-card stat-card-green">
                   <div className="emp-stat-top">
-                    <span className="emp-stat-title">Attendance</span>
                     <div className="emp-stat-icon-box">
                       <TrendingUp size={18} />
                     </div>
+                    <span className="emp-stat-title">Attendance</span>
                   </div>
                   <p className="emp-stat-value">
                     {dashboard.todayAttendance?.status || "No record"}
@@ -125,12 +125,12 @@ export default function EmployeeDashboard() {
                   <span className="emp-stat-subtext">Today&apos;s status</span>
                 </div>
 
-                <div className="emp-stat-card">
+                <div className="emp-stat-card stat-card-blue">
                   <div className="emp-stat-top">
-                    <span className="emp-stat-title">Leave Balance</span>
                     <div className="emp-stat-icon-box">
                       <Calendar size={18} />
                     </div>
+                    <span className="emp-stat-title">Leave Balance</span>
                   </div>
                   <p className="emp-stat-value">
                     {employeeProfile.leaveBalance != null ? employeeProfile.leaveBalance : "—"}
@@ -138,12 +138,12 @@ export default function EmployeeDashboard() {
                   <span className="emp-stat-subtext">Available</span>
                 </div>
 
-                <div className="emp-stat-card">
+                <div className="emp-stat-card stat-card-indigo">
                   <div className="emp-stat-top">
-                    <span className="emp-stat-title">Current Salary</span>
                     <div className="emp-stat-icon-box">
                       <DollarSign size={18} />
                     </div>
+                    <span className="emp-stat-title">Current Salary</span>
                   </div>
                   <p className="emp-stat-value">
                     {employeeProfile.salary ? `$${employeeProfile.salary}` : "—"}
@@ -151,12 +151,12 @@ export default function EmployeeDashboard() {
                   <span className="emp-stat-subtext">Base salary</span>
                 </div>
 
-                <div className="emp-stat-card">
+                <div className="emp-stat-card stat-card-amber">
                   <div className="emp-stat-top">
-                    <span className="emp-stat-title">Recent Alerts</span>
                     <div className="emp-stat-icon-box">
                       <Megaphone size={18} />
                     </div>
+                    <span className="emp-stat-title">Recent Alerts</span>
                   </div>
                   <p className="emp-stat-value">{recentNotices.length}</p>
                   <span className="emp-stat-subtext">Latest notices</span>
@@ -165,54 +165,87 @@ export default function EmployeeDashboard() {
             )}
           </div>
 
-          <div className="emp-middle-grid">
-            <div className="emp-card-box">
-              <h2 className="emp-card-title">Attendance History & Leave Status</h2>
-              <div className="current-status-row">
-                <span className="current-status-label">Current status</span>
-                <p className="current-status-value">
-                  {dashboard?.todayAttendance?.status || "Unknown"}
-                </p>
+          {!loading && dashboard && (
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-10">
+              <div className="emp-card-box">
+                <div className="flex items-center justify-between gap-4 mb-5">
+                  <h2 className="emp-card-title">Today's Attendance</h2>
+                  <span className="rounded-full bg-slate-100 px-3 py-1 text-xs font-semibold text-slate-700">
+                    {dashboard.todayAttendance?.status || "No record"}
+                  </span>
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div className="rounded-2xl border border-slate-200 bg-transparent p-4 shadow-sm">
+                    <p className="text-xs uppercase tracking-[0.2em] text-slate-400">Check-in time</p>
+                    <p className="text-xl font-semibold text-slate-900 mt-2">
+                      {dashboard.todayAttendance?.checkInTime || "-"}
+                    </p>
+                  </div>
+                  <div className="rounded-2xl border border-slate-200 bg-transparent p-4 shadow-sm">
+                    <p className="text-xs uppercase tracking-[0.2em] text-slate-400">Check-out time</p>
+                    <p className="text-xl font-semibold text-slate-900 mt-2">
+                      {dashboard.todayAttendance?.checkOutTime || "-"}
+                    </p>
+                  </div>
+                  <div className="rounded-2xl border border-slate-200 bg-transparent p-4 shadow-sm">
+                    <p className="text-xs uppercase tracking-[0.2em] text-slate-400">Worked hours</p>
+                    <p className="text-xl font-semibold text-slate-900 mt-2">
+                      {dashboard.todayAttendance?.workedHours != null ? `${dashboard.todayAttendance.workedHours} hr` : "-"}
+                    </p>
+                  </div>
+                  <div className="rounded-2xl border border-slate-200 bg-transparent p-4 shadow-sm">
+                    <p className="text-xs uppercase tracking-[0.2em] text-slate-400">Notes</p>
+                    <p className="text-sm text-slate-700 mt-2 leading-6">
+                      {dashboard.todayAttendance?.notes || "No additional notes."}
+                    </p>
+                  </div>
+                </div>
               </div>
 
-              <table className="emp-table">
-                <thead>
-                  <tr>
-                    <th>Date</th>
-                    <th>Status</th>
-                    <th>Activity</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {attendanceHistory.length > 0 ? (
-                    attendanceHistory.map((record) => (
-                      <tr key={record._id || record.attendanceDate}>
-                        <td>{new Date(record.attendanceDate).toLocaleDateString()}</td>
-                        <td
-                          className={
-                            record.status === "Present"
-                              ? "status-present"
-                              : record.status === "Absent"
-                              ? "status-absent"
-                              : "status-leave"
-                          }
-                        >
-                          {record.status}
-                        </td>
-                        <td>{record.activity || "—"}</td>
-                      </tr>
-                    ))
-                  ) : (
+              <div className="emp-card-box">
+                <h2 className="emp-card-title">Attendance History</h2>
+                <table className="emp-table">
+                  <thead>
                     <tr>
-                      <td colSpan={3} style={{ textAlign: "center", padding: "20px 0" }}>
-                        No attendance history available.
-                      </td>
+                      <th>Date</th>
+                      <th>Status</th>
+                      <th>Activity</th>
                     </tr>
-                  )}
-                </tbody>
-              </table>
+                  </thead>
+                  <tbody>
+                    {attendanceHistory.length > 0 ? (
+                      attendanceHistory.map((record) => (
+                        <tr key={record._id || record.attendanceDate}>
+                          <td>{new Date(record.attendanceDate).toLocaleDateString()}</td>
+                          <td
+                            className={
+                              record.status === "Present"
+                                ? "status-present"
+                                : record.status === "Absent"
+                                ? "status-absent"
+                                : "status-leave"
+                            }
+                          >
+                            {record.status}
+                          </td>
+                          <td>{record.activity || "—"}</td>
+                        </tr>
+                      ))
+                    ) : (
+                      <tr>
+                        <td colSpan={3} style={{ textAlign: "center", padding: "20px 0" }}>
+                          No attendance history available.
+                        </td>
+                      </tr>
+                    )}
+                  </tbody>
+                </table>
+              </div>
             </div>
+          )}
 
+          <div className="emp-middle-grid grid grid-cols-1 lg:grid-cols-2 gap-6 mb-10">
             <div className="emp-card-box">
               <h2 className="emp-card-title">Company Announcements</h2>
               <div className="announcement-list">
@@ -244,28 +277,32 @@ export default function EmployeeDashboard() {
 
             <div className="emp-card-box">
               <h2 className="emp-card-title">Profile Summary</h2>
-              <div className="profile-card-content">
+              <div className="profile-card-content space-y-4 flex flex-col items-center">
                 <img
                   src={employeeProfile.profileImage || "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=150&auto=format&fit=crop&q=80"}
                   alt={employeeProfile.firstName || "Employee"}
                   className="profile-avatar-large"
                 />
-                <p className="profile-name">
-                  {employeeProfile.firstName || employeeProfile.lastName
-                    ? `${employeeProfile.firstName || ""} ${employeeProfile.lastName || ""}`.trim()
-                    : "Employee"}
-                </p>
-                <p className="profile-role">{employeeProfile.designationName || "Employee"}</p>
-                <div className="profile-dept-info">
+                <div>
+                  <p className="profile-name">
+                    {employeeProfile.firstName || employeeProfile.lastName
+                      ? `${employeeProfile.firstName || ""} ${employeeProfile.lastName || ""}`.trim()
+                      : "Employee"}
+                  </p>
+                  <p className="profile-role">{employeeProfile.designationName || "Employee"}</p>
+                </div>
+                <div className="profile-dept-info w-full">
                   <span>Department</span>
                   <span>{employeeProfile.departmentName || "—"}</span>
                 </div>
-                <button className="btn-apply-leave" onClick={handleApplyLeave}>
-                  Apply Leave
-                </button>
-                <button className="btn-download-payslip" onClick={handleDownloadPayslip}>
-                  Download Payslip
-                </button>
+                <div className="w-full space-y-3 pt-2">
+                  <button className="btn-apply-leave" onClick={handleApplyLeave}>
+                    Apply Leave
+                  </button>
+                  <button className="btn-download-payslip" onClick={handleDownloadPayslip}>
+                    Download Payslip
+                  </button>
+                </div>
               </div>
             </div>
           </div>

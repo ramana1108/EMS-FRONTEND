@@ -75,20 +75,6 @@ export async function getDepartments() {
   return res.json();
 }
 
-export async function getDesignations() {
-  const res = await fetch(`${API_BASE_URL}/designations`, {
-    headers: authHeaders(),
-  });
-  return res.json();
-}
-
-export async function getDepartmentEmployees(departmentId) {
-  const res = await fetch(`${API_BASE_URL}/departments/department/${departmentId}`, {
-    headers: authHeaders(),
-  });
-  return res.json();
-}
-
 export async function createDepartment(payload) {
   const res = await fetch(`${API_BASE_URL}/departments`, {
     method: "POST",
@@ -109,6 +95,46 @@ export async function updateDepartment(id, payload) {
 
 export async function deleteDepartment(id) {
   const res = await fetch(`${API_BASE_URL}/departments/${id}`, {
+    method: "DELETE",
+    headers: authHeaders(),
+  });
+  return res.json();
+}
+
+export async function getDepartmentEmployees(departmentId) {
+  const res = await fetch(`${API_BASE_URL}/departments/department/${departmentId}`, {
+    headers: authHeaders(),
+  });
+  return res.json();
+}
+
+export async function getDesignations() {
+  const res = await fetch(`${API_BASE_URL}/designations`, {
+    headers: authHeaders(),
+  });
+  return res.json();
+}
+
+export async function createDesignation(payload) {
+  const res = await fetch(`${API_BASE_URL}/designations`, {
+    method: "POST",
+    headers: authHeaders(),
+    body: JSON.stringify(payload),
+  });
+  return res.json();
+}
+
+export async function updateDesignation(id, payload) {
+  const res = await fetch(`${API_BASE_URL}/designations/${id}`, {
+    method: "PUT",
+    headers: authHeaders(),
+    body: JSON.stringify(payload),
+  });
+  return res.json();
+}
+
+export async function deleteDesignation(id) {
+  const res = await fetch(`${API_BASE_URL}/designations/${id}`, {
     method: "DELETE",
     headers: authHeaders(),
   });
@@ -152,15 +178,8 @@ export async function getProfileByEmployeeId(employeeId) {
   return res.json();
 }
 
-export async function getMyProfile() {
-  const res = await fetch(`${API_BASE_URL}/profile/me`, {
-    headers: authHeaders(),
-  });
-  return res.json();
-}
-
-export async function updateMyProfile(payload) {
-  const res = await fetch(`${API_BASE_URL}/profile/me`, {
+export async function updateProfile(employeeId, payload) {
+  const res = await fetch(`${API_BASE_URL}/profile/${employeeId}`, {
     method: "PUT",
     headers: authHeaders(),
     body: JSON.stringify(payload),
@@ -168,8 +187,73 @@ export async function updateMyProfile(payload) {
   return res.json();
 }
 
-export async function updateProfile(employeeId, payload) {
-  const res = await fetch(`${API_BASE_URL}/profile/${employeeId}`, {
+export async function getRoles() {
+  const res = await fetch(`${API_BASE_URL}/roles`, {
+    headers: authHeaders(),
+  });
+  return res.json();
+}
+
+export async function createRole(payload) {
+  const res = await fetch(`${API_BASE_URL}/roles`, {
+    method: "POST",
+    headers: authHeaders(),
+    body: JSON.stringify(payload),
+  });
+  return res.json();
+}
+
+export async function deleteRole(id) {
+  const res = await fetch(`${API_BASE_URL}/roles/${id}`, {
+    method: "DELETE",
+    headers: authHeaders(),
+  });
+  return res.json();
+}
+
+export async function updateRole(id, payload) {
+  const res = await fetch(`${API_BASE_URL}/roles/${id}`, {
+    method: "PUT",
+    headers: authHeaders(),
+    body: JSON.stringify(payload),
+  });
+  return res.json();
+}
+
+export async function getAllUsers() {
+  const res = await fetch(`${API_BASE_URL}/auth`, {
+    headers: authHeaders(),
+  });
+  return res.json();
+}
+
+export async function updateUser(id, payload) {
+  const res = await fetch(`${API_BASE_URL}/auth/${id}`, {
+    method: "PUT",
+    headers: authHeaders(),
+    body: JSON.stringify(payload),
+  });
+  return res.json();
+}
+
+export async function getSettings() {
+  const res = await fetch(`${API_BASE_URL}/settings`, {
+    headers: authHeaders(),
+  });
+  return res.json();
+}
+
+export async function createSettings(payload) {
+  const res = await fetch(`${API_BASE_URL}/settings`, {
+    method: "POST",
+    headers: authHeaders(),
+    body: JSON.stringify(payload),
+  });
+  return res.json();
+}
+
+export async function updateSettings(id, payload) {
+  const res = await fetch(`${API_BASE_URL}/settings/${id}`, {
     method: "PUT",
     headers: authHeaders(),
     body: JSON.stringify(payload),
@@ -192,14 +276,14 @@ export async function getMyAttendance() {
 }
 
 export async function getMyLeaves() {
-  const res = await fetch(`${API_BASE_URL}/api/leaves/me`, {
+  const res = await fetch(`${API_BASE_URL}/leave/me`, {
     headers: authHeaders(),
   });
   return res.json();
 }
 
 export async function applyLeave(payload) {
-  const res = await fetch(`${API_BASE_URL}/api/leaves`, {
+  const res = await fetch(`${API_BASE_URL}/leave`, {
     method: "POST",
     headers: authHeaders(),
     body: JSON.stringify(payload),
@@ -208,9 +292,25 @@ export async function applyLeave(payload) {
 }
 
 export async function deleteLeave(id) {
-  const res = await fetch(`${API_BASE_URL}/api/leaves/${id}`, {
+  const res = await fetch(`${API_BASE_URL}/leave/${id}`, {
     method: "DELETE",
     headers: authHeaders(),
+  });
+  return res.json();
+}
+
+export async function getAllLeaves() {
+  const res = await fetch(`${API_BASE_URL}/leave`, {
+    headers: authHeaders(),
+  });
+  return res.json();
+}
+
+export async function updateLeaveStatus(id, payload) {
+  const res = await fetch(`${API_BASE_URL}/leave/${id}`, {
+    method: "PUT",
+    headers: authHeaders(),
+    body: JSON.stringify(payload),
   });
   return res.json();
 }
@@ -231,26 +331,38 @@ export default {
   getAllEmployees,
   getEmployeeById,
   createEmployee,
-  getDepartmentEmployees,
-  createDepartment,
-  updateDepartment,
-  deleteDepartment,
   updateEmployee,
   deleteEmployee,
   getDepartments,
+  createDepartment,
+  updateDepartment,
+  deleteDepartment,
+  getDepartmentEmployees,
   getDesignations,
+  createDesignation,
+  updateDesignation,
+  deleteDesignation,
   getNotices,
   getPayrolls,
   getProfiles,
-  getProfileByEmployeeId,
   createProfile,
+  getProfileByEmployeeId,
   updateProfile,
-  getMyProfile,
-  updateMyProfile,
+  getRoles,
+  createRole,
+  deleteRole,
+  updateRole,
+  getAllUsers,
+  updateUser,
+  getSettings,
+  createSettings,
+  updateSettings,
   getAttendance,
   getMyAttendance,
   getMyLeaves,
   applyLeave,
   deleteLeave,
+  getAllLeaves,
+  updateLeaveStatus,
   registerUser,
 };

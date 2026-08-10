@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
-import "../App.css";
-import { Megaphone, Plus, Calendar, User, Trash2, AlertCircle } from "lucide-react";
+import Pagination from "../components/Pagination";
+import { Megaphone, Plus, Calendar, User, Trash2, AlertCircle, X } from "lucide-react";
 
 export default function Notice() {
     const [notices, setNotices] = useState([]);
@@ -8,6 +8,19 @@ export default function Notice() {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState("");
     const [success, setSuccess] = useState("");
+    const [currentPage, setCurrentPage] = useState(1);
+    const itemsPerPage = 6;
+
+    const totalPages = Math.max(1, Math.ceil(notices.length / itemsPerPage));
+    const startIndex = (currentPage - 1) * itemsPerPage;
+    const paginatedNotices = notices.slice(startIndex, startIndex + itemsPerPage);
+
+    useEffect(() => {
+        setCurrentPage(1);
+    }, [notices]);
+
+    // Modal Control State
+    const [isModalOpen, setIsModalOpen] = useState(false);
 
     // Form Fields
     const [title, setTitle] = useState("");
@@ -88,6 +101,7 @@ export default function Notice() {
                 setTitle("");
                 setDescription("");
                 setPostedBy("");
+                setIsModalOpen(false);
                 fetchNotices();
             } else {
                 setError(data.message || "Failed to publish notice");
@@ -131,21 +145,33 @@ export default function Notice() {
     };
 
     return (
-        <div className="p-6">
+        <div>
             {/* Header */}
-            <div className="page-header">
+            <div className="page-header" style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "24px" }}>
                 <div>
                     <h1 className="dashboard-title">Announcements & Notices</h1>
                     <p className="dashboard-subtitle">Broadcasting corporate announcements and regulatory notifications.</p>
                 </div>
+                <button
+                    className="btn-add-dept"
+                    onClick={() => {
+                        setError("");
+                        setSuccess("");
+                        setIsModalOpen(true);
+                    }}
+                    style={{ display: "flex", alignItems: "center", gap: "8px" }}
+                >
+                    <Plus size={16} />
+                    <span>Publish Notice</span>
+                </button>
             </div>
 
             {/* Stats Widget */}
             <div className="stats-grid" style={{ marginBottom: "24px" }}>
-                <div className="stat-card">
+                <div className="stat-card stat-card-green">
                     <div className="stat-header">
-                        <div className="stat-icon-box depts-icon" style={{ backgroundColor: "#0284c7" }}>
-                            <Megaphone size={20} color="#ffffff" />
+                        <div className="stat-icon-box depts-icon">
+                            <Megaphone size={20} />
                         </div>
                         <div>
                             <p className="stat-label">Total Notices</p>
@@ -169,20 +195,25 @@ export default function Notice() {
                 </div>
             )}
 
-            {/* Main Split Layout */}
-            <div className="emp-middle-grid" style={{ display: "grid", gridTemplateColumns: "2fr 1fr", gap: "24px", alignItems: "start" }}>
-
+            {/* Full-width Layout */}
+            <div className="w-full">
                 {/* Notice Feed */}
-                <div className="employee-directory-card" style={{ padding: "24px" }}>
-                    <h2 className="emp-card-title" style={{ marginBottom: "20px" }}>Active Notices Feed</h2>
+                <div className="employee-directory-card">
+                    <div className="filters-row">
+                        <div className="filters-left">
+                            <span className="filters-label">
+                                Active Notices Feed
+                            </span>
+                        </div>
+                    </div>
 
-                    <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
+                    <div style={{ display: "flex", flexDirection: "column", gap: "16px", overflow: "visible" }}>
                         {loading ? (
                             <p style={{ textAlign: "center", color: "#64748b" }}>Loading announcements feed...</p>
                         ) : notices.length === 0 ? (
                             <p style={{ textAlign: "center", color: "#64748b", padding: "40px 0" }}>No corporate notices published yet.</p>
                         ) : (
-                            notices.map((notice) => (
+                            paginatedNotices.map((notice) => (
                                 <div
                                     key={notice._id}
                                     style={{
@@ -234,59 +265,84 @@ export default function Notice() {
                         )}
                     </div>
                 </div>
-
-                {/* Publish Notice Form */}
-                <div className="emp-card-box" style={{ padding: "24px" }}>
-                    <h2 className="emp-card-title" style={{ marginBottom: "16px" }}>Publish Notice</h2>
-                    <form onSubmit={handleAddNotice}>
-                        <div style={{ marginBottom: "12px" }}>
-                            <label style={{ display: "block", fontSize: "11px", fontWeight: "700", textTransform: "uppercase", color: "#475569", marginBottom: "4px" }}>Notice Title</label>
-                            <input
-                                type="text"
-                                value={title}
-                                onChange={(e) => setTitle(e.target.value)}
-                                style={{ width: "100%", padding: "8px 12px", borderRadius: "6px", border: "1px solid #cbd5e1", outline: "none", fontSize: "14px" }}
-                                placeholder="e.g. Town Hall Meeting Scheduled"
-                            />
-                        </div>
-
-                        <div style={{ marginBottom: "12px" }}>
-                            <label style={{ display: "block", fontSize: "11px", fontWeight: "700", textTransform: "uppercase", color: "#475569", marginBottom: "4px" }}>Description Detail</label>
-                            <textarea
-                                value={description}
-                                onChange={(e) => setDescription(e.target.value)}
-                                style={{ width: "100%", padding: "8px 12px", borderRadius: "6px", border: "1px solid #cbd5e1", minHeight: "100px", outline: "none", resize: "vertical", fontSize: "14px" }}
-                                placeholder="Write announcements details here..."
-                            />
-                        </div>
-
-                        <div style={{ marginBottom: "20px" }}>
-                            <label style={{ display: "block", fontSize: "11px", fontWeight: "700", textTransform: "uppercase", color: "#475569", marginBottom: "4px" }}>Author / Posted By</label>
-                            <select
-                                value={postedBy}
-                                onChange={(e) => setPostedBy(e.target.value)}
-                                style={{ width: "100%", padding: "8px 12px", borderRadius: "6px", border: "1px solid #cbd5e1", backgroundColor: "#ffffff", outline: "none", fontSize: "14px" }}
-                            >
-                                <option value="">Select Authoring Employee...</option>
-                                {employees.map((emp) => (
-                                    <option key={emp._id} value={emp._id}>
-                                        {emp.firstName} {emp.lastName} ({emp.employeeId})
-                                    </option>
-                                ))}
-                            </select>
-                        </div>
-
-                        <button
-                            type="submit"
-                            style={{ width: "100%", padding: "10px", backgroundColor: "#065f46", color: "#ffffff", outline: "none", border: "none", borderRadius: "6px", fontWeight: "600", fontSize: "14px", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", gap: "8px" }}
-                        >
-                            <Plus size={16} />
-                            <span>Publish notice</span>
-                        </button>
-                    </form>
-                </div>
-
             </div>
+
+            {/* Publish Notice Modal */}
+            {isModalOpen && (
+                <div className="modal-backdrop">
+                    <div className="modal-content-card-wide">
+                        <div className="modal-header">
+                            <div>
+                                <h2>Publish Notice</h2>
+                                <p className="modal-subtitle">Configure notice details and select author.</p>
+                            </div>
+                            <button
+                                className="btn-close"
+                                onClick={() => setIsModalOpen(false)}
+                            >
+                                <X size={20} />
+                            </button>
+                        </div>
+
+                        <form onSubmit={handleAddNotice} className="enroll-form">
+                            <div className="form-group">
+                                <label>Notice Title <span className="req">*</span></label>
+                                <input
+                                    type="text"
+                                    value={title}
+                                    onChange={(e) => setTitle(e.target.value)}
+                                    required
+                                    placeholder="e.g. Town Hall Meeting Scheduled"
+                                />
+                            </div>
+
+                            <div className="form-group">
+                                <label>Description Detail <span className="req">*</span></label>
+                                <textarea
+                                    value={description}
+                                    onChange={(e) => setDescription(e.target.value)}
+                                    required
+                                    style={{ minHeight: "120px" }}
+                                    placeholder="Write announcements details here..."
+                                />
+                            </div>
+
+                            <div className="form-group">
+                                <label>Author / Posted By <span className="req">*</span></label>
+                                <select
+                                    value={postedBy}
+                                    onChange={(e) => setPostedBy(e.target.value)}
+                                    required
+                                >
+                                    <option value="">Select Authoring Employee...</option>
+                                    {employees.map((emp) => (
+                                        <option key={emp._id} value={emp._id}>
+                                            {emp.firstName} {emp.lastName} ({emp.employeeId})
+                                        </option>
+                                    ))}
+                                </select>
+                            </div>
+
+                            <div className="modal-actions">
+                                <button
+                                    type="button"
+                                    className="btn-cancel"
+                                    onClick={() => setIsModalOpen(false)}
+                                >
+                                    Cancel
+                                </button>
+                                <button
+                                    type="submit"
+                                    className="btn-save"
+                                >
+                                    <Plus size={16} />
+                                    <span>Publish Notice</span>
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            )}
         </div>
     );
 }
