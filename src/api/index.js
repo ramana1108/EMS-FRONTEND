@@ -155,6 +155,13 @@ export async function getPayrolls() {
   return res.json();
 }
 
+export async function getMyPayrolls() {
+  const res = await fetch(`${API_BASE_URL}/payrolls/me`, {
+    headers: authHeaders(),
+  });
+  return res.json();
+}
+
 export async function getRoles() {
   const res = await fetch(`${API_BASE_URL}/roles`, {
     headers: authHeaders(),

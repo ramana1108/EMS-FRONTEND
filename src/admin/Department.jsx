@@ -255,8 +255,8 @@ export default function Departments() {
 
       {/* Page Heading */}
       <div className="page-header" style={{ marginBottom: "24px" }}>
-        <h1 className="page-title">Departments</h1>
-        <p className="page-subtitle">
+        <h1 className="page-title" style={{color:"black"}}>Departments</h1>
+        <p className="page-subtitle" style={{ color: "#64748b", fontSize: "14px" }}>
           Manage department structures, leadership, and team allocations.
         </p>
       </div>
@@ -265,10 +265,12 @@ export default function Departments() {
       <div className="stats-row" style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: "24px", marginBottom: "24px" }}>
         <div className="stat-card stat-card-green">
           <div className="stat-icon-wrapper green" style={{ display: "flex", alignItems: "center", justifyContent: "center" }}>
-            <Building2 size={24} />
+            <Building2 size={24} color="white" />
           </div>
           <div className="stat-info">
-            <span className="stat-title">TOTAL DEPARTMENTS</span>
+            <span className="stat-title" style={{ fontSize: "14px", fontWeight: "600", color: "white" }}>
+              TOTAL DEPARTMENTS
+            </span>
             <h2 className="stat-number">{displayedTotalDepartments}</h2>
             <span className="stat-subtext">Active organizational units</span>
           </div>
@@ -276,10 +278,12 @@ export default function Departments() {
 
         <div className="stat-card stat-card-blue">
           <div className="stat-icon-wrapper teal" style={{ display: "flex", alignItems: "center", justifyContent: "center" }}>
-            <Users size={24} />
+            <Users size={24} color="white" />
           </div>
           <div className="stat-info">
-            <span className="stat-title">TOTAL EMPLOYEES</span>
+            <span className="stat-title" style={{ fontSize: "14px", fontWeight: "600", color: "white" }}>
+              TOTAL EMPLOYEES
+            </span>
             <h2 className="stat-number">{displayedTotalEmployees}</h2>
             <span className="stat-subtext">Across all departments</span>
           </div>
@@ -287,10 +291,12 @@ export default function Departments() {
 
         <div className="stat-card stat-card-teal">
           <div className="stat-icon-wrapper blue" style={{ display: "flex", alignItems: "center", justifyContent: "center" }}>
-            <Briefcase size={24} />
+            <Briefcase size={24} color="white" />
           </div>
           <div className="stat-info">
-            <span className="stat-title">DEPARTMENT HEADS</span>
+            <span className="stat-title" style={{ fontSize: "14px", fontWeight: "600", color: "white" }}>
+              DEPARTMENT HEADS
+            </span>
             <h2 className="stat-number">{totalHeads}</h2>
             <span className="stat-subtext">Assigned team leaders</span>
           </div>
@@ -300,7 +306,7 @@ export default function Departments() {
       {/* Main Table Card */}
       <div className="table-card" style={{ padding: "24px" }}>
         <div className="table-header" style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "16px" }}>
-          <h3 style={{ margin: 0 }}>All Departments List</h3>
+          <h3 style={{ margin: 0 , color: "#0f766e", fontSize: "18px", fontWeight: "700" }}>All Departments List</h3>
           <span className="badge-dept-count" style={{ padding: "4px 10px", borderRadius: "12px", backgroundColor: "#ecfdf5", color: "#065f46", fontSize: "12px", fontWeight: "700" }}>
             {displayedTotalDepartments} Departments
           </span>
@@ -309,14 +315,14 @@ export default function Departments() {
         <div className="table-wrapper">
           <table className="departments-table">
             <thead>
-              <tr>
-                <th>D_ID</th>
-                <th>DEPARTMENT NAME</th>
-                <th>HEAD NAME</th>
-                <th>HEAD DESIGNATION</th>
-                <th>DESCRIPTION</th>
-                <th>NO. OF EMPLOYEES</th>
-                <th>ACTIONS</th>
+              <tr style={{ backgroundColor: "#f1f5f9", color: "black", fontSize: "14px", fontWeight: "600" }}>
+                <th style={{ color: "black" }}>D_ID</th>
+                <th style={{ color: "black" }}>DEPARTMENT NAME</th>
+                <th style={{ color: "black" }}>HEAD NAME</th>
+                <th style={{ color: "black" }}>HEAD DESIGNATION</th>
+                <th style={{ color: "black" }}>DESCRIPTION</th>
+                <th style={{ color: "black" }}>NO. OF EMPLOYEES</th>
+                <th style={{ color: "black" }}>ACTIONS</th>
               </tr>
             </thead>
             <tbody>
@@ -339,17 +345,17 @@ export default function Departments() {
                           {shortId}
                         </span>
                       </td>
-                      <td className="font-bold text-dark" style={{ padding: "4px 8px", fontWeight: "700" }}>{dept.departmentName}</td>
-                      <td className="font-semibold" style={{ padding: "4px 8px", fontWeight: "600" }}>{dept.headName}</td>
-                      <td className="text-muted" style={{ padding: "4px 8px", color: "#64748b" }}>{dept.headDesignation}</td>
-                      <td className="description-cell" style={{ padding: "4px 8px" }}>{dept.description}</td>
+                      <td className="font-bold text-dark" style={{ padding: "4px 8px", fontWeight: "700" , color: "black" }}>{dept.departmentName}</td>
+                      <td className="font-semibold" style={{ padding: "4px 8px", fontWeight: "600", color: "black" }}>{dept.headName}</td>
+                      <td className="text-muted" style={{ padding: "4px 8px", color: "black" }}>{dept.headDesignation}</td>
+                      <td className="description-cell" style={{ padding: "4px 8px", color: "black" }}>{dept.description}</td>
                       <td style={{ padding: "4px 8px" }}>
                         <span className="emp-count-pill" style={{ display: "inline-flex", alignItems: "center", gap: "4px" }}>
                           <User size={12} /> {dept.employeeCount || 0}
                         </span>
                       </td>
                       <td className="text-right" style={{ padding: "4px 8px", textAlign: "right" }}>
-                        <div style={{ display: "flex", gap: "8px", justifyContent: "flex-end" }}>
+                        <div style={{ display: "flex", gap: "8px", justifyContent: "none" }}>
                           <button
                             className="btn-action edit"
                             onClick={() => handleEditClick(dept)}

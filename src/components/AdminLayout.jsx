@@ -21,7 +21,7 @@ export default function AdminLayout({ activeTab, setActiveTab, children }) {
                     <div className="text-sm font-bold text-slate-800 dark:text-white uppercase tracking-wider">Admin Portal</div>
                 </div>
 
-                <main className="min-h-screen px-4 py-8 sm:px-8 lg:px-10">
+                <main className="min-h-screen px-4 py-8 sm:px-8 lg:px-10" style={{backgroundColor : "white"}}>
                     {children}
                 </main>
             </div>

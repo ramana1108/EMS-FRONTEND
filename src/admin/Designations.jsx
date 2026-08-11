@@ -248,7 +248,7 @@ export default function Designations() {
             {/* Page Title & View Toggle */}
             <div className="page-header" style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "24px" }}>
                 <div>
-                    <h1 className="dashboard-title">
+                    <h1 className="dashboard-title" style={{ color: "black" }}>
                         {activeView === "departments" ? "Departments" : "Designations"}
                     </h1>
                     <p className="dashboard-subtitle">
@@ -353,7 +353,7 @@ export default function Designations() {
                 {/* Render Designations View */}
                 {activeView === "designations" && (
                     <div className="employee-directory-card" style={{ padding: "24px" }}>
-                        <h2 className="emp-card-title" style={{ marginBottom: "16px" }}>Designation List</h2>
+                        <h2 className="emp-card-title" style={{ marginBottom: "16px", color: "#0f766e", fontSize: "18px", fontWeight: "700" }}>Designation List</h2>
 
                         <div className="table-responsive">
                             <table className="employee-table">
@@ -398,7 +398,7 @@ export default function Designations() {
                                                         </span>
                                                     </td>
                                                     <td className="table-actions-col">
-                                                        <div style={{ display: "flex", gap: "8px", justifyContent: "flex-end" }}>
+                                                        <div style={{ display: "flex", gap: "8px", justifyContent: "center" }}>
                                                             <button
                                                                 onClick={() => handleEditDesignationClick(desig)}
                                                                 className="action-icon-btn"

@@ -173,24 +173,13 @@ export default function Announcements() {
                 </div>
 
                 {/* Top Header Bar */}
-                <div className="emp-top-header flex justify-between items-center mb-8 px-2.5">
-                    <div className="emp-search-box">
-                        <Search size={18} color="#64748b" />
-                        <input
-                            type="text"
-                            placeholder="Search announcements..."
-                            value={searchTerm}
-                            onChange={(e) => setSearchTerm(e.target.value)}
-                            className="emp-search-input"
-                        />
-                    </div>
-                </div>
+        
 
                 {/* Page Content */}
                 <div style={{ flex: 1, padding: "0 10px" }}>
                     <div className="page-header flex justify-between items-center mb-6">
                         <div>
-                            <h1 className="dashboard-title text-3xl font-extrabold text-slate-900 dark:text-white m-0">Announcements</h1>
+                            <h1 className="dashboard-title text-3xl font-extrabold text-slate-900 dark:text-white m-0" style={{ color:"black", marginTop: "2rem"}}>Announcements</h1>
                             <p className="dashboard-subtitle text-sm text-slate-500 dark:text-slate-400 mt-1">Stay updated with company news and announcements</p>
                         </div>
                     </div>

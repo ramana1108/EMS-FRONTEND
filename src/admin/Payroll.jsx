@@ -355,7 +355,7 @@ export default function Payroll() {
             {/* Header */}
             <div className="page-header" style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "24px" }}>
                 <div>
-                    <h1 className="dashboard-title">Payroll Center</h1>
+                    <h1 className="dashboard-title" style={{ color: "black" }}>Payroll Center</h1>
                     <p className="dashboard-subtitle">Disburse salaries, calculate taxes, deductions, and log payment records.</p>
                 </div>
                 <button
@@ -431,7 +431,7 @@ export default function Payroll() {
             <div className="w-full">
                 <div className="employee-directory-card" style={{ padding: "24px" }}>
                     <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "16px", flexWrap: "wrap", gap: "10px" }}>
-                        <h2 className="emp-card-title" style={{ margin: 0 }}>Payroll Logs</h2>
+                        <h2 className="emp-card-title" style={{ margin: 0 , color: "#0f766e" }}>Payroll Logs</h2>
 
                         {/* Local Filter controls */}
                         <div style={{ display: "flex", gap: "8px" }}>
@@ -441,9 +441,9 @@ export default function Payroll() {
                                     setSearchYear(e.target.value);
                                     setCurrentPage(1);
                                 }}
-                                style={{ padding: "6px 12px", borderRadius: "6px", border: "1px solid #cbd5e1", fontSize: "13px", backgroundColor: "#ffffff" }}
+                                style={{ padding: "6px 12px", borderRadius: "6px", border: "1px solid #cbd5e1", fontSize: "13px", backgroundColor: "#ffffff",color: "#1e293b" }}
                             >
-                                <option value="All Years">All Years</option>
+                                <option value="All Years" >All Years</option>
                                 <option value="2025">2025</option>
                                 <option value="2026">2026</option>
                                 <option value="2027">2027</option>
@@ -454,7 +454,7 @@ export default function Payroll() {
                                     setSearchMonth(e.target.value);
                                     setCurrentPage(1);
                                 }}
-                                style={{ padding: "6px 12px", borderRadius: "6px", border: "1px solid #cbd5e1", fontSize: "13px", backgroundColor: "#ffffff" }}
+                                style={{ padding: "6px 12px", borderRadius: "6px", border: "1px solid #cbd5e1", fontSize: "13px", backgroundColor: "#ffffff" ,color: "#1e293b"}}
                             >
                                 <option value="All Months">All Months</option>
                                 {["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"].map(m => (

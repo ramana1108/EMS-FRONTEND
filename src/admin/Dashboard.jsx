@@ -102,7 +102,7 @@ export default function Dashboard() {
     <div>
       {/* Top Header Bar */}
       <div className="top-header">
-        <div className="search-box">
+        <div className="search-box" style={{ backgroundColor: "white" }}>
           <Search size={18} color="#64748b" />
           <input
             type="text"
@@ -125,7 +125,7 @@ export default function Dashboard() {
       {/* Page Title Header (Black Text) */}
       <div className="page-header">
         <div>
-          <h1 className="dashboard-title">Dashboard</h1>
+          <h1 className="dashboard-title" style={{color:"black"}}>Dashboard</h1>
           <p className="dashboard-subtitle">Welcome back, Admin.</p>
         </div>
         <div className="status-badge">
@@ -199,7 +199,7 @@ export default function Dashboard() {
         {/* Company Notices */}
         <div className="card-box">
           <div className="card-header-row">
-            <h2 className="card-title">Company  Notices</h2>
+            <h2 className="card-title" style={{ color: "black" }}>Company  Notices</h2>
             <span className="view-all-link">View All</span>
           </div>
           <ul className="notices-list">
@@ -207,14 +207,16 @@ export default function Dashboard() {
               <li key={index} className="notice-item">{notice}</li>
             ))}
             {dashboard && dashboard.recentNotices && dashboard.recentNotices.map((n, i) => (
-              <li key={i} className="notice-item">{n.title}</li>
+              <li key={i} className="notice-item" style={{ color: "black", backgroundColor: "rgb(204 242 229)",border:"none"}}>
+                {n.title}
+              </li>
             ))}
           </ul>
         </div>
 
         {/* Quick Actions */}
         <div className="card-box">
-          <h2 className="card-title" style={{ marginBottom: "16px" }}>Quick  Actions</h2>
+          <h2 className="card-title" style={{ marginBottom: "16px" , color: "black" }}>Quick  Actions</h2>
           <div className="action-buttons-stack">
             <button className="btn-action">
               <Plus size={16} /> Add Employee
@@ -234,15 +236,15 @@ export default function Dashboard() {
         {/* Employees List */}
         <div className="card-box">
           <div className="card-header-row">
-            <h2 className="card-title">Employees</h2>
+            <h2 className="card-title" style={{ color: "black" }}>Employees</h2>
             <span className="view-all-link">View All</span>
           </div>
           <div className="managers-list">
             {dashboard && dashboard.recentEmployees && dashboard.recentEmployees.map((emp, index) => (
               <div key={emp._id || index} className="manager-item">
                 <div>
-                  <p className="manager-name">{emp.firstName} {emp.lastName}</p>
-                  <p className="manager-role">{emp.employeeId}</p>
+                  <p className="manager-name" style={{ color: "black" }}>{emp.firstName} {emp.lastName}</p>
+                  <p className="manager-role" style={{ color: "black" }}>{emp.employeeId}</p>
                 </div>
                 <button className="btn-contact">View</button>
               </div>
@@ -250,71 +252,12 @@ export default function Dashboard() {
             {(!dashboard || !dashboard.recentEmployees || dashboard.recentEmployees.length === 0) && managers.map((mgr, index) => (
               <div key={index} className="manager-item">
                 <div>
-                  <p className="manager-name">{mgr.name.replace("Directory", "Employee").replace("Toster Manager", "Staff").replace("Director", "Staff").replace("Manager", "Staff")}</p>
-                  <p className="manager-role">{mgr.role.replace("Manager Directory", "Staff").replace("Director", "Staff").replace("Toster Manager", "Staff").replace("Esstetor", "Staff")}</p>
+                  <p className="manager-name" style={{ color: "black" }}>{mgr.name.replace("Directory", "Employee").replace("Toster Manager", "Staff").replace("Director", "Staff").replace("Manager", "Staff")}</p>
+                  <p className="manager-role" style={{ color: "black" }}>{mgr.role.replace("Manager Directory", "Staff").replace("Director", "Staff").replace("Toster Manager", "Staff").replace("Esstetor", "Staff")}</p>
                 </div>
                 <button className="btn-contact">View</button>
               </div>
             ))}
-          </div>
-        </div>
-
-      </div>
-
-      {/* 3. Bottom Section */}
-      <div className="bottom-grid">
-
-        {/* Attendance Analytics Bar Chart */}
-        <div className="card-box">
-          <h2 className="card-title">Attendance Analytics Bar Chart</h2>
-
-          <div className="chart-bars-container">
-            <div className="bar-pair">
-              <div className="bar-dark" style={{ height: "60%" }}></div>
-              <div className="bar-emerald" style={{ height: "40%" }}></div>
-            </div>
-            <div className="bar-pair">
-              <div className="bar-dark" style={{ height: "75%" }}></div>
-              <div className="bar-emerald" style={{ height: "30%" }}></div>
-            </div>
-            <div className="bar-pair">
-              <div className="bar-dark" style={{ height: "90%" }}></div>
-              <div className="bar-emerald" style={{ height: "50%" }}></div>
-            </div>
-            <div className="bar-pair">
-              <div className="bar-dark" style={{ height: "50%" }}></div>
-              <div className="bar-emerald" style={{ height: "45%" }}></div>
-            </div>
-            <div className="bar-pair">
-              <div className="bar-dark" style={{ height: "85%" }}></div>
-              <div className="bar-emerald" style={{ height: "60%" }}></div>
-            </div>
-          </div>
-
-          <div className="chart-months-row">
-            <span>Jan</span>
-            <span>Feb</span>
-            <span>Mar</span>
-            <span>Apr</span>
-            <span>May</span>
-          </div>
-        </div>
-
-        {/* Employee Distribution Pie Chart */}
-        <div className="card-box">
-          <h2 className="card-title">Employee Distribution Pie Chart</h2>
-
-          <div className="donut-center-container">
-            <div className="donut-graphic">
-              208
-            </div>
-          </div>
-
-          <div className="donut-legend-grid">
-            <span><span className="dot dot-production"></span> Production</span>
-            <span><span className="dot dot-sales"></span> Sales</span>
-            <span><span className="dot dot-it"></span> IT</span>
-            <span><span className="dot dot-admin"></span> Admin</span>
           </div>
         </div>
 

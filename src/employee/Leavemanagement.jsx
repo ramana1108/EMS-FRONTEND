@@ -195,7 +195,9 @@ export default function Leavemanagement() {
                 <div style={{ flex: 1, padding: "0 10px" }}>
                     <div className="page-header flex justify-between items-center mb-6">
                         <div>
-                            <h1 className="dashboard-title text-3xl font-extrabold text-slate-900 dark:text-white m-0">Leave Management</h1>
+                            <h1 className="dashboard-title text-3xl font-extrabold text-slate-900 dark:text-white m-0" style={{ color: "black" }}>
+                                Leave Management
+                            </h1>
                             <p className="dashboard-subtitle text-sm text-slate-500 dark:text-slate-400 mt-1">Apply for leave and track your requests</p>
                         </div>
                     </div>
@@ -258,7 +260,9 @@ export default function Leavemanagement() {
                     {/* List display */}
                     <div className="employee-directory-card">
                         <div className="filters-row">
-                            <h2 className="text-lg font-extrabold text-slate-900 dark:text-white" style={{ margin: 0 }}>My Leave Requests</h2>
+                            <h2 className="text-lg font-extrabold text-slate-900 dark:text-white" style={{ margin: 0 , color: "black" }}>
+                                My Leave Requests
+                            </h2>
 
                             <button
                                 onClick={handleApplyClick}

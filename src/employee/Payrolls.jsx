@@ -38,7 +38,7 @@ export default function Payrolls() {
         const loadPayrolls = async () => {
             setLoading(true);
             try {
-                const res = await api.getPayrolls();
+                const res = await api.getMyPayrolls();
                 const list = Array.isArray(res) ? res : res?.payrolls || [];
                 const userPayrolls = list;
 
@@ -143,7 +143,7 @@ export default function Payrolls() {
                 <div style={{ flex: 1, padding: "0 10px" }}>
                     <div className="page-header flex justify-between items-center mb-6">
                         <div>
-                            <h1 className="dashboard-title text-3xl font-extrabold text-slate-900 dark:text-white m-0">Payrolls</h1>
+                            <h1 className="dashboard-title text-3xl font-extrabold text-slate-900 dark:text-white m-0" style={{ color:"black"}}>Payrolls</h1>
                             <p className="dashboard-subtitle text-sm text-slate-500 dark:text-slate-400 mt-1">View your salary details and download payslips</p>
                         </div>
                     </div>
@@ -218,7 +218,7 @@ export default function Payrolls() {
                     {/* Payslip History Box */}
                     <div className="employee-directory-card">
                         <div className="filters-row flex justify-between items-center px-6 py-5 border-b border-slate-100 dark:border-slate-800/60 bg-slate-50/30 dark:bg-slate-950/5">
-                            <h2 className="text-lg font-extrabold text-slate-900 dark:text-white" style={{ margin: 0 }}>Payslip History</h2>
+                            <h2 className="text-lg font-extrabold text-slate-900 dark:text-white" style={{ margin: 0 , color:"black"}}>Payslip History</h2>
                         </div>
 
                         <div className="table-responsive">

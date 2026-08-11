@@ -429,7 +429,7 @@ export default function Employee() {
             {/* Page Title Header */}
             <div className="page-header">
                 <div>
-                    <h1 className="dashboard-title">Employee Directory</h1>
+                    <h1 className="dashboard-title" style={{ color: "black" }}>Employee</h1>
                     <p className="dashboard-subtitle">Manage workforce records, roles, statuses and enroll new employees.</p>
                 </div>
                 <button
@@ -484,12 +484,12 @@ export default function Employee() {
                     <table className="employee-table">
                         <thead>
                             <tr>
-                                <th>NAME</th>
-                                <th>DEPARTMENT</th>
-                                <th>ROLE / EMPLOYMENT TYPE</th>
-                                <th className="table-center-col">STATUS</th>
-                                <th className="table-actions-col">ACTIONS</th>
-                            </tr>
+                                <th style={{ color: "black" }}>NAME</th>
+                                <th style={{ color: "black" }}>DEPARTMENT</th>
+                                <th style={{ color: "black" }}>ROLE / EMPLOYMENT TYPE</th>
+                                <th className="table-center-col" style={{ color: "black" }}>STATUS</th>
+                                <th className="table-actions-col" style={{ color: "black" }}>ACTIONS</th>
+                            </tr> 
                         </thead>
                         <tbody>
                             {loading ? (
@@ -509,11 +509,11 @@ export default function Employee() {
                                     <tr key={index} className="employee-row">
                                         <td>
                                             <div className="employee-avatar-wrapper">
-                                                <div className="employee-avatar-circle">
+                                                <div className="employee-avatar-circle" >
                                                     {getInitials(emp.name)}
                                                 </div>
                                                 <div>
-                                                    <p className="employee-name-text">{emp.name}</p>
+                                                    <p className="employee-name-text" style={{ color: "black" }}> {emp.name}</p>
                                                     <p className="employee-meta-text">
                                                         {emp.employeeId || `EMP-${1000 + index}`} • {emp.email}
                                                     </p>
@@ -529,7 +529,9 @@ export default function Employee() {
 
                                         <td>
                                             <div>
-                                                <p className="employee-role-type">{emp.employmentType || emp.role || "Full-time"}</p>
+                                                <p className="employee-role-type" style={{ color: "black" }}>
+                                                    {emp.employmentType || emp.role || "Full-time"}
+                                                </p>
                                                 <p className="employee-joining-date">
                                                     Joining: {emp.joiningDate || "2021-03-15"}
                                                 </p>
@@ -544,7 +546,7 @@ export default function Employee() {
                                         </td>
 
                                         <td className="table-actions-col">
-                                            <div className="employee-action-buttons">
+                                            <div className="employee-action-buttons" style={{ display: "flex", gap: "8px", justifyContent: "center" }}>
                                                 <button className="action-icon-btn" title="View details" onClick={() => handleViewClick(emp)}>
                                                     <Eye size={16} />
                                                 </button>

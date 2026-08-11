@@ -333,7 +333,7 @@ export default function Roles() {
       {/* Top Header Bar */}
       <div className="page-header" style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "24px" }}>
         <div>
-          <h1 className="dashboard-title">Role Management</h1>
+          <h1 className="dashboard-title" style={{ color: "black" }}>Role Management</h1>
           <p className="dashboard-subtitle">Define and monitor system user roles and their active user count.</p>
         </div>
         <button
@@ -395,10 +395,10 @@ export default function Roles() {
       {/* Main Content Layout */}
       <div className="w-full">
         {/* Employees Permissions Card */}
-        <div className="employee-permissions-card">
+        <div className="employee-permissions-card" style={{ backgroundColor: "#fff", borderRadius: "12px", padding: "20px", boxShadow: "0 1px 3px rgba(0,0,0,0.1)", marginBottom: "24px" }}>
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "wrap", gap: "16px", marginBottom: "20px", width: "100%" }}>
             <div style={{ textAlign: "left" }}>
-              <h2 className="dashboard-title" style={{ fontSize: "20px", fontWeight: "700" }}>Employees</h2>
+              <h2 className="dashboard-title" style={{ fontSize: "20px", fontWeight: "700" , color: "black" }}>Employees</h2>
               <p className="dashboard-subtitle" style={{ margin: "4px 0 0 0" }}>View all employees and their role access.</p>
             </div>
 
@@ -418,13 +418,13 @@ export default function Roles() {
             <table className="employee-table" style={{ borderCollapse: "collapse", width: "100%" }}>
               <thead className="permissions-table-header">
                 <tr>
-                  <th className="table-center-col" style={{ width: "50px" }}>#</th>
-                  <th>EMPLOYEE ID</th>
-                  <th>EMPLOYEE NAME</th>
-                  <th>EMAIL</th>
-                  <th>ROLE</th>
-                  <th className="table-center-col">STATUS</th>
-                  <th className="table-actions-col" style={{ width: "80px" }}>ACTIONS</th>
+                  <th className="table-center-col" style={{ width: "50px", color: "black" }}>#</th>
+                  <th style={{ color: "black" }}>EMPLOYEE ID</th>
+                  <th style={{ color: "black" }}>EMPLOYEE NAME</th>
+                  <th style={{ color: "black" }}>EMAIL</th>
+                  <th style={{ color: "black" }}>ROLE</th>
+                  <th className="table-center-col" style={{ color: "black" }}>STATUS</th>
+                  <th className="table-actions-col" style={{ width: "80px", color: "black" }}>ACTIONS</th>
                 </tr>
               </thead>
               <tbody>
@@ -442,22 +442,22 @@ export default function Roles() {
                       <td className="table-center-col" style={{ fontSize: "14px", fontWeight: "600", color: "#64748b" }}>
                         {startIndex + idx + 1}
                       </td>
-                      <td className="employee-id-col" style={{ fontSize: "14px", fontWeight: "600" }}>
+                      <td className="employee-id-col" style={{ fontSize: "14px", fontWeight: "600" , color: "black" }}>
                         {user.employeeId}
                       </td>
-                      <td className="employee-name-col" style={{ fontSize: "14px", fontWeight: "500" }}>
+                      <td className="employee-name-col" style={{ fontSize: "14px", fontWeight: "500", color: "black" }}>
                         {user.displayName}
                       </td>
-                      <td className="employee-email-col" style={{ fontSize: "13px" }}>
+                      <td className="employee-email-col" style={{ fontSize: "13px", color: "black" }}>
                         {user.email}
                       </td>
                       <td style={{ textAlign: "left" }}>
-                        <span className="role-pill-blue">
+                        <span className="role-pill-blue" style={{ color: "black" }}>
                           {user.role?.name || "Employee"}
                         </span>
                       </td>
                       <td className="table-center-col">
-                        <span className={user.status?.toLowerCase() === "active" ? "status-pill-green" : "status-pill-red"}>
+                        <span className={user.status?.toLowerCase() === "active" ? "status-pill-green" : "status-pill-red"} style={{ color: "black" }}>
                           {user.status || "Active"}
                         </span>
                       </td>

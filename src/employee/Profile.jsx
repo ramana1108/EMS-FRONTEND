@@ -546,7 +546,7 @@ export default function Profile() {
                                 <div className="space-y-6">
                                     <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm shadow-slate-200/70">
                                         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "20px" }}>
-                                            <h2 className="m-0 text-xl font-extrabold text-slate-900">Personal Information</h2>
+                                            <h2 className="m-0 text-xl font-extrabold text-slate-900" style={{color:"black"}}>Personal Information</h2>
                                             <button
                                                 type="button"
                                                 onClick={() => {
@@ -698,9 +698,10 @@ export default function Profile() {
                                         alignItems: "center",
                                         padding: "20px 24px",
                                         borderBottom: "1px solid #f1f5f9",
+                                        backgroundColor: "#f8fafc",
                                     }}
                                 >
-                                    <h3 style={{ margin: 0, fontSize: "18px", fontWeight: "800", color: "#0f172a" }}>Edit Profile</h3>
+                                    <h3 style={{ margin: 0, fontSize: "18px", fontWeight: "800", color: "#0f172a" , backgroundColor: "#f8fafc"}}>Edit Profile</h3>
                                     <button
                                         type="button"
                                         onClick={() => setIsEditModalOpen(false)}
@@ -719,8 +720,8 @@ export default function Profile() {
                                 </div>
 
                                 {/* Modal Body */}
-                                <form onSubmit={handleSaveProfileEdit} style={{ padding: "24px" }}>
-                                    <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "16px", marginBottom: "16px" }} className="grid grid-cols-1 md:grid-cols-2">
+                                <form onSubmit={handleSaveProfileEdit} style={{ padding: "24px" , backgroundColor: "#f8fafc"}}>
+                                    <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "16px", marginBottom: "16px" , backgroundColor: "#f8fafc"}} className="grid grid-cols-1 md:grid-cols-2">
 
                                         {/* Personal Info */}
                                         <div>

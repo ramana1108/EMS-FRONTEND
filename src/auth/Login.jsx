@@ -55,7 +55,20 @@ function Login() {
                 })
             });
 
-            const data = await res.json();
+            // Guard against non-JSON responses (e.g. a 502 from Vite's proxy
+            // when the backend is unreachable, or any other HTML/empty body).
+            let data;
+            try {
+                data = await res.json();
+            } catch (parseErr) {
+                console.error("Response was not valid JSON:", parseErr);
+                setError(
+                    res.status === 502
+                        ? "Cannot reach the server. Please make sure the backend is running."
+                        : `Server error (${res.status}). Please try again.`
+                );
+                return;
+            }
 
             if (!res.ok || !data.success) {
                 setError(data.message || "Invalid credentials.");
