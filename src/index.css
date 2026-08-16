@@ -2,17 +2,42 @@
 @import "tailwindcss";
 @import "./App.css";
 
-/* Dynamic Smooth Scroll & Hiding Scrollbars globally */
+/* Dynamic Smooth Scroll & Custom Visible Scrollbars */
 * {
-  scrollbar-width: none !important;
+  box-sizing: border-box;
   transition: background-color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
 }
 
-*::-webkit-scrollbar {
+/* Custom Styled Scrollbars for Overflow Containers & Tables */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: rgba(15, 23, 42, 0.05);
+  border-radius: 9999px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(16, 185, 129, 0.4);
+  border-radius: 9999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(16, 185, 129, 0.7);
+}
+
+.scrollbar-none::-webkit-scrollbar {
   display: none !important;
   width: 0 !important;
   height: 0 !important;
 }
+
+.scrollbar-none {
+  scrollbar-width: none !important;
+}
+
 
 :root {
   --text: #334155;
@@ -162,6 +187,13 @@ a:hover {
   transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
   position: relative;
   overflow: hidden;
+}
+
+@media (max-width: 640px) {
+  .card {
+    padding: 1.5rem;
+    border-radius: 16px;
+  }
 }
 
 .card::before {

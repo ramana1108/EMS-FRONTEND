@@ -3,26 +3,28 @@
 
 /* Modals */
 @utility modal-backdrop {
-  @apply fixed inset-0 z-50 bg-[#090d16]/60 backdrop-blur-xl flex items-center justify-center p-4;
+  @apply fixed inset-0 z-50 bg-[#090d16]/60 backdrop-blur-xl flex items-center justify-center p-3 sm:p-6 overflow-y-auto;
 }
 
 @utility modal-content-card {
   background: var(--surface);
-  @apply rounded-3xl w-full max-w-5xl p-8 shadow-2xl border border-slate-100 dark:border-slate-800 transition-all duration-300;
-  max-height: none;
-  overflow: visible;
+  @apply rounded-2xl sm:rounded-3xl w-full max-w-5xl p-4 sm:p-8 shadow-2xl border border-slate-100 dark:border-slate-800 transition-all duration-300;
+  max-height: 90vh;
+  overflow-y: auto;
 }
 
 @utility modal-content-card-wide {
   background: var(--surface);
-  @apply rounded-3xl w-full max-w-6xl p-8 shadow-2xl border border-slate-100 dark:border-slate-800 transition-all duration-300;
-  max-height: none;
-  overflow: visible;
+  @apply rounded-2xl sm:rounded-3xl w-full max-w-6xl p-4 sm:p-8 shadow-2xl border border-slate-100 dark:border-slate-800 transition-all duration-300;
+  max-height: 90vh;
+  overflow-y: auto;
 }
 
 @utility modal-box {
   background: var(--surface);
-  @apply rounded-3xl w-full max-w-2xl p-8 shadow-2xl border border-slate-100 dark:border-slate-800 transition-all duration-300;
+  @apply rounded-2xl sm:rounded-3xl w-full max-w-2xl p-4 sm:p-8 shadow-2xl border border-slate-100 dark:border-slate-800 transition-all duration-300;
+  max-height: 90vh;
+  overflow-y: auto;
 }
 
 @utility password-input-wrap {
@@ -199,11 +201,11 @@
 }
 
 @utility top-header {
-  @apply flex justify-between items-center mb-10 gap-4;
+  @apply flex flex-col sm:flex-row justify-between items-stretch sm:items-center mb-6 sm:mb-10 gap-4;
 }
 
 @utility search-box {
-  @apply flex items-center gap-3 bg-white dark:bg-slate-900/40 px-4 py-3 rounded-2xl border border-slate-200 dark:border-slate-800/80 w-full md:w-160 shadow-sm transition-all duration-300 focus-within:border-emerald-500 focus-within:ring-4 focus-within:ring-emerald-500/10 focus-within:md:w-[50vw];
+  @apply flex items-center gap-3 bg-white dark:bg-slate-900/40 px-4 py-3 rounded-2xl border border-slate-200 dark:border-slate-800/80 w-full sm:w-auto md:w-160 shadow-sm transition-all duration-300 focus-within:border-emerald-500 focus-within:ring-4 focus-within:ring-emerald-500/10 focus-within:md:w-[50vw];
 
   & input {
     @apply border-none outline-none w-full text-slate-800 dark:text-slate-100 bg-transparent text-sm font-semibold placeholder-slate-400 dark:placeholder-slate-600;
@@ -211,7 +213,7 @@
 }
 
 @utility header-right {
-  @apply flex items-center gap-4;
+  @apply flex items-center justify-end gap-3 sm:gap-4 shrink-0;
 }
 
 @utility icon-btn {
@@ -402,15 +404,15 @@
 }
 
 @utility filters-row {
-  @apply flex flex-wrap justify-between items-center gap-4 px-4 py-5 border-b border-slate-100 dark:border-slate-800/60 bg-transparent;
+  @apply flex flex-col sm:flex-row flex-wrap justify-between items-stretch sm:items-center gap-4 px-4 py-5 border-b border-slate-100 dark:border-slate-800/60 bg-transparent;
 }
 
 @utility filters-left {
-  @apply flex flex-wrap items-center gap-3.5;
+  @apply flex flex-wrap items-center gap-2.5 sm:gap-3.5;
 }
 
 @utility filters-right {
-  @apply flex items-center;
+  @apply flex items-center justify-between sm:justify-end gap-2;
 }
 
 @utility filters-label {
@@ -430,7 +432,7 @@
   display: block;
   width: 100%;
   max-width: 100%;
-  padding-bottom: 2px;
+  padding-bottom: 6px;
 }
 
 @utility table-wrapper {
@@ -438,6 +440,7 @@
   display: block;
   width: 100%;
   max-width: 100%;
+  padding-bottom: 6px;
 }
 
 @utility employees-table-wrapper {
@@ -445,15 +448,18 @@
   display: block;
   width: 100%;
   max-width: 100%;
+  padding-bottom: 6px;
 }
 
 @utility employee-table {
   @apply border-collapse text-left;
   width: 100%;
+  min-width: 750px;
   max-width: 100%;
   table-layout: auto;
   white-space: normal;
-  word-break: break-word;
+  word-break: normal;
+  overflow-wrap: normal;
   background: #ffffff;
 
   & th {
@@ -477,6 +483,7 @@
     padding: 13px 20px !important;
     vertical-align: middle;
     white-space: normal;
+    word-break: normal;
     text-align: left;
     @apply border-b border-slate-100/80 dark:border-slate-800/30 text-sm text-slate-700 dark:text-slate-300;
   }
@@ -491,14 +498,17 @@
 
   & .table-number-col {
     text-align: right;
+    white-space: nowrap;
   }
 
   & .table-center-col {
     text-align: center;
+    white-space: nowrap;
   }
 
   & .table-actions-col {
     text-align: center;
+    white-space: nowrap;
   }
 }
 
@@ -523,19 +533,19 @@
 }
 
 @utility employee-dept-pill {
-  @apply bg-indigo-50 dark:bg-indigo-950/20 text-indigo-700 dark:text-indigo-400 px-3 py-1 rounded-full font-bold text-xs border border-indigo-100 dark:border-indigo-950/40;
+  @apply bg-indigo-50 dark:bg-indigo-950/20 text-indigo-700 dark:text-indigo-400 px-3 py-1 rounded-full font-bold text-xs border border-indigo-100 dark:border-indigo-950/40 inline-block whitespace-nowrap;
 }
 
 @utility employee-role-type {
-  @apply text-sm font-bold text-slate-800 dark:text-slate-300;
+  @apply text-sm font-bold text-slate-800 dark:text-slate-300 whitespace-nowrap;
 }
 
 @utility employee-joining-date {
-  @apply text-xs text-slate-400 dark:text-slate-500 font-medium;
+  @apply text-xs text-slate-400 dark:text-slate-500 font-medium whitespace-nowrap;
 }
 
 @utility employee-status-badge {
-  @apply inline-flex items-center gap-1.5 px-3 py-1 rounded-full font-bold text-xs border;
+  @apply inline-flex items-center gap-1.5 px-3 py-1 rounded-full font-bold text-xs border whitespace-nowrap;
 
   &.active {
     @apply bg-emerald-50 dark:bg-emerald-950/20 text-emerald-700 dark:text-emerald-400 border-emerald-100 dark:border-emerald-950/40;
@@ -559,7 +569,7 @@
 }
 
 @utility employee-action-buttons {
-  @apply flex gap-2 justify-start;
+  @apply flex gap-2 justify-start whitespace-nowrap;
 }
 
 @utility action-icon-btn {
@@ -598,10 +608,12 @@
 @utility departments-table {
   @apply border-collapse text-left;
   width: 100%;
+  min-width: 700px;
   max-width: 100%;
   table-layout: auto;
   white-space: normal;
-  word-break: break-word;
+  word-break: normal;
+  overflow-wrap: normal;
   background: #ffffff;
 
   & th {
@@ -625,6 +637,7 @@
     padding: 13px 20px !important;
     vertical-align: middle;
     white-space: normal;
+    word-break: normal;
     text-align: left;
     @apply border-b border-slate-100/80 dark:border-slate-800/30 text-sm text-slate-700 dark:text-slate-300;
   }
@@ -639,11 +652,11 @@
 }
 
 @utility id-badge {
-  @apply font-mono bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 px-2.5 py-1 rounded-lg font-bold text-[11px] border border-slate-200/50 dark:border-slate-700/50;
+  @apply font-mono bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 px-2.5 py-1 rounded-lg font-bold text-[11px] border border-slate-200/50 dark:border-slate-700/50 inline-block whitespace-nowrap;
 }
 
 @utility emp-count-pill {
-  @apply bg-emerald-50 dark:bg-emerald-950/20 text-emerald-700 dark:text-emerald-400 px-2.5 py-1 rounded-full font-bold text-xs border border-emerald-100 dark:border-emerald-950/40 inline-flex items-center gap-1.5;
+  @apply bg-emerald-50 dark:bg-emerald-950/20 text-emerald-700 dark:text-emerald-400 px-2.5 py-1 rounded-full font-bold text-xs border border-emerald-100 dark:border-emerald-950/40 inline-flex items-center gap-1.5 whitespace-nowrap;
 }
 
 /* Charts styling */
@@ -697,11 +710,11 @@
 }
 
 @utility emp-top-header {
-  @apply flex justify-between items-center mb-10 gap-4;
+  @apply flex flex-col sm:flex-row justify-between items-stretch sm:items-center mb-6 sm:mb-10 gap-4;
 }
 
 @utility emp-search-box {
-  @apply flex items-center gap-3 bg-white dark:bg-slate-900/40 px-4 py-3 rounded-2xl border border-slate-200 dark:border-slate-800/80 w-full md:w-160 shadow-sm transition-all duration-300 focus-within:border-emerald-500 focus-within:ring-4 focus-within:ring-emerald-500/10 focus-within:md:w-[50vw];
+  @apply flex items-center gap-3 bg-white dark:bg-slate-900/40 px-4 py-3 rounded-2xl border border-slate-200 dark:border-slate-800/80 w-full sm:w-auto md:w-160 shadow-sm transition-all duration-300 focus-within:border-emerald-500 focus-within:ring-4 focus-within:ring-emerald-500/10 focus-within:md:w-[50vw];
 
   & input {
     @apply border-none outline-none w-full text-slate-800 dark:text-slate-100 bg-transparent text-sm font-semibold placeholder-slate-400 dark:placeholder-slate-600;
@@ -774,11 +787,15 @@
 /* Employee Tables */
 @utility emp-table {
   @apply w-full border-collapse text-left;
+  min-width: 650px;
   max-width: 100%;
+  word-break: normal;
+  overflow-wrap: normal;
 
   & th {
     @apply bg-transparent text-slate-500 dark:text-slate-400 font-extrabold tracking-widest text-[9px] uppercase border-b border-slate-100 dark:border-slate-800/50 text-left;
     padding: 12px 16px !important;
+    white-space: nowrap;
   }
 
   & td {
