@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import Sidebar from "../components/Sidebar";
+import NotificationBell from "../components/NotificationBell";
 import { getMyLeaves, applyLeave as applyLeaveRequest, deleteLeave as deleteLeaveRequest } from "../api";
 import {
     Calendar,
@@ -193,12 +194,15 @@ export default function Leavemanagement() {
 
                 {/* Page Content */}
                 <div style={{ flex: 1, padding: "0 10px" }}>
-                    <div className="page-header flex justify-between items-center mb-6">
+                    <div className="page-header flex justify-between items-center mb-6" style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
                         <div>
                             <h1 className="dashboard-title text-3xl font-extrabold text-slate-900 dark:text-white m-0" style={{ color: "black" }}>
                                 Leave Management
                             </h1>
                             <p className="dashboard-subtitle text-sm text-slate-500 dark:text-slate-400 mt-1">Apply for leave and track your requests</p>
+                        </div>
+                        <div>
+                            <NotificationBell />
                         </div>
                     </div>
 
@@ -373,7 +377,7 @@ export default function Leavemanagement() {
                 {
                     showApplyModal && (
                         <div className="fixed inset-0 z-999 flex items-center justify-center bg-slate-900/60 backdrop-blur-sm p-4">
-                            <div className="bg-white dark:bg-slate-900 rounded-3xl w-full max-w-xl max-h-[92vh] overflow-y-auto p-8 shadow-2xl border border-slate-100 dark:border-slate-800 transition-all duration-300">
+                            <div className="bg-white rounded-3xl w-full max-w-xl max-h-[92vh] overflow-y-auto p-8 shadow-2xl border border-slate-200 transition-all duration-300">
                                 <div className="flex justify-between items-center mb-6">
                                     <h3 className="text-xl font-extrabold text-slate-900 dark:text-white m-0">Apply for Leave</h3>
                                     <button onClick={() => setShowApplyModal(false)} className="bg-transparent border-0 cursor-pointer text-slate-400 hover:text-slate-600 dark:hover:text-slate-200">
@@ -475,8 +479,8 @@ export default function Leavemanagement() {
                 {/* Modal: View Leave details */}
                 {
                     selectedLeave && (
-                        <div style={{ position: "fixed", inset: 0, zIndex: 999, display: "flex", alignItems: "center", justifyContent: "center", backgroundColor: "rgba(15, 23, 42, 0.4)", backdropFilter: "blur(4px)" }}>
-                            <div style={{ backgroundColor: "var(--card-bg)", borderRadius: "16px", border: "1px solid #e2e8f0", width: "420px", maxWidth: "90%", padding: "24px", boxShadow: "0 20px 25px -5px rgba(0, 0, 0, 0.1)" }}>
+                        <div style={{ position: "fixed", inset: 0, zIndex: 999, display: "flex", alignItems: "center", justifyContent: "center", backgroundColor: "rgba(15, 23, 42, 0.6)", backdropFilter: "blur(4px)" }}>
+                            <div style={{ backgroundColor: "#ffffff", borderRadius: "16px", border: "1px solid #e2e8f0", width: "420px", maxWidth: "90%", padding: "24px", boxShadow: "0 20px 25px -5px rgba(0, 0, 0, 0.15)" }}>
                                 <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "16px", borderBottom: "1px solid #f1f5f9", paddingBottom: "10px" }}>
                                     <h3 style={{ margin: 0, fontSize: "18px", fontWeight: "800", color: "#0f172a" }}>Leave Details</h3>
                                     <button onClick={() => setSelectedLeave(null)} style={{ background: "none", border: "none", cursor: "pointer", color: "#64748b" }}>

@@ -11,7 +11,8 @@ import {
     Users,
     Briefcase,
     AlertCircle,
-    X
+    X,
+    Search
 } from "lucide-react";
 
 export default function Designations() {
@@ -29,6 +30,7 @@ export default function Designations() {
     const [departments, setDepartments] = useState([]);
     const [designations, setDesignations] = useState([]);
     const [employees, setEmployees] = useState([]);
+    const [searchTerm, setSearchTerm] = useState("");
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState("");
     const [success, setSuccess] = useState("");
@@ -257,18 +259,39 @@ export default function Designations() {
                             : "Manage and assign organizational job designations."}
                     </p>
                 </div>
-                <button
-                    className="btn-enroll-employee"
-                    onClick={() => {
-                        setError("");
-                        setSuccess("");
-                        setIsAddModalOpen(true);
-                    }}
-                    style={{ display: "flex", alignItems: "center", gap: "8px" }}
-                >
-                    <Plus size={16} />
-                    <span>{activeView === "departments" ? "Add Department" : "Add Designation"}</span>
-                </button>
+                <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
+                    <div style={{ position: "relative", display: "flex", alignItems: "center" }}>
+                        <Search size={16} style={{ position: "absolute", left: "12px", color: "#64748b" }} />
+                        <input
+                            type="text"
+                            placeholder="Search Designations..."
+                            value={searchTerm}
+                            onChange={(e) => setSearchTerm(e.target.value)}
+                            style={{
+                                padding: "8px 14px 8px 36px",
+                                borderRadius: "8px",
+                                border: "1px solid #cbd5e1",
+                                fontSize: "14px",
+                                backgroundColor: "#ffffff",
+                                color: "#0f172a",
+                                outline: "none",
+                                width: "220px"
+                            }}
+                        />
+                    </div>
+                    <button
+                        className="btn-enroll-employee"
+                        onClick={() => {
+                            setError("");
+                            setSuccess("");
+                            setIsAddModalOpen(true);
+                        }}
+                        style={{ display: "flex", alignItems: "center", gap: "8px" }}
+                    >
+                        <Plus size={16} />
+                        <span>{activeView === "departments" ? "Add Department" : "Add Designation"}</span>
+                    </button>
+                </div>
             </div>
 
             {error && (
@@ -375,7 +398,18 @@ export default function Designations() {
                                             <td colSpan="4" style={{ textAlign: "center", padding: "30px 0" }}>No designations registered. Create one.</td>
                                         </tr>
                                     ) : (
-                                        designations.map((desig) => {
+                                        designations.filter((desig) => {
+                                            if (!searchTerm.trim()) return true;
+                                            const q = searchTerm.toLowerCase();
+                                            const name = (desig.designationName || "").toLowerCase();
+                                            const dept = (desig.departmentId?.departmentName || "").toLowerCase();
+                                            const desigEmployees = employees.filter(emp => {
+                                                const empDesigId = emp.designationId?._id || emp.designationId;
+                                                return empDesigId === desig._id;
+                                            });
+                                            const empNames = desigEmployees.map(emp => `${emp.firstName || ""} ${emp.lastName || ""}`.toLowerCase()).join(" ");
+                                            return name.includes(q) || dept.includes(q) || empNames.includes(q);
+                                        }).map((desig) => {
                                             const desigEmployees = employees.filter(emp => {
                                                 const empDesigId = emp.designationId?._id || emp.designationId;
                                                 return empDesigId === desig._id;

@@ -300,6 +300,22 @@ export async function registerUser(payload) {
   return res.json();
 }
 
+export async function getNotifications() {
+  const res = await fetch(`${API_BASE_URL}/notifications/me`, {
+    headers: authHeaders(),
+  });
+  return res.json();
+}
+
+export async function markNotificationsRead(payload) {
+  const res = await fetch(`${API_BASE_URL}/notifications/mark-read`, {
+    method: "PUT",
+    headers: authHeaders(),
+    body: JSON.stringify(payload || { markAll: true }),
+  });
+  return res.json();
+}
+
 export default {
   getAdminDashboard,
   getEmployeeDashboard,
@@ -320,6 +336,7 @@ export default {
   deleteDesignation,
   getNotices,
   getPayrolls,
+  getMyPayrolls,
   getAttendance,
   getMyAttendance,
   getMyLeaves,
@@ -336,4 +353,6 @@ export default {
   getSettings,
   createSettings,
   updateSettings,
+  getNotifications,
+  markNotificationsRead,
 };

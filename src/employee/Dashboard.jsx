@@ -1,4 +1,4 @@
-﻿
+
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import Sidebar from "../components/Sidebar";
@@ -10,6 +10,7 @@ import {
   Megaphone
 } from "lucide-react";
 import api from "../api";
+import NotificationBell from "../components/NotificationBell";
 
 export default function EmployeeDashboard() {
   const [activeTab, setActiveTab] = useState("Dashboard");
@@ -55,15 +56,25 @@ export default function EmployeeDashboard() {
         .toUpperCase()
     : "E";
 
+  const [searchTerm, setSearchTerm] = useState("");
+
+  const filteredNotices = (dashboard?.recentNotices || []).filter((notice) => {
+    if (!searchTerm.trim()) return true;
+    const q = searchTerm.toLowerCase();
+    const text = (notice.title || notice.description || "").toLowerCase();
+    return text.includes(q);
+  });
+
   return (
-    <div className="min-h-screen bg-slate-100 text-slate-900">
+    <div className="min-h-screen bg-slate-100 text-slate-900 flex">
       <Sidebar activeTab={activeTab} setActiveTab={setActiveTab} isOpen={isOpen} setIsOpen={setIsOpen} />
 
-      <div className="lg:pl-[260px]">
-        <div className="sticky top-0 z-30 flex items-center justify-between border-b border-slate-200/80 bg-white/95 px-4 py-3 backdrop-blur-xl lg:hidden">
+      <div className="lg:pl-[260px] flex flex-col min-h-screen flex-1">
+        <div className="sticky top-0 z-30 flex items-center justify-between border-b border-slate-200/80 bg-white/95 px-4 py-3 backdrop-blur-xl lg:hidden" style={{ minHeight: "60px" }}>
           <button
             onClick={() => setIsOpen(true)}
-            className="inline-flex h-11 w-11 items-center justify-center rounded-2xl bg-slate-900 text-white shadow-sm shadow-slate-900/10"
+            className="inline-flex h-11 w-11 items-center justify-center rounded-2xl bg-[#043e30] text-white shadow-sm shadow-[#043e30]/10"
+            style={{ border: "none", cursor: "pointer" }}
             aria-label="Open sidebar"
           >
             <span className="text-lg font-bold">☰</span>
@@ -73,18 +84,23 @@ export default function EmployeeDashboard() {
 
         <main className="emp-main-content px-4 py-6 sm:px-6 lg:px-8">
           <div className="emp-top-header">
-<div className="emp-search-box" style={{ backgroundColor: "white" }}>
-                <Search size={18} color="#64748b" />
+            <div className="emp-search-box" style={{ backgroundColor: "white" }}>
+              <Search size={18} color="#64748b" />
               <input
                 type="text"
-                placeholder="Search Employee..."
+                placeholder="Search Announcements..."
                 className="emp-search-input"
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
               />
             </div>
 
-            <div className="emp-user-profile-badge">
-              <div className="emp-avatar-circle">{employeeInitials}</div>
-              <span>{employeeName}</span>
+            <div className="flex items-center gap-3" style={{ display: "flex", alignItems: "center", gap: "12px" }}>
+              <NotificationBell />
+              <div className="emp-user-profile-badge">
+                <div className="emp-avatar-circle">{employeeInitials}</div>
+                <span>{employeeName}</span>
+              </div>
             </div>
           </div>
 
@@ -154,27 +170,55 @@ export default function EmployeeDashboard() {
               <h2 className="emp-card-title" style={{ color: "black" }}>
                 Company Announcements
               </h2>
-              <div className="announcement-list" style={{ maxHeight: "500px", overflowY: "auto", padding:"16px" }}>
-                {dashboard?.recentNotices?.length ? (
-                  dashboard.recentNotices.map((notice) => (
-                    <div key={notice._id || notice.title} className="announcement-item" style={{ backgroundColor: "rgb(21, 155, 113)", padding: "12px", borderRadius: "8px", marginBottom: "12px" }}>
-                      <div className="announcement-icon">
+              <div className="announcement-list" style={{ maxHeight: "500px", overflowY: "auto", padding: "16px 0" }}>
+                {filteredNotices.length ? (
+                  filteredNotices.map((notice) => (
+                    <div
+                      key={notice._id || notice.title}
+                      className="announcement-item"
+                      style={{
+                        display: "flex",
+                        alignItems: "flex-start",
+                        gap: "12px",
+                        backgroundColor: "#ffffff",
+                        padding: "16px",
+                        borderRadius: "12px",
+                        marginBottom: "12px",
+                        border: "1px solid #e2e8f0",
+                        boxShadow: "0 1px 3px 0 rgba(0, 0, 0, 0.05)"
+                      }}
+                    >
+                      <div
+                        className="announcement-icon"
+                        style={{
+                          backgroundColor: "#ecfdf5",
+                          color: "#047857",
+                          padding: "10px",
+                          borderRadius: "10px",
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                          flexShrink: 0
+                        }}
+                      >
                         <Megaphone size={18} />
                       </div>
-                      <div>
-                        <p className="announcement-title" style={{ color: "black" }}>
-                          {notice.title}
+                      <div style={{ flex: 1 }}>
+                        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", marginBottom: "4px" }}>
+                          <p className="announcement-title" style={{ color: "#0f172a", fontWeight: "700", fontSize: "14px", margin: 0 }}>
+                            {notice.title}
                           </p>
-                        <p className="announcement-desc" style={{ color: "black" }}>
+                          <span className="announcement-date" style={{ color: "#64748b", fontSize: "12px", fontWeight: "500", marginLeft: "8px" }}>
+                            {new Date(notice.createdAt).toLocaleDateString("en-US", {
+                              month: "short",
+                              day: "numeric",
+                            })}
+                          </span>
+                        </div>
+                        <p className="announcement-desc" style={{ color: "#475569", fontSize: "13px", margin: 0, lineHeight: "1.5" }}>
                           {notice.description}
                         </p>
                       </div>
-                      <span className="announcement-date" style={{ color: "black" }}>
-                        {new Date(notice.createdAt).toLocaleDateString("en-US", {
-                          month: "short",
-                          day: "numeric",
-                        })}
-                      </span>
                     </div>
                   ))
                 ) : (

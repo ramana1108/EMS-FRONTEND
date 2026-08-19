@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import {
   LayoutDashboard,
   Building2,
@@ -13,51 +14,30 @@ import {
   Plus,
   FileText
 } from "lucide-react";
+import api from "../api";
+import NotificationBell from "../components/NotificationBell";
 
-// Stat Cards Data
-const stats = [
-  {
-    label: "Total Employees",
-    value: "208",
-    icon: Users,
-    description: "Review your employee roster and attendance at a glance."
-  },
-  {
-    label: "Departments",
-    value: "13",
-    icon: Building2,
-    description: "Manage department structures and team ownership."
-  },
-  {
-    label: "Attendance Today",
-    value: "186",
-    icon: Users,
-    description: "Track daily presence and absence summaries."
-  },
-  {
-    label: "Monthly Payroll",
-    value: "₹10,65,000",
-    icon: Wallet,
-    description: "Verify payroll processing and payment status."
-  }
-];
-
-// Company Notices List
-const notices = [
-  "Annual Performance Review 2026 - Submit self-evaluations by Friday.",
-  "Independence Day Holiday Notice - Office closed on August 15th.",
-  "New Health Insurance Policy - Updated coverage forms in portal."
-];
-
-// Managers List
-const managers = [
-  { name: "Jumn Denner", role: "Manager Directory" },
-  { name: "Brank Kahter", role: "Director" },
-  { name: "Chris Shanter", role: "Toster Manager" },
-  { name: "Mark Rooper", role: "Phahid Esstetor" }
-];
+// Fallback Stat Cards Data
+const defaultDashboardData = {
+  totalEmployees: 208,
+  totalDepartments: 13,
+  presentToday: 186,
+  totalNotices: 3,
+  recentNotices: [
+    { title: "Annual Performance Review 2026 - Submit self-evaluations by Friday." },
+    { title: "Independence Day Holiday Notice - Office closed on August 15th." },
+    { title: "New Health Insurance Policy - Updated coverage forms in portal." }
+  ],
+  recentEmployees: [
+    { firstName: "John", lastName: "Doe", employeeId: "EMP-001" },
+    { firstName: "Jane", lastName: "Smith", employeeId: "EMP-002" },
+    { firstName: "Robert", lastName: "Johnson", employeeId: "EMP-003" },
+    { firstName: "Emily", lastName: "Davis", employeeId: "EMP-004" }
+  ]
+};
 
 export default function Dashboard() {
+  const navigate = useNavigate();
   const [dashboard, setDashboard] = useState(null);
   const [loading, setLoading] = useState(false);
   const [user] = useState(() => {
@@ -73,7 +53,7 @@ export default function Dashboard() {
   });
 
   const getInitials = (name) => {
-    if (!name) return "A";
+    if (!name || typeof name !== "string") return "A";
     const parts = name.trim().split(/\s+/);
     if (parts.length > 1) {
       return (parts[0][0] + parts[1][0]).toUpperCase();
@@ -81,23 +61,60 @@ export default function Dashboard() {
     return parts[0][0].toUpperCase();
   };
 
+  const getRoleText = (role) => {
+    if (!role) return "ADMIN";
+    if (typeof role === "string") return role.toUpperCase();
+    if (typeof role === "object" && role.name) return String(role.name).toUpperCase();
+    return "ADMIN";
+  };
+
   useEffect(() => {
     let mounted = true;
     const load = async () => {
       setLoading(true);
       try {
-        const api = await import("../api");
         const res = await api.getAdminDashboard();
         if (mounted && res && res.success) setDashboard(res.dashboard);
       } catch (err) {
         console.error("Failed to load admin dashboard:", err);
       } finally {
-        setLoading(false);
+        if (mounted) setLoading(false);
       }
     };
     load();
-    return () => (mounted = false);
+    return () => {
+      mounted = false;
+    };
   }, []);
+
+  const [searchTerm, setSearchTerm] = useState("");
+
+  const activeData = dashboard || {
+    totalEmployees: 0,
+    totalDepartments: 0,
+    presentToday: 0,
+    totalNotices: 0,
+    recentEmployees: [],
+    recentNotices: [],
+  };
+  const userName = typeof user?.name === "string" ? user.name : "Admin";
+
+  const displayEmployees = (activeData.recentEmployees || []).filter((emp) => {
+    if (!searchTerm.trim()) return true;
+    const q = searchTerm.toLowerCase();
+    const name = (emp.name || `${emp.firstName || ""} ${emp.lastName || ""}`).toLowerCase();
+    const id = (emp.employeeId || "").toLowerCase();
+    const email = (emp.email || "").toLowerCase();
+    return name.includes(q) || id.includes(q) || email.includes(q);
+  });
+
+  const displayNotices = (activeData.recentNotices || []).filter((n) => {
+    if (!searchTerm.trim()) return true;
+    const q = searchTerm.toLowerCase();
+    const text = (n.title || n.description || "").toLowerCase();
+    return text.includes(q);
+  });
+
   return (
     <div>
       {/* Top Header Bar */}
@@ -106,26 +123,26 @@ export default function Dashboard() {
           <Search size={18} color="#64748b" />
           <input
             type="text"
-            placeholder="Search Employee..."
+            placeholder="Search Employees, Notices..."
             className="search-input"
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
           />
         </div>
 
         <div className="header-right">
-          <button className="icon-btn">
-            <Bell size={18} />
-          </button>
+          <NotificationBell />
           <div className="admin-profile-badge">
-            <div className="admin-avatar-small">{getInitials(user.name)}</div>
-            <span>{user.role || "ADMIN"}</span>
+            <div className="admin-avatar-small">{getInitials(userName)}</div>
+            <span>{getRoleText(user?.role)}</span>
           </div>
         </div>
       </div>
 
-      {/* Page Title Header (Black Text) */}
+      {/* Page Title Header */}
       <div className="page-header">
         <div>
-          <h1 className="dashboard-title" style={{color:"black"}}>Dashboard</h1>
+          <h1 className="dashboard-title" style={{ color: "black" }}>Dashboard</h1>
           <p className="dashboard-subtitle">Welcome back, Admin.</p>
         </div>
         <div className="status-badge">
@@ -135,62 +152,57 @@ export default function Dashboard() {
 
       {/* 1. Stat Cards Grid */}
       <div className="dashboard-summary-cards">
-        {loading && <div>Loading dashboard...</div>}
-        {!loading && dashboard && (
-          <>
-            <div className="summary-card stat-card-green">
-              <div className="stat-header">
-                <div className="stat-icon-box">
-                  <Users size={20} />
-                </div>
-                <div>
-                  <p className="stat-label">Total Employees</p>
-                  <p className="stat-value">{dashboard.totalEmployees}</p>
-                </div>
-              </div>
-              <p className="stat-description">Review your employee roster and attendance at a glance.</p>
+        <div className="summary-card stat-card-green">
+          <div className="stat-header">
+            <div className="stat-icon-box">
+              <Users size={20} />
             </div>
+            <div>
+              <p className="stat-label">Total Employees</p>
+              <p className="stat-value">{loading ? "..." : (activeData.totalEmployees ?? 0)}</p>
+            </div>
+          </div>
+          <p className="stat-description">Review your employee roster and attendance at a glance.</p>
+        </div>
 
-            <div className="summary-card stat-card-blue">
-              <div className="stat-header">
-                <div className="stat-icon-box">
-                  <Building2 size={20} />
-                </div>
-                <div>
-                  <p className="stat-label">Departments</p>
-                  <p className="stat-value">{dashboard.totalDepartments}</p>
-                </div>
-              </div>
-              <p className="stat-description">Manage department structures and team ownership.</p>
+        <div className="summary-card stat-card-blue">
+          <div className="stat-header">
+            <div className="stat-icon-box">
+              <Building2 size={20} />
             </div>
+            <div>
+              <p className="stat-label">Departments</p>
+              <p className="stat-value">{loading ? "..." : (activeData.totalDepartments ?? 0)}</p>
+            </div>
+          </div>
+          <p className="stat-description">Manage department structures and team ownership.</p>
+        </div>
 
-            <div className="summary-card stat-card-indigo">
-              <div className="stat-header">
-                <div className="stat-icon-box">
-                  <Users size={20} />
-                </div>
-                <div>
-                  <p className="stat-label">Attendance Today</p>
-                  <p className="stat-value">{dashboard.presentToday} Present</p>
-                </div>
-              </div>
-              <p className="stat-description">Track daily presence and absence summaries.</p>
+        <div className="summary-card stat-card-indigo">
+          <div className="stat-header">
+            <div className="stat-icon-box">
+              <Users size={20} />
             </div>
+            <div>
+              <p className="stat-label">Attendance Today</p>
+              <p className="stat-value">{loading ? "..." : `${activeData.presentToday ?? 0} Present`}</p>
+            </div>
+          </div>
+          <p className="stat-description">Track daily presence and absence summaries.</p>
+        </div>
 
-            <div className="summary-card stat-card-amber">
-              <div className="stat-header">
-                <div className="stat-icon-box">
-                  <Wallet size={20} />
-                </div>
-                <div>
-                  <p className="stat-label">Notices</p>
-                  <p className="stat-value">{dashboard.totalNotices}</p>
-                </div>
-              </div>
-              <p className="stat-description">Recent company notices and announcements.</p>
+        <div className="summary-card stat-card-amber">
+          <div className="stat-header">
+            <div className="stat-icon-box">
+              <Wallet size={20} />
             </div>
-          </>
-        )}
+            <div>
+              <p className="stat-label">Notices</p>
+              <p className="stat-value">{loading ? "..." : (activeData.totalNotices ?? 0)}</p>
+            </div>
+          </div>
+          <p className="stat-description">Recent company notices and announcements.</p>
+        </div>
       </div>
 
       {/* 2. Middle Section */}
@@ -199,35 +211,35 @@ export default function Dashboard() {
         {/* Company Notices */}
         <div className="card-box">
           <div className="card-header-row">
-            <h2 className="card-title" style={{ color: "black" }}>Company  Notices</h2>
-            <span className="view-all-link">View All</span>
+            <h2 className="card-title" style={{ color: "black" }}>Company Notices</h2>
+            <span className="view-all-link" onClick={() => navigate("/admin/notices")}>View All</span>
           </div>
           <ul className="notices-list">
-            {!dashboard && notices.map((notice, index) => (
-              <li key={index} className="notice-item">{notice}</li>
-            ))}
-            {dashboard && dashboard.recentNotices && dashboard.recentNotices.map((n, i) => (
-              <li key={i} className="notice-item" style={{ color: "black", backgroundColor: "rgb(204 242 229)",border:"none"}}>
-                {n.title}
-              </li>
-            ))}
+            {displayNotices.length > 0
+              ? displayNotices.map((n, i) => (
+                <li key={i} className="notice-item" style={{ color: "black", backgroundColor: "rgb(204 242 229)", border: "none" }}>
+                  {n.title || n}
+                </li>
+              ))
+              : <li className="notice-item" style={{ color: "#64748b", backgroundColor: "#f8fafc", border: "1px solid #e2e8f0" }}>No notices found.</li>
+            }
           </ul>
         </div>
 
         {/* Quick Actions */}
         <div className="card-box">
-          <h2 className="card-title" style={{ marginBottom: "16px" , color: "black" }}>Quick  Actions</h2>
+          <h2 className="card-title" style={{ marginBottom: "16px", color: "black" }}>Quick Actions</h2>
           <div className="action-buttons-stack">
-            <button className="btn-action">
+            <button className="btn-action" onClick={() => navigate("/admin/employee")}>
               <Plus size={16} /> Add Employee
             </button>
-            <button className="btn-action">
+            <button className="btn-action" onClick={() => navigate("/admin/payroll")}>
               <Plus size={16} /> Create Payroll
             </button>
-            <button className="btn-action">
+            <button className="btn-action" onClick={() => navigate("/admin/roles")}>
               <Plus size={16} /> Create Manager
             </button>
-            <button className="btn-action">
+            <button className="btn-action" onClick={() => navigate("/admin/notices")}>
               <FileText size={16} /> Create Notice
             </button>
           </div>
@@ -237,27 +249,25 @@ export default function Dashboard() {
         <div className="card-box">
           <div className="card-header-row">
             <h2 className="card-title" style={{ color: "black" }}>Employees</h2>
-            <span className="view-all-link">View All</span>
+            <span className="view-all-link" onClick={() => navigate("/admin/employee")}>View All</span>
           </div>
           <div className="managers-list">
-            {dashboard && dashboard.recentEmployees && dashboard.recentEmployees.map((emp, index) => (
-              <div key={emp._id || index} className="manager-item">
-                <div>
-                  <p className="manager-name" style={{ color: "black" }}>{emp.firstName} {emp.lastName}</p>
-                  <p className="manager-role" style={{ color: "black" }}>{emp.employeeId}</p>
+            {displayEmployees.length > 0
+              ? displayEmployees.map((emp, index) => (
+                <div key={emp._id || index} className="manager-item">
+                  <div>
+                    <p className="manager-name" style={{ color: "black" }}>
+                      {emp.name || `${emp.firstName || ""} ${emp.lastName || ""}`.trim() || "Staff Member"}
+                    </p>
+                    <p className="manager-role" style={{ color: "black" }}>
+                      {emp.employeeId || (typeof emp.role === "string" ? emp.role : (emp.role?.name || "Employee"))}
+                    </p>
+                  </div>
+                  <button className="btn-contact" onClick={() => navigate("/admin/employee")}>View</button>
                 </div>
-                <button className="btn-contact">View</button>
-              </div>
-            ))}
-            {(!dashboard || !dashboard.recentEmployees || dashboard.recentEmployees.length === 0) && managers.map((mgr, index) => (
-              <div key={index} className="manager-item">
-                <div>
-                  <p className="manager-name" style={{ color: "black" }}>{mgr.name.replace("Directory", "Employee").replace("Toster Manager", "Staff").replace("Director", "Staff").replace("Manager", "Staff")}</p>
-                  <p className="manager-role" style={{ color: "black" }}>{mgr.role.replace("Manager Directory", "Staff").replace("Director", "Staff").replace("Toster Manager", "Staff").replace("Esstetor", "Staff")}</p>
-                </div>
-                <button className="btn-contact">View</button>
-              </div>
-            ))}
+              ))
+              : <div style={{ color: "#64748b", padding: "12px", textAlign: "center" }}>No employees found.</div>
+            }
           </div>
         </div>
 

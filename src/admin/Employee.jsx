@@ -334,7 +334,7 @@ export default function Employee() {
                     console.warn("Auth register failed:", err);
                 }
 
-                if (registerRes && registerRes.success === false) {
+                if (registerRes && (registerRes.success === false || (registerRes.message && !registerRes.user))) {
                     setFormError(registerRes.message || "Failed to create user account");
                     setFormErrors({ general: registerRes.message || "Failed to create user account" });
                     return;
