@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import PaySlipModal from "../components/PaySlipModal";
 import {
     Wallet,
     Plus,
@@ -11,7 +12,8 @@ import {
     AlertCircle,
     Clock,
     CheckCircle,
-    X
+    X,
+    Search
 } from "lucide-react";
 
 export default function Payroll() {
@@ -23,6 +25,8 @@ export default function Payroll() {
 
     // Modal Control States
     const [isAddModalOpen, setIsAddModalOpen] = useState(false);
+    const [selectedSlipPayroll, setSelectedSlipPayroll] = useState(null);
+    const [isSlipModalOpen, setIsSlipModalOpen] = useState(false);
 
     // Pagination
     const [currentPage, setCurrentPage] = useState(1);
@@ -41,6 +45,7 @@ export default function Payroll() {
     const [paymentDate, setPaymentDate] = useState("");
 
     // Search/Filters
+    const [searchTerm, setSearchTerm] = useState("");
     const [searchYear, setSearchYear] = useState("All Years");
     const [searchMonth, setSearchMonth] = useState("All Months");
 
@@ -179,145 +184,10 @@ export default function Payroll() {
         }
     };
 
-    // Helper: Print / Download PDF Payslip
+    // Helper: Open Payslip Modal (React component with Print & PDF download)
     const handleDownloadPayslip = (payroll) => {
-        const printWindow = window.open("", "_blank");
-        if (!printWindow) {
-            alert("Please allow popups to download payslip PDF!");
-            return;
-        }
-
-        const basic = Number(payroll.basicSalary || 0);
-        const allow = Number(payroll.allowance || 0);
-        const bon = Number(payroll.bonus || 0);
-        const ded = Number(payroll.deductions || 0);
-        const tx = Number(payroll.tax || 0);
-        const net = Number(payroll.netSalary || (basic + allow + bon - ded - tx));
-
-        const formattedPaymentDate = payroll.paymentDate
-            ? new Date(payroll.paymentDate).toLocaleDateString("en-IN", { year: 'numeric', month: 'long', day: 'numeric' })
-            : "N/A";
-
-        printWindow.document.write(`
-      <html>
-        <head>
-          <title>Payslip - ${payroll.employeeId?.firstName} ${payroll.employeeId?.lastName}</title>
-          <style>
-            body { font-family: 'Segoe UI', Arial, sans-serif; padding: 40px; color: #1e293b; background-color: #ffffff; }
-            .slip-card { border: 2px solid #e2e8f0; border-radius: 12px; padding: 32px; max-width: 800px; margin: 0 auto; box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.05); }
-            .header-row { display: flex; justify-content: space-between; align-items: flex-start; border-bottom: 2px solid #059669; padding-bottom: 20px; margin-bottom: 30px; }
-            .header-left h1 { color: #065f46; margin: 0; font-size: 28px; font-weight: 800; letter-spacing: -0.5px; }
-            .header-right { text-align: right; }
-            .company { font-weight: 700; color: #0d9488; font-size: 16px; margin: 0; }
-            .meta-info { color: #64748b; font-size: 12px; margin-top: 4px; }
-            .grid-details { display: grid; grid-template-columns: 1fr 1fr; gap: 20px 40px; margin-bottom: 30px; font-size: 14px; background-color: #f8fafc; padding: 20px; border-radius: 8px; }
-            .detail-item { display: flex; justify-content: space-between; border-bottom: 1px dashed #cbd5e1; padding-bottom: 6px; }
-            .detail-label { font-weight: 600; color: #64748b; }
-            .detail-val { font-weight: 700; color: #1e293b; }
-            .table-calculations { width: 100%; border-collapse: collapse; margin: 30px 0; }
-            .table-calculations th, .table-calculations td { padding: 14px; border-bottom: 1px solid #cbd5e1; text-align: left; }
-            .table-calculations th { background-color: #f1f5f9; font-weight: 700; color: #475569; font-size: 13px; }
-            .table-calculations td { font-size: 14px; }
-            .total-net-row { font-size: 18px; font-weight: 800; background-color: #ecfdf5; color: #065f46; }
-            .total-net-row td { border-top: 2px solid #059669; border-bottom: 2px solid #059669; }
-            .notes-footer { text-align: center; margin-top: 50px; border-top: 1px solid #e2e8f0; padding-top: 24px; color: #64748b; font-size: 12px; }
-            @media print {
-              body { padding: 0; }
-              .slip-card { border: none; box-shadow: none; max-width: 100%; padding: 0; }
-            }
-          </style>
-        </head>
-        <body>
-          <div class="slip-card">
-            <div class="header-row">
-              <div class="header-left">
-                <h1>PAYSLIP</h1>
-                <p class="company">Enterprise Employee Management System (EMS)</p>
-              </div>
-              <div class="header-right">
-                <span style="font-weight: 700; padding: 4px 12px; border-radius: 20px; font-size: 12px; text-transform: uppercase; background-color: ${payroll.paymentStatus === 'Paid' ? '#ecfdf5' : '#fef2f2'}; color: ${payroll.paymentStatus === 'Paid' ? '#065f46' : '#b91c1c'}; border: 1px solid ${payroll.paymentStatus === 'Paid' ? '#34d399' : '#fca5a5'}">
-                  ${payroll.paymentStatus}
-                </span>
-                <p class="meta-info" style="margin-top: 8px;">Month: <strong>${payroll.month} ${payroll.year}</strong></p>
-              </div>
-            </div>
-
-            <div class="grid-details">
-              <div class="detail-item">
-                <span class="detail-label">Employee ID:</span>
-                <span class="detail-val">${payroll.employeeId?.employeeId || "N/A"}</span>
-              </div>
-              <div class="detail-item">
-                <span class="detail-label">Employee Name:</span>
-                <span class="detail-val">${payroll.employeeId?.firstName || ""} ${payroll.employeeId?.lastName || "Unknown"}</span>
-              </div>
-              <div class="detail-item">
-                <span class="detail-label">Email Address:</span>
-                <span class="detail-val">${payroll.employeeId?.email || "N/A"}</span>
-              </div>
-              <div class="detail-item">
-                <span class="detail-label">Payment Date:</span>
-                <span class="detail-val">${formattedPaymentDate}</span>
-              </div>
-              <div class="detail-item">
-                <span class="detail-label">Salary Period From:</span>
-                <span class="detail-val">01-${payroll.month?.slice(0, 3)}-${payroll.year}</span>
-              </div>
-              <div class="detail-item">
-                <span class="detail-label">Salary Period To:</span>
-                <span class="detail-val">End of ${payroll.month}-${payroll.year}</span>
-              </div>
-            </div>
-
-            <table class="table-calculations">
-              <thead>
-                <tr>
-                  <th style="width: 70%;">EARNINGS / DEDUCTIONS DETAILS</th>
-                  <th style="width: 30%; text-align: right;">AMOUNT (INR)</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td style="font-weight: 600;">Basic Salary (Actual)</td>
-                  <td style="text-align: right; font-weight: 700;">₹${basic.toLocaleString("en-IN", { minimumFractionDigits: 2 })}</td>
-                </tr>
-                <tr style="color: #0d9488;">
-                  <td style="padding-left: 24px;">+ Allowance</td>
-                  <td style="text-align: right;">₹${allow.toLocaleString("en-IN", { minimumFractionDigits: 2 })}</td>
-                </tr>
-                <tr style="color: #0d9488;">
-                  <td style="padding-left: 24px;">+ Bonus</td>
-                  <td style="text-align: right;">₹${bon.toLocaleString("en-IN", { minimumFractionDigits: 2 })}</td>
-                </tr>
-                <tr style="color: #b91c1c;">
-                  <td style="padding-left: 24px;">- Reductions</td>
-                  <td style="text-align: right;">₹${ded.toLocaleString("en-IN", { minimumFractionDigits: 2 })}</td>
-                </tr>
-                <tr style="color: #b91c1c;">
-                  <td style="padding-left: 24px;">- Tax Withholding</td>
-                  <td style="text-align: right;">₹${tx.toLocaleString("en-IN", { minimumFractionDigits: 2 })}</td>
-                </tr>
-                <tr class="total-net-row">
-                  <td>NET DISBURSED AMOUNT</td>
-                  <td style="text-align: right;">₹${net.toLocaleString("en-IN", { minimumFractionDigits: 2 })}</td>
-                </tr>
-              </tbody>
-            </table>
-
-            <div class="notes-footer">
-              <p>This document is digitally rendered and verified. No physical signature is required.</p>
-              <p style="margin-top: 4px; font-size: 10px; color: #94a3b8;">Printed on: ${new Date().toLocaleString()}</p>
-            </div>
-          </div>
-          <script>
-            window.onload = function() {
-              window.print();
-            };
-          </script>
-        </body>
-      </html>
-    `);
-        printWindow.document.close();
+        setSelectedSlipPayroll(payroll);
+        setIsSlipModalOpen(true);
     };
 
     // Derive calculated net salary locally for the form
@@ -342,7 +212,17 @@ export default function Payroll() {
     const filteredPayrolls = payrolls.filter(p => {
         const matchesYear = searchYear === "All Years" || p.year === Number(searchYear);
         const matchesMonth = searchMonth === "All Months" || p.month === searchMonth;
-        return matchesYear && matchesMonth;
+
+        let matchesSearch = true;
+        if (searchTerm.trim()) {
+            const q = searchTerm.toLowerCase();
+            const empName = `${p.employeeId?.firstName || ""} ${p.employeeId?.lastName || ""}`.toLowerCase();
+            const empCode = (p.employeeId?.employeeId || "").toLowerCase();
+            const empEmail = (p.employeeId?.email || "").toLowerCase();
+            matchesSearch = empName.includes(q) || empCode.includes(q) || empEmail.includes(q);
+        }
+
+        return matchesYear && matchesMonth && matchesSearch;
     });
 
     // Pagination Calculation
@@ -434,7 +314,28 @@ export default function Payroll() {
                         <h2 className="emp-card-title" style={{ margin: 0, color: "#172033" }}>Payroll Logs</h2>
 
                         {/* Local Filter controls */}
-                        <div style={{ display: "flex", gap: "8px" }}>
+                        <div style={{ display: "flex", gap: "8px", alignItems: "center" }}>
+                            <div style={{ position: "relative", display: "flex", alignItems: "center" }}>
+                                <Search size={14} style={{ position: "absolute", left: "10px", color: "#64748b" }} />
+                                <input
+                                    type="text"
+                                    placeholder="Search Employee, ID..."
+                                    value={searchTerm}
+                                    onChange={(e) => {
+                                        setSearchTerm(e.target.value);
+                                        setCurrentPage(1);
+                                    }}
+                                    style={{
+                                        padding: "6px 12px 6px 30px",
+                                        borderRadius: "6px",
+                                        border: "1px solid #cbd5e1",
+                                        fontSize: "13px",
+                                        backgroundColor: "#ffffff",
+                                        color: "#1e293b",
+                                        outline: "none"
+                                    }}
+                                />
+                            </div>
                             <select
                                 value={searchYear}
                                 onChange={(e) => {
@@ -751,6 +652,13 @@ export default function Payroll() {
                     </div>
                 </div>
             )}
+
+            {/* Payslip Modal Component */}
+            <PaySlipModal
+                payroll={selectedSlipPayroll}
+                isOpen={isSlipModalOpen}
+                onClose={() => setIsSlipModalOpen(false)}
+            />
         </div>
     );
 }

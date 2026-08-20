@@ -10,6 +10,7 @@ import {
   Megaphone
 } from "lucide-react";
 import api from "../api";
+import NotificationBell from "../components/NotificationBell";
 
 export default function EmployeeDashboard() {
   const [activeTab, setActiveTab] = useState("Dashboard");
@@ -55,6 +56,15 @@ export default function EmployeeDashboard() {
         .toUpperCase()
     : "E";
 
+  const [searchTerm, setSearchTerm] = useState("");
+
+  const filteredNotices = (dashboard?.recentNotices || []).filter((notice) => {
+    if (!searchTerm.trim()) return true;
+    const q = searchTerm.toLowerCase();
+    const text = (notice.title || notice.description || "").toLowerCase();
+    return text.includes(q);
+  });
+
   return (
     <div className="min-h-screen bg-[#F8FAFC] text-[#172033]">
       <Sidebar activeTab={activeTab} setActiveTab={setActiveTab} isOpen={isOpen} setIsOpen={setIsOpen} />
@@ -74,17 +84,22 @@ export default function EmployeeDashboard() {
         <main className="emp-main-content px-4 py-6 sm:px-6 lg:px-8">
           <div className="emp-top-header">
             <div className="emp-search-box">
-                <Search size={18} color="#64748B" />
+              <Search size={18} color="#64748B" />
               <input
                 type="text"
-                placeholder="Search Employee..."
+                placeholder="Search Announcements..."
                 className="emp-search-input"
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
               />
             </div>
 
-            <div className="emp-user-profile-badge">
-              <div className="emp-avatar-circle">{employeeInitials}</div>
-              <span>{employeeName}</span>
+            <div className="flex items-center gap-3" style={{ display: "flex", alignItems: "center", gap: "12px" }}>
+              <NotificationBell />
+              <div className="emp-user-profile-badge">
+                <div className="emp-avatar-circle">{employeeInitials}</div>
+                <span>{employeeName}</span>
+              </div>
             </div>
           </div>
 
@@ -147,34 +162,59 @@ export default function EmployeeDashboard() {
             )}
           </div>
 
-         
-
           <div className="emp-middle-grid grid grid-cols-1 lg:grid-cols-2 gap-6 mb-10">
             <div className="emp-card-box">
               <h2 className="emp-card-title">
                 Company Announcements
               </h2>
-              <div className="announcement-list" style={{ maxHeight: "500px", overflowY: "auto", padding: "16px" }}>
-                {dashboard?.recentNotices?.length ? (
-                  dashboard.recentNotices.map((notice) => (
-                    <div key={notice._id || notice.title} className="announcement-item" style={{ padding: "12px", borderRadius: "8px", marginBottom: "12px" }}>
-                      <div className="announcement-icon text-[#2563EB]">
+              <div className="announcement-list" style={{ maxHeight: "500px", overflowY: "auto", padding: "16px 0" }}>
+                {filteredNotices.length ? (
+                  filteredNotices.map((notice) => (
+                    <div
+                      key={notice._id || notice.title}
+                      className="announcement-item"
+                      style={{
+                        display: "flex",
+                        alignItems: "flex-start",
+                        gap: "12px",
+                        backgroundColor: "#FFFFFF",
+                        padding: "16px",
+                        borderRadius: "12px",
+                        marginBottom: "12px",
+                        border: "1px solid #E2E8F0"
+                      }}
+                    >
+                      <div
+                        className="announcement-icon"
+                        style={{
+                          backgroundColor: "#EAF2FF",
+                          color: "#2563EB",
+                          padding: "10px",
+                          borderRadius: "10px",
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                          flexShrink: 0
+                        }}
+                      >
                         <Megaphone size={18} />
                       </div>
-                      <div>
-                        <p className="announcement-title">
-                          {notice.title}
+                      <div style={{ flex: 1 }}>
+                        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", marginBottom: "4px" }}>
+                          <p className="announcement-title" style={{ color: "#172033", fontWeight: "700", fontSize: "14px", margin: 0 }}>
+                            {notice.title}
                           </p>
-                        <p className="announcement-desc">
+                          <span className="announcement-date" style={{ color: "#94A3B8", fontSize: "12px", fontWeight: "500", marginLeft: "8px" }}>
+                            {new Date(notice.createdAt).toLocaleDateString("en-US", {
+                              month: "short",
+                              day: "numeric",
+                            })}
+                          </span>
+                        </div>
+                        <p className="announcement-desc" style={{ color: "#64748B", fontSize: "13px", margin: 0, lineHeight: "1.5" }}>
                           {notice.description}
                         </p>
                       </div>
-                      <span className="announcement-date">
-                        {new Date(notice.createdAt).toLocaleDateString("en-US", {
-                          month: "short",
-                          day: "numeric",
-                        })}
-                      </span>
                     </div>
                   ))
                 ) : (

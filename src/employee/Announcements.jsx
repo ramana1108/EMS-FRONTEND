@@ -14,6 +14,7 @@ import {
     Menu
 } from "lucide-react";
 import api from "../api";
+import NotificationBell from "../components/NotificationBell";
 
 export default function Announcements() {
     const [activeTab, setActiveTab] = useState("Announcements");
@@ -174,14 +175,28 @@ export default function Announcements() {
                 </div>
 
                 {/* Top Header Bar */}
-        
+                <div className="emp-top-header mb-4" style={{ marginTop: "1rem" }}>
+                    <div className="emp-search-box" style={{ backgroundColor: "white" }}>
+                        <Search size={18} color="#64748b" />
+                        <input
+                            type="text"
+                            placeholder="Search Announcements..."
+                            className="emp-search-input"
+                            value={searchTerm}
+                            onChange={(e) => setSearchTerm(e.target.value)}
+                        />
+                    </div>
+                </div>
 
                 {/* Page Content */}
                 <div style={{ flex: 1, padding: "0 10px" }}>
-                    <div className="page-header flex justify-between items-center mb-6">
+                    <div className="page-header flex justify-between items-center mb-6" style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
                         <div>
                             <h1 className="dashboard-title text-3xl font-extrabold m-0" style={{ marginTop: "2rem" }}>Announcements</h1>
                             <p className="dashboard-subtitle text-sm mt-1">Stay updated with company news and announcements</p>
+                        </div>
+                        <div style={{ marginTop: "2rem" }}>
+                            <NotificationBell />
                         </div>
                     </div>
 

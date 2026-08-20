@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import Sidebar from "../components/Sidebar";
+import NotificationBell from "../components/NotificationBell";
 import { getMyLeaves, applyLeave as applyLeaveRequest, deleteLeave as deleteLeaveRequest } from "../api";
 import {
     Calendar,
@@ -193,12 +194,15 @@ export default function Leavemanagement() {
 
                 {/* Page Content */}
                 <div style={{ flex: 1, padding: "0 10px" }}>
-                    <div className="page-header flex justify-between items-center mb-6">
+                    <div className="page-header flex justify-between items-center mb-6" style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
                         <div>
                             <h1 className="dashboard-title text-3xl font-extrabold m-0" style={{ color: "#172033" }}>
                                 Leave Management
                             </h1>
                             <p className="dashboard-subtitle text-sm mt-1" style={{ color: "#64748B" }}>Apply for leave and track your requests</p>
+                        </div>
+                        <div>
+                            <NotificationBell />
                         </div>
                     </div>
 

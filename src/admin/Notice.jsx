@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import Pagination from "../components/Pagination";
-import { Megaphone, Plus, Calendar, User, Trash2, AlertCircle, X } from "lucide-react";
+import { Megaphone, Plus, Calendar, User, Trash2, AlertCircle, X, Search } from "lucide-react";
 
 export default function Notice() {
     const [notices, setNotices] = useState([]);
@@ -8,12 +8,22 @@ export default function Notice() {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState("");
     const [success, setSuccess] = useState("");
+    const [searchTerm, setSearchTerm] = useState("");
     const [currentPage, setCurrentPage] = useState(1);
     const itemsPerPage = 6;
 
-    const totalPages = Math.max(1, Math.ceil(notices.length / itemsPerPage));
+    const filteredNotices = notices.filter(n => {
+        if (!searchTerm.trim()) return true;
+        const q = searchTerm.toLowerCase();
+        const titleText = (n.title || "").toLowerCase();
+        const descText = (n.description || "").toLowerCase();
+        const posterText = (n.postedBy || "").toLowerCase();
+        return titleText.includes(q) || descText.includes(q) || posterText.includes(q);
+    });
+
+    const totalPages = Math.max(1, Math.ceil(filteredNotices.length / itemsPerPage));
     const startIndex = (currentPage - 1) * itemsPerPage;
-    const paginatedNotices = notices.slice(startIndex, startIndex + itemsPerPage);
+    const paginatedNotices = filteredNotices.slice(startIndex, startIndex + itemsPerPage);
 
     useEffect(() => {
         setCurrentPage(1);
@@ -152,18 +162,42 @@ export default function Notice() {
                     <h1 className="dashboard-title">Announcements & Notices</h1>
                     <p className="dashboard-subtitle">Broadcasting corporate announcements and regulatory notifications.</p>
                 </div>
-                <button
-                    className="btn-add-dept"
-                    onClick={() => {
-                        setError("");
-                        setSuccess("");
-                        setIsModalOpen(true);
-                    }}
-                    style={{ display: "flex", alignItems: "center", gap: "8px" }}
-                >
-                    <Plus size={16} />
-                    <span>Publish Notice</span>
-                </button>
+                <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
+                    <div style={{ position: "relative", display: "flex", alignItems: "center" }}>
+                        <Search size={16} style={{ position: "absolute", left: "12px", color: "#64748b" }} />
+                        <input
+                            type="text"
+                            placeholder="Search notices..."
+                            value={searchTerm}
+                            onChange={(e) => {
+                                setSearchTerm(e.target.value);
+                                setCurrentPage(1);
+                            }}
+                            style={{
+                                padding: "8px 14px 8px 36px",
+                                borderRadius: "8px",
+                                border: "1px solid #cbd5e1",
+                                fontSize: "14px",
+                                backgroundColor: "#ffffff",
+                                color: "#0f172a",
+                                outline: "none",
+                                width: "220px"
+                            }}
+                        />
+                    </div>
+                    <button
+                        className="btn-add-dept"
+                        onClick={() => {
+                            setError("");
+                            setSuccess("");
+                            setIsModalOpen(true);
+                        }}
+                        style={{ display: "flex", alignItems: "center", gap: "8px" }}
+                    >
+                        <Plus size={16} />
+                        <span>Publish Notice</span>
+                    </button>
+                </div>
             </div>
 
             {/* Stats Widget */}

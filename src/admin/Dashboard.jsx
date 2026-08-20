@@ -15,6 +15,26 @@ import {
   FileText
 } from "lucide-react";
 import api from "../api";
+import NotificationBell from "../components/NotificationBell";
+
+// Fallback Stat Cards Data
+const defaultDashboardData = {
+  totalEmployees: 208,
+  totalDepartments: 13,
+  presentToday: 186,
+  totalNotices: 3,
+  recentNotices: [
+    { title: "Annual Performance Review 2026 - Submit self-evaluations by Friday." },
+    { title: "Independence Day Holiday Notice - Office closed on August 15th." },
+    { title: "New Health Insurance Policy - Updated coverage forms in portal." }
+  ],
+  recentEmployees: [
+    { firstName: "John", lastName: "Doe", employeeId: "EMP-001" },
+    { firstName: "Jane", lastName: "Smith", employeeId: "EMP-002" },
+    { firstName: "Robert", lastName: "Johnson", employeeId: "EMP-003" },
+    { firstName: "Emily", lastName: "Davis", employeeId: "EMP-004" }
+  ]
+};
 
 export default function Dashboard() {
   const navigate = useNavigate();
@@ -111,9 +131,7 @@ export default function Dashboard() {
         </div>
 
         <div className="header-right">
-          <button className="icon-btn">
-            <Bell size={18} />
-          </button>
+          <NotificationBell />
           <div className="admin-profile-badge">
             <div className="admin-avatar-small">{getInitials(userName)}</div>
             <span>{getRoleText(user?.role)}</span>
@@ -124,7 +142,7 @@ export default function Dashboard() {
       {/* Page Title Header */}
       <div className="page-header">
         <div>
-          <h1 className="dashboard-title">Dashboard</h1>
+          <h1 className="dashboard-title" style={{ color: "black" }}>Dashboard</h1>
           <p className="dashboard-subtitle">Welcome back, Admin.</p>
         </div>
         <div className="status-badge">
@@ -193,35 +211,35 @@ export default function Dashboard() {
         {/* Company Notices */}
         <div className="card-box">
           <div className="card-header-row">
-            <h2 className="card-title">Company Notices</h2>
+            <h2 className="card-title" style={{ color: "black" }}>Company Notices</h2>
             <span className="view-all-link" onClick={() => navigate("/admin/notices")}>View All</span>
           </div>
           <ul className="notices-list">
             {displayNotices.length > 0
               ? displayNotices.map((n, i) => (
-                <li key={i} className="notice-item">
+                <li key={i} className="notice-item" style={{ color: "black", backgroundColor: "rgb(204 242 229)", border: "none" }}>
                   {n.title || n}
                 </li>
               ))
-              : <li className="notice-item">No notices found.</li>
+              : <li className="notice-item" style={{ color: "#64748b", backgroundColor: "#f8fafc", border: "1px solid #e2e8f0" }}>No notices found.</li>
             }
           </ul>
         </div>
 
         {/* Quick Actions */}
         <div className="card-box">
-          <h2 className="card-title" style={{ marginBottom: "16px" }}>Quick Actions</h2>
+          <h2 className="card-title" style={{ marginBottom: "16px", color: "black" }}>Quick Actions</h2>
           <div className="action-buttons-stack">
-            <button className="btn-action btn-add-emp" onClick={() => navigate("/admin/employee")}>
+            <button className="btn-action" onClick={() => navigate("/admin/employee")}>
               <Plus size={16} /> Add Employee
             </button>
-            <button className="btn-action btn-create-payroll" onClick={() => navigate("/admin/payroll")}>
+            <button className="btn-action" onClick={() => navigate("/admin/payroll")}>
               <Plus size={16} /> Create Payroll
             </button>
-            <button className="btn-action btn-create-mgr" onClick={() => navigate("/admin/roles")}>
+            <button className="btn-action" onClick={() => navigate("/admin/roles")}>
               <Plus size={16} /> Create Manager
             </button>
-            <button className="btn-action btn-create-notice" onClick={() => navigate("/admin/notices")}>
+            <button className="btn-action" onClick={() => navigate("/admin/notices")}>
               <FileText size={16} /> Create Notice
             </button>
           </div>
@@ -230,7 +248,7 @@ export default function Dashboard() {
         {/* Employees List */}
         <div className="card-box">
           <div className="card-header-row">
-            <h2 className="card-title">Employees</h2>
+            <h2 className="card-title" style={{ color: "black" }}>Employees</h2>
             <span className="view-all-link" onClick={() => navigate("/admin/employee")}>View All</span>
           </div>
           <div className="managers-list">
@@ -238,17 +256,17 @@ export default function Dashboard() {
               ? displayEmployees.map((emp, index) => (
                 <div key={emp._id || index} className="manager-item">
                   <div>
-                    <p className="manager-name">
+                    <p className="manager-name" style={{ color: "black" }}>
                       {emp.name || `${emp.firstName || ""} ${emp.lastName || ""}`.trim() || "Staff Member"}
                     </p>
-                    <p className="manager-role">
+                    <p className="manager-role" style={{ color: "black" }}>
                       {emp.employeeId || (typeof emp.role === "string" ? emp.role : (emp.role?.name || "Employee"))}
                     </p>
                   </div>
                   <button className="btn-contact" onClick={() => navigate("/admin/employee")}>View</button>
                 </div>
               ))
-              : <div style={{ padding: "12px", textAlign: "center" }}>No employees found.</div>
+              : <div style={{ color: "#64748b", padding: "12px", textAlign: "center" }}>No employees found.</div>
             }
           </div>
         </div>
