@@ -248,7 +248,7 @@ export default function Designations() {
             {/* Page Title & View Toggle */}
             <div className="page-header" style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "24px" }}>
                 <div>
-                    <h1 className="dashboard-title" style={{ color: "black" }}>
+                    <h1 className="dashboard-title">
                         {activeView === "departments" ? "Departments" : "Designations"}
                     </h1>
                     <p className="dashboard-subtitle">
@@ -272,14 +272,14 @@ export default function Designations() {
             </div>
 
             {error && (
-                <div style={{ display: "flex", alignItems: "center", gap: "8px", color: "#b91c1c", backgroundColor: "#fef2f2", padding: "12px", borderRadius: "8px", marginBottom: "20px", fontSize: "14px" }}>
+                <div style={{ display: "flex", alignItems: "center", gap: "8px", color: "#DC2626", backgroundColor: "#FEECEC", border: "1px solid #FECACA", padding: "12px", borderRadius: "8px", marginBottom: "20px", fontSize: "14px" }}>
                     <AlertCircle size={16} />
                     <span>{error}</span>
                 </div>
             )}
 
             {success && (
-                <div style={{ color: "#065f46", backgroundColor: "#ecfdf5", padding: "12px", borderRadius: "8px", marginBottom: "20px", fontSize: "14px" }}>
+                <div style={{ color: "#087F72", backgroundColor: "#E8F8F3", border: "1px solid #D5F2E9", padding: "12px", borderRadius: "8px", marginBottom: "20px", fontSize: "14px" }}>
                     {success}
                 </div>
             )}
@@ -353,7 +353,7 @@ export default function Designations() {
                 {/* Render Designations View */}
                 {activeView === "designations" && (
                     <div className="employee-directory-card" style={{ padding: "24px" }}>
-                        <h2 className="emp-card-title" style={{ marginBottom: "16px", color: "#0f766e", fontSize: "18px", fontWeight: "700" }}>Designation List</h2>
+                        <h2 className="emp-card-title" style={{ marginBottom: "16px", color: "#172033", fontSize: "18px", fontWeight: "700" }}>Designation List</h2>
 
                         <div className="table-responsive">
                             <table className="employee-table">
@@ -383,26 +383,25 @@ export default function Designations() {
                                             const employeeNames = desigEmployees.map(emp => `${emp.firstName || ""} ${emp.lastName || ""}`.trim()).join(", ") || "—";
                                             return (
                                                 <tr key={desig._id} className="employee-row">
-                                                    <td style={{ padding: "4px 8px", color: "#475569", fontSize: "13px" }}>
+                                                    <td style={{ padding: "8px 12px", color: "#64748B", fontSize: "13px" }}>
                                                         {employeeNames}
                                                     </td>
-                                                    <td style={{ padding: "4px 8px" }}>
-                                                        <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-                                                            <Award size={16} color="#8b5cf6" />
-                                                            <span style={{ fontWeight: "600", color: "#1e293b" }}>{desig.designationName}</span>
+                                                    <td style={{ padding: "8px 12px" }}>
+                                                        <div style={{ display: "flex", items: "center", gap: "8px" }}>
+                                                            <Award size={16} color="#7C3AED" />
+                                                            <span style={{ fontWeight: "700", color: "#172033" }}>{desig.designationName}</span>
                                                         </div>
                                                     </td>
-                                                    <td style={{ padding: "4px 8px" }}>
-                                                        <span style={{ fontSize: "13px", fontWeight: "600", color: "#374151", padding: "3px 8px", backgroundColor: "#f3f4f6", borderRadius: "12px" }}>
+                                                    <td style={{ padding: "8px 12px" }}>
+                                                        <span className="employee-dept-pill">
                                                             {desig.departmentId?.departmentName || "Unassigned"}
                                                         </span>
                                                     </td>
                                                     <td className="table-actions-col">
-                                                        <div style={{ display: "flex", gap: "8px", justifyContent: "center" }}>
+                                                        <div style={{ display: "flex", gap: "8px", justifyContent: "flex-end" }}>
                                                             <button
                                                                 onClick={() => handleEditDesignationClick(desig)}
                                                                 className="action-icon-btn"
-                                                                style={{ border: "none", background: "none", cursor: "pointer", color: "#4f46e5" }}
                                                                 title="Edit designation"
                                                             >
                                                                 <Edit size={16} />
@@ -410,7 +409,6 @@ export default function Designations() {
                                                             <button
                                                                 onClick={() => handleDeleteDesignation(desig._id)}
                                                                 className="action-icon-btn delete"
-                                                                style={{ border: "none", background: "none", cursor: "pointer", color: "#b91c1c" }}
                                                                 title="Delete designation"
                                                             >
                                                                 <Trash2 size={16} />

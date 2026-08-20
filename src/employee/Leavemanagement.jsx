@@ -168,22 +168,22 @@ export default function Leavemanagement() {
     };
 
     return (
-        <div className="min-h-screen bg-slate-100 text-slate-900">
+        <div className="min-h-screen bg-[#F8FAFC] text-[#172033]">
             <Sidebar activeTab={activeTab} setActiveTab={setActiveTab} isOpen={isOpen} setIsOpen={setIsOpen} />
 
             <div className="lg:pl-[260px] flex flex-col min-h-screen">
 
                 {/* Mobile Header */}
-                <div className="sticky top-0 z-30 flex items-center justify-between border-b border-slate-200/80 bg-white/95 px-4 py-3 backdrop-blur-xl lg:hidden" style={{ minHeight: "60px" }}>
+                <div className="sticky top-0 z-30 flex items-center justify-between border-b border-[#E2E8F0] bg-white/95 px-4 py-3 backdrop-blur-xl lg:hidden" style={{ minHeight: "60px" }}>
                     <button
                         onClick={() => setIsOpen(true)}
-                        className="inline-flex h-11 w-11 items-center justify-center rounded-2xl bg-[#043e30] text-white shadow-sm shadow-[#043e30]/10"
+                        className="inline-flex h-11 w-11 items-center justify-center rounded-2xl bg-[#2563EB] text-white shadow-sm"
                         style={{ border: "none", cursor: "pointer" }}
                         aria-label="Open sidebar"
                     >
                         <Menu size={20} />
                     </button>
-                    <div className="text-sm font-semibold text-slate-900">EMS Portal</div>
+                    <div className="text-sm font-semibold text-[#172033]">EMS Portal</div>
                 </div>
 
                 {/* Top Header Bar */}
@@ -195,10 +195,10 @@ export default function Leavemanagement() {
                 <div style={{ flex: 1, padding: "0 10px" }}>
                     <div className="page-header flex justify-between items-center mb-6">
                         <div>
-                            <h1 className="dashboard-title text-3xl font-extrabold text-slate-900 dark:text-white m-0" style={{ color: "black" }}>
+                            <h1 className="dashboard-title text-3xl font-extrabold m-0" style={{ color: "#172033" }}>
                                 Leave Management
                             </h1>
-                            <p className="dashboard-subtitle text-sm text-slate-500 dark:text-slate-400 mt-1">Apply for leave and track your requests</p>
+                            <p className="dashboard-subtitle text-sm mt-1" style={{ color: "#64748B" }}>Apply for leave and track your requests</p>
                         </div>
                     </div>
 
@@ -207,52 +207,52 @@ export default function Leavemanagement() {
                         {/* Casual Leave */}
                         <div className="emp-stat-card stat-card-green">
                             <div className="emp-stat-top">
-                                <div className="emp-stat-icon-box bg-emerald-50 dark:bg-emerald-950/20 text-[#10b981]">
+                                <div className="emp-stat-icon-box">
                                     <Calendar size={20} />
                                 </div>
                                 <span className="emp-stat-title">Casual Leave</span>
                             </div>
                             <p className="emp-stat-value">
-                                {stats.casual} <span className="text-sm font-medium text-slate-500 dark:text-slate-400">Days</span>
+                                {stats.casual} <span className="text-sm font-medium text-[#64748B]">Days</span>
                             </p>
                         </div>
 
                         {/* Sick Leave */}
                         <div className="emp-stat-card stat-card-amber">
                             <div className="emp-stat-top">
-                                <div className="emp-stat-icon-box bg-orange-50 dark:bg-orange-950/20 text-[#ea580c]">
+                                <div className="emp-stat-icon-box">
                                     <Briefcase size={20} />
                                 </div>
                                 <span className="emp-stat-title">Sick Leave</span>
                             </div>
                             <p className="emp-stat-value">
-                                {stats.sick} <span className="text-sm font-medium text-slate-500 dark:text-slate-400">Days</span>
+                                {stats.sick} <span className="text-sm font-medium text-[#64748B]">Days</span>
                             </p>
                         </div>
 
                         {/* Earned Leave */}
-                        <div className="emp-stat-card stat-card-teal">
+                        <div className="emp-stat-card stat-card-indigo">
                             <div className="emp-stat-top">
-                                <div className="emp-stat-icon-box bg-teal-50 dark:bg-teal-950/20 text-teal-600 dark:text-teal-400">
+                                <div className="emp-stat-icon-box">
                                     <Calendar size={20} />
                                 </div>
                                 <span className="emp-stat-title">Earned Leave</span>
                             </div>
                             <p className="emp-stat-value">
-                                {stats.earned} <span className="text-sm font-medium text-slate-500 dark:text-slate-400">Days</span>
+                                {stats.earned} <span className="text-sm font-medium text-[#64748B]">Days</span>
                             </p>
                         </div>
 
                         {/* Remaining Leave */}
-                        <div className="emp-stat-card stat-card-indigo">
+                        <div className="emp-stat-card stat-card-blue">
                             <div className="emp-stat-top">
-                                <div className="emp-stat-icon-box bg-purple-50 dark:bg-purple-950/20 text-[#a855f7]">
+                                <div className="emp-stat-icon-box">
                                     <Clock size={20} />
                                 </div>
                                 <span className="emp-stat-title">Remaining Leave</span>
                             </div>
                             <p className="emp-stat-value">
-                                {stats.remaining} <span className="text-sm font-medium text-slate-500 dark:text-slate-400">Days</span>
+                                {stats.remaining} <span className="text-sm font-medium text-[#64748B]">Days</span>
                             </p>
                         </div>
                     </div>
@@ -260,14 +260,14 @@ export default function Leavemanagement() {
                     {/* List display */}
                     <div className="employee-directory-card">
                         <div className="filters-row">
-                            <h2 className="text-lg font-extrabold text-slate-900 dark:text-white" style={{ margin: 0 , color: "black" }}>
+                            <h2 className="text-lg font-extrabold text-[#172033]" style={{ margin: 0 }}>
                                 My Leave Requests
                             </h2>
 
                             <button
                                 onClick={handleApplyClick}
                                 style={{ border: "none", cursor: "pointer" }}
-                                className="inline-flex items-center justify-center gap-2 px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl text-sm font-bold shadow-sm cursor-pointer transition-all active:scale-95 duration-200"
+                                className="inline-flex items-center justify-center gap-2 px-4 py-2 bg-[#2563EB] hover:bg-[#1D4ED8] text-white rounded-xl text-sm font-bold shadow-sm cursor-pointer transition-all active:scale-95 duration-200"
                             >
                                 <Plus size={16} />
                                 <span>Apply Leave</span>
@@ -276,7 +276,7 @@ export default function Leavemanagement() {
 
                         <div className="table-responsive">
                             {loading ? (
-                                <div style={{ padding: "24px", textAlign: "center", color: "#64748b" }}>Loading leave requests...</div>
+                                <div style={{ padding: "24px", textAlign: "center", color: "#64748B" }}>Loading leave requests...</div>
                             ) : (
                                 <table className="employee-table">
                                     <thead>
@@ -293,30 +293,30 @@ export default function Leavemanagement() {
                                     <tbody>
                                         {requests.length === 0 ? (
                                             <tr>
-                                                <td colSpan="7" style={{ textAlign: "center", color: "#64748b", padding: "30px" }}>No leave requests found.</td>
+                                                <td colSpan="7" style={{ textAlign: "center", color: "#64748B", padding: "30px" }}>No leave requests found.</td>
                                             </tr>
                                         ) : (
                                             requests.map((req) => {
-                                                let statusBg = "#fff7ed";
-                                                let statusText = "#ea580c";
-                                                let statusBorder = "#ffedd5";
+                                                let statusBg = "#FFF1D6";
+                                                let statusText = "#B45309";
+                                                let statusBorder = "#FDE7C0";
 
                                                 if (req.status === "Approved") {
-                                                    statusBg = "#ecfdf5";
-                                                    statusText = "#047857";
-                                                    statusBorder = "#a7f3d0";
+                                                    statusBg = "#E8F8F3";
+                                                    statusText = "#087F72";
+                                                    statusBorder = "#D5F2E9";
                                                 } else if (req.status === "Rejected") {
-                                                    statusBg = "#fef2f2";
-                                                    statusText = "#b91c1c";
-                                                    statusBorder = "#fca5a5";
+                                                    statusBg = "#FEECEC";
+                                                    statusText = "#DC2626";
+                                                    statusBorder = "#FECACA";
                                                 }
 
                                                 return (
                                                     <tr key={req.id} className="employee-row">
-                                                        <td style={{ fontWeight: "700", color: "#0f172a" }}>{req.leaveType}</td>
-                                                        <td style={{ color: "#334155" }}>{formatDateDisplay(req.fromDate)}</td>
-                                                        <td style={{ color: "#334155" }}>{formatDateDisplay(req.toDate)}</td>
-                                                        <td className="table-center-col" style={{ fontWeight: "600", color: "#0f172a" }}>{req.days}</td>
+                                                        <td style={{ fontWeight: "700", color: "#172033" }}>{req.leaveType}</td>
+                                                        <td style={{ color: "#64748B" }}>{formatDateDisplay(req.fromDate)}</td>
+                                                        <td style={{ color: "#64748B" }}>{formatDateDisplay(req.toDate)}</td>
+                                                        <td className="table-center-col" style={{ fontWeight: "600", color: "#172033" }}>{req.days}</td>
                                                         <td className="table-center-col">
                                                             <span
                                                                 style={{
@@ -334,7 +334,7 @@ export default function Leavemanagement() {
                                                                 {req.status}
                                                             </span>
                                                         </td>
-                                                        <td style={{ padding: "4px 8px", color: "#64748b", fontSize: "13px" }}>{formatDateDisplay(req.appliedOn)}</td>
+                                                        <td style={{ padding: "4px 8px", color: "#64748B", fontSize: "13px" }}>{formatDateDisplay(req.appliedOn)}</td>
                                                         <td style={{ padding: "4px 8px", textAlign: "right" }}>
                                                             <div style={{ display: "flex", gap: "8px", justifyContent: "flex-end" }}>
                                                                 <button
@@ -372,17 +372,17 @@ export default function Leavemanagement() {
                 {/* Modal: Apply Leave */}
                 {
                     showApplyModal && (
-                        <div className="fixed inset-0 z-999 flex items-center justify-center bg-slate-900/60 backdrop-blur-sm p-4">
-                            <div className="bg-white dark:bg-slate-900 rounded-3xl w-full max-w-xl max-h-[92vh] overflow-y-auto p-8 shadow-2xl border border-slate-100 dark:border-slate-800 transition-all duration-300">
+                        <div className="fixed inset-0 z-999 flex items-center justify-center bg-slate-900/40 backdrop-blur-sm p-4">
+                            <div className="bg-white rounded-3xl w-full max-w-xl max-h-[92vh] overflow-y-auto p-8 shadow-2xl border border-[#E2E8F0]">
                                 <div className="flex justify-between items-center mb-6">
-                                    <h3 className="text-xl font-extrabold text-slate-900 dark:text-white m-0">Apply for Leave</h3>
-                                    <button onClick={() => setShowApplyModal(false)} className="bg-transparent border-0 cursor-pointer text-slate-400 hover:text-slate-600 dark:hover:text-slate-200">
+                                    <h3 className="text-xl font-extrabold text-[#172033] m-0">Apply for Leave</h3>
+                                    <button onClick={() => setShowApplyModal(false)} className="bg-transparent border-0 cursor-pointer text-[#64748B] hover:text-[#172033]">
                                         <X size={20} />
                                     </button>
                                 </div>
 
                                 {formError && (
-                                    <div className="flex items-center gap-2 px-4 py-3 bg-red-50 dark:bg-red-950/20 text-red-700 dark:text-red-400 rounded-xl text-sm font-semibold border border-red-100 dark:border-red-950/30 mb-5">
+                                    <div className="flex items-center gap-2 px-4 py-3 bg-[#FEECEC] text-[#DC2626] rounded-xl text-sm font-semibold border border-[#FECACA] mb-5">
                                         <AlertTriangle size={16} />
                                         <span>{formError}</span>
                                     </div>
@@ -390,7 +390,7 @@ export default function Leavemanagement() {
 
                                 <form onSubmit={handleSubmitLeave} className="space-y-5">
                                     <div className="form-group flex flex-col gap-2">
-                                        <label className="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Leave Type <span className="text-red-500">*</span></label>
+                                        <label className="text-xs font-bold text-[#334155] uppercase tracking-wider">Leave Type <span className="text-red-500">*</span></label>
                                         <select
                                             value={leaveType}
                                             onChange={(e) => {
@@ -398,7 +398,7 @@ export default function Leavemanagement() {
                                                 if (formError) setFormError("");
                                             }}
                                             required
-                                            className="w-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl px-4 py-3 text-sm font-semibold text-slate-800 dark:text-slate-100 outline-none transition-all focus:border-emerald-500 focus:ring-4 focus:ring-emerald-500/10"
+                                            className="w-full bg-white border border-[#D8E0EA] rounded-xl px-4 py-3 text-sm font-semibold text-[#172033] outline-none focus:border-[#2563EB]"
                                         >
                                             <option value="" disabled>Select Leave Type</option>
                                             <option value="Casual Leave">Casual Leave</option>
@@ -409,7 +409,7 @@ export default function Leavemanagement() {
 
                                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                         <div className="form-group flex flex-col gap-2">
-                                            <label className="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">From Date <span className="text-red-500">*</span></label>
+                                            <label className="text-xs font-bold text-[#334155] uppercase tracking-wider">From Date <span className="text-red-500">*</span></label>
                                             <input
                                                 type="date"
                                                 value={fromDate}
@@ -418,11 +418,11 @@ export default function Leavemanagement() {
                                                     if (formError) setFormError("");
                                                 }}
                                                 required
-                                                className="w-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl px-4 py-3 text-sm font-semibold text-slate-800 dark:text-slate-100 outline-none transition-all focus:border-emerald-500 focus:ring-4 focus:ring-emerald-500/10"
+                                                className="w-full bg-white border border-[#D8E0EA] rounded-xl px-4 py-3 text-sm font-semibold text-[#172033] outline-none focus:border-[#2563EB]"
                                             />
                                         </div>
                                         <div className="form-group flex flex-col gap-2">
-                                            <label className="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">To Date <span className="text-red-500">*</span></label>
+                                            <label className="text-xs font-bold text-[#334155] uppercase tracking-wider">To Date <span className="text-red-500">*</span></label>
                                             <input
                                                 type="date"
                                                 value={toDate}
@@ -431,13 +431,13 @@ export default function Leavemanagement() {
                                                     if (formError) setFormError("");
                                                 }}
                                                 required
-                                                className="w-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl px-4 py-3 text-sm font-semibold text-slate-800 dark:text-slate-100 outline-none transition-all focus:border-emerald-500 focus:ring-4 focus:ring-emerald-500/10"
+                                                className="w-full bg-white border border-[#D8E0EA] rounded-xl px-4 py-3 text-sm font-semibold text-[#172033] outline-none focus:border-[#2563EB]"
                                             />
                                         </div>
                                     </div>
 
                                     <div className="form-group flex flex-col gap-2">
-                                        <label className="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Reason / Notes <span className="text-red-500">*</span></label>
+                                        <label className="text-xs font-bold text-[#334155] uppercase tracking-wider">Reason / Notes <span className="text-red-500">*</span></label>
                                         <textarea
                                             value={reason}
                                             onChange={(e) => {
@@ -447,7 +447,7 @@ export default function Leavemanagement() {
                                             placeholder="Provide details about your leave request..."
                                             required
                                             rows="3"
-                                            className="w-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl px-4 py-3 text-sm font-semibold text-slate-800 dark:text-slate-100 outline-none transition-all focus:border-emerald-500 focus:ring-4 focus:ring-emerald-500/10 resize-y"
+                                            className="w-full bg-white border border-[#D8E0EA] rounded-xl px-4 py-3 text-sm font-semibold text-[#172033] outline-none focus:border-[#2563EB] resize-y"
                                         />
                                     </div>
 
@@ -476,43 +476,43 @@ export default function Leavemanagement() {
                 {
                     selectedLeave && (
                         <div style={{ position: "fixed", inset: 0, zIndex: 999, display: "flex", alignItems: "center", justifyContent: "center", backgroundColor: "rgba(15, 23, 42, 0.4)", backdropFilter: "blur(4px)" }}>
-                            <div style={{ backgroundColor: "var(--card-bg)", borderRadius: "16px", border: "1px solid #e2e8f0", width: "420px", maxWidth: "90%", padding: "24px", boxShadow: "0 20px 25px -5px rgba(0, 0, 0, 0.1)" }}>
-                                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "16px", borderBottom: "1px solid #f1f5f9", paddingBottom: "10px" }}>
-                                    <h3 style={{ margin: 0, fontSize: "18px", fontWeight: "800", color: "#0f172a" }}>Leave Details</h3>
-                                    <button onClick={() => setSelectedLeave(null)} style={{ background: "none", border: "none", cursor: "pointer", color: "#64748b" }}>
+                            <div style={{ backgroundColor: "#FFFFFF", borderRadius: "16px", border: "1px solid #E2E8F0", width: "420px", maxWidth: "90%", padding: "24px", boxShadow: "0 20px 25px -5px rgba(0, 0, 0, 0.1)" }}>
+                                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "16px", borderBottom: "1px solid #F1F5F9", paddingBottom: "10px" }}>
+                                    <h3 style={{ margin: 0, fontSize: "18px", fontWeight: "800", color: "#172033" }}>Leave Details</h3>
+                                    <button onClick={() => setSelectedLeave(null)} style={{ background: "none", border: "none", cursor: "pointer", color: "#64748B" }}>
                                         <X size={20} />
                                     </button>
                                 </div>
 
                                 <div style={{ display: "flex", flexDirection: "column", gap: "12px", fontSize: "14px" }}>
-                                    <div style={{ display: "flex", justifyContent: "space-between", borderBottom: "1px solid #f8fafc", paddingBottom: "6px" }}>
-                                        <span style={{ fontWeight: "700", color: "#64748b" }}>Type</span>
-                                        <span style={{ fontWeight: "700", color: "#0f172a" }}>{selectedLeave.leaveType}</span>
+                                    <div style={{ display: "flex", justifyContent: "space-between", borderBottom: "1px solid #F8FAFC", paddingBottom: "6px" }}>
+                                        <span style={{ fontWeight: "700", color: "#64748B" }}>Type</span>
+                                        <span style={{ fontWeight: "700", color: "#172033" }}>{selectedLeave.leaveType}</span>
                                     </div>
-                                    <div style={{ display: "flex", justifyContent: "space-between", borderBottom: "1px solid #f8fafc", paddingBottom: "6px" }}>
-                                        <span style={{ fontWeight: "700", color: "#64748b" }}>Duration</span>
-                                        <span style={{ fontWeight: "600", color: "#0f172a" }}>
+                                    <div style={{ display: "flex", justifyContent: "space-between", borderBottom: "1px solid #F8FAFC", paddingBottom: "6px" }}>
+                                        <span style={{ fontWeight: "700", color: "#64748B" }}>Duration</span>
+                                        <span style={{ fontWeight: "600", color: "#172033" }}>
                                             {formatDateDisplay(selectedLeave.fromDate)} to {formatDateDisplay(selectedLeave.toDate)} ({selectedLeave.days} days)
                                         </span>
                                     </div>
-                                    <div style={{ display: "flex", justifyContent: "space-between", borderBottom: "1px solid #f8fafc", paddingBottom: "6px" }}>
-                                        <span style={{ fontWeight: "700", color: "#64748b" }}>Applied On</span>
+                                    <div style={{ display: "flex", justifyContent: "space-between", borderBottom: "1px solid #F8FAFC", paddingBottom: "6px" }}>
+                                        <span style={{ fontWeight: "700", color: "#64748B" }}>Applied On</span>
                                         <span style={{ color: "#334155" }}>{formatDateDisplay(selectedLeave.appliedOn)}</span>
                                     </div>
-                                    <div style={{ display: "flex", justifyContent: "space-between", borderBottom: "1px solid #f8fafc", paddingBottom: "6px" }}>
-                                        <span style={{ fontWeight: "700", color: "#64748b" }}>Status</span>
+                                    <div style={{ display: "flex", justifyContent: "space-between", borderBottom: "1px solid #F8FAFC", paddingBottom: "6px" }}>
+                                        <span style={{ fontWeight: "700", color: "#64748B" }}>Status</span>
                                         <span
                                             style={{
                                                 fontWeight: "700",
-                                                color: selectedLeave.status === "Approved" ? "#047857" : selectedLeave.status === "Rejected" ? "#b91c1c" : "#ea580c"
+                                                color: selectedLeave.status === "Approved" ? "#087F72" : selectedLeave.status === "Rejected" ? "#DC2626" : "#B45309"
                                             }}
                                         >
                                             {selectedLeave.status}
                                         </span>
                                     </div>
                                     <div style={{ display: "flex", flexDirection: "column", gap: "4px" }}>
-                                        <span style={{ fontWeight: "700", color: "#64748b" }}>Reason / Notes</span>
-                                        <p style={{ margin: 0, padding: "10px", backgroundColor: "#f8fafc", borderRadius: "8px", border: "1px solid #e2e8f0", color: "#334155", fontStyle: "italic", minHeight: "50px" }}>
+                                        <span style={{ fontWeight: "700", color: "#64748B" }}>Reason / Notes</span>
+                                        <p style={{ margin: 0, padding: "10px", backgroundColor: "#F8FAFC", borderRadius: "8px", border: "1px solid #E2E8F0", color: "#334155", fontStyle: "italic", minHeight: "50px" }}>
                                             {selectedLeave.reason}
                                         </p>
                                     </div>
@@ -522,7 +522,7 @@ export default function Leavemanagement() {
                                     <button
                                         type="button"
                                         onClick={() => setSelectedLeave(null)}
-                                        style={{ padding: "8px 16px", backgroundColor: "#043e30", color: "#ffffff", border: "none", borderRadius: "6px", fontSize: "13px", fontWeight: "700", cursor: "pointer" }}
+                                        style={{ padding: "8px 16px", backgroundColor: "#2563EB", color: "#FFFFFF", border: "1px solid #2563EB", borderRadius: "8px", fontSize: "13px", fontWeight: "700", cursor: "pointer" }}
                                     >
                                         Close
                                     </button>

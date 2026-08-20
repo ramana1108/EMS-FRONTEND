@@ -429,7 +429,7 @@ export default function Employee() {
             {/* Page Title Header */}
             <div className="page-header">
                 <div>
-                    <h1 className="dashboard-title" style={{ color: "black" }}>Employee</h1>
+                    <h1 className="dashboard-title">Employee</h1>
                     <p className="dashboard-subtitle">Manage workforce records, roles, statuses and enroll new employees.</p>
                 </div>
                 <button
@@ -484,11 +484,11 @@ export default function Employee() {
                     <table className="employee-table">
                         <thead>
                             <tr>
-                                <th style={{ color: "black" }}>NAME</th>
-                                <th style={{ color: "black" }}>DEPARTMENT</th>
-                                <th style={{ color: "black" }}>ROLE / EMPLOYMENT TYPE</th>
-                                <th className="table-center-col" style={{ color: "black" }}>STATUS</th>
-                                <th className="table-actions-col" style={{ color: "black" }}>ACTIONS</th>
+                                <th>NAME</th>
+                                <th>DEPARTMENT</th>
+                                <th>ROLE / EMPLOYMENT TYPE</th>
+                                <th className="table-center-col">STATUS</th>
+                                <th className="table-actions-col">ACTIONS</th>
                             </tr> 
                         </thead>
                         <tbody>
@@ -513,7 +513,7 @@ export default function Employee() {
                                                     {getInitials(emp.name)}
                                                 </div>
                                                 <div>
-                                                    <p className="employee-name-text" style={{ color: "black" }}> {emp.name}</p>
+                                                    <p className="employee-name-text"> {emp.name}</p>
                                                     <p className="employee-meta-text">
                                                         {emp.employeeId || `EMP-${1000 + index}`} • {emp.email}
                                                     </p>
@@ -529,7 +529,7 @@ export default function Employee() {
 
                                         <td>
                                             <div>
-                                                <p className="employee-role-type" style={{ color: "black" }}>
+                                                <p className="employee-role-type">
                                                     {emp.employmentType || emp.role || "Full-time"}
                                                 </p>
                                                 <p className="employee-joining-date">
@@ -538,7 +538,7 @@ export default function Employee() {
                                             </div>
                                         </td>
 
-                                        <td>
+                                        <td className="table-center-col">
                                             <span className={`employee-status-badge ${emp.status?.toLowerCase() === "active" ? "active" : "inactive"}`}>
                                                 <span className="bullet"></span>
                                                 {emp.status || "Active"}
@@ -546,7 +546,7 @@ export default function Employee() {
                                         </td>
 
                                         <td className="table-actions-col">
-                                            <div className="employee-action-buttons" style={{ display: "flex", gap: "8px", justifyContent: "center" }}>
+                                            <div className="employee-action-buttons" style={{ display: "flex", gap: "8px", justifyContent: "flex-end" }}>
                                                 <button className="action-icon-btn" title="View details" onClick={() => handleViewClick(emp)}>
                                                     <Eye size={16} />
                                                 </button>

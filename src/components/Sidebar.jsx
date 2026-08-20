@@ -99,9 +99,9 @@ export default function Sidebar({ activeTab, setActiveTab, isOpen, setIsOpen }) 
                     }`}
             >
                 {/* Sidebar Header */}
-                <div className="h-[72px] px-6 border-b border-emerald-950/30 flex items-center justify-between flex-shrink-0">
+                <div className="h-[72px] px-6 border-b border-[#132A46] flex items-center justify-between flex-shrink-0">
                     <div className="flex items-center gap-3">
-                        <div className="p-2.5 bg-emerald-500/10 rounded-xl border border-emerald-500/20 text-emerald-400 shadow-inner">
+                        <div className="p-2.5 bg-[#123F43] rounded-xl border border-[#14B8A6]/30 text-[#14B8A6] shadow-xs">
                             <Briefcase size={18} />
                         </div>
                         <span className="text-lg font-extrabold tracking-tight text-white uppercase tracking-wider">EMS PORTAL</span>
@@ -109,7 +109,7 @@ export default function Sidebar({ activeTab, setActiveTab, isOpen, setIsOpen }) 
                     {/* Close button for Mobile */}
                     <button
                         onClick={() => setIsOpen(false)}
-                        className="lg:hidden p-2 hover:bg-emerald-800/15 rounded-xl text-emerald-300 hover:text-white transition-all cursor-pointer"
+                        className="lg:hidden p-2 hover:bg-[#132A46] rounded-xl text-[#94A3B8] hover:text-white transition-all cursor-pointer"
                     >
                         <X size={18} />
                     </button>
@@ -118,7 +118,7 @@ export default function Sidebar({ activeTab, setActiveTab, isOpen, setIsOpen }) 
                 {/* Sidebar Navigation */}
                 <nav className="flex-1 overflow-y-auto px-4 py-6 space-y-1.5 scrollbar-none">
                     {visibleMenuItems.length === 0 ? (
-                        <div className="rounded-2xl border border-emerald-950/20 bg-emerald-950/10 p-4 text-xs font-semibold text-emerald-200">
+                        <div className="rounded-2xl border border-[#334155] bg-[#172A3D] p-4 text-xs font-semibold text-[#94A3B8]">
                             You do not have permissions for any menu items.
                         </div>
                     ) : visibleMenuItems.map((item) => {
@@ -134,17 +134,17 @@ export default function Sidebar({ activeTab, setActiveTab, isOpen, setIsOpen }) 
                                     setIsOpen(false);
                                 }}
                                 className={`w-full flex items-center gap-3 px-3.5 py-3 rounded-xl text-sm font-bold transition-all duration-200 relative group cursor-pointer ${isActive
-                                    ? "bg-gradient-to-r from-emerald-500 to-emerald-600 text-white shadow-xl shadow-emerald-500/10"
-                                    : "text-emerald-100/60 hover:bg-emerald-500/10 hover:text-white"
+                                    ? "bg-[#2563EB] text-white shadow-lg shadow-blue-600/20"
+                                    : "text-[#94A3B8] hover:bg-[#132A46] hover:text-white"
                                     }`}
                             >
                                 {/* Glow ring on active */}
                                 {isActive && (
-                                    <span className="absolute -left-1.5 top-1/4 bottom-1/4 w-1 bg-emerald-500 rounded-full shadow-lg" />
+                                    <span className="absolute -left-1.5 top-1/4 bottom-1/4 w-1 bg-[#14B8A6] rounded-full shadow-lg" />
                                 )}
                                 <Icon
                                     size={18}
-                                    className={`transition-colors duration-200 ${isActive ? "text-white" : "text-emerald-400 group-hover:text-emerald-300"
+                                    className={`transition-colors duration-200 ${isActive ? "text-white" : "text-[#94A3B8] group-hover:text-white"
                                         }`}
                                 />
                                 <span>{item.name}</span>
@@ -154,18 +154,18 @@ export default function Sidebar({ activeTab, setActiveTab, isOpen, setIsOpen }) 
                 </nav>
 
                 {/* Sidebar Bottom Widget: Employees by Department */}
-                <div className="px-5 py-4 bg-[#081512]/50 border-t border-emerald-950/30 text-left">
-                    <p className="text-[10px] font-extrabold tracking-widest text-emerald-400/50 uppercase mb-3">
+                <div className="px-5 py-4 bg-[#081522] border-t border-[#132A46] text-left">
+                    <p className="text-[10px] font-extrabold tracking-widest text-[#14B8A6] uppercase mb-3">
                         Employees by Dept
                     </p>
                     <div className="space-y-2">
                         {[
-                            { name: "Production", color: "bg-emerald-500", val: "83" },
-                            { name: "Sales", color: "bg-indigo-500", val: "50" },
-                            { name: "IT", color: "bg-sky-400", val: "50" },
-                            { name: "HR/Admin", color: "bg-rose-500", val: "25" },
+                            { name: "Production", color: "bg-[#2563EB]", val: "83" },
+                            { name: "Sales", color: "bg-[#94A3B8]", val: "50" },
+                            { name: "IT", color: "bg-[#14B8A6]", val: "50" },
+                            { name: "HR/Admin", color: "bg-[#38BDF8]", val: "25" },
                         ].map((d) => (
-                            <div key={d.name} className="flex items-center justify-between text-xs text-emerald-100/70 font-semibold">
+                            <div key={d.name} className="flex items-center justify-between text-xs text-[#CBD5E1] font-semibold">
                                 <div className="flex items-center gap-2">
                                     <span className={`w-2 h-2 rounded-full ${d.color} shadow-sm`} />
                                     <span>{d.name}</span>
@@ -177,21 +177,21 @@ export default function Sidebar({ activeTab, setActiveTab, isOpen, setIsOpen }) 
                 </div>
 
                 {/* Sidebar Footer Profile */}
-                <div className="p-4 border-t border-emerald-950/30 bg-[#081512]/60 flex items-center justify-between gap-3 text-left">
+                <div className="p-4 border-t border-[#173A5E] bg-[#0F2742] flex items-center justify-between gap-3 text-left">
                     <div className="flex items-center gap-2.5">
-                        <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-emerald-400 to-emerald-600 border border-emerald-500/10 flex items-center justify-center flex-shrink-0 shadow-md">
+                        <div className="w-9 h-9 rounded-xl bg-[#2563EB] border border-[#3B82F6]/30 flex items-center justify-center flex-shrink-0 shadow-md">
                             <span className="text-xs font-extrabold text-white">{getInitials(userName)}</span>
                         </div>
                         <div>
                             <p className="text-xs font-extrabold text-white line-clamp-1">{userName}</p>
-                            <p className="text-[9px] font-extrabold text-emerald-400 uppercase tracking-widest leading-none mt-1">{userRole}</p>
+                            <p className="text-[9px] font-extrabold text-[#60A5FA] uppercase tracking-widest leading-none mt-1">{userRole}</p>
                         </div>
                     </div>
 
                     <button
                         onClick={handleLogout}
                         title="Log Out"
-                        className="p-2 hover:bg-emerald-800/15 rounded-xl text-emerald-300 hover:text-white transition-all cursor-pointer"
+                        className="p-2 hover:bg-[#173A5E] rounded-xl text-[#A9B8C8] hover:text-white transition-all cursor-pointer"
                     >
                         <LogOut size={16} />
                     </button>

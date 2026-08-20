@@ -231,7 +231,7 @@ export default function Settings() {
       {/* Header */}
       <div className="page-header" style={{ marginBottom: "20px", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
         <div>
-          <h1 className="dashboard-title" style={{ color: "black" }}>
+          <h1 className="dashboard-title">
             Company Settings
           </h1>
           <p className="dashboard-subtitle" style={{ fontSize: "14px", color: "#64748b" }}>

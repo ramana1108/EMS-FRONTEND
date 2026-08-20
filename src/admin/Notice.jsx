@@ -149,7 +149,7 @@ export default function Notice() {
             {/* Header */}
             <div className="page-header" style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "24px" }}>
                 <div>
-                    <h1 className="dashboard-title" style={{ color: "black" }}>Announcements & Notices</h1>
+                    <h1 className="dashboard-title">Announcements & Notices</h1>
                     <p className="dashboard-subtitle">Broadcasting corporate announcements and regulatory notifications.</p>
                 </div>
                 <button
@@ -219,14 +219,14 @@ export default function Notice() {
                                     style={{
                                         padding: "20px",
                                         borderRadius: "12px",
-                                        border: "1px solid #e2e8f0",
+                                        border: "1px solid #E2E8F0",
                                         position: "relative",
-                                        backgroundColor: "#f8fafc",
+                                        backgroundColor: "#F8FAFC",
                                         transition: "all 0.2s"
                                     }}
                                 >
                                     <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "8px" }}>
-                                        <h3 style={{ margin: 0, fontSize: "16px", fontWeight: "700", color: "#0f172a" }}>
+                                        <h3 style={{ margin: 0, fontSize: "16px", fontWeight: "700", color: "#172033" }}>
                                             {notice.title}
                                         </h3>
                                         <button
@@ -235,7 +235,7 @@ export default function Notice() {
                                                 border: "none",
                                                 background: "none",
                                                 cursor: "pointer",
-                                                color: "#ef4444",
+                                                color: "#DC2626",
                                                 padding: "4px",
                                                 borderRadius: "6px",
                                                 display: "flex",
@@ -246,13 +246,13 @@ export default function Notice() {
                                             <Trash2 size={16} />
                                         </button>
                                     </div>
-                                    <p style={{ color: "#334155", fontSize: "14px", lineHeight: "1.6", margin: "0 0 16px 0", whiteSpace: "pre-line" }}>
+                                    <p style={{ color: "#64748B", fontSize: "14px", lineHeight: "1.6", margin: "0 0 16px 0", whiteSpace: "pre-line" }}>
                                         {notice.description}
                                     </p>
 
-                                    <div style={{ display: "flex", flexWrap: "wrap", justifyContent: "space-between", alignItems: "center", borderTop: "1px solid #cbd5e1", paddingTop: "12px", fontSize: "12px", color: "#64748b", fontWeight: "600" }}>
+                                    <div style={{ display: "flex", flexWrap: "wrap", justifyContent: "space-between", alignItems: "center", borderTop: "1px solid #E2E8F0", paddingTop: "12px", fontSize: "12px", color: "#64748B", fontWeight: "600" }}>
                                         <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
-                                            <User size={14} color="#0d9488" />
+                                            <User size={14} color="#2563EB" />
                                             <span>{notice.postedBy?.employeeName || "System Administrator"} ({notice.postedBy?.employeeId || "N/A"})</span>
                                         </div>
                                         <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
