@@ -66,26 +66,25 @@ export default function EmployeeDashboard() {
   });
 
   return (
-    <div className="min-h-screen bg-slate-100 text-slate-900 flex">
+    <div className="min-h-screen bg-[#F8FAFC] text-[#172033]">
       <Sidebar activeTab={activeTab} setActiveTab={setActiveTab} isOpen={isOpen} setIsOpen={setIsOpen} />
 
-      <div className="lg:pl-[260px] flex flex-col min-h-screen flex-1">
-        <div className="sticky top-0 z-30 flex items-center justify-between border-b border-slate-200/80 bg-white/95 px-4 py-3 backdrop-blur-xl lg:hidden" style={{ minHeight: "60px" }}>
+      <div className="lg:pl-[260px]">
+        <div className="sticky top-0 z-30 flex items-center justify-between border-b border-[#E2E8F0] bg-white/95 px-4 py-3 backdrop-blur-xl lg:hidden">
           <button
             onClick={() => setIsOpen(true)}
-            className="inline-flex h-11 w-11 items-center justify-center rounded-2xl bg-[#043e30] text-white shadow-sm shadow-[#043e30]/10"
-            style={{ border: "none", cursor: "pointer" }}
+            className="inline-flex h-11 w-11 items-center justify-center rounded-2xl bg-[#2563EB] text-white shadow-sm"
             aria-label="Open sidebar"
           >
             <span className="text-lg font-bold">☰</span>
           </button>
-          <div className="text-sm font-semibold text-slate-900">Employee Dashboard</div>
+          <div className="text-sm font-semibold text-[#172033]">Employee Dashboard</div>
         </div>
 
         <main className="emp-main-content px-4 py-6 sm:px-6 lg:px-8">
           <div className="emp-top-header">
-            <div className="emp-search-box" style={{ backgroundColor: "white" }}>
-              <Search size={18} color="#64748b" />
+            <div className="emp-search-box">
+              <Search size={18} color="#64748B" />
               <input
                 type="text"
                 placeholder="Search Announcements..."
@@ -163,11 +162,9 @@ export default function EmployeeDashboard() {
             )}
           </div>
 
-         
-
           <div className="emp-middle-grid grid grid-cols-1 lg:grid-cols-2 gap-6 mb-10">
             <div className="emp-card-box">
-              <h2 className="emp-card-title" style={{ color: "black" }}>
+              <h2 className="emp-card-title">
                 Company Announcements
               </h2>
               <div className="announcement-list" style={{ maxHeight: "500px", overflowY: "auto", padding: "16px 0" }}>
@@ -180,19 +177,18 @@ export default function EmployeeDashboard() {
                         display: "flex",
                         alignItems: "flex-start",
                         gap: "12px",
-                        backgroundColor: "#ffffff",
+                        backgroundColor: "#FFFFFF",
                         padding: "16px",
                         borderRadius: "12px",
                         marginBottom: "12px",
-                        border: "1px solid #e2e8f0",
-                        boxShadow: "0 1px 3px 0 rgba(0, 0, 0, 0.05)"
+                        border: "1px solid #E2E8F0"
                       }}
                     >
                       <div
                         className="announcement-icon"
                         style={{
-                          backgroundColor: "#ecfdf5",
-                          color: "#047857",
+                          backgroundColor: "#EAF2FF",
+                          color: "#2563EB",
                           padding: "10px",
                           borderRadius: "10px",
                           display: "flex",
@@ -205,30 +201,30 @@ export default function EmployeeDashboard() {
                       </div>
                       <div style={{ flex: 1 }}>
                         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", marginBottom: "4px" }}>
-                          <p className="announcement-title" style={{ color: "#0f172a", fontWeight: "700", fontSize: "14px", margin: 0 }}>
+                          <p className="announcement-title" style={{ color: "#172033", fontWeight: "700", fontSize: "14px", margin: 0 }}>
                             {notice.title}
                           </p>
-                          <span className="announcement-date" style={{ color: "#64748b", fontSize: "12px", fontWeight: "500", marginLeft: "8px" }}>
+                          <span className="announcement-date" style={{ color: "#94A3B8", fontSize: "12px", fontWeight: "500", marginLeft: "8px" }}>
                             {new Date(notice.createdAt).toLocaleDateString("en-US", {
                               month: "short",
                               day: "numeric",
                             })}
                           </span>
                         </div>
-                        <p className="announcement-desc" style={{ color: "#475569", fontSize: "13px", margin: 0, lineHeight: "1.5" }}>
+                        <p className="announcement-desc" style={{ color: "#64748B", fontSize: "13px", margin: 0, lineHeight: "1.5" }}>
                           {notice.description}
                         </p>
                       </div>
                     </div>
                   ))
                 ) : (
-                  <p style={{ color: "#64748b", padding: "16px 0" }}>No announcements available.</p>
+                  <p style={{ color: "#94A3B8", padding: "16px 0" }}>No announcements available.</p>
                 )}
               </div>
             </div>
 
             <div className="emp-card-box">
-              <h2 className="emp-card-title" style={{ color: "black" }}>
+              <h2 className="emp-card-title">
                 Profile Summary
               </h2>
               <div className="profile-card-content space-y-4 flex flex-col items-center">
@@ -236,10 +232,10 @@ export default function EmployeeDashboard() {
                   src={dashboard?.employeeProfile?.profileImage || "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=150&auto=format&fit=crop&q=80"}
                   alt={employeeName}
                   className="profile-avatar-large"
-                  style={{ width: "100px", height: "100px", borderRadius: "50%", objectFit: "cover", marginTop:"3rem" }}
+                  style={{ width: "100px", height: "100px", borderRadius: "50%", objectFit: "cover", marginTop: "3rem" }}
                 />
                 <div>
-                  <p className="profile-name" style={{color : "black"}}>{employeeName}</p>
+                  <p className="profile-name">{employeeName}</p>
                   <p className="profile-role">{employeeRole}</p>
                 </div>
               

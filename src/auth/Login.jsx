@@ -104,7 +104,7 @@ function Login() {
             {/* Left Decorative/Info Panel */}
             <div className="login-left-panel">
                 <div className="login-left-branding">
-                    <Briefcase size={22} className="text-emerald-400" />
+                    <Briefcase size={22} className="text-[#60A5FA]" />
                     <span className="text-sm font-black tracking-[0.25em] uppercase">EMS PORTAL</span>
                 </div>
                 <div className="login-left-content">
@@ -123,25 +123,25 @@ function Login() {
                 <div className="login-right-inner">
                     <div className="card">
                         <div className="mb-8 text-center">
-                            <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-xl bg-emerald-500/10 text-emerald-500 border border-emerald-500/20 shadow-inner">
+                            <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-xl bg-[#EAF2FF] text-[#2563EB] border border-[#D7E7FF] shadow-xs">
                                 <Briefcase size={24} />
                             </div>
-                            <h2 className="text-2xl font-extrabold text-slate-900 dark:text-white tracking-tight">
+                            <h2 className="text-2xl font-extrabold text-[#172033] tracking-tight">
                                 Welcome Back
                             </h2>
-                            <p className="mt-2 text-xs font-semibold text-slate-400 dark:text-slate-500">Enter your credentials to access your workspace.</p>
+                            <p className="mt-2 text-xs font-semibold text-[#64748B]">Enter your credentials to access your workspace.</p>
                         </div>
 
                         {error && (
-                            <div className="mb-5 flex items-start gap-3 rounded-xl border border-red-200 dark:border-red-950/20 bg-red-50 dark:bg-red-950/10 px-4 py-3 text-xs md:text-sm font-semibold text-red-600 dark:text-red-400">
-                                <AlertCircle size={16} className="mt-0.5 shrink-0" />
+                            <div className="mb-5 flex items-start gap-3 rounded-xl border border-[#FECACA] bg-[#FEECEC] px-4 py-3 text-xs md:text-sm font-semibold text-[#DC2626]">
+                                <AlertCircle size={16} className="mt-0.5 shrink-0 text-[#DC2626]" />
                                 <span>{error}</span>
                             </div>
                         )}
 
                         {success && (
-                            <div className="mb-5 flex items-start gap-3 rounded-xl border border-emerald-250 dark:border-emerald-950/25 bg-emerald-50 dark:bg-emerald-950/10 px-4 py-3 text-xs md:text-sm font-semibold text-emerald-600 dark:text-emerald-400">
-                                <CheckCircle size={16} className="mt-0.5 shrink-0" />
+                            <div className="mb-5 flex items-start gap-3 rounded-xl border border-[#D5F2E9] bg-[#E8F8F3] px-4 py-3 text-xs md:text-sm font-semibold text-[#087F72]">
+                                <CheckCircle size={16} className="mt-0.5 shrink-0 text-[#087F72]" />
                                 <span>{success}</span>
                             </div>
                         )}
@@ -167,7 +167,7 @@ function Login() {
                             <div className="form-group">
                                 <div className="mb-2 flex items-center justify-between">
                                     <label className="form-label mb-0!">Password</label>
-                                    <a href="#" className="text-xs text-slate-400 dark:text-slate-500 hover:text-emerald-500 font-bold transition-all">Forgot password?</a>
+                                    <a href="#" className="text-xs text-[#2563EB] hover:text-[#1D4ED8] font-bold transition-all">Forgot password?</a>
                                 </div>
                                 <div className="input-container">
                                     <span className="input-icon">
@@ -184,7 +184,7 @@ function Login() {
                                     <button
                                         type="button"
                                         onClick={() => setShowPassword(!showPassword)}
-                                        className="absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-650 cursor-pointer"
+                                        className="absolute right-3.5 top-1/2 -translate-y-1/2 text-[#64748B] hover:text-[#94A3B8] cursor-pointer"
                                     >
                                         {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
                                     </button>
@@ -193,7 +193,7 @@ function Login() {
 
                             <button
                                 type="submit"
-                                className="btn btn-primary mt-2 cursor-pointer w-full bg-emerald-600 text-white rounded-xl py-3 text-sm font-bold shadow-md hover:bg-emerald-500 disabled:opacity-50"
+                                className="btn btn-primary mt-2 cursor-pointer w-full bg-[#2563EB] text-white rounded-xl py-3 text-sm font-bold shadow-md hover:bg-[#1D4ED8] disabled:opacity-50"
                                 disabled={loading}
                             >
                                 {loading ? "Signing In..." : "Sign In"}

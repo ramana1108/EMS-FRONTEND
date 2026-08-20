@@ -119,8 +119,8 @@ export default function Dashboard() {
     <div>
       {/* Top Header Bar */}
       <div className="top-header">
-        <div className="search-box" style={{ backgroundColor: "white" }}>
-          <Search size={18} color="#64748b" />
+        <div className="search-box">
+          <Search size={18} color="#64748B" />
           <input
             type="text"
             placeholder="Search Employees, Notices..."

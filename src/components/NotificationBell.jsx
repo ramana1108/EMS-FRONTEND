@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
+import { useNavigate } from "react-router-dom";
 import { Bell, CheckCircle2, XCircle, Info, CheckCheck } from "lucide-react";
 import api from "../api";
 
@@ -8,6 +9,7 @@ export default function NotificationBell() {
   const [isOpen, setIsOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const dropdownRef = useRef(null);
+  const navigate = useNavigate();
 
   const fetchNotifications = async () => {
     try {
@@ -57,6 +59,69 @@ export default function NotificationBell() {
       setUnreadCount((prev) => Math.max(0, prev - 1));
     } catch (err) {
       console.error(err);
+    }
+  };
+
+  const handleNotificationClick = async (n) => {
+    // Mark single notification as read if unread
+    if (!n.isRead) {
+      handleMarkSingleRead(n._id, false);
+    }
+
+    // Close notification dropdown
+    setIsOpen(false);
+
+    // Determine redirect path
+    const loggedInUser = JSON.parse(localStorage.getItem("user") || "null");
+    const userRole = String(loggedInUser?.role || "").toLowerCase();
+
+    let targetPath = "";
+
+    if (n.link || n.route || n.url) {
+      targetPath = n.link || n.route || n.url;
+    } else {
+      const type = (n.type || "").toLowerCase();
+      const title = (n.title || "").toLowerCase();
+      const msg = (n.message || "").toLowerCase();
+
+      if (userRole === "admin") {
+        if (type.includes("leave") || title.includes("leave") || msg.includes("leave")) {
+          targetPath = "/admin/attendance";
+        } else if (type.includes("payroll") || title.includes("payroll") || msg.includes("salary") || msg.includes("payroll")) {
+          targetPath = "/admin/payroll";
+        } else if (title.includes("employee") || msg.includes("employee")) {
+          targetPath = "/admin/employee";
+        } else if (title.includes("notice") || title.includes("announcement") || msg.includes("notice")) {
+          targetPath = "/admin/notices";
+        } else if (title.includes("department")) {
+          targetPath = "/admin/departments";
+        } else if (title.includes("designation")) {
+          targetPath = "/admin/designations";
+        } else if (title.includes("role")) {
+          targetPath = "/admin/roles";
+        } else {
+          targetPath = "/admin/dashboard";
+        }
+      } else {
+        // Employee role navigation
+        if (type.includes("leave") || title.includes("leave") || msg.includes("leave")) {
+          targetPath = "/employee/leave";
+        } else if (type.includes("payroll") || title.includes("payroll") || msg.includes("salary") || msg.includes("payslip")) {
+          targetPath = "/employee/payroll";
+        } else if (type.includes("attendance") || title.includes("attendance") || msg.includes("attendance")) {
+          targetPath = "/employee/attendance";
+        } else if (type.includes("notice") || title.includes("notice") || title.includes("announcement") || msg.includes("notice") || msg.includes("announcement")) {
+          targetPath = "/employee/announcements";
+        } else if (title.includes("profile") || msg.includes("profile")) {
+          targetPath = "/employee/profile";
+        } else {
+          targetPath = "/employee/dashboard";
+        }
+      }
+    }
+
+    if (targetPath) {
+      navigate(targetPath);
     }
   };
 
@@ -204,7 +269,7 @@ export default function NotificationBell() {
               notifications.map((n) => (
                 <div
                   key={n._id}
-                  onClick={() => handleMarkSingleRead(n._id, n.isRead)}
+                  onClick={() => handleNotificationClick(n)}
                   style={{
                     display: "flex",
                     alignItems: "flex-start",
@@ -212,7 +277,7 @@ export default function NotificationBell() {
                     padding: "12px 16px",
                     borderBottom: "1px solid #f1f5f9",
                     backgroundColor: n.isRead ? "#ffffff" : "#f0fdf4",
-                    cursor: n.isRead ? "default" : "pointer",
+                    cursor: "pointer",
                     transition: "background-color 0.2s"
                   }}
                 >

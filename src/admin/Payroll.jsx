@@ -251,7 +251,7 @@ export default function Payroll() {
             {/* Header */}
             <div className="page-header" style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "24px" }}>
                 <div>
-                    <h1 className="dashboard-title" style={{ color: "black" }}>Payroll Center</h1>
+                    <h1 className="dashboard-title">Payroll Center</h1>
                     <p className="dashboard-subtitle">Disburse salaries, calculate taxes, deductions, and log payment records.</p>
                 </div>
                 <button
@@ -272,7 +272,7 @@ export default function Payroll() {
             <div className="stats-grid" style={{ marginBottom: "24px" }}>
                 <div className="stat-card stat-card-green">
                     <div className="stat-header">
-                        <div className="stat-icon-plain" style={{ color: "#065f46" }}>
+                        <div className="stat-icon-box">
                             <ArrowUpRight size={22} />
                         </div>
                         <div>
@@ -285,7 +285,7 @@ export default function Payroll() {
 
                 <div className="stat-card stat-card-amber">
                     <div className="stat-header">
-                        <div className="stat-icon-plain" style={{ color: "#d97706" }}>
+                        <div className="stat-icon-box">
                             <Clock size={22} />
                         </div>
                         <div>
@@ -298,7 +298,7 @@ export default function Payroll() {
 
                 <div className="stat-card stat-card-teal">
                     <div className="stat-header">
-                        <div className="stat-icon-plain" style={{ color: "#0d9488" }}>
+                        <div className="stat-icon-box">
                             <Percent size={22} />
                         </div>
                         <div>
@@ -311,14 +311,14 @@ export default function Payroll() {
             </div>
 
             {error && (
-                <div style={{ display: "flex", alignItems: "center", gap: "8px", color: "#b91c1c", backgroundColor: "#fef2f2", padding: "12px", borderRadius: "8px", marginBottom: "20px", fontSize: "14px" }}>
+                <div style={{ display: "flex", alignItems: "center", gap: "8px", color: "#DC2626", backgroundColor: "#FEECEC", border: "1px solid #FECACA", padding: "12px", borderRadius: "8px", marginBottom: "20px", fontSize: "14px" }}>
                     <AlertCircle size={16} />
                     <span>{error}</span>
                 </div>
             )}
 
             {success && (
-                <div style={{ color: "#065f46", backgroundColor: "#ecfdf5", padding: "12px", borderRadius: "8px", marginBottom: "20px", fontSize: "14px" }}>
+                <div style={{ color: "#087F72", backgroundColor: "#E8F8F3", border: "1px solid #D5F2E9", padding: "12px", borderRadius: "8px", marginBottom: "20px", fontSize: "14px" }}>
                     {success}
                 </div>
             )}
@@ -327,7 +327,7 @@ export default function Payroll() {
             <div className="w-full">
                 <div className="employee-directory-card" style={{ padding: "24px" }}>
                     <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "16px", flexWrap: "wrap", gap: "10px" }}>
-                        <h2 className="emp-card-title" style={{ margin: 0 , color: "#0f766e" }}>Payroll Logs</h2>
+                        <h2 className="emp-card-title" style={{ margin: 0, color: "#172033" }}>Payroll Logs</h2>
 
                         {/* Local Filter controls */}
                         <div style={{ display: "flex", gap: "8px", alignItems: "center" }}>
@@ -409,39 +409,31 @@ export default function Payroll() {
                                         <tr key={payroll._id} className="employee-row">
                                             <td style={{ padding: "8px 12px" }}>
                                                 <div>
-                                                    <p style={{ fontWeight: "700", color: "#1e293b", fontSize: "14px" }}>
+                                                    <p style={{ fontWeight: "700", color: "#172033", fontSize: "14px" }}>
                                                         {payroll.employeeId?.firstName} {payroll.employeeId?.lastName}
                                                     </p>
-                                                    <p style={{ fontSize: "11px", color: "#64748b" }}>{payroll.employeeId?.employeeId}</p>
+                                                    <p style={{ fontSize: "11px", color: "#64748B" }}>{payroll.employeeId?.employeeId}</p>
                                                 </div>
                                             </td>
                                             <td>
-                                                <span style={{ fontSize: "13px", fontWeight: "600", color: "#475569" }}>
+                                                <span style={{ fontSize: "13px", fontWeight: "600", color: "#64748B" }}>
                                                     {payroll.month} {payroll.year}
                                                 </span>
                                             </td>
-                                            <td className="table-number-col" style={{ fontWeight: "600" }}>
+                                            <td className="table-number-col" style={{ fontWeight: "600", color: "#172033" }}>
                                                 {(payroll.basicSalary || 0).toLocaleString("en-IN")}
                                             </td>
-                                            <td className="table-number-col" style={{ color: "#b91c1c" }}>
+                                            <td className="table-number-col" style={{ color: "#DC2626" }}>
                                                 -{(payroll.deductions || 0).toLocaleString("en-IN")}
                                             </td>
-                                            <td className="table-number-col" style={{ color: "#b91c1c" }}>
+                                            <td className="table-number-col" style={{ color: "#DC2626" }}>
                                                 -{(payroll.tax || 0).toLocaleString("en-IN")}
                                             </td>
-                                            <td className="table-number-col" style={{ fontWeight: "700", color: "#065f46" }}>
+                                            <td className="table-number-col" style={{ fontWeight: "700", color: "#087F72" }}>
                                                 {(payroll.netSalary || 0).toLocaleString("en-IN", { minimumFractionDigits: 2 })}
                                             </td>
                                             <td className="table-center-col">
-                                                <span style={{
-                                                    padding: "2px 8px",
-                                                    fontSize: "11px",
-                                                    fontWeight: "750",
-                                                    borderRadius: "12px",
-                                                    display: "inline-block",
-                                                    backgroundColor: payroll.paymentStatus === "Paid" ? "#ecfdf5" : "#fef2f2",
-                                                    color: payroll.paymentStatus === "Paid" ? "#065f46" : "#b91c1c"
-                                                }}>
+                                                <span className={`employee-status-badge ${payroll.paymentStatus === "Paid" ? "active" : "on-leave"}`}>
                                                     {payroll.paymentStatus === "Paid" ? "Paid" : "Pending"}
                                                 </span>
                                             </td>
@@ -450,9 +442,9 @@ export default function Payroll() {
                                                     <button
                                                         onClick={() => handleDownloadPayslip(payroll)}
                                                         style={{
-                                                            border: "none",
-                                                            backgroundColor: "#e2e8f0",
-                                                            color: "#475569",
+                                                            border: "1px solid #D7E7FF",
+                                                            backgroundColor: "#EFF6FF",
+                                                            color: "#2563EB",
                                                             padding: "4px 8px",
                                                             borderRadius: "6px",
                                                             cursor: "pointer",
@@ -470,7 +462,6 @@ export default function Payroll() {
                                                     <button
                                                         onClick={() => handleDeletePayroll(payroll._id)}
                                                         className="action-icon-btn delete"
-                                                        style={{ border: "none", background: "none", cursor: "pointer", color: "#b91c1c" }}
                                                         title="Delete Record"
                                                     >
                                                         <Trash2 size={16} />

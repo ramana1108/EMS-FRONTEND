@@ -99,22 +99,22 @@ export default function Payrolls() {
     };
 
     return (
-        <div className="min-h-screen bg-slate-100 text-slate-900">
+        <div className="min-h-screen bg-[#F8FAFC] text-[#172033]">
             <Sidebar activeTab={activeTab} setActiveTab={setActiveTab} isOpen={isOpen} setIsOpen={setIsOpen} />
 
             <div className="lg:pl-[260px] flex flex-col min-h-screen">
 
                 {/* Mobile Header */}
-                <div className="sticky top-0 z-30 flex items-center justify-between border-b border-slate-200/80 bg-white/95 px-4 py-3 backdrop-blur-xl lg:hidden" style={{ minHeight: "60px" }}>
+                <div className="sticky top-0 z-30 flex items-center justify-between border-b border-[#E2E8F0] bg-white/95 px-4 py-3 backdrop-blur-xl lg:hidden" style={{ minHeight: "60px" }}>
                     <button
                         onClick={() => setIsOpen(true)}
-                        className="inline-flex h-11 w-11 items-center justify-center rounded-2xl bg-[#043e30] text-white shadow-sm shadow-[#043e30]/10"
+                        className="inline-flex h-11 w-11 items-center justify-center rounded-2xl bg-[#2563EB] text-white shadow-sm"
                         style={{ border: "none", cursor: "pointer" }}
                         aria-label="Open sidebar"
                     >
                         <Menu size={20} />
                     </button>
-                    <div className="text-sm font-semibold text-slate-900">EMS Portal</div>
+                    <div className="text-sm font-semibold text-[#172033]">EMS Portal</div>
                 </div>
 
                 {/* Top Header Bar */}
@@ -126,8 +126,8 @@ export default function Payrolls() {
                 <div style={{ flex: 1, padding: "0 10px" }}>
                     <div className="page-header flex justify-between items-center mb-6" style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
                         <div>
-                            <h1 className="dashboard-title text-3xl font-extrabold text-slate-900 dark:text-white m-0" style={{ color:"black"}}>Payrolls</h1>
-                            <p className="dashboard-subtitle text-sm text-slate-500 dark:text-slate-400 mt-1">View your salary details and download payslips</p>
+                            <h1 className="dashboard-title text-3xl font-extrabold m-0" style={{ color: "#172033" }}>Payrolls</h1>
+                            <p className="dashboard-subtitle text-sm mt-1" style={{ color: "#64748B" }}>View your salary details and download payslips</p>
                         </div>
                         <div>
                             <NotificationBell />
@@ -139,7 +139,7 @@ export default function Payrolls() {
                         {/* Basic Salary */}
                         <div className="emp-stat-card stat-card-green">
                             <div className="emp-stat-top">
-                                <div className="emp-stat-icon-box bg-emerald-50 dark:bg-emerald-950/20 text-[#10b981]">
+                                <div className="emp-stat-icon-box">
                                     <Wallet size={20} />
                                 </div>
                                 <span className="emp-stat-title">Basic Salary</span>
@@ -155,7 +155,7 @@ export default function Payrolls() {
                         {/* Allowances */}
                         <div className="emp-stat-card stat-card-blue">
                             <div className="emp-stat-top">
-                                <div className="emp-stat-icon-box bg-blue-50 dark:bg-blue-950/20 text-[#3b82f6]">
+                                <div className="emp-stat-icon-box">
                                     <Coins size={20} />
                                 </div>
                                 <span className="emp-stat-title">Allowances</span>
@@ -164,14 +164,14 @@ export default function Payrolls() {
                                 {formatCurrency(latestStats.allowance + latestStats.bonus)}
                             </p>
                             <div style={{ marginTop: "4px" }}>
-                                <span className="emp-stat-subtext text-emerald-600 dark:text-emerald-400">Includes HRA & Bonus</span>
+                                <span className="emp-stat-subtext" style={{ color: "#087F72" }}>Includes HRA & Bonus</span>
                             </div>
                         </div>
 
                         {/* Deductions */}
                         <div className="emp-stat-card stat-card-rose">
                             <div className="emp-stat-top">
-                                <div className="emp-stat-icon-box bg-red-50 dark:bg-red-950/20 text-[#ef4444]">
+                                <div className="emp-stat-icon-box">
                                     <CreditCard size={20} />
                                 </div>
                                 <span className="emp-stat-title">Deductions</span>
@@ -180,31 +180,31 @@ export default function Payrolls() {
                                 {formatCurrency(latestStats.deductions + latestStats.tax)}
                             </p>
                             <div style={{ marginTop: "4px" }}>
-                                <span className="emp-stat-subtext text-red-500">Includes PF & Tax</span>
+                                <span className="emp-stat-subtext" style={{ color: "#DC2626" }}>Includes PF & Tax</span>
                             </div>
                         </div>
 
-                        {/* Net Salary */}
-                        <div className="emp-stat-card stat-card-indigo">
+                        {/* Net Take Home */}
+                        <div className="emp-stat-card stat-card-amber">
                             <div className="emp-stat-top">
-                                <div className="emp-stat-icon-box bg-purple-50 dark:bg-purple-950/20 text-[#a855f7]">
+                                <div className="emp-stat-icon-box">
                                     <Landmark size={20} />
                                 </div>
-                                <span className="emp-stat-title">Net Salary</span>
+                                <span className="emp-stat-title">Net Take Home</span>
                             </div>
                             <p className="emp-stat-value">
                                 {formatCurrency(latestStats.netSalary)}
                             </p>
                             <div style={{ marginTop: "4px" }}>
-                                <span className="emp-stat-subtext text-[#059669]">Deposited successfully</span>
+                                <span className="emp-stat-subtext" style={{ color: "#2563EB" }}>Latest monthly payout</span>
                             </div>
                         </div>
                     </div>
 
-                    {/* Payslip History Box */}
-                    <div className="employee-directory-card">
-                        <div className="filters-row flex justify-between items-center px-6 py-5 border-b border-slate-100 dark:border-slate-800/60 bg-slate-50/30 dark:bg-slate-950/5">
-                            <h2 className="text-lg font-extrabold text-slate-900 dark:text-white" style={{ margin: 0 , color:"black"}}>Payslip History</h2>
+                    {/* Payslip History Table */}
+                    <div className="employee-directory-card" style={{ marginBottom: "24px" }}>
+                        <div className="filters-row flex justify-between items-center px-6 py-5 border-b border-[#E2E8F0]">
+                            <h2 className="text-lg font-extrabold text-[#172033]" style={{ margin: 0 }}>Payslip History</h2>
                         </div>
 
                         <div className="table-responsive">
@@ -223,11 +223,11 @@ export default function Payrolls() {
                                 <tbody>
                                     {loading ? (
                                         <tr>
-                                            <td colSpan="7" style={{ textAlign: "center", color: "#64748b", padding: "30px" }}>Loading payslips...</td>
+                                            <td colSpan="7" style={{ textAlign: "center", color: "#64748B", padding: "30px" }}>Loading payslips...</td>
                                         </tr>
                                     ) : payrolls.length === 0 ? (
                                         <tr>
-                                            <td colSpan="7" style={{ textAlign: "center", color: "#64748b", padding: "30px" }}>No payroll items found for your account.</td>
+                                            <td colSpan="7" style={{ textAlign: "center", color: "#64748B", padding: "30px" }}>No payroll items found for your account.</td>
                                         </tr>
                                     ) : (
                                         payrolls.map((pay) => {
@@ -237,24 +237,23 @@ export default function Payrolls() {
 
                                             return (
                                                 <tr key={pay._id} className="employee-row">
-                                                    <td style={{ fontWeight: "700", color: "#0f172a" }}>
+                                                    <td style={{ fontWeight: "700", color: "#172033" }}>
                                                         {pay.month} {pay.year}
                                                     </td>
-                                                    <td className="table-number-col" style={{ color: "#334155" }}>
+                                                    <td className="table-number-col" style={{ color: "#172033" }}>
                                                         {formatCurrency(pay.basicSalary)}
                                                     </td>
-                                                    <td className="table-number-col" style={{ color: "#059669" }}>
+                                                    <td className="table-number-col" style={{ color: "#087F72" }}>
                                                         + {formatCurrency(totalAllowances)}
                                                     </td>
-                                                    <td className="table-number-col" style={{ color: "#dc2626" }}>
+                                                    <td className="table-number-col" style={{ color: "#DC2626" }}>
                                                         - {formatCurrency(totalDeductions)}
                                                     </td>
-                                                    <td className="table-number-col" style={{ fontWeight: "700", color: "#0f172a" }}>
+                                                    <td className="table-number-col" style={{ fontWeight: "700", color: "#087F72" }}>
                                                         {formatCurrency(pay.netSalary)}
                                                     </td>
                                                     <td className="table-center-col">
                                                         <span
-                                                            className="employee-status-badge active"
                                                             style={{
                                                                 display: "inline-flex",
                                                                 alignItems: "center",
@@ -262,22 +261,12 @@ export default function Payrolls() {
                                                                 borderRadius: "8px",
                                                                 fontSize: "12px",
                                                                 fontWeight: "700",
-                                                                backgroundColor: isPaid ? "#ecfdf5" : "#fef3c7",
-                                                                color: isPaid ? "#047857" : "#d97706",
-                                                                border: isPaid ? "1px solid #a7f3d0" : "1px solid #fde68a"
+                                                                backgroundColor: isPaid ? "#E8F8F3" : "#FFF1D6",
+                                                                color: isPaid ? "#087F72" : "#B45309",
+                                                                border: isPaid ? "1px solid #D5F2E9" : "1px solid #FDE7C0"
                                                             }}
                                                         >
-                                                            <span
-                                                                className="bullet"
-                                                                style={{
-                                                                    backgroundColor: isPaid ? "#10b981" : "#f59e0b",
-                                                                    width: "6px",
-                                                                    height: "6px",
-                                                                    borderRadius: "50%",
-                                                                    marginRight: "6px"
-                                                                }}
-                                                            />
-                                                            {pay.paymentStatus}
+                                                            {pay.paymentStatus || "Paid"}
                                                         </span>
                                                     </td>
                                                      <td style={{ padding: "4px 8px", textAlign: "right" }}>

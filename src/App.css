@@ -1,28 +1,36 @@
-/* App.css - Tailwind CSS (v4) converted styles */
+/* App.css - Clean White Business Dashboard + Pastel Palette Theme */
 @reference "tailwindcss";
 
-/* Modals */
+/* Modals & Dialogs */
 @utility modal-backdrop {
-  @apply fixed inset-0 z-50 bg-[#090d16]/60 backdrop-blur-xl flex items-center justify-center p-3 sm:p-6 overflow-y-auto;
+  @apply fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-6 overflow-y-auto;
+  background-color: rgba(15, 23, 42, 0.4) !important;
+  backdrop-filter: blur(4px);
 }
 
 @utility modal-content-card {
-  background: var(--surface);
-  @apply rounded-2xl sm:rounded-3xl w-full max-w-5xl p-4 sm:p-8 shadow-2xl border border-slate-100 dark:border-slate-800 transition-all duration-300;
+  background: #FFFFFF !important;
+  border: 1px solid #E2E8F0 !important;
+  color: #172033 !important;
+  @apply rounded-2xl w-full max-w-5xl p-4 sm:p-8 shadow-xl transition-all duration-200;
   max-height: 90vh;
   overflow-y: auto;
 }
 
 @utility modal-content-card-wide {
-  background: var(--surface);
-  @apply rounded-2xl sm:rounded-3xl w-full max-w-6xl p-4 sm:p-8 shadow-2xl border border-slate-100 dark:border-slate-800 transition-all duration-300;
+  background: #FFFFFF !important;
+  border: 1px solid #E2E8F0 !important;
+  color: #172033 !important;
+  @apply rounded-2xl w-full max-w-6xl p-4 sm:p-8 shadow-xl transition-all duration-200;
   max-height: 90vh;
   overflow-y: auto;
 }
 
 @utility modal-box {
-  background: var(--surface);
-  @apply rounded-2xl sm:rounded-3xl w-full max-w-2xl p-4 sm:p-8 shadow-2xl border border-slate-100 dark:border-slate-800 transition-all duration-300;
+  background: #FFFFFF !important;
+  border: 1px solid #E2E8F0 !important;
+  color: #172033 !important;
+  @apply rounded-2xl w-full max-w-2xl p-4 sm:p-8 shadow-xl transition-all duration-200;
   max-height: 90vh;
   overflow-y: auto;
 }
@@ -36,25 +44,34 @@
   }
 
   & .password-toggle-btn {
-    @apply absolute right-3 top-1/2 -translate-y-1/2 border-0 bg-transparent cursor-pointer flex items-center justify-center text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200 p-0 z-10;
+    @apply absolute right-3 top-1/2 -translate-y-1/2 border-0 bg-transparent cursor-pointer flex items-center justify-center text-[#94A3B8] hover:text-[#172033] p-0 z-10;
   }
 }
 
 @utility modal-header {
-  @apply flex justify-between items-center pb-5 border-b border-slate-100 dark:border-slate-800 mb-6;
+  @apply flex justify-between items-center pb-5 mb-6;
+  border-bottom: 1px solid #E2E8F0 !important;
 
   & h2,
   & h3 {
-    @apply text-xl font-extrabold text-slate-900 dark:text-white tracking-tight;
+    @apply text-xl font-extrabold text-[#172033] tracking-tight;
+    color: #172033 !important;
   }
 }
 
 @utility modal-subtitle {
-  @apply text-xs text-slate-400 dark:text-slate-500 mt-1.5 font-medium;
+  @apply text-xs text-[#64748B] mt-1.5 font-medium;
+  color: #64748B !important;
 }
 
 @utility btn-close {
-  @apply text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 p-2 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800 transition-all duration-200 cursor-pointer;
+  @apply text-[#64748B] hover:text-[#172033] p-2 rounded-lg transition-all duration-200 cursor-pointer;
+  background-color: transparent !important;
+
+  &:hover {
+    background-color: #F1F5F9 !important;
+    color: #172033 !important;
+  }
 }
 
 /* Forms styling */
@@ -74,17 +91,37 @@
   @apply flex flex-col gap-2;
 
   & label {
-    @apply text-[10px] font-extrabold text-slate-400 dark:text-slate-400 uppercase tracking-widest leading-none;
+    @apply text-[11px] font-bold uppercase tracking-wider leading-none;
+    color: #334155 !important;
 
     & .req {
-      @apply text-red-500 ml-0.5;
+      color: #EF4444 !important;
+      @apply ml-0.5;
     }
   }
 
   & input,
   & select,
   & textarea {
-    @apply px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/60 hover:bg-slate-50/40 focus:bg-white dark:focus:bg-slate-900 text-slate-800 dark:text-slate-200 text-sm outline-none transition-all focus:border-emerald-500 focus:ring-4 focus:ring-emerald-500/10 placeholder-slate-400 dark:placeholder-slate-600;
+    background-color: #FFFFFF !important;
+    border: 1px solid #D8E0EA !important;
+    color: #172033 !important;
+    @apply px-4 py-3 rounded-xl text-sm outline-none transition-all;
+
+    &::placeholder {
+      color: #94A3B8 !important;
+    }
+
+    &:focus {
+      border-color: #2563EB !important;
+      background-color: #F8FBFF !important;
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12) !important;
+    }
+
+    & option {
+      background-color: #FFFFFF !important;
+      color: #172033 !important;
+    }
   }
 }
 
@@ -92,35 +129,65 @@
   @apply flex flex-col gap-2 mb-5;
 
   & label {
-    @apply text-[10px] font-extrabold text-slate-400 dark:text-slate-400 uppercase tracking-widest leading-none;
+    @apply text-[11px] font-bold uppercase tracking-wider leading-none;
+    color: #334155 !important;
 
     & .req {
-      @apply text-red-500 ml-0.5;
+      color: #EF4444 !important;
+      @apply ml-0.5;
     }
   }
 
   & input,
   & select,
   & textarea {
-    @apply px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/60 hover:bg-slate-50/40 focus:bg-white dark:focus:bg-slate-900 text-slate-800 dark:text-slate-200 text-sm outline-none transition-all focus:border-emerald-500 focus:ring-4 focus:ring-emerald-500/10 placeholder-slate-400 dark:placeholder-slate-600;
+    background-color: #FFFFFF !important;
+    border: 1px solid #D8E0EA !important;
+    color: #172033 !important;
+    @apply px-4 py-3 rounded-xl text-sm outline-none transition-all;
+
+    &::placeholder {
+      color: #94A3B8 !important;
+    }
+
+    &:focus {
+      border-color: #2563EB !important;
+      background-color: #F8FBFF !important;
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12) !important;
+    }
+
+    & option {
+      background-color: #FFFFFF !important;
+      color: #172033 !important;
+    }
   }
 }
 
 @utility input-error {
-  @apply border-red-500 dark:border-red-600 focus:border-red-500 focus:ring-red-500/10;
+  border-color: #EF4444 !important;
+  &:focus {
+    border-color: #EF4444 !important;
+    box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.2) !important;
+  }
 }
 
 @utility field-error {
-  @apply text-xs font-semibold text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-950/20 px-3 py-2 rounded-lg border border-red-100 dark:border-red-950/40 mt-1.5;
+  background-color: #FEECEC !important;
+  border: 1px solid #FECACA !important;
+  color: #DC2626 !important;
+  @apply text-xs font-semibold px-3 py-2 rounded-lg mt-1.5;
 }
 
 @utility modal-actions {
-  @apply flex justify-end gap-3 pt-5 border-t border-slate-100 dark:border-slate-800 mt-6;
+  @apply flex justify-end gap-3 pt-5 mt-6;
+  border-top: 1px solid #E2E8F0 !important;
 }
 
-/* Sidebar Custom Glass-Deck */
+/* Sidebar Dark Contrast Theme Style */
 @utility sidebar {
-  @apply w-[260px] bg-gradient-to-b from-[#080f1a] to-[#041a15] text-white p-6 flex flex-col justify-between shrink-0 border-r border-emerald-950/40 shadow-2xl;
+  @apply w-[260px] text-[#FFFFFF] p-0 flex flex-col justify-between shrink-0 shadow-lg;
+  background-color: #0F2742 !important;
+  border-right: 1px solid #1E3A5F !important;
 }
 
 @utility sidebar-logo-box {
@@ -128,87 +195,143 @@
 }
 
 @utility logo-badge {
-  @apply bg-gradient-to-br from-emerald-400 to-emerald-600 text-white font-extrabold text-lg px-3 py-2 rounded-xl shadow-lg shadow-emerald-500/10;
+  @apply text-[#FFFFFF] font-extrabold text-lg px-3 py-2 rounded-xl shadow-xs;
+  background-color: #2563EB !important;
 }
 
 @utility logo-text {
-  @apply text-xl font-extrabold tracking-tight text-white;
+  @apply text-xl font-extrabold tracking-tight text-[#FFFFFF];
 }
 
 @utility nav-list {
-  @apply flex flex-col gap-1;
+  @apply flex flex-col gap-1.5;
 }
 
 @utility nav-item {
-  @apply flex items-center gap-3.5 px-4 py-3.5 rounded-xl text-sm font-bold text-emerald-100/60 hover:bg-emerald-800/15 hover:text-white transition-all duration-200 text-left cursor-pointer;
+  @apply flex items-center gap-3.5 px-4 py-3 rounded-xl text-sm font-bold transition-all duration-200 text-left cursor-pointer;
+  color: #A9B8C8 !important;
+
+  &:hover {
+    background-color: #173A5E !important;
+    color: #FFFFFF !important;
+  }
 
   &.active {
-    @apply bg-gradient-to-r from-emerald-500 to-emerald-600 text-white shadow-xl shadow-emerald-500/20;
+    background-color: #2563EB !important;
+    color: #FFFFFF !important;
+    box-shadow: 0 4px 12px rgba(37, 99, 235, 0.25) !important;
   }
 }
 
 @utility sidebar-divider {
-  @apply my-6 border-t border-emerald-950/40;
+  @apply my-6;
+  border-top: 1px solid #173A5E !important;
 }
 
 @utility dept-legend-title {
-  @apply text-[10px] font-extrabold tracking-widest text-emerald-400/50 uppercase mb-3.5;
+  @apply text-[11px] font-bold tracking-wider uppercase mb-3.5 text-[#60A5FA];
 }
 
 @utility dept-legend-item {
-  @apply flex justify-between items-center text-xs text-emerald-100/70 mb-2.5 font-semibold;
+  @apply flex justify-between items-center text-xs mb-2.5 font-bold text-[#A9B8C8];
 }
 
 @utility dot {
   @apply w-2 h-2 rounded-full inline-block mr-2;
 
   &.dot-production {
-    @apply bg-emerald-600;
+    background-color: #2563EB !important;
   }
 
   &.dot-sales {
-    @apply bg-indigo-500;
+    background-color: #F59E0B !important;
   }
 
   &.dot-it {
-    @apply bg-sky-400;
+    background-color: #0F9F8F !important;
   }
 
   &.dot-admin {
-    @apply bg-rose-500;
+    background-color: #7C3AED !important;
   }
 }
 
 @utility sidebar-user {
-  @apply pt-5 border-t border-emerald-950/40 flex items-center gap-3;
+  @apply pt-5 flex items-center gap-3;
+  border-top: 1px solid #173A5E !important;
 }
 
 @utility user-avatar-badge {
-  @apply w-10 h-10 rounded-full bg-emerald-500 text-white font-extrabold flex items-center justify-center text-sm border-2 border-emerald-400/20 shadow-lg;
+  @apply w-10 h-10 rounded-full text-[#FFFFFF] font-bold flex items-center justify-center text-sm shadow-xs;
+  background-color: #2563EB !important;
 }
 
 @utility user-name {
-  @apply text-sm font-extrabold text-white line-clamp-1;
+  @apply text-sm font-bold text-[#FFFFFF] line-clamp-1;
 }
 
 @utility user-role {
-  @apply text-[9px] font-black text-emerald-400 uppercase tracking-widest leading-none mt-1;
+  @apply text-[10px] font-bold uppercase tracking-widest leading-none mt-1 text-[#60A5FA];
 }
 
 /* Page Layout Wrappers */
 @utility main-content {
   @apply flex-1 p-6 md:p-10 overflow-y-auto;
+  background-color: #F8FAFC !important;
+  color: #172033 !important;
+}
+
+@utility emp-main-content {
+  @apply flex-1 p-6 md:p-10 overflow-y-auto;
+  background-color: #F8FAFC !important;
+  color: #172033 !important;
 }
 
 @utility top-header {
   @apply flex flex-col sm:flex-row justify-between items-stretch sm:items-center mb-6 sm:mb-10 gap-4;
 }
 
+@utility emp-top-header {
+  @apply flex flex-col sm:flex-row justify-between items-stretch sm:items-center mb-6 sm:mb-8 gap-4;
+}
+
 @utility search-box {
-  @apply flex items-center gap-3 bg-white dark:bg-slate-900/40 px-4 py-3 rounded-2xl border border-slate-200 dark:border-slate-800/80 w-full sm:w-auto md:w-160 shadow-sm transition-all duration-300 focus-within:border-emerald-500 focus-within:ring-4 focus-within:ring-emerald-500/10 focus-within:md:w-[50vw];
+  @apply flex items-center gap-3 px-4 py-3 rounded-xl w-full sm:w-auto md:w-160 shadow-xs transition-all duration-200;
+  background-color: #FFFFFF !important;
+  border: 1px solid #D8E0EA !important;
 
   & input {
-    @apply border-none outline-none w-full text-slate-800 dark:text-slate-100 bg-transparent text-sm font-semibold placeholder-slate-400 dark:placeholder-slate-600;
+    @apply border-none outline-none w-full bg-transparent text-sm font-semibold;
+    color: #172033 !important;
+
+    &::placeholder {
+      color: #94A3B8 !important;
+    }
+  }
+
+  &:focus-within {
+    border-color: #2563EB !important;
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12) !important;
+  }
+}
+
+@utility emp-search-box {
+  @apply flex items-center gap-3 px-4 py-3 rounded-xl w-full sm:w-auto md:w-96 shadow-xs transition-all duration-200;
+  background-color: #FFFFFF !important;
+  border: 1px solid #D8E0EA !important;
+
+  & input {
+    @apply border-none outline-none w-full bg-transparent text-sm font-semibold;
+    color: #172033 !important;
+
+    &::placeholder {
+      color: #94A3B8 !important;
+    }
+  }
+
+  &:focus-within {
+    border-color: #2563EB !important;
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12) !important;
   }
 }
 
@@ -217,15 +340,39 @@
 }
 
 @utility icon-btn {
-  @apply p-3 rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-100 shadow-sm hover:bg-slate-50 dark:hover:bg-slate-800/60 transition-all duration-300 cursor-pointer;
+  @apply p-3 rounded-xl shadow-xs transition-all duration-200 cursor-pointer;
+  background-color: #FFFFFF !important;
+  border: 1px solid #E2E8F0 !important;
+  color: #64748B !important;
+
+  &:hover {
+    background-color: #F8FAFC !important;
+    color: #172033 !important;
+  }
 }
 
 @utility admin-profile-badge {
-  @apply flex items-center gap-3 bg-white dark:bg-slate-900 px-4 py-2 rounded-2xl border border-slate-200 dark:border-slate-800/80 font-bold text-slate-800 dark:text-slate-200 text-sm shadow-sm transition-all;
+  @apply flex items-center gap-3 px-4 py-2 rounded-xl font-bold text-sm shadow-xs transition-all;
+  background-color: #FFFFFF !important;
+  border: 1px solid #E2E8F0 !important;
+  color: #172033 !important;
+}
+
+@utility emp-user-profile-badge {
+  @apply flex items-center gap-3 px-4 py-2 rounded-xl font-bold text-sm shadow-xs transition-all;
+  background-color: #FFFFFF !important;
+  border: 1px solid #E2E8F0 !important;
+  color: #172033 !important;
 }
 
 @utility admin-avatar-small {
-  @apply w-7 h-7 rounded-lg bg-gradient-to-br from-emerald-400 to-emerald-600 text-white flex items-center justify-center text-[10px] font-extrabold shadow-md;
+  @apply w-7 h-7 rounded-lg text-[#FFFFFF] flex items-center justify-center text-[10px] font-bold shadow-xs;
+  background-color: #2563EB !important;
+}
+
+@utility emp-avatar-circle {
+  @apply w-7 h-7 rounded-lg text-[#FFFFFF] flex items-center justify-center text-[10px] font-bold shadow-xs;
+  background-color: #2563EB !important;
 }
 
 /* Page Header block */
@@ -234,19 +381,32 @@
 }
 
 @utility dashboard-title {
-  @apply text-3xl font-extrabold text-slate-900 dark:text-white tracking-tight;
+  font-size: 2rem !important;
+  font-weight: 800 !important;
+  color: #172033 !important;
+  letter-spacing: -0.02em !important;
 }
 
 @utility dashboard-subtitle {
-  @apply text-sm text-slate-500 dark:text-slate-400 mt-1.5 font-medium;
+  font-size: 0.9rem !important;
+  font-weight: 500 !important;
+  color: #64748B !important;
+  margin-top: 0.25rem !important;
 }
 
 @utility status-badge {
-  @apply px-4 py-2.5 bg-emerald-50/60 dark:bg-emerald-950/20 text-emerald-700 dark:text-emerald-400 border border-emerald-100 dark:border-emerald-950/50 rounded-2xl text-xs md:text-sm font-bold shadow-sm flex items-center gap-2;
+  @apply px-3.5 py-1.5 rounded-full text-xs font-bold shadow-xs flex items-center gap-2;
+  background-color: #EAF2FF !important;
+  color: #2563EB !important;
+  border: 1px solid #D7E7FF !important;
 }
 
-/* Developer Stats Grid */
+/* Summary Cards Grid */
 @utility stats-grid {
+  @apply grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-10;
+}
+
+@utility emp-stats-grid {
   @apply grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-10;
 }
 
@@ -258,43 +418,53 @@
 }
 
 @utility summary-card {
-  @apply rounded-2xl border border-slate-200 dark:border-slate-800/80 p-5 shadow-sm flex flex-col justify-between transition-all duration-300 hover:-translate-y-1 hover:shadow-lg hover:shadow-emerald-500/5 hover:border-emerald-500/30;
+  @apply rounded-2xl p-5 shadow-xs flex flex-col justify-between transition-all duration-200;
   width: 100%;
   min-height: 140px;
+
+  &:hover {
+    box-shadow: 0 8px 20px -4px rgba(23, 32, 51, 0.08) !important;
+  }
 }
 
 @utility stat-card {
-  @apply rounded-2xl border border-slate-200 dark:border-slate-800/80 p-5 shadow-sm flex flex-col justify-between gap-3 transition-all duration-300 hover:translate-y-[-4px] hover:shadow-lg hover:shadow-emerald-500/5 hover:border-emerald-500/30;
+  @apply rounded-2xl p-5 shadow-xs flex flex-col justify-between gap-3 transition-all duration-200;
   min-height: 140px;
   width: 100%;
+
+  &:hover {
+    box-shadow: 0 8px 20px -4px rgba(23, 32, 51, 0.08) !important;
+  }
+}
+
+@utility emp-stat-card {
+  @apply rounded-2xl p-5 shadow-xs flex flex-col justify-between gap-3 transition-all duration-200;
+  min-height: 140px;
+  width: 100%;
+
+  &:hover {
+    box-shadow: 0 8px 20px -4px rgba(23, 32, 51, 0.08) !important;
+  }
 }
 
 @utility stat-header {
   @apply flex items-center gap-4 w-full;
 }
 
+@utility emp-stat-top {
+  @apply flex items-center gap-3 w-full;
+}
+
 @utility stat-icon-box {
-  @apply w-12 h-12 rounded-2xl bg-transparent text-emerald-600 dark:text-emerald-400 flex items-center justify-center shrink-0;
+  @apply w-12 h-12 rounded-xl flex items-center justify-center shrink-0;
+}
+
+@utility emp-stat-icon-box {
+  @apply w-10 h-10 rounded-xl flex items-center justify-center shrink-0;
 }
 
 @utility stat-icon-plain {
-  @apply w-12 h-12 rounded-2xl bg-transparent flex items-center justify-center shrink-0 text-2xl;
-}
-
-@utility stat-icon-wrapper {
-  @apply w-12 h-12 rounded-2xl flex items-center justify-center shrink-0 text-xl font-bold bg-transparent;
-
-  &.green {
-    @apply text-emerald-600 dark:text-emerald-400;
-  }
-
-  &.teal {
-    @apply text-teal-600 dark:text-teal-400;
-  }
-
-  &.blue {
-    @apply text-blue-600 dark:text-blue-400;
-  }
+  @apply w-12 h-12 rounded-xl bg-transparent flex items-center justify-center shrink-0 text-2xl;
 }
 
 @utility stat-info {
@@ -302,26 +472,200 @@
 }
 
 @utility stat-label {
-  @apply text-[10px] font-extrabold text-slate-400 dark:text-slate-500 uppercase tracking-widest leading-none;
+  font-size: 11px !important;
+  font-weight: 700 !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.05em !important;
+  line-height: 1 !important;
+  color: #64748B !important;
 }
 
 @utility stat-title {
-  @apply text-[10px] font-extrabold text-slate-400 dark:text-slate-500 uppercase tracking-widest leading-none;
+  font-size: 11px !important;
+  font-weight: 700 !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.05em !important;
+  line-height: 1 !important;
+  color: #64748B !important;
+}
+
+@utility emp-stat-title {
+  font-size: 11px !important;
+  font-weight: 700 !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.05em !important;
+  line-height: 1 !important;
+  color: #64748B !important;
 }
 
 @utility stat-value {
-  @apply text-2xl font-extrabold text-slate-900 dark:text-white mt-2 tracking-tight;
+  font-size: 1.875rem !important;
+  font-weight: 800 !important;
+  margin-top: 0.5rem !important;
+  letter-spacing: -0.02em !important;
+}
+
+@utility emp-stat-value {
+  font-size: 1.5rem !important;
+  font-weight: 800 !important;
+  margin-top: 0.5rem !important;
+  letter-spacing: -0.02em !important;
 }
 
 @utility stat-number {
-  @apply text-2xl font-extrabold text-slate-900 dark:text-white mt-2 tracking-tight;
+  font-size: 1.875rem !important;
+  font-weight: 800 !important;
+  margin-top: 0.5rem !important;
+  letter-spacing: -0.02em !important;
 }
 
 @utility stat-description {
-  @apply text-xs text-slate-400 dark:text-slate-500 font-medium leading-relaxed;
+  font-size: 0.75rem !important;
+  font-weight: 600 !important;
+  line-height: 1.5 !important;
 }
 
-/* Dashboard Middle Grid */
+@utility emp-stat-subtext {
+  font-size: 0.75rem !important;
+  font-weight: 600 !important;
+  line-height: 1.5 !important;
+}
+
+/* Specific Stat Card Color Themes - Pastel Palette Specification */
+
+/* 1. TOTAL EMPLOYEES: BG #EAF2FF, Border #D7E7FF, Accent #2563EB, Icon BG #DCEAFF, Number #1D4ED8 */
+.stat-card-green,
+.summary-card.stat-card-green,
+.stat-total-employees {
+  background-color: #EAF2FF !important;
+  border: 1px solid #D7E7FF !important;
+}
+.stat-card-green .stat-icon-box,
+.stat-card-green .emp-stat-icon-box {
+  background-color: #DCEAFF !important;
+  color: #2563EB !important;
+}
+.stat-card-green .stat-value,
+.stat-card-green .emp-stat-value,
+.stat-card-green .stat-number {
+  color: #1D4ED8 !important;
+}
+.stat-card-green .stat-description,
+.stat-card-green .emp-stat-subtext {
+  color: #2563EB !important;
+}
+
+/* 2. DEPARTMENTS: BG #E8F8F3, Border #D5F2E9, Accent #0F9F8F, Icon BG #D8F3EB, Number #087F72 */
+.stat-card-blue,
+.summary-card.stat-card-blue,
+.stat-departments {
+  background-color: #E8F8F3 !important;
+  border: 1px solid #D5F2E9 !important;
+}
+.stat-card-blue .stat-icon-box,
+.stat-card-blue .emp-stat-icon-box {
+  background-color: #D8F3EB !important;
+  color: #0F9F8F !important;
+}
+.stat-card-blue .stat-value,
+.stat-card-blue .emp-stat-value,
+.stat-card-blue .stat-number {
+  color: #087F72 !important;
+}
+.stat-card-blue .stat-description,
+.stat-card-blue .emp-stat-subtext {
+  color: #0F9F8F !important;
+}
+
+/* 3. ATTENDANCE TODAY: BG #FFF1D6, Border #FDE7C0, Accent #F59E0B, Icon BG #FFE8C2, Number #C77700 */
+.stat-card-indigo,
+.summary-card.stat-card-indigo,
+.stat-attendance {
+  background-color: #FFF1D6 !important;
+  border: 1px solid #FDE7C0 !important;
+}
+.stat-card-indigo .stat-icon-box,
+.stat-card-indigo .emp-stat-icon-box {
+  background-color: #FFE8C2 !important;
+  color: #F59E0B !important;
+}
+.stat-card-indigo .stat-value,
+.stat-card-indigo .emp-stat-value,
+.stat-card-indigo .stat-number {
+  color: #C77700 !important;
+}
+.stat-card-indigo .stat-description,
+.stat-card-indigo .emp-stat-subtext {
+  color: #D97706 !important;
+}
+
+/* 4. NOTICES: BG #EEE7FF, Border #E6D9FF, Accent #7C3AED, Icon BG #E3D8FF, Number #6D28D9 */
+.stat-card-amber,
+.summary-card.stat-card-amber,
+.stat-notices {
+  background-color: #EEE7FF !important;
+  border: 1px solid #E6D9FF !important;
+}
+.stat-card-amber .stat-icon-box,
+.stat-card-amber .emp-stat-icon-box {
+  background-color: #E3D8FF !important;
+  color: #7C3AED !important;
+}
+.stat-card-amber .stat-value,
+.stat-card-amber .emp-stat-value,
+.stat-card-amber .stat-number {
+  color: #6D28D9 !important;
+}
+.stat-card-amber .stat-description,
+.stat-card-amber .emp-stat-subtext {
+  color: #7C3AED !important;
+}
+
+/* 5. UNEXCUSED ABSENCES (ROSE): BG #FEECEC, Border #FECACA, Accent #DC2626, Icon BG #FCA5A5, Number #DC2626 */
+.stat-card-rose,
+.summary-card.stat-card-rose,
+.stat-absences {
+  background-color: #FEECEC !important;
+  border: 1px solid #FECACA !important;
+}
+.stat-card-rose .stat-icon-box,
+.stat-card-rose .emp-stat-icon-box {
+  background-color: #FCA5A5 !important;
+  color: #DC2626 !important;
+}
+.stat-card-rose .stat-value,
+.stat-card-rose .emp-stat-value,
+.stat-card-rose .stat-number {
+  color: #DC2626 !important;
+}
+.stat-card-rose .stat-description,
+.stat-card-rose .emp-stat-subtext {
+  color: #DC2626 !important;
+}
+
+/* 6. PROCESSED MONTHS / TEAL: BG #E6F7F5, Border #C3F0EB, Accent #0F9F8F, Icon BG #D8F3EB, Number #087F72 */
+.stat-card-teal,
+.summary-card.stat-card-teal,
+.stat-processed-months {
+  background-color: #E6F7F5 !important;
+  border: 1px solid #C3F0EB !important;
+}
+.stat-card-teal .stat-icon-box,
+.stat-card-teal .emp-stat-icon-box {
+  background-color: #D8F3EB !important;
+  color: #0F9F8F !important;
+}
+.stat-card-teal .stat-value,
+.stat-card-teal .emp-stat-value,
+.stat-card-teal .stat-number {
+  color: #087F72 !important;
+}
+.stat-card-teal .stat-description,
+.stat-card-teal .emp-stat-subtext {
+  color: #0F9F8F !important;
+}
+
+/* Dashboard Middle & Bottom Grids */
 @utility middle-grid {
   @apply grid grid-cols-1 lg:grid-cols-3 gap-6 mb-10;
 }
@@ -331,13 +675,24 @@
 }
 
 @utility card-box {
-  background: transparent;
-  @apply rounded-2xl border border-slate-200/80 dark:border-slate-800/85 p-6 shadow-sm flex flex-col;
+  @apply rounded-2xl p-6 shadow-xs flex flex-col text-left;
+  background-color: #FFFFFF !important;
+  border: 1px solid #E2E8F0 !important;
+  color: #172033 !important;
+}
+
+@utility emp-card-box {
+  @apply rounded-2xl p-6 shadow-xs flex flex-col text-left;
+  background-color: #FFFFFF !important;
+  border: 1px solid #E2E8F0 !important;
+  color: #172033 !important;
 }
 
 @utility table-card {
-  background: #ffffff;
-  @apply rounded-2xl border border-slate-200 dark:border-slate-800/80 p-6 shadow-sm;
+  @apply rounded-2xl p-6 shadow-xs text-left;
+  background-color: #FFFFFF !important;
+  border: 1px solid #E2E8F0 !important;
+  color: #172033 !important;
 }
 
 @utility card-header-row {
@@ -345,20 +700,68 @@
 }
 
 @utility card-title {
-  @apply text-sm font-extrabold text-slate-900 dark:text-white uppercase tracking-wider opacity-90;
+  font-size: 1.1rem !important;
+  font-weight: 800 !important;
+  color: #172033 !important;
+  letter-spacing: -0.01em !important;
+}
+
+@utility emp-card-title {
+  font-size: 1.1rem !important;
+  font-weight: 800 !important;
+  color: #172033 !important;
+  letter-spacing: -0.01em !important;
 }
 
 @utility view-all-link {
-  @apply text-xs font-bold text-emerald-500 hover:text-emerald-400 cursor-pointer transition-colors;
+  @apply text-xs font-bold cursor-pointer transition-colors text-[#2563EB];
+
+  &:hover {
+    color: #1D4ED8 !important;
+  }
 }
 
-/* Quick Action Forms & Lists */
+/* Company Notices */
 @utility notices-list {
   @apply flex flex-col gap-3;
 }
 
 @utility notice-item {
-  @apply bg-slate-50/50 dark:bg-slate-950/10 hover:bg-slate-50 dark:hover:bg-slate-950/20 border border-slate-100 dark:border-slate-900 p-4 rounded-xl text-xs md:text-sm text-slate-700 dark:text-slate-300 leading-relaxed font-semibold transition-all;
+  @apply p-4 rounded-xl text-xs md:text-sm leading-relaxed font-semibold transition-all text-left;
+  background-color: #F8FAFC !important;
+  border: 1px solid #E2E8F0 !important;
+  border-left: 4px solid #2563EB !important;
+  color: #172033 !important;
+
+  &:hover {
+    background-color: #EFF6FF !important;
+  }
+}
+
+@utility announcement-item {
+  @apply p-4 rounded-xl text-xs md:text-sm leading-relaxed font-semibold transition-all text-left flex items-start gap-3;
+  background-color: #F8FAFC !important;
+  border: 1px solid #E2E8F0 !important;
+  border-left: 4px solid #2563EB !important;
+  color: #172033 !important;
+
+  &:hover {
+    background-color: #EFF6FF !important;
+  }
+}
+
+@utility announcement-title {
+  color: #172033 !important;
+  font-weight: 800 !important;
+}
+
+@utility announcement-desc {
+  color: #64748B !important;
+  font-weight: 500 !important;
+}
+
+@utility announcement-date {
+  color: #94A3B8 !important;
 }
 
 @utility action-buttons-stack {
@@ -366,14 +769,72 @@
 }
 
 @utility btn-action {
-  @apply inline-flex items-center justify-center gap-2 p-3.5 bg-emerald-500/20 hover:bg-emerald-500/40 text-emerald-700 dark:text-emerald-400 border border-emerald-500/20 rounded-xl text-xs md:text-sm font-bold shadow-sm cursor-pointer transition-all active:scale-95 duration-200;
+  @apply inline-flex items-center justify-center gap-2 p-3.5 rounded-xl text-xs md:text-sm font-bold shadow-xs cursor-pointer transition-all active:scale-98 duration-150;
+}
 
-  &.edit {
-    @apply bg-blue-50 dark:bg-blue-950/20 text-blue-600 dark:text-blue-400 border border-blue-100 dark:border-blue-950/50 hover:bg-blue-100/50 shadow-none;
+/* Quick Action Button Pastel Palette Rules */
+
+/* Add Employee: BG #EAF2FF, Border #D7E7FF, Text/Icon #2563EB */
+.action-buttons-stack button:nth-child(1),
+.btn-action.btn-add-emp {
+  background-color: #EAF2FF !important;
+  color: #2563EB !important;
+  border: 1px solid #D7E7FF !important;
+
+  & svg {
+    color: #2563EB !important;
   }
 
-  &.delete {
-    @apply bg-red-50 dark:bg-red-950/20 text-red-600 dark:text-red-400 border border-red-100 dark:border-red-950/50 hover:bg-red-100/50 shadow-none;
+  &:hover {
+    background-color: #E0EDFF !important;
+  }
+}
+
+/* Create Payroll: BG #E8F8F3, Border #D5F2E9, Text/Icon #0F9F8F */
+.action-buttons-stack button:nth-child(2),
+.btn-action.btn-create-payroll {
+  background-color: #E8F8F3 !important;
+  color: #0F9F8F !important;
+  border: 1px solid #D5F2E9 !important;
+
+  & svg {
+    color: #0F9F8F !important;
+  }
+
+  &:hover {
+    background-color: #D8F3EB !important;
+  }
+}
+
+/* Create Manager: BG #FFF1D6, Border #FDE7C0, Text/Icon #D97706 */
+.action-buttons-stack button:nth-child(3),
+.btn-action.btn-create-mgr {
+  background-color: #FFF1D6 !important;
+  color: #D97706 !important;
+  border: 1px solid #FDE7C0 !important;
+
+  & svg {
+    color: #D97706 !important;
+  }
+
+  &:hover {
+    background-color: #FFE8C2 !important;
+  }
+}
+
+/* Create Notice: BG #EEE7FF, Border #E6D9FF, Text/Icon #7C3AED */
+.action-buttons-stack button:nth-child(4),
+.btn-action.btn-create-notice {
+  background-color: #EEE7FF !important;
+  color: #7C3AED !important;
+  border: 1px solid #E6D9FF !important;
+
+  & svg {
+    color: #7C3AED !important;
+  }
+
+  &:hover {
+    background-color: #E3D8FF !important;
   }
 }
 
@@ -382,895 +843,351 @@
 }
 
 @utility manager-item {
-  @apply flex justify-between items-center p-3 rounded-xl hover:bg-slate-50/50 dark:hover:bg-slate-950/10 transition-colors border border-transparent hover:border-slate-100 dark:hover:border-slate-900;
+  @apply flex justify-between items-center p-3.5 rounded-xl transition-all border;
+  background-color: #FFFFFF !important;
+  border: 1px solid #E2E8F0 !important;
+
+  &:hover {
+    background-color: #F8FAFC !important;
+  }
 }
 
 @utility manager-name {
-  @apply text-sm font-extrabold text-slate-800 dark:text-slate-200;
+  @apply text-sm font-extrabold;
+  color: #172033 !important;
 }
 
 @utility manager-role {
-  @apply text-[10px] text-slate-400 dark:text-slate-500 uppercase tracking-widest mt-0.5 font-bold;
+  @apply text-[11px] font-semibold;
+  color: #64748B !important;
 }
 
+/* View button inside Employee list */
 @utility btn-contact {
-  @apply text-xs font-bold bg-emerald-50 dark:bg-emerald-950/20 text-emerald-600 dark:text-emerald-400 px-3.5 py-2 rounded-lg hover:bg-emerald-100 dark:hover:bg-emerald-950/40 transition-colors cursor-pointer;
+  @apply text-xs font-bold px-3.5 py-1.5 rounded-lg transition-colors cursor-pointer;
+  background-color: #EFF6FF !important;
+  color: #2563EB !important;
+  border: 1px solid #D7E7FF !important;
+
+  &:hover {
+    background-color: #E0EDFF !important;
+  }
 }
 
-/* Directories, Filters & Columns */
+/* Directories & Data Tables Standard Alignment */
 @utility employee-directory-card {
-  background: #ffffff;
-  @apply rounded-2xl border border-slate-200 dark:border-slate-800/80 shadow-sm mt-8 overflow-hidden;
+  background: #FFFFFF !important;
+  border: 1px solid #E2E8F0 !important;
+  color: #172033 !important;
+  @apply rounded-2xl shadow-xs mt-8 overflow-hidden text-left;
 }
 
 @utility filters-row {
-  @apply flex flex-col sm:flex-row flex-wrap justify-between items-stretch sm:items-center gap-4 px-4 py-5 border-b border-slate-100 dark:border-slate-800/60 bg-transparent;
-}
-
-@utility filters-left {
-  @apply flex flex-wrap items-center gap-2.5 sm:gap-3.5;
-}
-
-@utility filters-right {
-  @apply flex items-center justify-between sm:justify-end gap-2;
+  @apply flex flex-col sm:flex-row flex-wrap justify-between items-stretch sm:items-center gap-4 px-6 py-5 border-b bg-transparent;
+  border-bottom-color: #E2E8F0 !important;
 }
 
 @utility filters-label {
-  @apply text-xs font-extrabold text-slate-400 dark:text-slate-500 uppercase tracking-wider flex items-center gap-2;
-}
-
-@utility filter-select {
-  @apply bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl px-3.5 py-2 text-xs font-bold text-slate-700 dark:text-slate-300 outline-none cursor-pointer hover:border-slate-300 focus:border-emerald-500 focus:ring-4 focus:ring-emerald-500/10 transition-all;
+  color: #64748B !important;
 }
 
 @utility showing-indicator {
-  @apply text-xs font-bold text-slate-500 dark:text-slate-400;
+  color: #64748B !important;
 }
 
-@utility table-responsive {
-  @apply overflow-x-auto;
-  display: block;
-  width: 100%;
-  max-width: 100%;
-  padding-bottom: 6px;
+@utility filter-select {
+  background-color: #FFFFFF !important;
+  border: 1px solid #D8E0EA !important;
+  color: #172033 !important;
+  @apply rounded-xl px-3.5 py-2 text-xs font-bold outline-none cursor-pointer transition-all;
+
+  &:hover {
+    border-color: #2563EB !important;
+  }
+
+  & option {
+    background-color: #FFFFFF !important;
+    color: #172033 !important;
+  }
 }
 
-@utility table-wrapper {
-  @apply overflow-x-auto;
-  display: block;
-  width: 100%;
-  max-width: 100%;
-  padding-bottom: 6px;
-}
-
-@utility employees-table-wrapper {
-  @apply overflow-x-auto;
-  display: block;
-  width: 100%;
-  max-width: 100%;
-  padding-bottom: 6px;
-}
-
+/* Master Data Table Class */
 @utility employee-table {
   @apply border-collapse text-left;
   width: 100%;
   min-width: 750px;
-  max-width: 100%;
+  background: #FFFFFF !important;
   table-layout: auto;
-  white-space: normal;
-  word-break: normal;
-  overflow-wrap: normal;
-  background: #ffffff;
 
   & th {
-    @apply bg-slate-50 text-slate-500 dark:text-slate-400 font-semibold text-[12px] uppercase border-b border-slate-200 dark:border-slate-800/60 text-left;
-    padding: 14px 20px !important;
-    vertical-align: middle;
-    white-space: nowrap;
-  }
-
-  & th:first-child,
-  & td:first-child {
-    padding-left: 24px !important;
-  }
-
-  & th:last-child,
-  & td:last-child {
-    padding-right: 24px !important;
+    background-color: #F4F7FB !important;
+    color: #475569 !important;
+    border-bottom: 1px solid #E2E8F0 !important;
+    @apply font-extrabold text-[11px] uppercase text-left tracking-wider align-middle;
+    padding: 12px 16px !important;
   }
 
   & td {
-    padding: 13px 20px !important;
-    vertical-align: middle;
-    white-space: normal;
-    word-break: normal;
-    text-align: left;
-    @apply border-b border-slate-100/80 dark:border-slate-800/30 text-sm text-slate-700 dark:text-slate-300;
+    padding: 12px 16px !important;
+    border-bottom: 1px solid #F1F5F9 !important;
+    color: #172033 !important;
+    @apply text-sm align-middle;
   }
 
-  & tbody tr:last-child td {
-    border-bottom: none;
-  }
+  & tbody tr {
+    background-color: #FFFFFF !important;
+    transition: background-color 0.15s ease;
 
-  & tbody tr:hover {
-    @apply bg-slate-50/70 dark:bg-slate-950/10;
-  }
+    &:hover {
+      background-color: #F8FAFC !important;
+    }
 
-  & .table-number-col {
-    text-align: right;
-    white-space: nowrap;
-  }
-
-  & .table-center-col {
-    text-align: center;
-    white-space: nowrap;
-  }
-
-  & .table-actions-col {
-    text-align: center;
-    white-space: nowrap;
+    &.selected-row {
+      background-color: #EFF6FF !important;
+    }
   }
 }
 
-@utility employee-row {
-  @apply hover:bg-slate-50/40 dark:hover:bg-slate-950/10 transition-colors;
+/* Alignment Helper Utilities */
+@utility table-center-col {
+  text-align: center !important;
 }
 
-@utility employee-avatar-wrapper {
-  @apply flex items-center gap-3.5;
+@utility table-number-col {
+  text-align: right !important;
+  font-variant-numeric: tabular-nums;
 }
 
-@utility employee-avatar-circle {
-  @apply w-9 h-9 rounded-xl bg-gradient-to-br from-emerald-400 to-emerald-600 text-white font-extrabold flex items-center justify-center text-xs shrink-0 border border-emerald-300/25 shadow-md;
+@utility table-actions-col {
+  text-align: right !important;
+  white-space: nowrap !important;
 }
 
 @utility employee-name-text {
-  @apply text-sm font-extrabold text-slate-800 dark:text-slate-200;
+  color: #172033 !important;
+  font-weight: 700 !important;
 }
 
 @utility employee-meta-text {
-  @apply text-xs text-slate-400 dark:text-slate-500 font-medium;
+  color: #64748B !important;
 }
 
 @utility employee-dept-pill {
-  @apply bg-indigo-50 dark:bg-indigo-950/20 text-indigo-700 dark:text-indigo-400 px-3 py-1 rounded-full font-bold text-xs border border-indigo-100 dark:border-indigo-950/40 inline-block whitespace-nowrap;
+  @apply px-3 py-1 rounded-full text-xs font-bold inline-block;
+  background-color: #EAF2FF !important;
+  color: #2563EB !important;
+  border: 1px solid #D7E7FF !important;
 }
 
 @utility employee-role-type {
-  @apply text-sm font-bold text-slate-800 dark:text-slate-300 whitespace-nowrap;
+  color: #172033 !important;
+  font-weight: 600 !important;
 }
 
 @utility employee-joining-date {
-  @apply text-xs text-slate-400 dark:text-slate-500 font-medium whitespace-nowrap;
-}
-
-@utility employee-status-badge {
-  @apply inline-flex items-center gap-1.5 px-3 py-1 rounded-full font-bold text-xs border whitespace-nowrap;
-
-  &.active {
-    @apply bg-emerald-50 dark:bg-emerald-950/20 text-emerald-700 dark:text-emerald-400 border-emerald-100 dark:border-emerald-950/40;
-  }
-
-  &.inactive {
-    @apply bg-red-50 dark:bg-red-950/20 text-red-700 dark:text-red-400 border-red-100 dark:border-red-950/40;
-  }
-
-  & .bullet {
-    @apply w-1.5 h-1.5 rounded-full inline-block;
-  }
-
-  &.active .bullet {
-    @apply bg-emerald-500;
-  }
-
-  &.inactive .bullet {
-    @apply bg-red-500;
-  }
-}
-
-@utility employee-action-buttons {
-  @apply flex gap-2 justify-start whitespace-nowrap;
+  color: #64748B !important;
+  font-size: 0.75rem !important;
 }
 
 @utility action-icon-btn {
-  @apply p-2 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 text-slate-400 hover:text-slate-800 dark:hover:text-slate-100 hover:bg-slate-50 dark:hover:bg-slate-800 hover:border-slate-300 dark:hover:border-slate-700 transition-all cursor-pointer;
+  @apply p-2 rounded-lg transition-colors cursor-pointer inline-flex items-center justify-center;
+  background-color: #EFF6FF !important;
+  border: 1px solid #D7E7FF !important;
+  color: #2563EB !important;
 
-  &.delete:hover {
-    @apply bg-red-50 dark:bg-red-950/20 border-red-200 dark:border-red-900/50 text-red-500;
-  }
-}
-
-@utility pagination-controls {
-  @apply flex flex-col gap-3 md:flex-row md:items-center md:justify-between px-6 py-4 bg-transparent border-t border-slate-200 dark:border-slate-800 rounded-b-2xl;
-}
-
-@utility pagination-info {
-  @apply text-xs font-semibold text-slate-500 dark:text-slate-400;
-}
-
-@utility pagination-actions {
-  @apply flex flex-wrap items-center gap-2;
-}
-
-@utility pagination-button {
-  @apply px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-all duration-200 font-semibold;
-}
-
-@utility pagination-button-current {
-  @apply bg-emerald-500 text-white border-emerald-500 shadow-sm;
-}
-
-@utility pagination-button-disabled {
-  @apply text-slate-400 bg-slate-100 dark:bg-slate-900 cursor-not-allowed border-slate-200 dark:border-slate-800;
-}
-
-/* Standalone Departments View */
-@utility departments-table {
-  @apply border-collapse text-left;
-  width: 100%;
-  min-width: 700px;
-  max-width: 100%;
-  table-layout: auto;
-  white-space: normal;
-  word-break: normal;
-  overflow-wrap: normal;
-  background: #ffffff;
-
-  & th {
-    @apply bg-slate-50 text-slate-500 dark:text-slate-400 font-semibold text-[12px] uppercase border-b border-slate-200 dark:border-slate-800/60 text-left;
-    padding: 14px 20px !important;
-    vertical-align: middle;
-    white-space: nowrap;
+  &:hover {
+    background-color: #E0EDFF !important;
   }
 
-  & th:first-child,
-  & td:first-child {
-    padding-left: 24px !important;
+  &.delete {
+    background-color: #FEECEC !important;
+    border: 1px solid #FECACA !important;
+    color: #DC2626 !important;
+
+    &:hover {
+      background-color: #FCA5A5 !important;
+      color: #991B1B !important;
+    }
   }
-
-  & th:last-child,
-  & td:last-child {
-    padding-right: 24px !important;
-  }
-
-  & td {
-    padding: 13px 20px !important;
-    vertical-align: middle;
-    white-space: normal;
-    word-break: normal;
-    text-align: left;
-    @apply border-b border-slate-100/80 dark:border-slate-800/30 text-sm text-slate-700 dark:text-slate-300;
-  }
-
-  & tbody tr:last-child td {
-    border-bottom: none;
-  }
-
-  & tbody tr:hover {
-    @apply bg-slate-50/70 dark:bg-slate-950/10 transition-all;
-  }
-}
-
-@utility id-badge {
-  @apply font-mono bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 px-2.5 py-1 rounded-lg font-bold text-[11px] border border-slate-200/50 dark:border-slate-700/50 inline-block whitespace-nowrap;
-}
-
-@utility emp-count-pill {
-  @apply bg-emerald-50 dark:bg-emerald-950/20 text-emerald-700 dark:text-emerald-400 px-2.5 py-1 rounded-full font-bold text-xs border border-emerald-100 dark:border-emerald-950/40 inline-flex items-center gap-1.5 whitespace-nowrap;
-}
-
-/* Charts styling */
-@utility chart-bars-container {
-  @apply flex items-end justify-between h-48 pt-8 border-b border-slate-100 dark:border-slate-800 mx-2;
-}
-
-@utility bar-pair {
-  @apply flex gap-1 items-end h-full w-full justify-center;
-}
-
-@utility bar-dark {
-  @apply w-4 bg-slate-800 dark:bg-slate-700 rounded-t-lg transition-all duration-500 hover:bg-slate-700;
-}
-
-@utility bar-emerald {
-  @apply w-4 bg-emerald-500 rounded-t-lg transition-all duration-500 hover:bg-emerald-400;
-}
-
-@utility chart-months-row {
-  @apply flex justify-between font-extrabold text-[10px] tracking-widest text-slate-400 mt-3 px-2 uppercase;
-}
-
-@utility donut-center-container {
-  @apply flex justify-center my-8 relative;
-}
-
-@utility donut-graphic {
-  @apply w-40 h-40 rounded-full border-[12px] border-emerald-600 border-r-indigo-500 border-b-cyan-500 border-l-rose-500 flex flex-col items-center justify-center text-3xl font-extrabold text-slate-800 dark:text-white shadow-xl relative;
-}
-
-@utility donut-legend-grid {
-  @apply grid grid-cols-2 gap-3.5 text-xs font-bold text-slate-500 dark:text-slate-400 border-t border-slate-100 dark:border-slate-800/80 pt-5 mt-3;
-}
-
-/* Buttons theme additions */
-@utility btn-enroll-employee {
-  @apply px-4 py-2.5 bg-emerald-500/20 hover:bg-emerald-500/40 text-emerald-700 dark:text-emerald-400 border border-emerald-500/20 rounded-xl font-bold shadow-sm cursor-pointer transition-all active:scale-95 text-center flex items-center justify-center gap-2 text-sm;
 }
 
 @utility btn-add-dept {
-  @apply px-4 py-2.5 bg-emerald-500/20 hover:bg-emerald-500/40 text-emerald-700 dark:text-emerald-400 border border-emerald-500/20 rounded-full font-bold shadow-sm cursor-pointer transition-all active:scale-95 text-center inline-flex items-center justify-center gap-2 text-sm;
-}
+  @apply px-4 py-2.5 rounded-xl font-bold text-xs md:text-sm shadow-xs transition-all cursor-pointer inline-flex items-center gap-2;
+  background-color: #2563EB !important;
+  color: #FFFFFF !important;
+  border: 1px solid #2563EB !important;
 
-/* =========================================================
-   EMPLOYEE DASHBOARD CLASSES
-   ========================================================= */
-
-@utility emp-main-content {
-  @apply p-6 md:p-10 overflow-y-auto;
-}
-
-@utility emp-top-header {
-  @apply flex flex-col sm:flex-row justify-between items-stretch sm:items-center mb-6 sm:mb-10 gap-4;
-}
-
-@utility emp-search-box {
-  @apply flex items-center gap-3 bg-white dark:bg-slate-900/40 px-4 py-3 rounded-2xl border border-slate-200 dark:border-slate-800/80 w-full sm:w-auto md:w-160 shadow-sm transition-all duration-300 focus-within:border-emerald-500 focus-within:ring-4 focus-within:ring-emerald-500/10 focus-within:md:w-[50vw];
-
-  & input {
-    @apply border-none outline-none w-full text-slate-800 dark:text-slate-100 bg-transparent text-sm font-semibold placeholder-slate-400 dark:placeholder-slate-600;
+  &:hover {
+    background-color: #1D4ED8 !important;
   }
 }
 
-@utility emp-user-profile-badge {
-  @apply flex items-center gap-3 bg-white dark:bg-slate-900 px-4 py-2 rounded-2xl border border-slate-200 dark:border-slate-800/80 font-bold text-slate-800 dark:text-slate-200 text-sm shadow-sm;
-}
+@utility btn-enroll-employee {
+  @apply px-4 py-2.5 rounded-xl font-bold text-xs md:text-sm shadow-xs transition-all cursor-pointer inline-flex items-center gap-2;
+  background-color: #2563EB !important;
+  color: #FFFFFF !important;
+  border: 1px solid #2563EB !important;
 
-@utility emp-avatar-circle {
-  @apply w-8 h-8 rounded-xl bg-gradient-to-br from-emerald-400 to-emerald-600 text-white font-extrabold flex items-center justify-center text-[10px] shadow-md;
-}
-
-@utility emp-stats-grid {
-  @apply grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-10;
-}
-
-@utility emp-stat-card {
-  @apply rounded-2xl border border-slate-200 dark:border-slate-800/80 p-5 shadow-sm flex flex-col justify-between transition-all duration-300 hover:-translate-y-1 hover:shadow-lg hover:shadow-emerald-500/5 hover:border-emerald-500/30;
-  width: 100%;
-  min-height: 140px;
-}
-
-@utility emp-stat-top {
-  @apply flex flex-col items-start gap-3.5 mb-3;
-}
-
-@utility emp-stat-title {
-  @apply text-[10px] font-extrabold text-slate-400 dark:text-slate-500 uppercase tracking-widest leading-none;
-}
-
-@utility emp-stat-icon-box {
-  @apply w-10 h-10 rounded-xl bg-transparent text-emerald-600 dark:text-emerald-400 flex items-center justify-center;
-}
-
-@utility emp-stat-value {
-  @apply text-2xl font-extrabold text-slate-900 dark:text-white mt-1 tracking-tight;
-}
-
-@utility emp-stat-subtext {
-  @apply text-[11px] font-bold text-emerald-600 dark:text-emerald-400 mt-2 flex items-center gap-1;
-}
-
-@utility emp-middle-grid {
-  @apply grid grid-cols-1 lg:grid-cols-3 gap-6 mb-10;
-}
-
-@utility emp-card-box {
-  background: transparent;
-  @apply rounded-2xl border border-slate-200 dark:border-slate-800/85 p-6 shadow-sm flex flex-col text-left;
-}
-
-@utility emp-card-title {
-  @apply text-sm font-extrabold text-slate-900 dark:text-white uppercase tracking-wider mb-6 opacity-90;
-}
-
-@utility current-status-row {
-  @apply flex flex-col gap-1 mb-5 p-4 rounded-2xl bg-emerald-50/50 dark:bg-emerald-950/10 border border-emerald-100/50 dark:border-emerald-950/30;
-}
-
-@utility current-status-label {
-  @apply text-[10px] font-extrabold text-slate-400 dark:text-slate-500 uppercase tracking-wider;
-}
-
-@utility current-status-value {
-  @apply text-lg font-extrabold text-emerald-600 dark:text-emerald-400;
-}
-
-/* Employee Tables */
-@utility emp-table {
-  @apply w-full border-collapse text-left;
-  min-width: 650px;
-  max-width: 100%;
-  word-break: normal;
-  overflow-wrap: normal;
-
-  & th {
-    @apply bg-transparent text-slate-500 dark:text-slate-400 font-extrabold tracking-widest text-[9px] uppercase border-b border-slate-100 dark:border-slate-800/50 text-left;
-    padding: 12px 16px !important;
-    white-space: nowrap;
-  }
-
-  & td {
-    padding: 12px 16px !important;
-    text-align: left;
-    @apply border-b border-slate-100/40 dark:border-slate-800/20 align-middle font-bold text-xs md:text-sm text-slate-800 dark:text-slate-300;
+  &:hover {
+    background-color: #1D4ED8 !important;
   }
 }
 
-@utility status-present {
-  @apply text-emerald-600 dark:text-emerald-400 font-extrabold;
+/* Status Badges - Soft Pastel Tokens Specification */
+@utility employee-status-badge {
+  @apply inline-flex items-center gap-1.5 px-3 py-1 rounded-full font-bold text-xs whitespace-nowrap;
+
+  &.active,
+  &.active-status,
+  &.status-present {
+    background-color: #E8F8F3 !important;
+    color: #087F72 !important;
+    border: 1px solid #D5F2E9 !important;
+  }
+
+  &.inactive,
+  &.inactive-status {
+    background-color: #F1F5F9 !important;
+    color: #64748B !important;
+    border: 1px solid #E2E8F0 !important;
+  }
+
+  &.on-leave,
+  &.warning-status,
+  &.status-halfday {
+    background-color: #FFF1D6 !important;
+    color: #B45309 !important;
+    border: 1px solid #FDE7C0 !important;
+  }
+
+  &.offboarded,
+  &.error-status,
+  &.status-absent {
+    background-color: #FEECEC !important;
+    color: #DC2626 !important;
+    border: 1px solid #FECACA !important;
+  }
+
+  &.status-info {
+    background-color: #EAF2FF !important;
+    color: #2563EB !important;
+    border: 1px solid #D7E7FF !important;
+  }
+
+  &.status-notice,
+  &.status-special {
+    background-color: #EEE7FF !important;
+    color: #7C3AED !important;
+    border: 1px solid #E6D9FF !important;
+  }
 }
 
-/* Announcement panel */
-@utility announcement-list {
-  @apply flex flex-col gap-3.5;
-}
-
-@utility announcement-item {
-  @apply bg-slate-50/50 dark:bg-slate-950/10 border border-slate-100 dark:border-slate-800 p-4 rounded-xl flex items-center gap-4 hover:bg-slate-50 dark:hover:bg-slate-950/20 transition-all border-l-4 border-l-emerald-500;
-}
-
-@utility announcement-icon {
-  @apply w-10 h-10 rounded-xl bg-emerald-50 dark:bg-emerald-950/20 text-emerald-600 dark:text-emerald-400 flex items-center justify-center shrink-0 shadow-sm;
-}
-
-@utility announcement-title {
-  @apply text-sm font-extrabold text-slate-800 dark:text-slate-200;
-}
-
-@utility announcement-desc {
-  @apply text-xs text-slate-500 dark:text-slate-400 mt-1 leading-relaxed;
-}
-
-@utility announcement-date {
-  @apply text-[10px] font-extrabold tracking-wider text-slate-400/80 ml-auto whitespace-nowrap uppercase;
-}
-
-/* Profile cards structures */
-@utility profile-card-content {
-  @apply flex flex-col items-center text-center p-2;
-}
-
-@utility profile-avatar-large {
-  @apply w-24 h-24 rounded-2xl border-4 border-emerald-500/20 bg-slate-100 dark:bg-slate-800 object-cover shadow-lg mb-4;
+/* Profile & Settings Cards */
+@utility profile-info-card {
+  background-color: #FFFFFF !important;
+  border: 1px solid #E2E8F0 !important;
+  color: #172033 !important;
+  @apply rounded-2xl p-6 shadow-xs text-left;
 }
 
 @utility profile-name {
-  @apply text-lg font-extrabold text-slate-900 dark:text-white tracking-tight;
+  color: #172033 !important;
+  font-weight: 800 !important;
+  font-size: 1.25rem !important;
 }
 
 @utility profile-role {
-  @apply text-[11px] font-bold text-emerald-600 dark:text-emerald-400 uppercase tracking-widest mt-1.5 mb-5;
-}
-
-@utility profile-dept-info {
-  @apply flex justify-between w-full py-3.5 border-y border-slate-100 dark:border-slate-800 text-xs font-bold text-slate-700 dark:text-slate-300 mb-5;
+  color: #64748B !important;
+  font-weight: 600 !important;
 }
 
 @utility btn-apply-leave {
-  @apply px-4 py-3 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl font-bold shadow-md cursor-pointer transition-all active:scale-95 text-center block w-full text-sm mb-3;
+  @apply w-full py-2.5 px-4 rounded-xl text-xs md:text-sm font-bold transition-all cursor-pointer;
+  background-color: #2563EB !important;
+  border: 1px solid #2563EB !important;
+  color: #FFFFFF !important;
+
+  &:hover {
+    background-color: #1D4ED8 !important;
+  }
 }
 
 @utility btn-download-payslip {
-  @apply px-4 py-2.5 border border-emerald-500/20 text-emerald-600 dark:text-emerald-400 hover:bg-emerald-50/50 dark:hover:bg-emerald-950/15 rounded-xl font-bold text-xs shadow-sm transition-all active:scale-95 text-center block w-full;
-}
+  @apply w-full py-2.5 px-4 rounded-xl text-xs md:text-sm font-bold transition-all cursor-pointer;
+  background-color: #EFF6FF !important;
+  border: 1px solid #D7E7FF !important;
+  color: #2563EB !important;
 
-/* Employee Specific Charts */
-@utility emp-chart-box {
-  background: transparent;
-  @apply rounded-2xl border border-slate-200 dark:border-slate-800/80 p-6 shadow-sm;
-}
-
-@utility emp-chart-header {
-  @apply flex justify-between items-center mb-6;
-}
-
-@utility emp-chart-metrics {
-  @apply flex gap-5 text-xs font-bold text-slate-400 dark:text-slate-500 mb-5;
-}
-
-@utility metric-highlight {
-  @apply text-emerald-600 dark:text-emerald-400 font-extrabold;
-}
-
-@utility emp-chart-bars {
-  @apply flex items-end justify-between h-48 pt-8 border-b border-slate-100 dark:border-slate-800 mx-2;
-}
-
-@utility emp-bar-pair {
-  @apply flex gap-1 items-end h-full w-full justify-center;
-}
-
-@utility emp-bar-blue {
-  @apply w-4 bg-emerald-500 rounded-t-lg transition-all duration-500 hover:bg-emerald-400;
-}
-
-@utility emp-bar-light {
-  @apply w-4 bg-slate-800 dark:bg-slate-700 rounded-t-lg transition-all duration-500 hover:bg-slate-600;
-}
-
-@utility emp-chart-months {
-  @apply flex justify-between font-extrabold text-[10px] tracking-widest text-slate-400 mt-3 px-2 uppercase;
-}
-
-/* Custom dashboard colors & form buttons */
-@utility stat-card-green {
-  @apply bg-emerald-50 dark:bg-emerald-950/25 border border-emerald-200/80 dark:border-emerald-900/40;
-}
-
-@utility stat-card-blue {
-  @apply bg-sky-50 dark:bg-sky-950/25 border border-sky-200/80 dark:border-sky-900/40;
-}
-
-@utility stat-card-indigo {
-  @apply bg-indigo-50 dark:bg-indigo-950/25 border border-indigo-200/80 dark:border-indigo-900/40;
-}
-
-@utility stat-card-amber {
-  @apply bg-amber-50 dark:bg-amber-950/25 border border-amber-200/80 dark:border-amber-900/40;
-}
-
-@utility stat-card-teal {
-  @apply bg-teal-50 dark:bg-teal-950/25 border border-teal-200/80 dark:border-teal-900/40;
-}
-
-@utility stat-card-rose {
-  @apply bg-rose-50 dark:bg-rose-950/25 border border-rose-200/80 dark:border-rose-900/40;
-}
-
-@utility profile-info-card {
-  background: transparent;
-  @apply rounded-2xl border border-slate-200 dark:border-slate-800/80 p-6 shadow-sm text-left;
-}
-
-@utility profile-info-title {
-  @apply text-base font-extrabold text-slate-900 dark:text-white mb-5 pb-3 border-b border-slate-100 dark:border-slate-800;
-}
-
-@utility profile-info-row {
-  @apply grid gap-x-6 gap-y-1 py-3 border-b border-slate-100/80 dark:border-slate-800/50 text-sm;
-  grid-template-columns: minmax(120px, 1fr) minmax(0, 2fr);
-}
-
-@utility profile-info-label {
-  @apply font-semibold text-slate-500 dark:text-slate-400;
-}
-
-@utility profile-info-value {
-  @apply font-bold text-slate-800 dark:text-slate-200 text-left;
+  &:hover {
+    background-color: #E0EDFF !important;
+  }
 }
 
 @utility settings-form-card {
-  background: transparent;
-  @apply rounded-2xl border border-slate-200 dark:border-slate-800/80 p-8 shadow-sm max-w-3xl text-left;
+  background-color: #FFFFFF !important;
+  border: 1px solid #E2E8F0 !important;
+  color: #172033 !important;
+  @apply rounded-2xl p-8 shadow-xs max-w-3xl text-left;
 }
 
 @utility btn-save {
-  @apply inline-flex items-center justify-center gap-2 px-5 py-2.5 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl text-xs md:text-sm font-semibold shadow-md cursor-pointer transition-all active:scale-95 duration-200 border border-transparent;
+  background: #2563EB !important;
+  color: #FFFFFF !important;
+  border: 1px solid #2563EB !important;
+  @apply inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl text-xs md:text-sm font-bold shadow-xs cursor-pointer;
+
+  &:hover {
+    background: #1D4ED8 !important;
+  }
 }
 
 @utility btn-cancel {
-  @apply inline-flex items-center justify-center gap-2 px-5 py-2.5 bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 text-slate-700 dark:text-slate-300 rounded-xl text-xs md:text-sm font-semibold shadow-sm cursor-pointer transition-all hover:bg-slate-50 dark:hover:bg-slate-800 active:scale-95 duration-200;
-}
+  background-color: #F1F5F9 !important;
+  border: 1px solid #E2E8F0 !important;
+  color: #475569 !important;
+  @apply inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl text-xs md:text-sm font-semibold cursor-pointer;
 
-@utility stat-card-blue {
-  background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%) !important;
-  border-color: #1e40af !important;
-  color: #ffffff !important;
-
-  & .stat-label,
-  & .emp-stat-title,
-  & .stat-description,
-  & .emp-stat-subtext {
-    color: rgba(255, 255, 255, 0.8) !important;
-  }
-
-  & .stat-value,
-  & .emp-stat-value {
-    color: #ffffff !important;
-  }
-
-  & .stat-icon-box,
-  & .emp-stat-icon-box {
-    background: rgba(255, 255, 255, 0.2) !important;
-    color: #ffffff !important;
+  &:hover {
+    background-color: #E2E8F0 !important;
   }
 }
 
-@utility stat-card-green {
-  background: linear-gradient(135deg, #10b981 0%, #059669 100%) !important;
-  border-color: #047857 !important;
-  color: #ffffff !important;
-
-  & .stat-label,
-  & .emp-stat-title,
-  & .stat-description,
-  & .emp-stat-subtext {
-    color: rgba(255, 255, 255, 0.8) !important;
-  }
-
-  & .stat-value,
-  & .emp-stat-value {
-    color: #ffffff !important;
-  }
-
-  & .stat-icon-box,
-  & .emp-stat-icon-box {
-    background: rgba(255, 255, 255, 0.2) !important;
-    color: #ffffff !important;
-  }
+/* Pagination Controls */
+.pagination-controls {
+  @apply flex flex-col sm:flex-row justify-between items-center gap-4 px-6 py-4 border-t;
+  border-top-color: #E2E8F0 !important;
+  background-color: #FFFFFF !important;
 }
 
-@utility stat-card-yellow {
-  background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%) !important;
-  border-color: #b45309 !important;
-  color: #ffffff !important;
-
-  & .stat-label,
-  & .emp-stat-title,
-  & .stat-description,
-  & .emp-stat-subtext {
-    color: rgba(255, 255, 255, 0.87) !important;
-  }
-
-  & .stat-value,
-  & .emp-stat-value {
-    color: #ffffff !important;
-  }
-
-  & .stat-icon-box,
-  & .emp-stat-icon-box {
-    background: rgba(255, 255, 255, 0.2) !important;
-    color: #ffffff !important;
-  }
+.pagination-info {
+  @apply text-xs font-semibold;
+  color: #64748B !important;
 }
 
-@utility stat-card-amber {
-  background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%) !important;
-  border-color: #b45309 !important;
-  color: #ffffff !important;
-
-  & .stat-label,
-  & .emp-stat-title,
-  & .stat-description,
-  & .emp-stat-subtext {
-    color: rgba(255, 255, 255, 0.87) !important;
-  }
-
-  & .stat-value,
-  & .emp-stat-value {
-    color: #ffffff !important;
-  }
-
-  & .stat-icon-box,
-  & .emp-stat-icon-box {
-    background: rgba(255, 255, 255, 0.2) !important;
-    color: #ffffff !important;
-  }
+.pagination-actions {
+  @apply flex items-center gap-2;
 }
 
-@utility stat-card-orange {
-  background: linear-gradient(135deg, #f97316 0%, #ea580c 100%) !important;
-  border-color: #c2410c !important;
-  color: #ffffff !important;
+.pagination-button {
+  @apply px-3 py-1.5 rounded-lg text-xs font-bold cursor-pointer transition-all;
+  background-color: #FFFFFF !important;
+  border: 1px solid #D8E0EA !important;
+  color: #334155 !important;
 
-  & .stat-label,
-  & .emp-stat-title,
-  & .stat-description,
-  & .emp-stat-subtext {
-    color: rgba(255, 255, 255, 0.85) !important;
+  &:hover:not(:disabled) {
+    background-color: #F8FAFC !important;
+    border-color: #CBD5E1 !important;
   }
 
-  & .stat-value,
-  & .emp-stat-value {
-    color: #ffffff !important;
+  &:disabled,
+  &.pagination-button-disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
   }
 
-  & .stat-icon-box,
-  & .emp-stat-icon-box {
-    background: rgba(255, 255, 255, 0.2) !important;
-    color: #ffffff !important;
+  &.pagination-button-current {
+    background-color: #2563EB !important;
+    color: #FFFFFF !important;
+    border-color: #2563EB !important;
   }
-}
-
-@utility stat-card-red {
-  background: linear-gradient(135deg, #e11d48 0%, #be123c 100%) !important;
-  border-color: #9f1239 !important;
-  color: #ffffff !important;
-
-  & .stat-label,
-  & .emp-stat-title,
-  & .stat-description,
-  & .emp-stat-subtext {
-    color: rgba(255, 255, 255, 0.85) !important;
-  }
-
-  & .stat-value,
-  & .emp-stat-value {
-    color: #ffffff !important;
-  }
-
-  & .stat-icon-box,
-  & .emp-stat-icon-box {
-    background: rgba(255, 255, 255, 0.2) !important;
-    color: #ffffff !important;
-  }
-}
-
-@utility stat-card-rose {
-  background: linear-gradient(135deg, #e11d48 0%, #be123c 100%) !important;
-  border-color: #9f1239 !important;
-  color: #ffffff !important;
-
-  & .stat-label,
-  & .emp-stat-title,
-  & .stat-description,
-  & .emp-stat-subtext {
-    color: rgba(255, 255, 255, 0.85) !important;
-  }
-
-  & .stat-value,
-  & .emp-stat-value {
-    color: #ffffff !important;
-  }
-
-  & .stat-icon-box,
-  & .emp-stat-icon-box {
-    background: rgba(255, 255, 255, 0.2) !important;
-    color: #ffffff !important;
-  }
-}
-
-@utility stat-card-purple {
-  background: linear-gradient(135deg, #8b5cf6 0%, #6d28d9 100%) !important;
-  border-color: #5b21b6 !important;
-  color: #ffffff !important;
-
-  & .stat-label,
-  & .emp-stat-title,
-  & .stat-description,
-  & .emp-stat-subtext {
-    color: rgba(255, 255, 255, 0.85) !important;
-  }
-
-  & .stat-value,
-  & .emp-stat-value {
-    color: #ffffff !important;
-  }
-
-  & .stat-icon-box,
-  & .emp-stat-icon-box {
-    background: rgba(255, 255, 255, 0.2) !important;
-    color: #ffffff !important;
-  }
-}
-
-@utility stat-card-indigo {
-  background: linear-gradient(135deg, #6366f1 0%, #4338ca 100%) !important;
-  border-color: #3730a3 !important;
-  color: #ffffff !important;
-
-  & .stat-label,
-  & .emp-stat-title,
-  & .stat-description,
-  & .emp-stat-subtext {
-    color: rgba(255, 255, 255, 0.85) !important;
-  }
-
-  & .stat-value,
-  & .emp-stat-value {
-    color: #ffffff !important;
-  }
-
-  & .stat-icon-box,
-  & .emp-stat-icon-box {
-    background: rgba(255, 255, 255, 0.2) !important;
-    color: #ffffff !important;
-  }
-}
-
-@utility stat-card-teal {
-  background: linear-gradient(135deg, #14b8a6 0%, #0f766e 100%) !important;
-  border-color: #115e59 !important;
-  color: #ffffff !important;
-
-  & .stat-label,
-  & .emp-stat-title,
-  & .stat-description,
-  & .emp-stat-subtext {
-    color: rgba(255, 255, 255, 0.8) !important;
-  }
-
-  & .stat-value,
-  & .emp-stat-value {
-    color: #ffffff !important;
-  }
-
-  & .stat-icon-box,
-  & .emp-stat-icon-box {
-    background: rgba(255, 255, 255, 0.2) !important;
-    color: #ffffff !important;
-  }
-}
-
-/* Settings Input Decorators */
-.input-with-icon-container {
-  position: relative;
-  display: flex;
-  align-items: center;
-  width: 100%;
-}
-
-.input-icon-decorator {
-  position: absolute;
-  left: 12px;
-  color: #94a3b8;
-  pointer-events: none;
-}
-
-.input-decorated {
-  width: 100%;
-  padding: 10px 12px 10px 38px !important;
-  font-size: 13.5px;
-  font-weight: 500;
-  color: #1e293b;
-  background-color: #ffffff;
-  border: 1px solid #cbd5e1;
-  border-radius: 8px;
-  outline: none;
-  transition: border-color 0.2s, box-shadow 0.2s;
-  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
-}
-
-.input-decorated:focus {
-  border-color: #2563eb;
-  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
-}
-
-.input-decorated::placeholder {
-  color: #94a3b8;
-  opacity: 1;
-}
-
-.dark .input-decorated {
-  background-color: #0f172a;
-  border-color: #334155;
-  color: #f8fafc;
-}
-
-.dark .input-decorated:focus {
-  border-color: #3b82f6;
-  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.25);
-}
-
-/* =========================================================
-   EMPLOYEE PERMISSIONS PILLS & ENTERPRISE DASHBOARD STYLE
-   ========================================================= */
-
-@utility employee-permissions-card {
-  @apply bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800/80 rounded-2xl p-6 shadow-sm mt-8 overflow-visible;
-}
-
-@utility permissions-table-header {
-  @apply bg-slate-50 dark:bg-slate-950/20 border-b border-slate-100 dark:border-slate-800/60;
-}
-
-@utility action-dropdown-list {
-  @apply absolute right-0 mt-1.5 w-44 bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl shadow-lg ring-1 ring-black/5 z-50 py-1 overflow-hidden;
-}
-
-@utility action-dropdown-btn {
-  @apply w-full text-left px-4 py-2.5 text-xs font-bold text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-900/50 flex items-center gap-2 transition-colors cursor-pointer;
-}
-
-@utility action-dropdown-btn-danger {
-  @apply w-full text-left px-4 py-2.5 text-xs font-bold text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-950/25 flex items-center gap-2 transition-colors cursor-pointer;
 }

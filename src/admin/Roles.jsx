@@ -333,7 +333,7 @@ export default function Roles() {
       {/* Top Header Bar */}
       <div className="page-header" style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "24px" }}>
         <div>
-          <h1 className="dashboard-title" style={{ color: "black" }}>Role Management</h1>
+          <h1 className="dashboard-title">Role Management</h1>
           <p className="dashboard-subtitle">Define and monitor system user roles and their active user count.</p>
         </div>
         <button
@@ -351,14 +351,14 @@ export default function Roles() {
       </div>
 
       {error && (
-        <div style={{ display: "flex", alignItems: "center", gap: "8px", color: "#b91c1c", backgroundColor: "#fef2f2", padding: "12px", borderRadius: "8px", marginBottom: "16px", fontSize: "14px" }}>
-          <AlertCircle size={16} />
+        <div style={{ display: "flex", alignItems: "center", gap: "8px", color: "#FCA5A5", backgroundColor: "#450A0A", border: "1px solid #991B1B", padding: "12px", borderRadius: "8px", marginBottom: "16px", fontSize: "14px" }}>
+          <AlertCircle size={16} className="text-[#EF4444]" />
           <span>{error}</span>
         </div>
       )}
 
       {success && (
-        <div style={{ color: "#065f46", backgroundColor: "#ecfdf5", padding: "12px", borderRadius: "8px", marginBottom: "16px", fontSize: "14px" }}>
+        <div style={{ color: "#5EEAD4", backgroundColor: "#123F43", border: "1px solid #0F766E", padding: "12px", borderRadius: "8px", marginBottom: "16px", fontSize: "14px" }}>
           {success}
         </div>
       )}
@@ -395,19 +395,19 @@ export default function Roles() {
       {/* Main Content Layout */}
       <div className="w-full">
         {/* Employees Permissions Card */}
-        <div className="employee-permissions-card" style={{ backgroundColor: "#fff", borderRadius: "12px", padding: "20px", boxShadow: "0 1px 3px rgba(0,0,0,0.1)", marginBottom: "24px" }}>
+        <div className="employee-permissions-card card-box" style={{ borderRadius: "12px", padding: "20px", marginBottom: "24px" }}>
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "wrap", gap: "16px", marginBottom: "20px", width: "100%" }}>
             <div style={{ textAlign: "left" }}>
-              <h2 className="dashboard-title" style={{ fontSize: "20px", fontWeight: "700" , color: "black" }}>Employees</h2>
-              <p className="dashboard-subtitle" style={{ margin: "4px 0 0 0" }}>View all employees and their role access.</p>
+              <h2 className="dashboard-title" style={{ fontSize: "20px", fontWeight: "700", color: "#172033" }}>Employees</h2>
+              <p className="dashboard-subtitle" style={{ margin: "4px 0 0 0", color: "#64748B" }}>View all employees and their role access.</p>
             </div>
 
-            <div className="search-box" style={{ margin: 0, width: "300px", display: "flex", alignItems: "center", gap: "8px", border: "1px solid #e2e8f0", borderRadius: "10px", padding: "8px 12px", background: "#f8fafc" }}>
-              <Search size={18} color="#64748b" />
+            <div className="search-box" style={{ margin: 0, width: "300px", display: "flex", alignItems: "center", gap: "8px" }}>
+              <Search size={18} color="#64748B" />
               <input
                 type="text"
                 placeholder="Search employees..."
-                style={{ border: "none", outline: "none", width: "100%", background: "transparent", fontSize: "13px" }}
+                style={{ border: "none", outline: "none", width: "100%", background: "transparent", fontSize: "13px", color: "#172033" }}
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
               />
@@ -418,13 +418,13 @@ export default function Roles() {
             <table className="employee-table" style={{ borderCollapse: "collapse", width: "100%" }}>
               <thead className="permissions-table-header">
                 <tr>
-                  <th className="table-center-col" style={{ width: "50px", color: "black" }}>#</th>
-                  <th style={{ color: "black" }}>EMPLOYEE ID</th>
-                  <th style={{ color: "black" }}>EMPLOYEE NAME</th>
-                  <th style={{ color: "black" }}>EMAIL</th>
-                  <th style={{ color: "black" }}>ROLE</th>
-                  <th className="table-center-col" style={{ color: "black" }}>STATUS</th>
-                  <th className="table-actions-col" style={{ width: "80px", color: "black" }}>ACTIONS</th>
+                  <th className="table-center-col" style={{ width: "50px" }}>#</th>
+                  <th>EMPLOYEE ID</th>
+                  <th>EMPLOYEE NAME</th>
+                  <th>EMAIL</th>
+                  <th>ROLE</th>
+                  <th className="table-center-col">STATUS</th>
+                  <th className="table-actions-col" style={{ width: "80px" }}>ACTIONS</th>
                 </tr>
               </thead>
               <tbody>
@@ -438,26 +438,26 @@ export default function Roles() {
                   </tr>
                 ) : (
                   paginatedUsers.map((user, idx) => (
-                    <tr key={user._id} className="employee-row" style={{ borderBottom: "1px solid #f1f5f9" }}>
-                      <td className="table-center-col" style={{ fontSize: "14px", fontWeight: "600", color: "#64748b" }}>
+                    <tr key={user._id} className="employee-row" style={{ borderBottom: "1px solid #F1F5F9" }}>
+                      <td className="table-center-col" style={{ fontSize: "14px", fontWeight: "600", color: "#64748B" }}>
                         {startIndex + idx + 1}
                       </td>
-                      <td className="employee-id-col" style={{ fontSize: "14px", fontWeight: "600" , color: "black" }}>
+                      <td className="employee-id-col" style={{ fontSize: "14px", fontWeight: "600", color: "#172033" }}>
                         {user.employeeId}
                       </td>
-                      <td className="employee-name-col" style={{ fontSize: "14px", fontWeight: "500", color: "black" }}>
+                      <td className="employee-name-col" style={{ fontSize: "14px", fontWeight: "700", color: "#172033" }}>
                         {user.displayName}
                       </td>
-                      <td className="employee-email-col" style={{ fontSize: "13px", color: "black" }}>
+                      <td className="employee-email-col" style={{ fontSize: "13px", color: "#64748B" }}>
                         {user.email}
                       </td>
                       <td style={{ textAlign: "left" }}>
-                        <span className="role-pill-blue" style={{ color: "black" }}>
+                        <span className="employee-dept-pill">
                           {user.role?.name || "Employee"}
                         </span>
                       </td>
                       <td className="table-center-col">
-                        <span className={user.status?.toLowerCase() === "active" ? "status-pill-green" : "status-pill-red"} style={{ color: "black" }}>
+                        <span className={`employee-status-badge ${user.status?.toLowerCase() === "active" ? "active" : "inactive"}`}>
                           {user.status || "Active"}
                         </span>
                       </td>

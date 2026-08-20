@@ -131,22 +131,22 @@ export default function Attendance() {
     };
 
     return (
-        <div className="min-h-screen bg-slate-100 text-slate-900">
+        <div className="min-h-screen bg-[#F8FAFC] text-[#172033]">
             <Sidebar activeTab={activeTab} setActiveTab={setActiveTab} isOpen={isOpen} setIsOpen={setIsOpen} />
 
             <div className="lg:pl-[260px] flex flex-col min-h-screen">
 
                 {/* Mobile Header */}
-                <div className="sticky top-0 z-30 flex items-center justify-between border-b border-slate-200/80 bg-white/95 px-4 py-3 backdrop-blur-xl lg:hidden" style={{ minHeight: "60px" }}>
+                <div className="sticky top-0 z-30 flex items-center justify-between border-b border-[#E2E8F0] bg-white/95 px-4 py-3 backdrop-blur-xl lg:hidden" style={{ minHeight: "60px" }}>
                     <button
                         onClick={() => setIsOpen(true)}
-                        className="inline-flex h-11 w-11 items-center justify-center rounded-2xl bg-[#043e30] text-white shadow-sm shadow-[#043e30]/10"
+                        className="inline-flex h-11 w-11 items-center justify-center rounded-2xl bg-[#2563EB] text-white shadow-sm"
                         style={{ border: "none", cursor: "pointer" }}
                         aria-label="Open sidebar"
                     >
                         <Menu size={20} />
                     </button>
-                    <div className="text-sm font-semibold text-slate-900">EMS Portal</div>
+                    <div className="text-sm font-semibold text-[#172033]">EMS Portal</div>
                 </div>
 
                 {/* Top Header Bar */}
@@ -155,8 +155,8 @@ export default function Attendance() {
                 <div style={{ flex: 1, padding: "0 10px" }}>
                     <div className="page-header flex justify-between items-center mb-6">
                         <div>
-                            <h1 className="dashboard-title text-3xl font-extrabold text-slate-900 dark:text-white m-0" style={{ color:"black", marginTop: "2rem"}}>Attendance</h1>
-                            <p className="dashboard-subtitle text-sm text-slate-500 dark:text-slate-400 mt-1">Track your daily attendance and work hours</p>
+                            <h1 className="dashboard-title text-3xl font-extrabold m-0" style={{ marginTop: "2rem", color: "#172033" }}>Attendance</h1>
+                            <p className="dashboard-subtitle text-sm mt-1" style={{ color: "#64748B" }}>Track your daily attendance and work hours</p>
                         </div>
                     </div>
 
@@ -165,39 +165,39 @@ export default function Attendance() {
                         {/* Present */}
                         <div className="emp-stat-card stat-card-green">
                             <div className="emp-stat-top">
-                                <div className="emp-stat-icon-box bg-emerald-50 dark:bg-emerald-950/20 text-[#10b981]">
+                                <div className="emp-stat-icon-box">
                                     <CheckSquare size={20} />
                                 </div>
                                 <span className="emp-stat-title">Present</span>
                             </div>
                             <p className="emp-stat-value">
-                                {stats.present} <span className="text-sm font-medium text-slate-500 dark:text-slate-400">Days</span>
+                                {stats.present} <span className="text-sm font-medium text-[#64748B]">Days</span>
                             </p>
                         </div>
 
                         {/* Absent */}
                         <div className="emp-stat-card stat-card-rose">
                             <div className="emp-stat-top">
-                                <div className="emp-stat-icon-box bg-red-50 dark:bg-red-950/20 text-[#ef4444]">
+                                <div className="emp-stat-icon-box">
                                     <XSquare size={20} />
                                 </div>
                                 <span className="emp-stat-title">Absent</span>
                             </div>
                             <p className="emp-stat-value">
-                                {stats.absent} <span className="text-sm font-medium text-slate-500 dark:text-slate-400">Days</span>
+                                {stats.absent} <span className="text-sm font-medium text-[#64748B]">Days</span>
                             </p>
                         </div>
 
                         {/* Leave */}
                         <div className="emp-stat-card stat-card-blue">
                             <div className="emp-stat-top">
-                                <div className="emp-stat-icon-box bg-blue-50 dark:bg-blue-950/20 text-[#3b82f6]">
+                                <div className="emp-stat-icon-box">
                                     <Plane size={20} />
                                 </div>
                                 <span className="emp-stat-title">Leave</span>
                             </div>
                             <p className="emp-stat-value">
-                                {stats.leave} <span className="text-sm font-medium text-slate-500 dark:text-slate-400">Days</span>
+                                {stats.leave} <span className="text-sm font-medium text-[#64748B]">Days</span>
                             </p>
                         </div>
                     </div>
@@ -205,15 +205,15 @@ export default function Attendance() {
                     {/* Attendance Records Box */}
                     <div className="employee-directory-card">
                         {/* Header controls bar */}
-                        <div className="filters-row flex justify-between items-center px-6 py-5 border-b border-slate-100 dark:border-slate-800/60 bg-slate-50/30 dark:bg-slate-950/5">
-                            <h2 className="emp-card-title" style={{ margin: 0, fontSize: "18px", fontWeight: "800", color: "#000000" }}>Attendance Records</h2>
+                        <div className="filters-row flex justify-between items-center px-6 py-5 border-b border-[#E2E8F0]">
+                            <h2 className="emp-card-title" style={{ margin: 0, fontSize: "18px", fontWeight: "800", color: "#172033" }}>Attendance Records</h2>
 
                             <div style={{ display: "flex", gap: "12px", alignItems: "center" }}>
                                 <select
                                     value={selectedMonthYear}
                                     onChange={(e) => setSelectedMonthYear(e.target.value)}
                                     className="filter-select"
-                                    style={{ border: "1px solid #cbd5e1", borderRadius: "10px", padding: "8px 16px", fontSize: "13px", fontWeight: "700", color: "#0f172a", outline: "none", cursor: "pointer", backgroundColor: "#ffffff" }}
+                                    style={{ border: "1px solid #D8E0EA", borderRadius: "10px", padding: "8px 16px", fontSize: "13px", fontWeight: "700", color: "#172033", outline: "none", cursor: "pointer", backgroundColor: "#ffffff" }}
                                 >
                                     {monthYearOptions.map((opt) => (
                                         <option key={opt} value={opt}>{opt}</option>
@@ -222,7 +222,7 @@ export default function Attendance() {
 
                                 <button
                                     className="action-icon-btn"
-                                    style={{ display: "flex", alignItems: "center", gap: "6px", backgroundColor: "#ffffff", border: "1px solid #cbd5e1", borderRadius: "10px", padding: "8px 16px", fontSize: "13px", fontWeight: "700", color: "#475569", cursor: "pointer" }}
+                                    style={{ display: "flex", alignItems: "center", gap: "6px", backgroundColor: "#ffffff", border: "1px solid #D8E0EA", borderRadius: "10px", padding: "8px 16px", fontSize: "13px", fontWeight: "700", color: "#475569", cursor: "pointer" }}
                                 >
                                     <Filter size={14} />
                                     <span>Filter</span>
@@ -246,45 +246,45 @@ export default function Attendance() {
                                 <tbody>
                                     {loading ? (
                                         <tr>
-                                            <td colSpan="6" style={{ textAlign: "center", color: "#64748b", padding: "30px" }}>Loading attendance history...</td>
+                                            <td colSpan="6" style={{ textAlign: "center", color: "#64748B", padding: "30px" }}>Loading attendance history...</td>
                                         </tr>
                                     ) : currentItems.length === 0 ? (
                                         <tr>
-                                            <td colSpan="6" style={{ textAlign: "center", color: "#64748b", padding: "30px" }}>No attendance records found.</td>
+                                            <td colSpan="6" style={{ textAlign: "center", color: "#64748B", padding: "30px" }}>No attendance records found.</td>
                                         </tr>
                                     ) : (
                                         currentItems.map((rec) => {
                                             const { dateFormatted, dayName } = formatDateDay(rec.attendanceDate);
 
                                             // Style status pills
-                                            let statusBg = "#eff6ff";
-                                            let statusText = "#1e40af";
-                                            let statusBorder = "#bfdbfe";
+                                            let statusBg = "#EAF2FF";
+                                            let statusText = "#2563EB";
+                                            let statusBorder = "#D7E7FF";
 
                                             if (rec.status === "Present") {
-                                                statusBg = "#ecfdf5";
-                                                statusText = "#065f46";
-                                                statusBorder = "#a7f3d0";
+                                                statusBg = "#E8F8F3";
+                                                statusText = "#087F72";
+                                                statusBorder = "#D5F2E9";
                                             } else if (rec.status === "Absent") {
-                                                statusBg = "#fef2f2";
-                                                statusText = "#991b1b";
-                                                statusBorder = "#fca5a5";
+                                                statusBg = "#FEECEC";
+                                                statusText = "#DC2626";
+                                                statusBorder = "#FECACA";
                                             } else if (rec.status === "Leave") {
-                                                statusBg = "#f0f9ff";
-                                                statusText = "#0369a1";
-                                                statusBorder = "#bae6fd";
+                                                statusBg = "#FFF1D6";
+                                                statusText = "#B45309";
+                                                statusBorder = "#FDE7C0";
                                             } else if (rec.status === "Weekly Off" || rec.status === "Holiday") {
-                                                statusBg = "#f3f4f6";
-                                                statusText = "#374151";
-                                                statusBorder = "#e5e7eb";
+                                                statusBg = "#EAF2FF";
+                                                statusText = "#2563EB";
+                                                statusBorder = "#D7E7FF";
                                             }
 
                                             return (
-                                                <tr key={rec._id} className="employee-row" style={{ borderBottom: "1px solid #f1f5f9" }}>
-                                                    <td style={{ fontWeight: "700", color: "#0f172a", fontSize: "14px" }}>
+                                                <tr key={rec._id} className="employee-row" style={{ borderBottom: "1px solid #F1F5F9" }}>
+                                                    <td style={{ fontWeight: "700", color: "#172033", fontSize: "14px" }}>
                                                         {dateFormatted}
                                                     </td>
-                                                    <td style={{ padding: "4px 8px", color: "#475569", fontSize: "13px", fontWeight: "600" }}>
+                                                    <td style={{ padding: "4px 8px", color: "#64748B", fontSize: "13px", fontWeight: "600" }}>
                                                         {dayName}
                                                     </td>
                                                     <td className="table-center-col">
@@ -304,13 +304,13 @@ export default function Attendance() {
                                                             {rec.status}
                                                         </span>
                                                     </td>
-                                                    <td style={{ padding: "4px 8px", color: "#334155", fontSize: "13px" }}>
+                                                    <td style={{ padding: "4px 8px", color: "#172033", fontSize: "13px" }}>
                                                         {rec.checkInTime || "—"}
                                                     </td>
-                                                    <td style={{ padding: "4px 8px", color: "#334155", fontSize: "13px" }}>
+                                                    <td style={{ padding: "4px 8px", color: "#172033", fontSize: "13px" }}>
                                                         {rec.checkOutTime || "—"}
                                                     </td>
-                                                    <td className="table-center-col" style={{ color: "#0f172a", fontWeight: "700", fontSize: "13px" }}>
+                                                    <td className="table-center-col" style={{ color: "#2563EB", fontWeight: "700", fontSize: "13px" }}>
                                                         {formatHours(rec.workedHours)}
                                                     </td>
                                                 </tr>
@@ -356,9 +356,9 @@ export default function Attendance() {
                                                 width: "36px",
                                                 height: "36px",
                                                 borderRadius: "8px",
-                                                border: "1px solid #cbd5e1",
-                                                backgroundColor: currentPage === p ? "#043e30" : "#ffffff",
-                                                color: currentPage === p ? "#ffffff" : "#475569",
+                                                border: currentPage === p ? "1px solid #2563EB" : "1px solid #D8E0EA",
+                                                backgroundColor: currentPage === p ? "#2563EB" : "#FFFFFF",
+                                                color: currentPage === p ? "#FFFFFF" : "#475569",
                                                 fontWeight: "700",
                                                 cursor: "pointer"
                                             }}

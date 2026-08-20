@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from "react";
 import Sidebar from "../components/Sidebar";
 import Pagination from "../components/Pagination";
@@ -155,22 +156,22 @@ export default function Announcements() {
     };
 
     return (
-        <div className="min-h-screen bg-slate-100 text-slate-900">
+        <div className="min-h-screen bg-[#F8FAFC] text-[#172033]">
             <Sidebar activeTab={activeTab} setActiveTab={setActiveTab} isOpen={isOpen} setIsOpen={setIsOpen} />
 
             <div className="lg:pl-[260px] flex flex-col min-h-screen">
 
                 {/* Mobile Header */}
-                <div className="sticky top-0 z-30 flex items-center justify-between border-b border-slate-200/80 bg-white/95 px-4 py-3 backdrop-blur-xl lg:hidden" style={{ minHeight: "60px" }}>
+                <div className="sticky top-0 z-30 flex items-center justify-between border-b border-[#E2E8F0] bg-white/95 px-4 py-3 backdrop-blur-xl lg:hidden" style={{ minHeight: "60px" }}>
                     <button
                         onClick={() => setIsOpen(true)}
-                        className="inline-flex h-11 w-11 items-center justify-center rounded-2xl bg-[#043e30] text-white shadow-sm shadow-[#043e30]/10"
+                        className="inline-flex h-11 w-11 items-center justify-center rounded-2xl bg-[#2563EB] text-white shadow-sm"
                         style={{ border: "none", cursor: "pointer" }}
                         aria-label="Open sidebar"
                     >
                         <Menu size={20} />
                     </button>
-                    <div className="text-sm font-semibold text-slate-900">EMS Portal</div>
+                    <div className="text-sm font-semibold text-[#172033]">EMS Portal</div>
                 </div>
 
                 {/* Top Header Bar */}
@@ -191,8 +192,8 @@ export default function Announcements() {
                 <div style={{ flex: 1, padding: "0 10px" }}>
                     <div className="page-header flex justify-between items-center mb-6" style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
                         <div>
-                            <h1 className="dashboard-title text-3xl font-extrabold text-slate-900 dark:text-white m-0" style={{ color:"black", marginTop: "2rem"}}>Announcements</h1>
-                            <p className="dashboard-subtitle text-sm text-slate-500 dark:text-slate-400 mt-1">Stay updated with company news and announcements</p>
+                            <h1 className="dashboard-title text-3xl font-extrabold m-0" style={{ marginTop: "2rem" }}>Announcements</h1>
+                            <p className="dashboard-subtitle text-sm mt-1">Stay updated with company news and announcements</p>
                         </div>
                         <div style={{ marginTop: "2rem" }}>
                             <NotificationBell />
@@ -212,7 +213,7 @@ export default function Announcements() {
                                     const IconComponent = meta.icon;
 
                                     return (
-                                        <div
+                                         <div
                                             key={notice._id}
                                             className="announcement-item"
                                             style={{
@@ -221,8 +222,8 @@ export default function Announcements() {
                                                 gap: "16px",
                                                 padding: "16px",
                                                 borderRadius: "12px",
-                                                backgroundColor: "var(--card-bg)",
-                                                border: "1px solid #e2e8f0",
+                                                backgroundColor: "#FFFFFF",
+                                                border: "1px solid #E2E8F0",
                                                 transition: "box-shadow 0.2s"
                                             }}
                                         >
@@ -247,10 +248,10 @@ export default function Announcements() {
 
                                             {/* Content */}
                                             <div style={{ flex: 1 }}>
-                                                <h3 className="announcement-title" style={{ fontSize: "16px", fontWeight: "700", color: "#000000", margin: "0" }}>
+                                                <h3 className="announcement-title" style={{ fontSize: "16px", fontWeight: "700", color: "#172033", margin: "0" }}>
                                                     {notice.title}
                                                 </h3>
-                                                <p className="announcement-desc" style={{ fontSize: "14px", color: "#475569", margin: "6px 0 0 0", lineHeight: "1.5" }}>
+                                                <p className="announcement-desc" style={{ fontSize: "14px", color: "#64748B", margin: "6px 0 0 0", lineHeight: "1.5" }}>
                                                     {notice.description}
                                                 </p>
                                             </div>

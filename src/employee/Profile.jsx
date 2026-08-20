@@ -378,22 +378,22 @@ export default function Profile() {
     };
 
     return (
-        <div className="min-h-screen bg-slate-100 text-slate-900">
+        <div className="min-h-screen bg-[#F8FAFC] text-[#172033]">
             <Sidebar activeTab={activeTab} setActiveTab={setActiveTab} isOpen={isOpen} setIsOpen={setIsOpen} />
 
             <div className="lg:pl-[260px] flex flex-col min-h-screen">
 
                 {/* Mobile Header */}
-                <div className="sticky top-0 z-30 flex items-center justify-between border-b border-slate-200/80 bg-white/95 px-4 py-3 backdrop-blur-xl lg:hidden" style={{ minHeight: "60px" }}>
+                <div className="sticky top-0 z-30 flex items-center justify-between border-b border-[#E2E8F0] bg-white/95 px-4 py-3 backdrop-blur-xl lg:hidden" style={{ minHeight: "60px" }}>
                     <button
                         onClick={() => setIsOpen(true)}
-                        className="inline-flex h-11 w-11 items-center justify-center rounded-2xl bg-[#043e30] text-white shadow-sm shadow-[#043e30]/10"
+                        className="inline-flex h-11 w-11 items-center justify-center rounded-2xl bg-[#2563EB] text-white shadow-sm"
                         style={{ border: "none", cursor: "pointer" }}
                         aria-label="Open sidebar"
                     >
                         <Menu size={20} />
                     </button>
-                    <div className="text-sm font-semibold text-slate-900">EMS Portal</div>
+                    <div className="text-sm font-semibold text-[#172033]">EMS Portal</div>
                 </div>
 
                 {/* Top Header Bar */}
@@ -406,14 +406,14 @@ export default function Profile() {
 
                     <div className="page-header" style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "24px" }}>
                         <div>
-                            <h1 className="dashboard-title" style={{ fontSize: "32px", fontWeight: "800", color: "#000000", margin: 0 }}>My Profile</h1>
-                            <p className="dashboard-subtitle" style={{ fontSize: "14px", color: "#64748b", marginTop: "4px" }}>Manage your personal details and contact settings</p>
+                            <h1 className="dashboard-title" style={{ fontSize: "32px", fontWeight: "800", margin: 0, color: "#172033" }}>My Profile</h1>
+                            <p className="dashboard-subtitle" style={{ fontSize: "14px", marginTop: "4px", color: "#64748B" }}>Manage your personal details and contact settings</p>
                         </div>
                     </div>
 
                     {
                         success && (
-                            <div style={{ display: "flex", alignItems: "center", gap: "8px", color: "#065f46", backgroundColor: "#ecfdf5", padding: "12px 16px", borderRadius: "10px", marginBottom: "20px", fontSize: "14px", fontWeight: "600", border: "1px solid #a7f3d0" }}>
+                            <div style={{ display: "flex", alignItems: "center", gap: "8px", color: "#087F72", backgroundColor: "#E8F8F3", padding: "12px 16px", borderRadius: "10px", marginBottom: "20px", fontSize: "14px", fontWeight: "600", border: "1px solid #D5F2E9" }}>
                                 <CheckCircle size={16} />
                                 <span>{success}</span>
                             </div>
@@ -422,7 +422,7 @@ export default function Profile() {
 
                     {
                         error && (
-                            <div style={{ display: "flex", alignItems: "center", gap: "8px", color: "#b91c1c", backgroundColor: "#fef2f2", padding: "12px 16px", borderRadius: "10px", marginBottom: "20px", fontSize: "14px", fontWeight: "600", border: "1px solid #fca5a5" }}>
+                            <div style={{ display: "flex", alignItems: "center", gap: "8px", color: "#DC2626", backgroundColor: "#FEECEC", padding: "12px 16px", borderRadius: "10px", marginBottom: "20px", fontSize: "14px", fontWeight: "600", border: "1px solid #FECACA" }}>
                                 <AlertCircle size={16} />
                                 <span>{error}</span>
                             </div>
@@ -431,27 +431,27 @@ export default function Profile() {
 
                     {
                         loading ? (
-                            <div style={{ textAlign: "center", padding: "50px", color: "#64748b" }}>Loading profile...</div>
+                            <div style={{ textAlign: "center", padding: "50px", color: "#94A3B8" }}>Loading profile...</div>
                         ) : (
                             <div className="emp-middle-grid" style={{ display: "grid", gridTemplateColumns: "1.2fr 2.5fr", gap: "24px", alignItems: "start" }}>
 
                                 {/* Left Profile Summary Card Container */}
-                                <div className="emp-card-box" style={{ padding: "24px", display: "flex", flexDirection: "column", alignItems: "center", backgroundColor: "var(--card-bg)" }}>
+                                <div className="emp-card-box" style={{ padding: "24px", display: "flex", flexDirection: "column", alignItems: "center", backgroundColor: "#FFFFFF", border: "1px solid #E2E8F0" }}>
                                     <div style={{ position: "relative", marginBottom: "16px" }}>
                                         <div
                                             style={{
                                                 width: "100px",
                                                 height: "100px",
                                                 borderRadius: "50%",
-                                                backgroundColor: "#043e30",
-                                                color: "#ffffff",
+                                                backgroundColor: "#EAF2FF",
+                                                color: "#2563EB",
                                                 fontSize: "36px",
                                                 fontWeight: "800",
                                                 display: "flex",
                                                 alignItems: "center",
                                                 justifyContent: "center",
-                                                border: "4px solid #10b981",
-                                                boxShadow: "0 4px 10px rgba(0,0,0,0.1)",
+                                                border: "4px solid #2563EB",
+                                                boxShadow: "0 4px 10px rgba(0,0,0,0.06)",
                                                 overflow: "hidden"
                                             }}
                                         >
@@ -472,7 +472,7 @@ export default function Profile() {
                                                 position: "absolute",
                                                 bottom: 0,
                                                 right: 0,
-                                                backgroundColor: "#10b981",
+                                                backgroundColor: "#2563EB",
                                                 color: "#ffffff",
                                                 borderRadius: "50%",
                                                 width: "32px",
@@ -480,7 +480,7 @@ export default function Profile() {
                                                 display: "flex",
                                                 alignItems: "center",
                                                 justifyContent: "center",
-                                                border: "2px solid #ffffff",
+                                                border: "2px solid #FFFFFF",
                                                 cursor: "pointer",
                                                 boxShadow: "0 2px 5px rgba(0,0,0,0.15)"
                                             }}
@@ -497,18 +497,18 @@ export default function Profile() {
                                         />
                                     </div>
 
-                                    <h3 style={{ margin: "0 0 4px 0", fontSize: "20px", fontWeight: "800", color: "#0f172a" }}>
+                                    <h3 style={{ margin: "0 0 4px 0", fontSize: "20px", fontWeight: "800", color: "#172033" }}>
                                         {formData.firstName} {formData.lastName}
                                     </h3>
-                                    <p style={{ margin: "0 0 16px 0", fontSize: "14px", color: "#64748b", fontWeight: "700" }}>
+                                    <p style={{ margin: "0 0 16px 0", fontSize: "14px", color: "#64748B", fontWeight: "700" }}>
                                         {employee?.designation || "Software Engineer"}
                                     </p>
 
                                     <span
                                         style={{
-                                            backgroundColor: "#ecfdf5",
-                                            color: "#047857",
-                                            border: "1px solid #a7f3d0",
+                                            backgroundColor: "#E8F8F3",
+                                            color: "#087F72",
+                                            border: "1px solid #D5F2E9",
                                             padding: "6px 16px",
                                             borderRadius: "20px",
                                             fontSize: "12px",
@@ -519,34 +519,31 @@ export default function Profile() {
                                             gap: "6px"
                                         }}
                                     >
-                                        <span style={{ width: "6px", height: "6px", backgroundColor: "#10b981", borderRadius: "50%" }} />
+                                        <span style={{ width: "6px", height: "6px", backgroundColor: "#087F72", borderRadius: "50%" }} />
                                         Active Employee
                                     </span>
 
-                                    <div style={{ width: "100%", borderTop: "1px solid #f1f5f9", paddingTop: "16px", fontSize: "13px" }}>
+                                    <div style={{ width: "100%", borderTop: "1px solid #E2E8F0", paddingTop: "16px", fontSize: "13px" }}>
                                         <div style={{ display: "flex", justifyContent: "space-between", padding: "8px 0" }}>
-                                            <span style={{ color: "#64748b", fontWeight: "600" }}>Employee ID</span>
-                                            <span style={{ fontWeight: "700", color: "#0f172a" }}>{employee?.employeeId || "EMP054"}</span>
+                                            <span style={{ color: "#64748B", fontWeight: "600" }}>Employee ID</span>
+                                            <span style={{ fontWeight: "700", color: "#172033" }}>{employee?.employeeId || "EMP054"}</span>
                                         </div>
-                                        <div style={{
-                                            display: "flex", justifyContent: "space-between", padding: "8px 0"
-                                        }
-                                        }>
-                                            <span style={{ color: "#64748b", fontWeight: "600" }}>Department</span>
-                                            <span style={{ fontWeight: "700", color: "#0f172a" }}>{employee?.department || "Technology"}</span>
+                                        <div style={{ display: "flex", justifyContent: "space-between", padding: "8px 0" }}>
+                                            <span style={{ color: "#64748B", fontWeight: "600" }}>Department</span>
+                                            <span style={{ fontWeight: "700", color: "#172033" }}>{employee?.department || "Technology"}</span>
                                         </div >
                                         <div style={{ display: "flex", justifyContent: "space-between", padding: "8px 0" }}>
-                                            <span style={{ color: "#64748b", fontWeight: "600" }}>Role</span>
-                                            <span style={{ fontWeight: "700", color: "#0f172a" }}>{employee?.role || "Employee"}</span>
+                                            <span style={{ color: "#64748B", fontWeight: "600" }}>Role</span>
+                                            <span style={{ fontWeight: "700", color: "#172033" }}>{employee?.role || "Employee"}</span>
                                         </div >
                                     </div >
                                 </div >
 
                                 {/* Right Profile Summary Cards */}
                                 <div className="space-y-6">
-                                    <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm shadow-slate-200/70">
+                                    <div className="rounded-2xl border border-[#E2E8F0] bg-white p-6 shadow-sm text-[#172033]">
                                         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "20px" }}>
-                                            <h2 className="m-0 text-xl font-extrabold text-slate-900" style={{color:"black"}}>Personal Information</h2>
+                                            <h2 className="m-0 text-xl font-extrabold text-[#172033]">Personal Information</h2>
                                             <button
                                                 type="button"
                                                 onClick={() => {
@@ -591,67 +588,67 @@ export default function Profile() {
                                             </button>
                                         </div>
                                         <div className="space-y-3">
-                                            <div className="flex items-center justify-between border-b border-slate-100 pb-3">
-                                                <span className="text-sm font-semibold text-slate-500">First Name</span>
-                                                <span className="text-sm font-bold text-slate-900">{formData.firstName || "John"}</span>
+                                            <div className="flex items-center justify-between border-b border-[#E2E8F0] pb-3">
+                                                <span className="text-sm font-semibold text-[#64748B]">First Name</span>
+                                                <span className="text-sm font-bold text-[#172033]">{formData.firstName || "John"}</span>
                                             </div>
-                                            <div className="flex items-center justify-between border-b border-slate-100 pb-3">
-                                                <span className="text-sm font-semibold text-slate-500">Last Name</span>
-                                                <span className="text-sm font-bold text-slate-900">{formData.lastName || "Doe"}</span>
+                                            <div className="flex items-center justify-between border-b border-[#E2E8F0] pb-3">
+                                                <span className="text-sm font-semibold text-[#64748B]">Last Name</span>
+                                                <span className="text-sm font-bold text-[#172033]">{formData.lastName || "Doe"}</span>
                                             </div>
-                                            <div className="flex items-center justify-between border-b border-slate-100 pb-3">
-                                                <span className="text-sm font-semibold text-slate-500">Email</span>
-                                                <span className="text-sm font-bold text-slate-900">{formData.email || employee?.email || "john@example.com"}</span>
+                                            <div className="flex items-center justify-between border-b border-[#E2E8F0] pb-3">
+                                                <span className="text-sm font-semibold text-[#64748B]">Email</span>
+                                                <span className="text-sm font-bold text-[#172033]">{formData.email || employee?.email || "john@example.com"}</span>
                                             </div>
-                                            <div className="flex items-center justify-between border-b border-slate-100 pb-3">
-                                                <span className="text-sm font-semibold text-slate-500">Phone</span>
-                                                <span className="text-sm font-bold text-slate-900">{formData.phone || employee?.phone || "9876543210"}</span>
+                                            <div className="flex items-center justify-between border-b border-[#E2E8F0] pb-3">
+                                                <span className="text-sm font-semibold text-[#64748B]">Phone</span>
+                                                <span className="text-sm font-bold text-[#172033]">{formData.phone || employee?.phone || "9876543210"}</span>
                                             </div>
-                                            <div className="flex items-center justify-between border-b border-slate-100 pb-3">
-                                                <span className="text-sm font-semibold text-slate-500">Gender</span>
-                                                <span className="text-sm font-bold text-slate-900">{formData.gender || "Male"}</span>
+                                            <div className="flex items-center justify-between border-b border-[#E2E8F0] pb-3">
+                                                <span className="text-sm font-semibold text-[#64748B]">Gender</span>
+                                                <span className="text-sm font-bold text-[#172033]">{formData.gender || "Male"}</span>
                                             </div>
-                                            <div className="flex items-center justify-between border-b border-slate-100 pb-3">
-                                                <span className="text-sm font-semibold text-slate-500">DOB</span>
-                                                <span className="text-sm font-bold text-slate-900">{formatDisplayDate(formData.dob || employee?.dob || "1995-08-15")}</span>
+                                            <div className="flex items-center justify-between border-b border-[#E2E8F0] pb-3">
+                                                <span className="text-sm font-semibold text-[#64748B]">DOB</span>
+                                                <span className="text-sm font-bold text-[#172033]">{formatDisplayDate(formData.dob || employee?.dob || "1995-08-15")}</span>
                                             </div>
                                             <div className="flex items-center justify-between">
-                                                <span className="text-sm font-semibold text-slate-500">Address</span>
-                                                <span className="text-sm font-bold text-slate-900 text-right max-w-[220px]">{formData.permanentAddress || employee?.address || "Chennai"}</span>
+                                                <span className="text-sm font-semibold text-[#64748B]">Address</span>
+                                                <span className="text-sm font-bold text-[#172033] text-right max-w-[220px]">{formData.permanentAddress || employee?.address || "Chennai"}</span>
                                             </div>
                                         </div>
                                     </div>
 
-                                    <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm shadow-slate-200/70">
-                                        <h2 className="m-0 text-xl font-extrabold text-slate-900">Employment Information</h2>
+                                    <div className="rounded-2xl border border-[#E2E8F0] bg-white p-6 shadow-sm text-[#172033]">
+                                        <h2 className="m-0 text-xl font-extrabold text-[#172033]">Employment Information</h2>
                                         <div className="mt-5 space-y-3">
-                                            <div className="flex items-center justify-between border-b border-slate-100 pb-3">
-                                                <span className="text-sm font-semibold text-slate-500">Employee ID</span>
-                                                <span className="text-sm font-bold text-slate-900">{employee?.employeeId || "EMP001"}</span>
+                                            <div className="flex items-center justify-between border-b border-[#E2E8F0] pb-3">
+                                                <span className="text-sm font-semibold text-[#64748B]">Employee ID</span>
+                                                <span className="text-sm font-bold text-[#172033]">{employee?.employeeId || "EMP001"}</span>
                                             </div>
-                                            <div className="flex items-center justify-between border-b border-slate-100 pb-3">
-                                                <span className="text-sm font-semibold text-slate-500">Department</span>
-                                                <span className="text-sm font-bold text-slate-900">{employee?.department || "Development"}</span>
+                                            <div className="flex items-center justify-between border-b border-[#E2E8F0] pb-3">
+                                                <span className="text-sm font-semibold text-[#64748B]">Department</span>
+                                                <span className="text-sm font-bold text-[#172033]">{employee?.department || "Development"}</span>
                                             </div>
-                                            <div className="flex items-center justify-between border-b border-slate-100 pb-3">
-                                                <span className="text-sm font-semibold text-slate-500">Designation</span>
-                                                <span className="text-sm font-bold text-slate-900">{employee?.designation || "Developer"}</span>
+                                            <div className="flex items-center justify-between border-b border-[#E2E8F0] pb-3">
+                                                <span className="text-sm font-semibold text-[#64748B]">Designation</span>
+                                                <span className="text-sm font-bold text-[#172033]">{employee?.designation || "Developer"}</span>
                                             </div>
-                                            <div className="flex items-center justify-between border-b border-slate-100 pb-3">
-                                                <span className="text-sm font-semibold text-slate-500">Joining Date</span>
-                                                <span className="text-sm font-bold text-slate-900">{formatDisplayDate(employee?.joiningDate || "2026-08-01")}</span>
+                                            <div className="flex items-center justify-between border-b border-[#E2E8F0] pb-3">
+                                                <span className="text-sm font-semibold text-[#64748B]">Joining Date</span>
+                                                <span className="text-sm font-bold text-[#172033]">{formatDisplayDate(employee?.joiningDate || "2026-08-01")}</span>
                                             </div>
-                                            <div className="flex items-center justify-between border-b border-slate-100 pb-3">
-                                                <span className="text-sm font-semibold text-slate-500">Salary</span>
-                                                <span className="text-sm font-bold text-slate-900">{formatCurrency(employee?.salary || 50000)}</span>
+                                            <div className="flex items-center justify-between border-b border-[#E2E8F0] pb-3">
+                                                <span className="text-sm font-semibold text-[#64748B]">Salary</span>
+                                                <span className="text-sm font-bold text-[#172033]">{formatCurrency(employee?.salary || 50000)}</span>
                                             </div>
-                                            <div className="flex items-center justify-between border-b border-slate-100 pb-3">
-                                                <span className="text-sm font-semibold text-slate-500">Employment</span>
-                                                <span className="text-sm font-bold text-slate-900">{employee?.employmentType || employee?.role || "Full Time"}</span>
+                                            <div className="flex items-center justify-between border-b border-[#E2E8F0] pb-3">
+                                                <span className="text-sm font-semibold text-[#64748B]">Employment</span>
+                                                <span className="text-sm font-bold text-[#172033]">{employee?.employmentType || employee?.role || "Full Time"}</span>
                                             </div>
                                             <div className="flex items-center justify-between">
-                                                <span className="text-sm font-semibold text-slate-500">Status</span>
-                                                <span className="text-sm font-bold text-slate-900">{employee?.status || "Active"}</span>
+                                                <span className="text-sm font-semibold text-[#64748B]">Status</span>
+                                                <span className="text-sm font-bold text-[#172033]">{employee?.status || "Active"}</span>
                                             </div>
                                         </div>
                                     </div>
@@ -678,14 +675,14 @@ export default function Profile() {
                         >
                             <div
                                 style={{
-                                    backgroundColor: "var(--card-bg, #ffffff)",
+                                    backgroundColor: "#FFFFFF",
                                     borderRadius: "16px",
                                     width: "680px",
                                     maxWidth: "95%",
                                     maxHeight: "90vh",
                                     overflowY: "auto",
                                     boxShadow: "0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)",
-                                    border: "1px solid #e2e8f0",
+                                    border: "1px solid #E2E8F0",
                                     display: "flex",
                                     flexDirection: "column",
                                 }}
@@ -697,18 +694,18 @@ export default function Profile() {
                                         justifyContent: "space-between",
                                         alignItems: "center",
                                         padding: "20px 24px",
-                                        borderBottom: "1px solid #f1f5f9",
-                                        backgroundColor: "#f8fafc",
+                                        borderBottom: "1px solid #E2E8F0",
+                                        backgroundColor: "#FFFFFF",
                                     }}
                                 >
-                                    <h3 style={{ margin: 0, fontSize: "18px", fontWeight: "800", color: "#0f172a" , backgroundColor: "#f8fafc"}}>Edit Profile</h3>
+                                    <h3 style={{ margin: 0, fontSize: "18px", fontWeight: "800", color: "#172033" }}>Edit Profile</h3>
                                     <button
                                         type="button"
                                         onClick={() => setIsEditModalOpen(false)}
                                         style={{
                                             border: "none",
                                             background: "transparent",
-                                            color: "#64748b",
+                                            color: "#64748B",
                                             cursor: "pointer",
                                             padding: 4,
                                             display: "flex",
@@ -720,8 +717,8 @@ export default function Profile() {
                                 </div>
 
                                 {/* Modal Body */}
-                                <form onSubmit={handleSaveProfileEdit} style={{ padding: "24px" , backgroundColor: "#f8fafc"}}>
-                                    <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "16px", marginBottom: "16px" , backgroundColor: "#f8fafc"}} className="grid grid-cols-1 md:grid-cols-2">
+                                <form onSubmit={handleSaveProfileEdit} style={{ padding: "24px", backgroundColor: "#FFFFFF" }}>
+                                    <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "16px", marginBottom: "16px" }} className="grid grid-cols-1 md:grid-cols-2">
 
                                         {/* Personal Info */}
                                         <div>

@@ -438,7 +438,7 @@ export default function Attendance() {
             <div className="stats-grid" style={{ marginBottom: "24px" }}>
                 <div className="stat-card stat-card-green">
                     <div className="stat-header">
-                        <div className="stat-icon-plain" style={{ color: "#065f46" }}>
+                        <div className="stat-icon-box">
                             <UserCheck size={22} />
                         </div>
                         <div>
@@ -451,7 +451,7 @@ export default function Attendance() {
 
                 <div className="stat-card stat-card-blue">
                     <div className="stat-header">
-                        <div className="stat-icon-plain" style={{ color: "#0891b2" }}>
+                        <div className="stat-icon-box">
                             <Clock size={22} />
                         </div>
                         <div>
@@ -464,7 +464,7 @@ export default function Attendance() {
 
                 <div className="stat-card stat-card-rose">
                     <div className="stat-header">
-                        <div className="stat-icon-plain" style={{ color: "#b91c1c" }}>
+                        <div className="stat-icon-box">
                             <AlertCircle size={22} />
                         </div>
                         <div>
@@ -477,7 +477,7 @@ export default function Attendance() {
 
                 <div className="stat-card stat-card-indigo">
                     <div className="stat-header">
-                        <div className="stat-icon-plain" style={{ color: "#8b5cf6" }}>
+                        <div className="stat-icon-box">
                             <Calendar size={22} />
                         </div>
                         <div>
@@ -490,14 +490,14 @@ export default function Attendance() {
             </div>
 
             {hasError && (
-                <div style={{ display: "flex", alignItems: "center", gap: "8px", color: "#b91c1c", backgroundColor: "#fef2f2", padding: "12px", borderRadius: "8px", marginBottom: "20px", fontSize: "14px" }}>
+                <div style={{ display: "flex", alignItems: "center", gap: "8px", color: "#DC2626", backgroundColor: "#FEECEC", border: "1px solid #FECACA", padding: "12px", borderRadius: "8px", marginBottom: "20px", fontSize: "14px" }}>
                     <AlertCircle size={16} />
                     <span>{error}</span>
                 </div>
             )}
 
             {success && (
-                <div style={{ color: "#065f46", backgroundColor: "#ecfdf5", padding: "12px", borderRadius: "8px", marginBottom: "20px", fontSize: "14px" }}>
+                <div style={{ color: "#087F72", backgroundColor: "#E8F8F3", border: "1px solid #D5F2E9", padding: "12px", borderRadius: "8px", marginBottom: "20px", fontSize: "14px" }}>
                     {success}
                 </div>
             )}
@@ -507,7 +507,7 @@ export default function Attendance() {
                     {/* Logs View */}
                     <div className="employee-directory-card" style={{ padding: "24px" }}>
                         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "10px", marginBottom: "16px" }}>
-                            <h2 className="emp-card-title" style={{ margin: 0 , color: "#0f766e" }}>Attendance Log Panel</h2>
+                            <h2 className="emp-card-title" style={{ margin: 0, color: "#172033" }}>Attendance Log Panel</h2>
 
                             {/* Search Filters */}
                             <div style={{ display: "flex", gap: "8px" }}>
@@ -519,7 +519,7 @@ export default function Attendance() {
                                         setFilterEmpId(e.target.value);
                                         setCurrentAttendancePage(1);
                                     }}
-                                    style={{ padding: "6px 12px", borderRadius: "6px", border: "1px solid #cbd5e1", fontSize: "13px", color: "#1e293b" }}
+                                    style={{ padding: "6px 12px", borderRadius: "6px", border: "1px solid #D8E0EA", backgroundColor: "#FFFFFF", fontSize: "13px", color: "#172033" }}
                                 />
                                 <input
                                     type="date"
@@ -528,7 +528,7 @@ export default function Attendance() {
                                         setFilterDate(e.target.value);
                                         setCurrentAttendancePage(1);
                                     }}
-                                    style={{ padding: "6px 12px", borderRadius: "6px", border: "1px solid #cbd5e1", fontSize: "13px", color: "#1e293b" }}
+                                    style={{ padding: "6px 12px", borderRadius: "6px", border: "1px solid #D8E0EA", backgroundColor: "#FFFFFF", fontSize: "13px", color: "#172033" }}
                                 />
                             </div>
                         </div>
@@ -537,14 +537,14 @@ export default function Attendance() {
                             <table className="employee-table">
                                 <thead>
                                     <tr>
-                                        <th style={{ color: "black" }}>EMPLOYEE</th>
-                                        <th style={{ color: "black" }}>DEPARTMENT</th>
-                                        <th className="table-center-col" style={{ color: "black" }}>DATE</th>
-                                        <th className="table-center-col" style={{ color: "black" }}>IN</th>
-                                        <th className="table-center-col" style={{ color: "black" }}>OUT</th>
-                                        <th className="table-center-col" style={{ color: "black" }}>HOURS</th>
-                                        <th className="table-center-col" style={{ color: "black" }}>STATUS</th>
-                                        <th className="table-actions-col" style={{ color: "black" }}>ACTIONS</th>
+                                        <th>EMPLOYEE</th>
+                                        <th>DEPARTMENT</th>
+                                        <th className="table-center-col">DATE</th>
+                                        <th className="table-center-col">IN</th>
+                                        <th className="table-center-col">OUT</th>
+                                        <th className="table-center-col">HOURS</th>
+                                        <th className="table-center-col">STATUS</th>
+                                        <th className="table-actions-col">ACTIONS</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -561,56 +561,47 @@ export default function Attendance() {
                                             const display = getEmployeeDisplay(rec);
                                             return (
                                                 <tr key={rec._id} className="employee-row">
-                                                    <td style={{ padding: "4px 8px" }}>
+                                                    <td style={{ padding: "8px 12px" }}>
                                                         <div>
-                                                            <p style={{ fontWeight: "700", color: "#1e293b", fontSize: "14px", color: "black" }}>{display.name}</p>
-                                                            <p style={{ fontSize: "11px", color: "#64748b", color: "black" }}>{display.code}</p>
+                                                            <p style={{ fontWeight: "700", color: "#172033", fontSize: "14px" }}>{display.name}</p>
+                                                            <p style={{ fontSize: "11px", color: "#64748B" }}>{display.code}</p>
                                                         </div>
                                                     </td>
-                                                <td style={{ padding: "4px 8px" }}>
-                                                    <span style={{ fontSize: "12px", fontWeight: "600", color: "#475569", color: "black" }}>{display.department || "—"}</span>
+                                                <td style={{ padding: "8px 12px" }}>
+                                                    <span style={{ fontSize: "12px", fontWeight: "600", color: "#64748B" }}>{display.department || "—"}</span>
                                                 </td>
-                                                <td style={{ padding: "4px 8px", textAlign: "center" , fontWeight: "600", color: "black" }}>
+                                                <td style={{ padding: "8px 12px", textAlign: "center", fontWeight: "600", color: "#172033" }}>
                                                     {formatDate(rec.attendanceDate)}
                                                 </td>
-                                                <td style={{ padding: "4px 8px", textAlign: "center", fontWeight: "600", color: "black" }}>
+                                                <td style={{ padding: "8px 12px", textAlign: "center", fontWeight: "600", color: "#172033" }}>
                                                     {rec.checkInTime || "--:--"}
                                                 </td>
-                                                <td style={{ padding: "4px 8px", textAlign: "center", fontWeight: "600", color: "black" }}>
+                                                <td style={{ padding: "8px 12px", textAlign: "center", fontWeight: "600", color: "#172033" }}>
                                                     {rec.checkOutTime || "--:--"}
                                                 </td>
-                                                <td style={{ padding: "4px 8px", textAlign: "center", fontWeight: "700", color: "#0f766e" }}>
+                                                <td style={{ padding: "8px 12px", textAlign: "center", fontWeight: "700", color: "#2563EB" }}>
                                                     {rec.workedHours || 0}
                                                 </td>
-                                                <td style={{ padding: "4px 8px", textAlign: "center" }}>
-                                                    <span style={{
-                                                        padding: "2px 8px",
-                                                        fontSize: "11px",
-                                                        fontWeight: "750",
-                                                        borderRadius: "12px",
-                                                        display: "inline-block",
-                                                        backgroundColor:
-                                                            rec.status === "Present" ? "#ecfdf5" :
-                                                                rec.status === "Half Day" ? "#eff6ff" :
-                                                                    rec.status === "Leave" ? "#f5f3ff" : "#fef2f2",
-                                                        color:
-                                                            rec.status === "Present" ? "#065f46" :
-                                                                rec.status === "Half Day" ? "#1d4ed8" :
-                                                                    rec.status === "Leave" ? "#6d28d9" : "#b91c1c"
-                                                    }}>
+                                                <td className="table-center-col">
+                                                    <span className={`employee-status-badge ${
+                                                        rec.status === "Present" ? "active" :
+                                                        rec.status === "Half Day" ? "on-leave" :
+                                                        rec.status === "Leave" ? "status-special" : "offboarded"
+                                                    }`}>
                                                         {rec.status}
                                                     </span>
-                                                    </td>
-                                                    <td style={{ padding: "4px 8px", textAlign: "right" }}>
+                                                </td>
+                                                <td className="table-actions-col">
+                                                    <div style={{ display: "flex", gap: "8px", justifyContent: "flex-end" }}>
                                                         <button
                                                             onClick={() => handleDeleteRecord(rec._id)}
                                                             className="action-icon-btn delete"
-                                                            style={{ border: "none", background: "none", cursor: "pointer", color: "#b91c1c" }}
                                                             title="Delete Record"
                                                         >
                                                             <Trash2 size={16} />
                                                         </button>
-                                                    </td>
+                                                    </div>
+                                                </td>
                                                 </tr>
                                             );
                                         })
@@ -622,26 +613,24 @@ export default function Attendance() {
                         {/* Pagination controls for Attendance */}
                         {attendanceTotalPages > 1 && (
                             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginTop: "16px" }}>
-                                <span style={{ fontSize: "13px", color: "#64748b" }}>
+                                <span style={{ fontSize: "13px", color: "#64748B" }}>
                                     Showing {attendanceStartIndex + 1} to {Math.min(attendanceStartIndex + itemsPerPage, filteredRecords.length)} of {filteredRecords.length} records
                                 </span>
                                 <div style={{ display: "flex", gap: "8px" }}>
                                     <button
                                         disabled={currentAttendancePage === 1}
                                         onClick={() => setCurrentAttendancePage(prev => Math.max(prev - 1, 1))}
-                                        className="btn-close"
-                                        style={{ padding: "6px 12.5px" }}
+                                        className="pagination-button"
                                     >
                                         Previous
                                     </button>
-                                    <span style={{ fontSize: "14px", fontWeight: "600", alignSelf: "center" }}>
+                                    <span style={{ fontSize: "14px", fontWeight: "600", alignSelf: "center", color: "#172033" }}>
                                         {currentAttendancePage} of {attendanceTotalPages}
                                     </span>
                                     <button
                                         disabled={currentAttendancePage === attendanceTotalPages}
                                         onClick={() => setCurrentAttendancePage(prev => Math.min(prev + 1, attendanceTotalPages))}
-                                        className="btn-close"
-                                        style={{ padding: "6px 12.5px" }}
+                                        className="pagination-button"
                                     >
                                         Next
                                     </button>
@@ -655,17 +644,17 @@ export default function Attendance() {
                 <div className="w-full">
                     {/* Leaves Table */}
                     <div className="employee-directory-card" style={{ padding: "24px" }}>
-                        <h2 className="emp-card-title" style={{ marginBottom: "16px", color: "#0f766e" }}>Leave Logs</h2>
+                        <h2 className="emp-card-title" style={{ marginBottom: "16px", color: "#172033" }}>Leave Logs</h2>
 
                         <div className="table-responsive">
                             <table className="employee-table">
                                 <thead>
                                     <tr>
-                                        <th style={{ color: "black" }}>EMPLOYEE</th>
-                                        <th className="table-center-col" style={{ color: "black", justifyContent: "left" }}>LEAVE DATE</th>
-                                        <th style={{ color: "black" }}>LEAVE REASON</th>
-                                        <th className="table-center-col" style={{ color: "black" }}>STATUS</th>
-                                        <th className="table-actions-col" style={{ color: "black" }}>ACTIONS</th>
+                                        <th>EMPLOYEE</th>
+                                        <th className="table-center-col">LEAVE DATE</th>
+                                        <th>LEAVE REASON</th>
+                                        <th className="table-center-col">STATUS</th>
+                                        <th className="table-actions-col">ACTIONS</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -680,29 +669,24 @@ export default function Attendance() {
                                     ) : (
                                         paginatedLeaves.map((rec) => (
                                             <tr key={rec._id} className="employee-row">
-                                                <td style={{ padding: "4px 8px" }}>
+                                                <td style={{ padding: "8px 12px" }}>
                                                     <div>
-                                                        <p style={{ fontWeight: "700", color: "#1e293b", fontSize: "14px" }}>{rec.employeeId?.firstName} {rec.employeeId?.lastName}</p>
-                                                        <p style={{ fontSize: "11px", color: "#64748b" }}>{rec.employeeId?.employeeId}</p>
+                                                        <p style={{ fontWeight: "700", color: "#172033", fontSize: "14px" }}>{rec.employeeId?.firstName} {rec.employeeId?.lastName}</p>
+                                                        <p style={{ fontSize: "11px", color: "#64748B" }}>{rec.employeeId?.employeeId}</p>
                                                     </div>
                                                 </td>
-                                                <td style={{ padding: "4px 8px", textAlign: "center" }}>
+                                                <td style={{ padding: "8px 12px", textAlign: "center", color: "#172033", fontWeight: "600" }}>
                                                     {formatDate(rec.fromDate)}
                                                     {rec.toDate && rec.toDate !== rec.fromDate ? ` - ${formatDate(rec.toDate)}` : ''}
                                                 </td>
-                                                <td style={{ padding: "4px 8px", color: "#475569", fontSize: "13px" }}>
+                                                <td style={{ padding: "8px 12px", color: "#64748B", fontSize: "13px" }}>
                                                     {rec.reason || "Personal reasons"}
                                                 </td>
-                                                <td style={{ padding: "4px 8px", textAlign: "center" }}>
-                                                    <span style={{
-                                                        padding: "2px 8px",
-                                                        fontSize: "11px",
-                                                        fontWeight: "750",
-                                                        borderRadius: "12px",
-                                                        display: "inline-block",
-                                                        backgroundColor: rec.status === "Approved" ? "#ecfdf5" : rec.status === "Rejected" ? "#fef2f2" : "#fff7ed",
-                                                        color: rec.status === "Approved" ? "#065f46" : rec.status === "Rejected" ? "#b91c1c" : "#ea580c"
-                                                    }}>
+                                                <td className="table-center-col">
+                                                    <span className={`employee-status-badge ${
+                                                        rec.status === "Approved" ? "active" :
+                                                        rec.status === "Rejected" ? "offboarded" : "on-leave"
+                                                    }`}>
                                                         {rec.status || 'Pending'}
                                                     </span>
                                                 </td>
