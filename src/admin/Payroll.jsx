@@ -58,6 +58,22 @@ export default function Payroll() {
             : { "Content-Type": "application/json" };
     }
 
+    const customFetch = async (url, options = {}) => {
+        const res = await fetch(url, {
+            ...options,
+            headers: {
+                ...getHeaders(),
+                ...(options.headers || {})
+            }
+        });
+        if (res.status === 401) {
+            localStorage.removeItem("token");
+            localStorage.removeItem("user");
+            window.location.href = "/";
+        }
+        return res;
+    };
+
     const fetchEmployees = async () => {
         try {
             const res = await fetch(`${API_BASE_URL}/employees`, {

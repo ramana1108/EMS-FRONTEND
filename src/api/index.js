@@ -7,313 +7,239 @@ function authHeaders() {
     : { "Content-Type": "application/json" };
 }
 
-export async function getAdminDashboard() {
-  const res = await fetch(`${API_BASE_URL}/dashboard/admin`, {
-    headers: authHeaders(),
+async function request(endpoint, options = {}) {
+  const res = await fetch(`${API_BASE_URL}${endpoint}`, {
+    ...options,
+    headers: {
+      ...authHeaders(),
+      ...(options.headers || {}),
+    },
   });
+
+  if (res.status === 401) {
+    localStorage.removeItem("token");
+    localStorage.removeItem("user");
+    if (
+      typeof window !== "undefined" &&
+      window.location.pathname !== "/" &&
+      !window.location.pathname.startsWith("/login")
+    ) {
+      window.location.href = "/";
+    }
+  }
+
   return res.json();
+}
+
+export async function getAdminDashboard() {
+  return request("/dashboard/admin");
 }
 
 export async function getEmployeeDashboard(employeeId) {
-  const res = await fetch(`${API_BASE_URL}/dashboard/employee/${employeeId}`, {
-    headers: authHeaders(),
-  });
-  return res.json();
+  return request(`/dashboard/employee/${employeeId}`);
 }
 
 export async function getCurrentEmployeeDashboard() {
-  const res = await fetch(`${API_BASE_URL}/dashboard/employee/me`, {
-    headers: authHeaders(),
-  });
-  return res.json();
+  return request("/dashboard/employee/me");
 }
 
 export async function getAllEmployees() {
-  const res = await fetch(`${API_BASE_URL}/employees`, {
-    headers: authHeaders(),
-  });
-  return res.json();
+  return request("/employees");
 }
 
 export async function getEmployeeById(id) {
-  const res = await fetch(`${API_BASE_URL}/employees/${id}`, {
-    headers: authHeaders(),
-  });
-  return res.json();
+  return request(`/employees/${id}`);
 }
 
 export async function createEmployee(payload) {
-  const res = await fetch(`${API_BASE_URL}/employees`, {
+  return request("/employees", {
     method: "POST",
-    headers: authHeaders(),
     body: JSON.stringify(payload),
   });
-  return res.json();
 }
 
 export async function updateEmployee(id, payload) {
-  const res = await fetch(`${API_BASE_URL}/employees/${id}`, {
+  return request(`/employees/${id}`, {
     method: "PUT",
-    headers: authHeaders(),
     body: JSON.stringify(payload),
   });
-  return res.json();
 }
 
 export async function deleteEmployee(id) {
-  const res = await fetch(`${API_BASE_URL}/employees/${id}`, {
+  return request(`/employees/${id}`, {
     method: "DELETE",
-    headers: authHeaders(),
   });
-  return res.json();
 }
 
 export async function getDepartments() {
-  const res = await fetch(`${API_BASE_URL}/departments`, {
-    headers: authHeaders(),
-  });
-  return res.json();
+  return request("/departments");
 }
 
 export async function createDepartment(payload) {
-  const res = await fetch(`${API_BASE_URL}/departments`, {
+  return request("/departments", {
     method: "POST",
-    headers: authHeaders(),
     body: JSON.stringify(payload),
   });
-  return res.json();
 }
 
 export async function updateDepartment(id, payload) {
-  const res = await fetch(`${API_BASE_URL}/departments/${id}`, {
+  return request(`/departments/${id}`, {
     method: "PUT",
-    headers: authHeaders(),
     body: JSON.stringify(payload),
   });
-  return res.json();
 }
 
 export async function deleteDepartment(id) {
-  const res = await fetch(`${API_BASE_URL}/departments/${id}`, {
+  return request(`/departments/${id}`, {
     method: "DELETE",
-    headers: authHeaders(),
   });
-  return res.json();
 }
 
 export async function getDepartmentEmployees(departmentId) {
-  const res = await fetch(`${API_BASE_URL}/departments/department/${departmentId}`, {
-    headers: authHeaders(),
-  });
-  return res.json();
+  return request(`/departments/department/${departmentId}`);
 }
 
 export async function getDesignations() {
-  const res = await fetch(`${API_BASE_URL}/designations`, {
-    headers: authHeaders(),
-  });
-  return res.json();
+  return request("/designations");
 }
 
 export async function createDesignation(payload) {
-  const res = await fetch(`${API_BASE_URL}/designations`, {
+  return request("/designations", {
     method: "POST",
-    headers: authHeaders(),
     body: JSON.stringify(payload),
   });
-  return res.json();
 }
 
 export async function updateDesignation(id, payload) {
-  const res = await fetch(`${API_BASE_URL}/designations/${id}`, {
+  return request(`/designations/${id}`, {
     method: "PUT",
-    headers: authHeaders(),
     body: JSON.stringify(payload),
   });
-  return res.json();
 }
 
 export async function deleteDesignation(id) {
-  const res = await fetch(`${API_BASE_URL}/designations/${id}`, {
+  return request(`/designations/${id}`, {
     method: "DELETE",
-    headers: authHeaders(),
   });
-  return res.json();
 }
 
 export async function getNotices() {
-  const res = await fetch(`${API_BASE_URL}/notices`, {
-    headers: authHeaders(),
-  });
-  return res.json();
+  return request("/notices");
 }
 
 export async function getPayrolls() {
-  const res = await fetch(`${API_BASE_URL}/payrolls`, {
-    headers: authHeaders(),
-  });
-  return res.json();
+  return request("/payrolls");
 }
 
 export async function getMyPayrolls() {
-  const res = await fetch(`${API_BASE_URL}/payrolls/me`, {
-    headers: authHeaders(),
-  });
-  return res.json();
+  return request("/payrolls/me");
 }
 
 export async function getRoles() {
-  const res = await fetch(`${API_BASE_URL}/roles`, {
-    headers: authHeaders(),
-  });
-  return res.json();
+  return request("/roles");
 }
 
 export async function createRole(payload) {
-  const res = await fetch(`${API_BASE_URL}/roles`, {
+  return request("/roles", {
     method: "POST",
-    headers: authHeaders(),
     body: JSON.stringify(payload),
   });
-  return res.json();
 }
 
 export async function deleteRole(id) {
-  const res = await fetch(`${API_BASE_URL}/roles/${id}`, {
+  return request(`/roles/${id}`, {
     method: "DELETE",
-    headers: authHeaders(),
   });
-  return res.json();
 }
 
 export async function updateRole(id, payload) {
-  const res = await fetch(`${API_BASE_URL}/roles/${id}`, {
+  return request(`/roles/${id}`, {
     method: "PUT",
-    headers: authHeaders(),
     body: JSON.stringify(payload),
   });
-  return res.json();
 }
 
 export async function getAllUsers() {
-  const res = await fetch(`${API_BASE_URL}/auth`, {
-    headers: authHeaders(),
-  });
-  return res.json();
+  return request("/auth");
 }
 
 export async function updateUser(id, payload) {
-  const res = await fetch(`${API_BASE_URL}/auth/${id}`, {
+  return request(`/auth/${id}`, {
     method: "PUT",
-    headers: authHeaders(),
     body: JSON.stringify(payload),
   });
-  return res.json();
 }
 
-
 export async function getSettings() {
-  const res = await fetch(`${API_BASE_URL}/settings`, {
-    headers: authHeaders(),
-  });
-  return res.json();
+  return request("/settings");
 }
 
 export async function createSettings(payload) {
-  const res = await fetch(`${API_BASE_URL}/settings`, {
+  return request("/settings", {
     method: "POST",
-    headers: authHeaders(),
     body: JSON.stringify(payload),
   });
-  return res.json();
 }
 
 export async function updateSettings(id, payload) {
-  const res = await fetch(`${API_BASE_URL}/settings/${id}`, {
+  return request(`/settings/${id}`, {
     method: "PUT",
-    headers: authHeaders(),
     body: JSON.stringify(payload),
   });
-  return res.json();
 }
 
 export async function getAttendance() {
-  const res = await fetch(`${API_BASE_URL}/attendance`, {
-    headers: authHeaders(),
-  });
-  return res.json();
+  return request("/attendance");
 }
 
 export async function getMyAttendance() {
-  const res = await fetch(`${API_BASE_URL}/attendance/me`, {
-    headers: authHeaders(),
-  });
-  return res.json();
+  return request("/attendance/me");
 }
 
 export async function getMyLeaves() {
-  const res = await fetch(`${API_BASE_URL}/leave/me`, {
-    headers: authHeaders(),
-  });
-  return res.json();
+  return request("/leave/me");
 }
 
 export async function applyLeave(payload) {
-  const res = await fetch(`${API_BASE_URL}/leave`, {
+  return request("/leave", {
     method: "POST",
-    headers: authHeaders(),
     body: JSON.stringify(payload),
   });
-  return res.json();
 }
 
 export async function deleteLeave(id) {
-  const res = await fetch(`${API_BASE_URL}/leave/${id}`, {
+  return request(`/leave/${id}`, {
     method: "DELETE",
-    headers: authHeaders(),
   });
-  return res.json();
 }
 
 export async function getAllLeaves() {
-  const res = await fetch(`${API_BASE_URL}/leave`, {
-    headers: authHeaders(),
-  });
-  return res.json();
+  return request("/leave");
 }
 
 export async function updateLeaveStatus(id, payload) {
-  const res = await fetch(`${API_BASE_URL}/leave/${id}`, {
+  return request(`/leave/${id}`, {
     method: "PUT",
-    headers: authHeaders(),
     body: JSON.stringify(payload),
   });
-  return res.json();
 }
 
 export async function registerUser(payload) {
-  const res = await fetch(`${API_BASE_URL}/auth/register`, {
+  return request("/auth/register", {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
     body: JSON.stringify(payload),
   });
-  return res.json();
 }
 
 export async function getNotifications() {
-  const res = await fetch(`${API_BASE_URL}/notifications/me`, {
-    headers: authHeaders(),
-  });
-  return res.json();
+  return request("/notifications/me");
 }
 
 export async function markNotificationsRead(payload) {
-  const res = await fetch(`${API_BASE_URL}/notifications/mark-read`, {
+  return request("/notifications/mark-read", {
     method: "PUT",
-    headers: authHeaders(),
     body: JSON.stringify(payload || { markAll: true }),
   });
-  return res.json();
 }
 
 export default {

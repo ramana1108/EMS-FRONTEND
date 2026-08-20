@@ -46,11 +46,25 @@ export default function Notice() {
             : { "Content-Type": "application/json" };
     }
 
+    const customFetch = async (url, options = {}) => {
+        const res = await fetch(url, {
+            ...options,
+            headers: {
+                ...getHeaders(),
+                ...(options.headers || {})
+            }
+        });
+        if (res.status === 401) {
+            localStorage.removeItem("token");
+            localStorage.removeItem("user");
+            window.location.href = "/";
+        }
+        return res;
+    };
+
     const fetchEmployees = async () => {
         try {
-            const res = await fetch(`${API_BASE_URL}/employees`, {
-                headers: getHeaders(),
-            });
+            const res = await customFetch(`${API_BASE_URL}/employees`);
             const data = await res.json();
             if (res.ok) {
                 setEmployees(data.employees || []);
@@ -62,9 +76,7 @@ export default function Notice() {
 
     const fetchNotices = async () => {
         try {
-            const res = await fetch(`${API_BASE_URL}/notices`, {
-                headers: getHeaders(),
-            });
+            const res = await customFetch(`${API_BASE_URL}/notices`);
             const data = await res.json();
             if (res.ok) {
                 setNotices(data.notices || []);
@@ -96,9 +108,8 @@ export default function Notice() {
         setError("");
         setSuccess("");
         try {
-            const res = await fetch(`${API_BASE_URL}/notices`, {
+            const res = await customFetch(`${API_BASE_URL}/notices`, {
                 method: "POST",
-                headers: getHeaders(),
                 body: JSON.stringify({
                     title: title.trim(),
                     description: description.trim(),
@@ -127,9 +138,8 @@ export default function Notice() {
         setError("");
         setSuccess("");
         try {
-            const res = await fetch(`${API_BASE_URL}/notices/${id}`, {
+            const res = await customFetch(`${API_BASE_URL}/notices/${id}`, {
                 method: "DELETE",
-                headers: getHeaders(),
             });
             const data = await res.json();
             if (res.ok) {
