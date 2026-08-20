@@ -101,8 +101,8 @@ export default function Sidebar({ activeTab, setActiveTab, isOpen, setIsOpen }) 
                 {/* Sidebar Header */}
                 <div className="h-[72px] px-6 border-b border-[#132A46] flex items-center justify-between flex-shrink-0">
                     <div className="flex items-center gap-3">
-                        <div className="p-2.5 bg-[#123F43] rounded-xl border border-[#14B8A6]/30 text-[#14B8A6] shadow-xs">
-                            <Briefcase size={18} />
+                        <div className="p-2.5 bg-[#1E3A8A]/60 rounded-xl border border-[#3B82F6]/40 text-[#60A5FA] shadow-xs">
+                            <Building2 size={18} />
                         </div>
                         <span className="text-lg font-extrabold tracking-tight text-white uppercase tracking-wider">EMS PORTAL</span>
                     </div>
@@ -140,7 +140,7 @@ export default function Sidebar({ activeTab, setActiveTab, isOpen, setIsOpen }) 
                             >
                                 {/* Glow ring on active */}
                                 {isActive && (
-                                    <span className="absolute -left-1.5 top-1/4 bottom-1/4 w-1 bg-[#14B8A6] rounded-full shadow-lg" />
+                                    <span className="absolute -left-1.5 top-1/4 bottom-1/4 w-1 bg-[#3B82F6] rounded-full shadow-lg" />
                                 )}
                                 <Icon
                                     size={18}
@@ -152,29 +152,6 @@ export default function Sidebar({ activeTab, setActiveTab, isOpen, setIsOpen }) 
                         );
                     })}
                 </nav>
-
-                {/* Sidebar Bottom Widget: Employees by Department */}
-                <div className="px-5 py-4 bg-[#081522] border-t border-[#132A46] text-left">
-                    <p className="text-[10px] font-extrabold tracking-widest text-[#14B8A6] uppercase mb-3">
-                        Employees by Dept
-                    </p>
-                    <div className="space-y-2">
-                        {[
-                            { name: "Production", color: "bg-[#2563EB]", val: "83" },
-                            { name: "Sales", color: "bg-[#94A3B8]", val: "50" },
-                            { name: "IT", color: "bg-[#14B8A6]", val: "50" },
-                            { name: "HR/Admin", color: "bg-[#38BDF8]", val: "25" },
-                        ].map((d) => (
-                            <div key={d.name} className="flex items-center justify-between text-xs text-[#CBD5E1] font-semibold">
-                                <div className="flex items-center gap-2">
-                                    <span className={`w-2 h-2 rounded-full ${d.color} shadow-sm`} />
-                                    <span>{d.name}</span>
-                                </div>
-                                <span className="font-mono text-[10px] opacity-75">{d.val}</span>
-                            </div>
-                        ))}
-                    </div>
-                </div>
 
                 {/* Sidebar Footer Profile */}
                 <div className="p-4 border-t border-[#173A5E] bg-[#0F2742] flex items-center justify-between gap-3 text-left">

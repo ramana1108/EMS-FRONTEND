@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { User, Lock, Eye, EyeOff, CheckCircle, AlertCircle, Briefcase } from "lucide-react";
 
 // Use a Vite-friendly env var and proxy it to the backend during development.
-const API_BASE_URL = import.meta.env.VITE_API_URL || "/api";
+const API_BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
 
 function Login() {
     const [username, setUsername] = useState("");
