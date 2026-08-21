@@ -12,6 +12,7 @@ export default function Pagination({
     return null;
   }
 
+  
   const pages = Array.from({ length: totalPages }, (_, index) => index + 1);
 
   return (

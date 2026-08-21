@@ -184,9 +184,10 @@ export default function EmployeeDashboard() {
                         border: "1px solid #E2E8F0"
                       }}
                     >
+                  
                       <div
                         className="announcement-icon"
-                        style={{
+                        style={{ 
                           backgroundColor: "#EAF2FF",
                           color: "#2563EB",
                           padding: "10px",
