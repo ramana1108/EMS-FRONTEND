@@ -167,12 +167,12 @@ export default function Notice() {
     return (
         <div>
             {/* Header */}
-            <div className="page-header" style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "24px" }}>
+            <div className="page-header mb-6 gap-4">
                 <div>
                     <h1 className="dashboard-title">Announcements & Notices</h1>
                     <p className="dashboard-subtitle">Broadcasting corporate announcements and regulatory notifications.</p>
                 </div>
-                <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
+                <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 w-full sm:w-auto">
                     <div style={{ position: "relative", display: "flex", alignItems: "center" }}>
                         <Search size={16} style={{ position: "absolute", left: "12px", color: "#64748b" }} />
                         <input

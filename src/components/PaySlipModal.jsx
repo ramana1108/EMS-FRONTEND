@@ -103,6 +103,15 @@ export default function PaySlipModal({ payroll, user, isOpen, onClose }) {
       padding: "16px"
     }}>
       <style>{`
+        @media (max-width: 640px) {
+          .info-grid {
+            grid-template-columns: 1fr !important;
+          }
+          .header-flex {
+            flex-direction: column !important;
+            gap: 12px !important;
+          }
+        }
         @media print {
           body * {
             visibility: hidden !important;

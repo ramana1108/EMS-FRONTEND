@@ -362,15 +362,15 @@ export default function Attendance() {
     const paginatedLeaves = leaves.slice(leaveStartIndex, leaveStartIndex + itemsPerPage);
 
     return (
-        <div className="p-6">
+        <div className="p-2 sm:p-6">
             {/* Page Header */}
-            <div className="page-header" style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "24px" }}>
+            <div className="page-header mb-6 gap-4">
                 <div>
                     <h1 className="dashboard-title" style={{ color:"black"}}>Attendance & Leaves</h1>
                     <p className="dashboard-subtitle">Track clock-in times, worked hours, and log employee leave requests.</p>
                 </div>
 
-                <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
+                <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 w-full sm:w-auto">
                     {/* Tab Switcher */}
                     <div style={{ display: "flex", backgroundColor: "#e2e8f0", padding: "4px", borderRadius: "8px", gap: "4px" }}>
                         <button

@@ -331,7 +331,7 @@ export default function Roles() {
   return (
     <div>
       {/* Top Header Bar */}
-      <div className="page-header" style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "24px" }}>
+      <div className="page-header mb-6 gap-4">
         <div>
           <h1 className="dashboard-title">Role Management</h1>
           <p className="dashboard-subtitle">Define and monitor system user roles and their active user count.</p>

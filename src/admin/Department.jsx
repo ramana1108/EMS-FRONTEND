@@ -262,7 +262,7 @@ export default function Departments() {
       </div>
 
       {/* Stats Cards Row */}
-      <div className="stats-row" style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: "24px", marginBottom: "24px" }}>
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 mb-6">
         <div className="stat-card stat-card-green">
           <div className="stat-header">
             <div className="stat-icon-box">
@@ -305,14 +305,14 @@ export default function Departments() {
 
       {/* Main Table Card */}
       <div className="table-card" style={{ padding: "24px" }}>
-        <div className="table-header" style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "16px" }}>
+        <div className="table-header flex justify-between items-center mb-4">
           <h3 style={{ margin: 0, color: "#172033", fontSize: "18px", fontWeight: "700" }}>All Departments List</h3>
           <span className="badge-dept-count" style={{ padding: "4px 10px", borderRadius: "12px", backgroundColor: "#EAF2FF", color: "#2563EB", fontSize: "12px", fontWeight: "700", border: "1px solid #D7E7FF" }}>
             {displayedTotalDepartments} Departments
           </span>
         </div>
 
-        <div className="table-wrapper">
+        <div className="table-responsive">
           <table className="employee-table">
             <thead>
               <tr style={{ fontSize: "14px", fontWeight: "600" }}>

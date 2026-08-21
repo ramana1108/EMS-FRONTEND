@@ -169,13 +169,13 @@ export default function Leavemanagement() {
     };
 
     return (
-        <div className="min-h-screen bg-[#F8FAFC] text-[#172033]">
+        <div className="min-h-screen w-full max-w-full overflow-x-hidden bg-[#F8FAFC] text-[#172033]">
             <Sidebar activeTab={activeTab} setActiveTab={setActiveTab} isOpen={isOpen} setIsOpen={setIsOpen} />
 
-            <div className="lg:pl-[260px] flex flex-col min-h-screen">
+            <div className="lg:pl-[260px] w-full max-w-full overflow-x-hidden flex flex-col min-h-screen px-4 py-6 sm:px-8 lg:px-10">
 
                 {/* Mobile Header */}
-                <div className="sticky top-0 z-30 flex items-center justify-between border-b border-[#E2E8F0] bg-white/95 px-4 py-3 backdrop-blur-xl lg:hidden" style={{ minHeight: "60px" }}>
+                <div className="sticky top-0 z-30 flex items-center justify-between border-b border-[#E2E8F0] bg-white/95 px-4 py-3 backdrop-blur-xl lg:hidden mb-4" style={{ minHeight: "60px" }}>
                     <button
                         onClick={() => setIsOpen(true)}
                         className="inline-flex h-11 w-11 items-center justify-center rounded-2xl bg-[#2563EB] text-white shadow-sm"
@@ -187,16 +187,11 @@ export default function Leavemanagement() {
                     <div className="text-sm font-semibold text-[#172033]">EMS Portal</div>
                 </div>
 
-                {/* Top Header Bar */}
-                <div className="emp-top-header flex justify-between items-center mb-8 px-2.5">
-                    <div style={{ visibility: "hidden" }}>Placeholder</div>
-                </div>
-
                 {/* Page Content */}
-                <div style={{ flex: 1, padding: "0 10px" }}>
-                    <div className="page-header flex justify-between items-center mb-6" style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                <div className="flex-1 w-full max-w-full">
+                    <div className="page-header flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4">
                         <div>
-                            <h1 className="dashboard-title text-3xl font-extrabold m-0" style={{ color: "#172033" }}>
+                            <h1 className="dashboard-title text-2xl sm:text-3xl font-extrabold m-0" style={{ color: "#172033" }}>
                                 Leave Management
                             </h1>
                             <p className="dashboard-subtitle text-sm mt-1" style={{ color: "#64748B" }}>Apply for leave and track your requests</p>
