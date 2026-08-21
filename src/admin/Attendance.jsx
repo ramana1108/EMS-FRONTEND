@@ -50,7 +50,7 @@ export default function Attendance() {
     const [filterEmpId, setFilterEmpId] = useState("");
     const [filterDate, setFilterDate] = useState("");
 
-    const API_BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
+    const API_BASE_URL = import.meta.env.VITE_API_URL || "https://ems-backend-zby7.onrender.com";
 
     function getHeaders() {
         const token = localStorage.getItem("token");

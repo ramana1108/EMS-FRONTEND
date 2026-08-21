@@ -50,7 +50,7 @@ export default function Designations() {
     // Modal Control State
     const [isAddModalOpen, setIsAddModalOpen] = useState(false);
 
-    const API_BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
+    const API_BASE_URL = import.meta.env.VITE_API_URL || "https://ems-backend-zby7.onrender.com";
 
     function getHeaders() {
         const token = localStorage.getItem("token");
