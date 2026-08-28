@@ -554,7 +554,7 @@ export default function Settings() {
                 <button
                   type="submit"
                   disabled={loading}
-                  className="btn-primary"
+                  className="btn-save"
                 >
                   {loading ? (
                     <>

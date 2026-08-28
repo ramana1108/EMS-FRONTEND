@@ -911,16 +911,7 @@ export default function Profile() {
                                         <button
                                             type="submit"
                                             disabled={saving}
-                                            style={{
-                                                padding: "10px 18px",
-                                                borderRadius: "8px",
-                                                border: "none",
-                                                backgroundColor: "#2563eb",
-                                                color: "#ffffff",
-                                                fontSize: "14px",
-                                                fontWeight: "600",
-                                                cursor: saving ? "not-allowed" : "pointer",
-                                            }}
+                                            className="btn-save"
                                         >
                                             {saving ? "Saving..." : "Save Changes"}
                                         </button>

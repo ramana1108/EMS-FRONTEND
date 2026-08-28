@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { User, Lock, Eye, EyeOff, CheckCircle, AlertCircle, Briefcase } from "lucide-react";
+import loginImage from "../assets/login-image.png";
 
 // Use a Vite-friendly env var and proxy it to the backend during development.
 const API_BASE_URL = import.meta.env.VITE_API_URL || "https://ems-backend-zby7.onrender.com";
@@ -104,11 +105,13 @@ function Login() {
             {/* Left Decorative/Info Panel */}
             <div className="login-left-panel">
                 <div className="login-left-branding">
-                    <Briefcase size={22} className="text-[#60A5FA]" />
-                    <span className="text-sm font-black tracking-[0.25em] uppercase">EMS PORTAL</span>
+                    <span className="text-sm font-black tracking-[0.25em] uppercase text-white/90">EMS PORTAL</span>
                 </div>
                 <div className="login-left-content">
-                    <h1 className="login-left-title">Employment Management System</h1>
+                    <div className="mb-6">
+                        <img src={loginImage} alt="SAP Employee Management System" className="w-full max-w-md h-auto object-contain rounded-2xl" />
+                    </div>
+                    {/* <h1 className="login-left-title">Employment Management System</h1> */}
                     <p className="login-left-desc">
                         A unified, premium-grade solution for team scheduling, role configuration, access controls, and real-time employee analytics.
                     </p>
@@ -123,8 +126,8 @@ function Login() {
                 <div className="login-right-inner">
                     <div className="card">
                         <div className="mb-8 text-center">
-                            <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-xl bg-[#EAF2FF] text-[#2563EB] border border-[#D7E7FF] shadow-xs">
-                                <Briefcase size={24} />
+                            <div className="mx-auto mb-4 flex items-center justify-center">
+                                <img src={loginImage} alt="Logo" className="h-14 max-w-[200px] object-contain" />
                             </div>
                             <h2 className="text-2xl font-extrabold text-[#172033] tracking-tight">
                                 Welcome Back

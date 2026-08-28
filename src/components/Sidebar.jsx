@@ -101,8 +101,8 @@ export default function Sidebar({ activeTab, setActiveTab, isOpen, setIsOpen }) 
                 {/* Sidebar Header */}
                 <div className="h-[72px] px-6 border-b border-[#132A46] flex items-center justify-between flex-shrink-0">
                     <div className="flex items-center gap-3">
-                        <div className="p-2.5 bg-[#1E3A8A]/60 rounded-xl border border-[#3B82F6]/40 text-[#60A5FA] shadow-xs">
-                            <Building2 size={18} />
+                        <div className="p-1.5 bg-[#1E3A8A]/60 rounded-xl border border-[#3B82F6]/40 shadow-xs flex items-center justify-center">
+                            <img src="/sap-logo-2.png" alt="SAP Logo" className="w-6 h-6 object-contain" />
                         </div>
                         <span className="text-lg font-extrabold tracking-tight text-white uppercase tracking-wider">EMS PORTAL</span>
                     </div>
