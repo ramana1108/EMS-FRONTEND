@@ -1,4 +1,8 @@
 /* App.css - Clean White Business Dashboard + Pastel Palette Theme */
+body{
+  background-color: black
+}
+
 @reference "tailwindcss";
 
 /* Modals & Dialogs */
