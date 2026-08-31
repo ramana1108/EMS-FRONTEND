@@ -102,7 +102,7 @@ function Login() {
 
     return (
         <div className="login-split-container">
-            {/* Left Decorative/Info Panel */}
+            {/* Left Decorative/Branding Panel */}
             <div className="login-left-panel">
                 <div className="login-left-branding">
                     <span className="text-sm font-black tracking-[0.25em] uppercase text-white/90">EMS PORTAL</span>

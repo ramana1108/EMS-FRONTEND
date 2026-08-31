@@ -16,6 +16,7 @@ import {
 } from "lucide-react";
 import api from "../api";
 import NotificationBell from "../components/NotificationBell";
+import PredictiveSearchBar from "../components/PredictiveSearchBar";
 
 // Fallback Stat Cards Data
 const defaultDashboardData = {
@@ -117,35 +118,17 @@ export default function Dashboard() {
 
   return (
     <div>
-      {/* Top Header Bar */}
-      <div className="top-header">
-        <div className="search-box">
-          <Search size={18} color="#64748B" />
-          <input
-            type="text"
-            placeholder="Search Employees, Notices..."
-            className="search-input"
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-          />
-        </div>
-
-        <div className="header-right">
-          <NotificationBell />
-          <div className="admin-profile-badge">
-            <div className="admin-avatar-small">{getInitials(userName)}</div>
-            <span>{getRoleText(user?.role)}</span>
-          </div>
-        </div>
-      </div>
-
       {/* Page Title Header */}
-      <div className="page-header">
+      <div className="page-header flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6">
         <div>
           <h1 className="dashboard-title" style={{ color: "black" }}>Dashboard</h1>
           <p className="dashboard-subtitle">Welcome back, Admin.</p>
         </div>
-        <div className="status-badge">
+
+        {/* Predictive Search Bar with Dropdown */}
+        <PredictiveSearchBar searchTerm={searchTerm} setSearchTerm={setSearchTerm} placeholder="Search Employees, Notices, Departments..." />
+
+        <div className="status-badge hidden xl:block">
           Ready to manage your team
         </div>
       </div>

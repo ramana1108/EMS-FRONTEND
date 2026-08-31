@@ -234,31 +234,18 @@ export default function Departments() {
 
   return (
     <div className="departments-page-container">
-      {/* Top Search & Action Bar */}
-      <div className="top-header" style={{ marginBottom: "24px" }}>
-        <div className="search-box" style={{ display: "flex", alignItems: "center" }}>
-          <Search size={16} className="search-icon" style={{ marginRight: "8px" }} />
-          <input
-            type="text"
-            placeholder="Search Department..."
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-          />
-        </div>
-        <div className="header-right" style={{ display: "flex", alignItems: "center", gap: "16px" }}>
-          <button className="btn-add-dept" onClick={handleOpenAddModal} style={{ display: "flex", alignItems: "center", gap: "6px" }}>
-            <Plus size={16} />
-            <span>Add Department</span>
-          </button>
-        </div>
-      </div>
-
       {/* Page Heading */}
-      <div className="page-header" style={{ marginBottom: "24px" }}>
-        <h1 className="page-title" style={{ color: "#172033" }}>Departments</h1>
-        <p className="page-subtitle" style={{ color: "#64748B", fontSize: "14px" }}>
-          Manage department structures, leadership, and team allocations.
-        </p>
+      <div className="page-header flex justify-between items-center" style={{ marginBottom: "24px" }}>
+        <div>
+          <h1 className="page-title" style={{ color: "#172033" }}>Departments</h1>
+          <p className="page-subtitle" style={{ color: "#64748B", fontSize: "14px" }}>
+            Manage department structures, leadership, and team allocations.
+          </p>
+        </div>
+        <button className="btn-add-dept" onClick={handleOpenAddModal} style={{ display: "flex", alignItems: "center", gap: "6px" }}>
+          <Plus size={16} />
+          <span>Add Department</span>
+        </button>
       </div>
 
       {/* Stats Cards Row */}

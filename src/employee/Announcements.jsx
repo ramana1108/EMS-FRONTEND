@@ -1,6 +1,8 @@
 
 import React, { useState, useEffect } from "react";
-import Sidebar from "../components/Sidebar";
+import Header from "../components/Header";
+import FooterNavigation from "../components/FooterNavigation";
+import PredictiveSearchBar from "../components/PredictiveSearchBar";
 import Pagination from "../components/Pagination";
 import {
     Search,
@@ -156,48 +158,16 @@ export default function Announcements() {
     };
 
     return (
-        <div className="min-h-screen w-full max-w-full overflow-x-hidden bg-[#F8FAFC] text-[#172033]">
-            <Sidebar activeTab={activeTab} setActiveTab={setActiveTab} isOpen={isOpen} setIsOpen={setIsOpen} />
+        <div className="min-h-screen w-full max-w-full overflow-x-hidden bg-[#F8FAFC] text-[#172033] flex flex-col">
+            <Header />
 
-            <div className="lg:pl-[260px] w-full max-w-full overflow-x-hidden flex flex-col min-h-screen px-4 py-6 sm:px-8 lg:px-10">
-
-                {/* Mobile Header */}
-                <div className="sticky top-0 z-30 flex items-center justify-between border-b border-[#E2E8F0] bg-white/95 px-4 py-3 backdrop-blur-xl lg:hidden mb-4" style={{ minHeight: "60px" }}>
-                    <button
-                        onClick={() => setIsOpen(true)}
-                        className="inline-flex h-11 w-11 items-center justify-center rounded-2xl bg-[#2563EB] text-white shadow-sm"
-                        style={{ border: "none", cursor: "pointer" }}
-                        aria-label="Open sidebar"
-                    >
-                        <Menu size={20} />
-                    </button>
-                    <div className="text-sm font-semibold text-[#172033]">EMS Portal</div>
-                </div>
-
-                {/* Top Header Bar */}
-                <div className="emp-top-header mb-4">
-                    <div className="emp-search-box" style={{ backgroundColor: "white" }}>
-                        <Search size={18} color="#64748b" />
-                        <input
-                            type="text"
-                            placeholder="Search Announcements..."
-                            className="emp-search-input"
-                            value={searchTerm}
-                            onChange={(e) => setSearchTerm(e.target.value)}
-                        />
-                    </div>
-                </div>
-
-                {/* Page Content */}
-                <div className="flex-1 w-full max-w-full">
+            <div className="flex-1 w-full max-w-full overflow-x-hidden px-4 py-6 sm:px-8 lg:px-10" style={{ paddingBottom: "calc(5.5rem + env(safe-area-inset-bottom, 0px))" }}>
                     <div className="page-header flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4">
                         <div>
                             <h1 className="dashboard-title text-2xl sm:text-3xl font-extrabold m-0">Announcements</h1>
                             <p className="dashboard-subtitle text-sm mt-1">Stay updated with company news and announcements</p>
                         </div>
-                        <div>
-                            <NotificationBell />
-                        </div>
+                        <PredictiveSearchBar searchTerm={searchTerm} setSearchTerm={setSearchTerm} placeholder="Search Announcements..." />
                     </div>
 
                     {/* List display */}
@@ -288,9 +258,11 @@ export default function Announcements() {
                             startItem={startIndex + 1}
                             endItem={Math.min(startIndex + itemsPerPage, filteredNotices.length)}
                             totalItems={filteredNotices.length}
-                        />                    </div>
-                </div>
+                        />
+                    </div>
             </div>
-        </div >
+
+            <FooterNavigation activeTab={activeTab} setActiveTab={setActiveTab} />
+        </div>
     );
 }

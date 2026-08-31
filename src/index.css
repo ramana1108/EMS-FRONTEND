@@ -38,6 +38,7 @@
 
 :root {
   --sans: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+  --safe-area-bottom: env(safe-area-inset-bottom, 0px);
   font: 15px/1.6 var(--sans);
   letter-spacing: -0.01em;
   color-scheme: light;
@@ -262,39 +263,21 @@ a:hover {
   flex: 1.25;
   position: relative;
   display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  padding: 5rem;
+  align-items: center;
+  justify-content: center;
+  padding: 3rem 2rem;
   z-index: 1;
   box-sizing: border-box;
   background-color: #0F2742 !important;
+  overflow: hidden;
 }
 
-.login-left-content {
-  max-width: 540px;
-  margin: auto 0;
-  text-align: left;
-}
-
-.login-left-title {
-  font-size: 3rem !important;
-  font-weight: 800 !important;
-  color: #FFFFFF !important;
-  line-height: 1.15;
-  margin-bottom: 1.5rem;
-}
-
-.login-left-desc {
-  font-size: 1.1rem;
-  color: #A9B8C8 !important;
-  line-height: 1.7;
-}
-
-.login-left-branding {
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-  color: #60A5FA !important;
+.login-branding-img {
+  width: 100%;
+  height: 100%;
+  max-height: 88vh;
+  object-fit: contain;
+  user-select: none;
 }
 
 .login-right-panel {
@@ -327,13 +310,25 @@ a:hover {
   }
 
   .login-left-panel {
-    display: none;
+    display: flex;
+    width: 100%;
+    min-height: 200px;
+    max-height: 280px;
+    padding: 1.5rem 1rem;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .login-branding-img {
+    max-height: 240px;
+    width: auto;
+    max-width: 100%;
   }
 
   .login-right-panel {
     flex: 1;
-    min-height: 100vh;
-    padding: 2.5rem 1.25rem;
+    min-height: auto;
+    padding: 2rem 1.25rem;
     justify-content: center;
   }
 
@@ -359,4 +354,23 @@ a:hover {
 
 .announcement-list::-webkit-scrollbar-thumb:hover {
   background: #94a3b8;
+}
+
+/* Modal Animations */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes scaleUp {
+  from { opacity: 0; transform: scale(0.95) translateY(10px); }
+  to { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.animate-scale-up {
+  animation: scaleUp 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }

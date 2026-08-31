@@ -95,7 +95,7 @@ export default function Sidebar({ activeTab, setActiveTab, isOpen, setIsOpen }) 
 
             {/* Sidebar Panel */}
             <aside
-                className={`fixed top-0 left-0 bottom-0 z-50 sidebar transition-all duration-300 ease-in-out ${isOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"
+                className={`fixed top-0 left-0 bottom-0 z-50 sidebar transition-all duration-300 ease-in-out ${isOpen ? "translate-x-0" : "-translate-x-full md:translate-x-0"
                     }`}
             >
                 {/* Sidebar Header */}
@@ -104,7 +104,7 @@ export default function Sidebar({ activeTab, setActiveTab, isOpen, setIsOpen }) 
                         <div className="p-1.5 bg-[#1E3A8A]/60 rounded-xl border border-[#3B82F6]/40 shadow-xs flex items-center justify-center">
                             <img src="/sap-logo-2.png" alt="SAP Logo" className="w-6 h-6 object-contain" />
                         </div>
-                        <span className="text-lg font-extrabold tracking-tight text-white uppercase tracking-wider">EMS PORTAL</span>
+                        <span className="text-lg font-extrabold tracking-tight text-white uppercase tracking-wider">SAP</span>
                     </div>
                     {/* Close button for Mobile */}
                     <button

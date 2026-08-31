@@ -70,14 +70,23 @@ function AppContent() {
   const routeToTab = useMemo(
     () => ({
       "/admin/dashboard": "Dashboard",
+      "/dashboard": "Dashboard",
       "/admin/departments": "Departments",
+      "/departments": "Departments",
       "/admin/designations": "Designations",
+      "/designations": "Designations",
       "/admin/employee": "Employees",
+      "/employees": "Employees",
       "/admin/roles": "Roles",
+      "/roles": "Roles",
       "/admin/attendance": "Attendance",
+      "/attendance": "Attendance",
       "/admin/payroll": "Payroll",
+      "/payroll": "Payroll",
       "/admin/notices": "Notices",
+      "/notices": "Notices",
       "/admin/settings": "Settings",
+      "/settings": "Settings",
     }),
     []
   );
@@ -203,6 +212,17 @@ function AppContent() {
           </RequireRole>
         }
       />
+
+      {/* Shorthand Alias Routes */}
+      <Route path="/dashboard" element={<Navigate to="/admin/dashboard" replace />} />
+      <Route path="/departments" element={<Navigate to="/admin/departments" replace />} />
+      <Route path="/designations" element={<Navigate to="/admin/designations" replace />} />
+      <Route path="/employees" element={<Navigate to="/admin/employee" replace />} />
+      <Route path="/roles" element={<Navigate to="/admin/roles" replace />} />
+      <Route path="/attendance" element={<Navigate to="/admin/attendance" replace />} />
+      <Route path="/payroll" element={<Navigate to="/admin/payroll" replace />} />
+      <Route path="/notices" element={<Navigate to="/admin/notices" replace />} />
+      <Route path="/settings" element={<Navigate to="/admin/settings" replace />} />
 
       {/* Department Employees */}
       <Route path="/departments/:id" element={<DepartmentEmployees />} />

@@ -10,7 +10,16 @@ import {
     Trash2,
     Filter,
     Search,
-    X
+    X,
+    Mail,
+    Phone,
+    Calendar,
+    Briefcase,
+    DollarSign,
+    MapPin,
+    ShieldCheck,
+    User,
+    Clock
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
@@ -144,6 +153,21 @@ export default function Employee() {
             return (parts[0][0] + parts[1][0]).toUpperCase();
         }
         return name.slice(0, 2).toUpperCase();
+    };
+
+    const formatDate = (dateStr) => {
+        if (!dateStr) return "N/A";
+        try {
+            const date = new Date(dateStr);
+            if (isNaN(date.getTime())) return dateStr;
+            return date.toLocaleDateString("en-US", {
+                year: "numeric",
+                month: "short",
+                day: "numeric"
+            });
+        } catch (e) {
+            return dateStr;
+        }
     };
 
     // Open Modal for New Employee Enrollment
@@ -411,21 +435,6 @@ export default function Employee() {
 
     return (
         <div>
-            {/* Top Header Bar */}
-            <div className="top-header">
-                <div className="search-box">
-                    <Search size={18} color="#64748b" />
-                    <input
-                        type="text"
-                        placeholder="Search by name, ID, email, role..."
-                        className="search-input"
-                        value={searchTerm}
-                        onChange={(e) => setSearchTerm(e.target.value)}
-                    />
-                </div>
-
-            </div>
-
             {/* Page Title Header */}
             <div className="page-header">
                 <div>
@@ -912,36 +921,235 @@ export default function Employee() {
 
             {/* ================= VIEW EMPLOYEE DETAILS MODAL ================= */}
             {isViewModalOpen && viewingEmployee && (
-                <div className="modal-backdrop">
-                    <div className="modal-content-card view-card">
-                        <div className="modal-header">
-                            <div>
-                                <h2>Employee Profile Details</h2>
-                                <p className="modal-subtitle">Full record for {viewingEmployee.name}</p>
+                <div className="fixed inset-0 z-[9999] flex items-center justify-center p-3 sm:p-6 bg-slate-900/40 backdrop-blur-xs animate-fade-in">
+                    <div className="relative w-full max-w-2xl max-h-[calc(100vh-2.5rem)] sm:max-h-[86vh] bg-white rounded-2xl sm:rounded-3xl shadow-2xl shadow-slate-900/10 overflow-hidden border border-[#E2E8F0] flex flex-col animate-scale-up my-auto">
+                        
+                        {/* Header Banner - Clean SAP Blue Theme */}
+                        <div className="relative bg-gradient-to-r from-[#1E3A8A] to-[#2563EB] p-5 sm:p-6 text-white flex-shrink-0">
+                            {/* Decorative background shapes */}
+                            <div className="absolute top-0 right-0 -mt-8 -mr-8 w-36 h-36 rounded-full bg-white/5 blur-2xl pointer-events-none" />
+                            <div className="absolute bottom-0 left-1/3 -mb-10 w-44 h-44 rounded-full bg-blue-400/10 blur-3xl pointer-events-none" />
+
+                            {/* Top Header Row */}
+                            <div className="flex items-center justify-between mb-4 relative z-10">
+                                <div className="flex items-center gap-2">
+                                    <span className="bg-white/15 p-1.5 rounded-lg text-white">
+                                        <Users size={16} />
+                                    </span>
+                                    <span className="text-xs font-bold uppercase tracking-wider text-blue-100">Employee Details</span>
+                                </div>
+                                <button
+                                    className="p-1.5 rounded-full bg-white/10 hover:bg-white/20 text-white transition-all cursor-pointer active:scale-95"
+                                    onClick={() => setIsViewModalOpen(false)}
+                                    title="Close"
+                                >
+                                    <X size={18} />
+                                </button>
                             </div>
-                            <button className="btn-close" onClick={() => setIsViewModalOpen(false)}>
-                                <X size={20} />
+
+                            {/* Employee Profile Header Row */}
+                            <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 relative z-10">
+                                <div className="w-16 h-16 sm:w-18 sm:h-18 rounded-2xl bg-white/20 border border-white/30 text-white font-black text-xl flex items-center justify-center shadow-md flex-shrink-0">
+                                    {getInitials(viewingEmployee.name)}
+                                </div>
+                                <div className="space-y-1 flex-1 min-w-0">
+                                    <div className="flex items-center gap-2.5 flex-wrap">
+                                        <h2 className="text-xl sm:text-2xl font-black text-white tracking-tight leading-tight truncate">
+                                            {viewingEmployee.name}
+                                        </h2>
+                                        <span className={`inline-flex items-center gap-1.5 px-3 py-0.5 rounded-full text-xs font-bold ${
+                                            viewingEmployee.status?.toLowerCase() === "active" 
+                                                ? "bg-emerald-500/20 text-emerald-100 border border-emerald-400/30" 
+                                                : "bg-amber-500/20 text-amber-100 border border-amber-400/30"
+                                        }`}>
+                                            <span className={`w-2 h-2 rounded-full ${viewingEmployee.status?.toLowerCase() === "active" ? "bg-emerald-400" : "bg-amber-400"}`} />
+                                            {viewingEmployee.status || "Active"}
+                                        </span>
+                                    </div>
+                                    <p className="text-blue-100 text-xs sm:text-sm font-medium flex items-center gap-2 flex-wrap">
+                                        <span>{viewingEmployee.employmentType || viewingEmployee.role || "Employee"}</span>
+                                        <span className="w-1.5 h-1.5 rounded-full bg-blue-300/60 hidden sm:inline-block" />
+                                        <span>{viewingEmployee.department || viewingEmployee.departmentId || "General"}</span>
+                                    </p>
+                                    <div className="pt-0.5 flex items-center gap-2 text-xs">
+                                        <span className="bg-white/15 px-2.5 py-0.5 rounded-md font-mono font-bold text-white">
+                                            {viewingEmployee.employeeId}
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* Scrollable Body Content */}
+                        <div className="p-4 sm:p-6 space-y-5 overflow-y-auto flex-1 bg-[#F8FAFC]">
+                            
+                            {/* Personal & Contact Details */}
+                            <div>
+                                <h3 className="text-xs font-extrabold uppercase tracking-wider text-[#2563EB] mb-2.5 flex items-center gap-2">
+                                    <User size={15} /> Personal & Contact Details
+                                </h3>
+                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                                    {/* Email */}
+                                    <div className="bg-white border border-[#E2E8F0] rounded-xl p-3 shadow-2xs flex items-center gap-3">
+                                        <div className="w-9 h-9 rounded-lg bg-[#EFF6FF] text-[#2563EB] flex items-center justify-center flex-shrink-0">
+                                            <Mail size={17} />
+                                        </div>
+                                        <div className="min-w-0 flex-1">
+                                            <p className="text-[10px] font-bold text-[#64748B] uppercase tracking-wider">Email Address</p>
+                                            <p className="text-xs sm:text-sm font-bold text-[#0F172A] truncate" title={viewingEmployee.email}>
+                                                {viewingEmployee.email || "N/A"}
+                                            </p>
+                                        </div>
+                                    </div>
+
+                                    {/* Phone */}
+                                    <div className="bg-white border border-[#E2E8F0] rounded-xl p-3 shadow-2xs flex items-center gap-3">
+                                        <div className="w-9 h-9 rounded-lg bg-[#EFF6FF] text-[#2563EB] flex items-center justify-center flex-shrink-0">
+                                            <Phone size={17} />
+                                        </div>
+                                        <div className="min-w-0 flex-1">
+                                            <p className="text-[10px] font-bold text-[#64748B] uppercase tracking-wider">Phone Number</p>
+                                            <p className="text-xs sm:text-sm font-bold text-[#0F172A]">
+                                                {viewingEmployee.phone || "N/A"}
+                                            </p>
+                                        </div>
+                                    </div>
+
+                                    {/* Gender */}
+                                    <div className="bg-white border border-[#E2E8F0] rounded-xl p-3 shadow-2xs flex items-center gap-3">
+                                        <div className="w-9 h-9 rounded-lg bg-[#EFF6FF] text-[#2563EB] flex items-center justify-center flex-shrink-0">
+                                            <User size={17} />
+                                        </div>
+                                        <div className="min-w-0 flex-1">
+                                            <p className="text-[10px] font-bold text-[#64748B] uppercase tracking-wider">Gender</p>
+                                            <p className="text-xs sm:text-sm font-bold text-[#0F172A]">
+                                                {viewingEmployee.gender || "N/A"}
+                                            </p>
+                                        </div>
+                                    </div>
+
+                                    {/* Date of Birth */}
+                                    <div className="bg-white border border-[#E2E8F0] rounded-xl p-3 shadow-2xs flex items-center gap-3">
+                                        <div className="w-9 h-9 rounded-lg bg-[#EFF6FF] text-[#2563EB] flex items-center justify-center flex-shrink-0">
+                                            <Calendar size={17} />
+                                        </div>
+                                        <div className="min-w-0 flex-1">
+                                            <p className="text-[10px] font-bold text-[#64748B] uppercase tracking-wider">Date of Birth</p>
+                                            <p className="text-xs sm:text-sm font-bold text-[#0F172A]">
+                                                {formatDate(viewingEmployee.dob)}
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            {/* Employment Details */}
+                            <div>
+                                <h3 className="text-xs font-extrabold uppercase tracking-wider text-[#2563EB] mb-2.5 flex items-center gap-2">
+                                    <Briefcase size={15} /> Employment Details
+                                </h3>
+                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                                    {/* Department */}
+                                    <div className="bg-white border border-[#E2E8F0] rounded-xl p-3 shadow-2xs flex items-center gap-3">
+                                        <div className="w-9 h-9 rounded-lg bg-[#EFF6FF] text-[#2563EB] flex items-center justify-center flex-shrink-0">
+                                            <Building2 size={17} />
+                                        </div>
+                                        <div className="min-w-0 flex-1">
+                                            <p className="text-[10px] font-bold text-[#64748B] uppercase tracking-wider">Department</p>
+                                            <p className="text-xs sm:text-sm font-bold text-[#0F172A]">
+                                                {viewingEmployee.department || viewingEmployee.departmentId || "IT"}
+                                            </p>
+                                        </div>
+                                    </div>
+
+                                    {/* Employment Type */}
+                                    <div className="bg-white border border-[#E2E8F0] rounded-xl p-3 shadow-2xs flex items-center gap-3">
+                                        <div className="w-9 h-9 rounded-lg bg-[#EFF6FF] text-[#2563EB] flex items-center justify-center flex-shrink-0">
+                                            <Briefcase size={17} />
+                                        </div>
+                                        <div className="min-w-0 flex-1">
+                                            <p className="text-[10px] font-bold text-[#64748B] uppercase tracking-wider">Employment Type</p>
+                                            <p className="text-xs sm:text-sm font-bold text-[#0F172A]">
+                                                {viewingEmployee.employmentType || viewingEmployee.role || "Full-time"}
+                                            </p>
+                                        </div>
+                                    </div>
+
+                                    {/* Joining Date */}
+                                    <div className="bg-white border border-[#E2E8F0] rounded-xl p-3 shadow-2xs flex items-center gap-3">
+                                        <div className="w-9 h-9 rounded-lg bg-[#EFF6FF] text-[#2563EB] flex items-center justify-center flex-shrink-0">
+                                            <Clock size={17} />
+                                        </div>
+                                        <div className="min-w-0 flex-1">
+                                            <p className="text-[10px] font-bold text-[#64748B] uppercase tracking-wider">Joining Date</p>
+                                            <p className="text-xs sm:text-sm font-bold text-[#0F172A]">
+                                                {formatDate(viewingEmployee.joiningDate)}
+                                            </p>
+                                        </div>
+                                    </div>
+
+                                    {/* Salary */}
+                                    <div className="bg-white border border-[#E2E8F0] rounded-xl p-3 shadow-2xs flex items-center gap-3">
+                                        <div className="w-9 h-9 rounded-lg bg-[#EFF6FF] text-[#2563EB] flex items-center justify-center flex-shrink-0">
+                                            <DollarSign size={17} />
+                                        </div>
+                                        <div className="min-w-0 flex-1">
+                                            <p className="text-[10px] font-bold text-[#64748B] uppercase tracking-wider">Annual Salary</p>
+                                            <p className="text-xs sm:text-sm font-bold text-[#0F172A]">
+                                                {viewingEmployee.salary ? `$${Number(viewingEmployee.salary).toLocaleString()}` : "N/A"}
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            {/* Residential Address */}
+                            <div>
+                                <h3 className="text-xs font-extrabold uppercase tracking-wider text-[#2563EB] mb-2.5 flex items-center gap-2">
+                                    <MapPin size={15} /> Residential Address
+                                </h3>
+                                <div className="bg-white border border-[#E2E8F0] rounded-xl p-3.5 shadow-2xs flex items-start gap-3">
+                                    <div className="w-9 h-9 rounded-lg bg-[#EFF6FF] text-[#2563EB] flex items-center justify-center flex-shrink-0 mt-0.5">
+                                        <MapPin size={17} />
+                                    </div>
+                                    <div>
+                                        <p className="text-[10px] font-bold text-[#64748B] uppercase tracking-wider">Address</p>
+                                        <p className="text-xs sm:text-sm font-bold text-[#0F172A] leading-relaxed mt-0.5">
+                                            {viewingEmployee.address || "N/A"}
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            {/* Metadata */}
+                            <div className="pt-2 border-t border-[#E2E8F0] flex items-center justify-between text-[11px] text-[#64748B]">
+                                <span className="flex items-center gap-1.5">
+                                    <ShieldCheck size={14} className="text-[#2563EB]" />
+                                    Enrolled by: <strong className="text-[#0F172A]">{viewingEmployee.createdBy?.name || viewingEmployee.createdBy || "Admin"}</strong>
+                                </span>
+                                <span>System Record ID: {viewingEmployee._id || viewingEmployee.employeeId}</span>
+                            </div>
+
+                        </div>
+
+                        {/* Modal Fixed Footer Actions */}
+                        <div className="p-3.5 sm:p-4 bg-white border-t border-[#E2E8F0] flex items-center justify-between gap-3 flex-shrink-0">
+                            <button
+                                className="px-4 py-2 rounded-xl border border-[#E2E8F0] bg-[#F1F5F9] text-[#334155] hover:bg-[#E2E8F0] hover:text-[#0F172A] font-bold text-xs sm:text-sm transition-all cursor-pointer active:scale-95"
+                                onClick={() => setIsViewModalOpen(false)}
+                            >
+                                Close Profile
                             </button>
-                        </div>
-
-                        <div className="profile-details-grid">
-                            <div className="detail-item"><strong>ID:</strong> {viewingEmployee.employeeId}</div>
-                            <div className="detail-item"><strong>Name:</strong> {viewingEmployee.name}</div>
-                            <div className="detail-item"><strong>Email:</strong> {viewingEmployee.email}</div>
-                            <div className="detail-item"><strong>Phone:</strong> {viewingEmployee.phone || "N/A"}</div>
-                            <div className="detail-item"><strong>Gender:</strong> {viewingEmployee.gender || "N/A"}</div>
-                            <div className="detail-item"><strong>Date of Birth:</strong> {viewingEmployee.dob || "N/A"}</div>
-                            <div className="detail-item"><strong>Department:</strong> {viewingEmployee.department || viewingEmployee.departmentId}</div>
-                            <div className="detail-item"><strong>Employment Type:</strong> {viewingEmployee.employmentType || viewingEmployee.role}</div>
-                            <div className="detail-item"><strong>Joining Date:</strong> {viewingEmployee.joiningDate}</div>
-                            <div className="detail-item"><strong>Salary:</strong> ${viewingEmployee.salary || "N/A"}</div>
-                            <div className="detail-item"><strong>Status:</strong> {viewingEmployee.status}</div>
-                            <div className="detail-item"><strong>Created By:</strong> {viewingEmployee.createdBy || "Admin"}</div>
-                            <div className="detail-item full-width"><strong>Address:</strong> {viewingEmployee.address || "N/A"}</div>
-                        </div>
-
-                        <div className="modal-actions">
-                            <button className="btn-cancel" onClick={() => setIsViewModalOpen(false)}>Close</button>
+                            <button
+                                className="px-4 py-2 rounded-xl bg-[#2563EB] hover:bg-[#1D4ED8] text-white font-bold text-xs sm:text-sm shadow-sm shadow-blue-500/20 transition-all cursor-pointer flex items-center gap-2 active:scale-95"
+                                onClick={() => {
+                                    setIsViewModalOpen(false);
+                                    handleEditClick(viewingEmployee);
+                                }}
+                            >
+                                <Edit size={15} />
+                                Edit Record
+                            </button>
                         </div>
                     </div>
                 </div>

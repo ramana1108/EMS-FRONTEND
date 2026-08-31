@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
-import Sidebar from "../components/Sidebar";
+import Header from "../components/Header";
+import FooterNavigation from "../components/FooterNavigation";
 import PaySlipModal from "../components/PaySlipModal";
 import {
     Wallet,
@@ -99,28 +100,10 @@ export default function Payrolls() {
     };
 
     return (
-        <div className="min-h-screen bg-[#F8FAFC] text-[#172033]">
-            <Sidebar activeTab={activeTab} setActiveTab={setActiveTab} isOpen={isOpen} setIsOpen={setIsOpen} />
+        <div className="min-h-screen bg-[#F8FAFC] text-[#172033] flex flex-col">
+            <Header />
 
-            <div className="lg:pl-[260px] flex flex-col min-h-screen">
-
-                {/* Mobile Header */}
-                <div className="sticky top-0 z-30 flex items-center justify-between border-b border-[#E2E8F0] bg-white/95 px-4 py-3 backdrop-blur-xl lg:hidden" style={{ minHeight: "60px" }}>
-                    <button
-                        onClick={() => setIsOpen(true)}
-                        className="inline-flex h-11 w-11 items-center justify-center rounded-2xl bg-[#2563EB] text-white shadow-sm"
-                        style={{ border: "none", cursor: "pointer" }}
-                        aria-label="Open sidebar"
-                    >
-                        <Menu size={20} />
-                    </button>
-                    <div className="text-sm font-semibold text-[#172033]">EMS Portal</div>
-                </div>
-
-                {/* Top Header Bar */}
-                <div className="emp-top-header flex justify-between items-center mb-8 px-2.5">
-                    <div style={{ visibility: "hidden" }}>Placeholder</div>
-                </div>
+            <div className="flex-1 flex flex-col px-4 py-6 sm:px-8 lg:px-10" style={{ paddingBottom: "calc(5.5rem + env(safe-area-inset-bottom, 0px))" }}>
 
                 {/* Page Content */}
                 <div style={{ flex: 1, padding: "0 10px" }}>
@@ -310,6 +293,8 @@ export default function Payrolls() {
                 />
 
             </div>
+
+            <FooterNavigation activeTab={activeTab} setActiveTab={setActiveTab} />
         </div>
     );
 }

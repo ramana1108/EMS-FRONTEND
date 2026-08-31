@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import Sidebar from "../components/Sidebar";
 import {
     Calendar,
     CheckSquare,
@@ -8,14 +7,14 @@ import {
     ChevronLeft,
     ChevronRight,
     Filter,
-    Search,
-    Menu
+    Search
 } from "lucide-react";
 import api from "../api";
+import Header from "../components/Header";
+import FooterNavigation from "../components/FooterNavigation";
 
 export default function Attendance() {
     const [activeTab, setActiveTab] = useState("Attendance");
-    const [isOpen, setIsOpen] = useState(false);
     const [records, setRecords] = useState([]);
     const [filteredRecords, setFilteredRecords] = useState([]);
     const [loading, setLoading] = useState(false);
@@ -131,26 +130,10 @@ export default function Attendance() {
     };
 
     return (
-        <div className="min-h-screen w-full max-w-full overflow-x-hidden bg-[#F8FAFC] text-[#172033]">
-            <Sidebar activeTab={activeTab} setActiveTab={setActiveTab} isOpen={isOpen} setIsOpen={setIsOpen} />
+        <div className="min-h-screen w-full max-w-full overflow-x-hidden bg-[#F8FAFC] text-[#172033] flex flex-col">
+            <Header />
 
-            <div className="lg:pl-[260px] w-full max-w-full overflow-x-hidden flex flex-col min-h-screen px-4 py-6 sm:px-8 lg:px-10">
-
-                {/* Mobile Header */}
-                <div className="sticky top-0 z-30 flex items-center justify-between border-b border-[#E2E8F0] bg-white/95 px-4 py-3 backdrop-blur-xl lg:hidden mb-4" style={{ minHeight: "60px" }}>
-                    <button
-                        onClick={() => setIsOpen(true)}
-                        className="inline-flex h-11 w-11 items-center justify-center rounded-2xl bg-[#2563EB] text-white shadow-sm"
-                        style={{ border: "none", cursor: "pointer" }}
-                        aria-label="Open sidebar"
-                    >
-                        <Menu size={20} />
-                    </button>
-                    <div className="text-sm font-semibold text-[#172033]">EMS Portal</div>
-                </div>
-
-                {/* Page Content */}
-                <div className="flex-1 w-full max-w-full">
+            <div className="flex-1 w-full max-w-full overflow-x-hidden px-4 py-6 sm:px-8 lg:px-10" style={{ paddingBottom: "calc(5.5rem + env(safe-area-inset-bottom, 0px))" }}>
                     <div className="page-header flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4">
                         <div>
                             <h1 className="dashboard-title text-2xl sm:text-3xl font-extrabold m-0" style={{ color: "#172033" }}>Attendance</h1>
@@ -388,9 +371,10 @@ export default function Attendance() {
                         )
                         }
 
-                    </div >
-                </div >
-            </div >
-        </div >
+                    </div>
+                </div>
+
+            <FooterNavigation activeTab={activeTab} setActiveTab={setActiveTab} />
+        </div>
     );
 }

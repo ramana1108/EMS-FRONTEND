@@ -1,20 +1,12 @@
 
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import Sidebar from "../components/Sidebar";
-import {
-  Search,
-  Calendar,
-  DollarSign,
-  TrendingUp,
-  Megaphone
-} from "lucide-react";
-import api from "../api";
-import NotificationBell from "../components/NotificationBell";
+import FooterNavigation from "../components/FooterNavigation";
+import Header from "../components/Header";
+import PredictiveSearchBar from "../components/PredictiveSearchBar";
 
 export default function EmployeeDashboard() {
   const [activeTab, setActiveTab] = useState("Dashboard");
-  const [isOpen, setIsOpen] = useState(false);
   const [dashboard, setDashboard] = useState(null);
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
@@ -66,41 +58,16 @@ export default function EmployeeDashboard() {
   });
 
   return (
-    <div className="min-h-screen bg-[#F8FAFC] text-[#172033]">
-      <Sidebar activeTab={activeTab} setActiveTab={setActiveTab} isOpen={isOpen} setIsOpen={setIsOpen} />
+    <div className="min-h-screen bg-[#F8FAFC] text-[#172033] flex flex-col">
+      <Header />
 
-      <div className="lg:pl-[260px]">
-        <div className="sticky top-0 z-30 flex items-center justify-between border-b border-[#E2E8F0] bg-white/95 px-4 py-3 backdrop-blur-xl lg:hidden">
-          <button
-            onClick={() => setIsOpen(true)}
-            className="inline-flex h-11 w-11 items-center justify-center rounded-2xl bg-[#2563EB] text-white shadow-sm"
-            aria-label="Open sidebar"
-          >
-            <span className="text-lg font-bold">☰</span>
-          </button>
-          <div className="text-sm font-semibold text-[#172033]">Employee Dashboard</div>
-        </div>
-
-        <main className="emp-main-content px-4 py-6 sm:px-6 lg:px-8">
-          <div className="emp-top-header">
-            <div className="emp-search-box">
-              <Search size={18} color="#64748B" />
-              <input
-                type="text"
-                placeholder="Search Announcements..."
-                className="emp-search-input"
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-              />
+      <main className="emp-main-content px-4 py-6 sm:px-6 lg:px-8 flex-1" style={{ paddingBottom: "calc(5.5rem + env(safe-area-inset-bottom, 0px))" }}>
+          <div className="mb-6 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+            <div>
+              <h1 className="text-2xl sm:text-3xl font-extrabold text-[#172033] m-0">Employee Dashboard</h1>
+              <p className="text-sm text-[#64748B] mt-1">Welcome back, {employeeName}.</p>
             </div>
-
-            <div className="flex items-center gap-3" style={{ display: "flex", alignItems: "center", gap: "12px" }}>
-              <NotificationBell />
-              <div className="emp-user-profile-badge">
-                <div className="emp-avatar-circle">{employeeInitials}</div>
-                <span>{employeeName}</span>
-              </div>
-            </div>
+            <PredictiveSearchBar searchTerm={searchTerm} setSearchTerm={setSearchTerm} placeholder="Search Announcements..." />
           </div>
 
           <div className="emp-stats-grid">
@@ -260,7 +227,8 @@ export default function EmployeeDashboard() {
             </div>
           </div>
         </main>
-      </div>
+
+      <FooterNavigation activeTab={activeTab} setActiveTab={setActiveTab} />
     </div>
   );
 }
