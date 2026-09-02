@@ -1,6 +1,21 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { User, Lock, Eye, EyeOff, CheckCircle, AlertCircle } from "lucide-react";
+import {
+    User,
+    Mail,
+    Lock,
+    Eye,
+    EyeOff,
+    CheckCircle,
+    AlertCircle,
+    Calendar,
+    ShieldCheck,
+    BarChart3,
+    ArrowRight,
+    Users,
+    Briefcase
+} from "lucide-react";
+import loginImage from "../assets/login-image.png";
 import sapLogo from "../assets/image.png";
 
 // Use a Vite-friendly env var and proxy it to the backend during development.
@@ -10,6 +25,7 @@ function Login() {
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
     const [showPassword, setShowPassword] = useState(false);
+    const [rememberMe, setRememberMe] = useState(true);
     const [error, setError] = useState("");
     const [success, setSuccess] = useState("");
     const [loading, setLoading] = useState(false);
@@ -56,8 +72,6 @@ function Login() {
                 })
             });
 
-            // Guard against non-JSON responses (e.g. a 502 from Vite's proxy
-            // when the backend is unreachable, or any other HTML/empty body).
             let data;
             try {
                 data = await res.json();
@@ -101,98 +115,192 @@ function Login() {
     };
 
     return (
-        <div className="min-h-screen w-full flex flex-col lg:flex-row bg-[#F8FAFC]">
-            {/* Left Section: Dark Navy Background with ONLY image.png */}
-            <div className="w-full lg:w-[55%] bg-[#0B1D33] p-6 sm:p-12 flex items-center justify-center min-h-[300px] lg:min-h-screen relative overflow-hidden">
-                <img
-                    src={sapLogo}
-                    alt="SAP"
-                    className="w-full max-w-lg sm:max-w-xl max-h-[85vh] object-contain rounded-3xl"
-                    style={{
-                        maskImage: "radial-gradient(ellipse at center, black 60%, transparent 98%)",
-                        WebkitMaskImage: "radial-gradient(ellipse at center, black 60%, transparent 98%)"
-                    }}
-                />
+        <div className="w-full min-h-screen flex flex-col lg:flex-row bg-[#F7F9FC] font-sans antialiased overflow-x-hidden">
+            {/* LEFT SIDE — BRANDING / PRODUCT INTRO */}
+            <div className="w-full lg:w-[56%] bg-[#061A35] relative flex flex-col justify-between p-6 sm:p-10 lg:p-12 text-white overflow-hidden select-none min-h-[480px] lg:min-h-screen">
+                {/* Ambient Decorative Background Waves & Glow */}
+                <div className="absolute inset-0 bg-gradient-to-br from-[#051329] via-[#092244] to-[#0A1A33] z-0"></div>
+                <div className="absolute top-0 right-0 w-96 h-96 bg-blue-500/10 rounded-full blur-3xl pointer-events-none"></div>
+                <div className="absolute bottom-0 left-0 right-0 h-96 bg-gradient-to-t from-blue-600/20 via-blue-500/5 to-transparent pointer-events-none z-0"></div>
+
+                {/* Background Grid Pattern Overlay */}
+                <div className="absolute inset-0 bg-[linear-gradient(to_right,#ffffff08_1px,transparent_1px),linear-gradient(to_bottom,#ffffff08_1px,transparent_1px)] bg-[size:32px_32px] pointer-events-none z-0"></div>
+
+                {/* Top Branding Bar */}
+                <div className="relative z-10 flex items-center justify-between">
+                    <div className="flex items-center gap-3">
+                        <div className="w-9 h-9 rounded-full bg-blue-500/15 border border-blue-400/30 flex items-center justify-center text-blue-400 shadow-[0_0_15px_rgba(59,130,246,0.2)]">
+                            <Users size={18} />
+                        </div>
+                        <div>
+                            <div className="text-xs font-black tracking-[0.2em] text-white uppercase leading-tight">EMS</div>
+                            <div className="text-xs font-black tracking-[0.2em] text-blue-400 uppercase leading-tight">PORTAL</div>
+                            <div className="w-5 h-[2px] bg-blue-500 rounded-full mt-1"></div>
+                        </div>
+                    </div>
+                    <div className="hidden sm:block text-[11px] font-semibold uppercase tracking-widest text-slate-400/80 bg-white/5 border border-white/10 px-3 py-1 rounded-full">
+                        Enterprise Edition
+                    </div>
+                </div>
+
+                {/* Center Banner / Logo & Features */}
+                <div className="relative z-10 my-auto py-8 text-center flex flex-col items-center justify-center">
+                    {/* Metallic 3D Logo Section */}
+                    <div className="relative group max-w-md mx-auto mb-6 flex flex-col items-center">
+                        <div className="absolute -inset-6 rounded-full bg-blue-500/15 blur-3xl group-hover:bg-blue-500/25 transition-all duration-500"></div>
+
+                        <div className="relative flex flex-col items-center">
+                            {/* SAP Brand Typography */}
+                            <div className="flex items-center justify-center mb-1">
+                                <span className="text-6xl sm:text-7xl lg:text-8xl font-black tracking-tighter bg-gradient-to-b from-white via-slate-100 to-slate-400 bg-clip-text text-transparent drop-shadow-[0_10px_25px_rgba(0,0,0,0.6)] font-serif italic">
+                                    S<span className="text-blue-400 not-italic font-sans inline-block transform -skew-x-6">A</span>P
+                                </span>
+                            </div>
+
+                            <div className="text-xs sm:text-sm lg:text-base font-extrabold tracking-[0.35em] text-slate-200 uppercase mt-1 drop-shadow-md">
+                                EMPLOYEE
+                            </div>
+
+                            {/* Sub-bar Divider */}
+                            <div className="flex items-center gap-3 w-full my-2.5 max-w-[280px]">
+                                <div className="h-[1px] flex-1 bg-gradient-to-r from-transparent via-blue-400/50 to-transparent"></div>
+                                <span className="text-[10px] sm:text-[11px] font-black tracking-[0.25em] text-blue-300 uppercase">MANAGEMENT SYSTEM</span>
+                                <div className="h-[1px] flex-1 bg-gradient-to-r from-transparent via-blue-400/50 to-transparent"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* Glassmorphism Feature Cards Bar */}
+                    <div className="w-full max-w-xl mx-auto mt-4 bg-white/[0.04] backdrop-blur-xl border border-white/10 rounded-2xl p-4 sm:p-5 shadow-[0_20px_40px_rgba(0,0,0,0.3)]">
+                        <div className="grid grid-cols-2 sm:grid-cols-4 divide-y sm:divide-y-0 sm:divide-x divide-white/10 gap-3 sm:gap-0">
+                            {/* 1. Team Scheduling */}
+                            <div className="flex flex-col items-center justify-center p-2 text-center group">
+                                <div className="w-10 h-10 rounded-xl bg-blue-500/10 border border-blue-400/20 flex items-center justify-center text-blue-400 mb-2 group-hover:scale-110 group-hover:bg-blue-500/20 transition-all">
+                                    <Calendar size={18} />
+                                </div>
+                                <span className="text-xs font-bold text-slate-200 tracking-tight">Team Scheduling</span>
+                            </div>
+
+                            {/* 2. Role Configuration */}
+                            <div className="flex flex-col items-center justify-center p-2 text-center group">
+                                <div className="w-10 h-10 rounded-xl bg-blue-500/10 border border-blue-400/20 flex items-center justify-center text-blue-400 mb-2 group-hover:scale-110 group-hover:bg-blue-500/20 transition-all">
+                                    <Briefcase size={18} />
+                                </div>
+                                <span className="text-xs font-bold text-slate-200 tracking-tight">Role Configuration</span>
+                            </div>
+
+                            {/* 3. Access Controls */}
+                            <div className="flex flex-col items-center justify-center p-2 text-center group">
+                                <div className="w-10 h-10 rounded-xl bg-blue-500/10 border border-blue-400/20 flex items-center justify-center text-blue-400 mb-2 group-hover:scale-110 group-hover:bg-blue-500/20 transition-all">
+                                    <Lock size={18} />
+                                </div>
+                                <span className="text-xs font-bold text-slate-200 tracking-tight">Access Controls</span>
+                            </div>
+
+                            {/* 4. Real-time Analytics */}
+                            <div className="flex flex-col items-center justify-center p-2 text-center group">
+                                <div className="w-10 h-10 rounded-xl bg-blue-500/10 border border-blue-400/20 flex items-center justify-center text-blue-400 mb-2 group-hover:scale-110 group-hover:bg-blue-500/20 transition-all">
+                                    <BarChart3 size={18} />
+                                </div>
+                                <span className="text-xs font-bold text-slate-200 tracking-tight">Real-time Analytics</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* Description Text */}
+                    <p className="mt-7 text-xs sm:text-sm text-slate-300/80 max-w-md mx-auto leading-relaxed font-medium">
+                        A unified, premium-grade solution for team scheduling, role configuration, access controls, and real-time employee analytics.
+                    </p>
+                </div>
+
+                {/* Left Footer */}
+                <div className="relative z-10 flex items-center justify-between text-xs text-slate-400/70 font-semibold pt-4 border-t border-white/5">
+                    <div className="flex items-center gap-2">
+                        <ShieldCheck size={15} className="text-blue-400/90" />
+                        <span>© 2026 EMS Corporate. All rights reserved.</span>
+                    </div>
+                    <span className="hidden md:inline text-[11px] text-slate-500">v2.4.0 High Sec</span>
+                </div>
             </div>
 
-            {/* Right Section: Intact Authentication Form Panel */}
-            <div className="w-full lg:w-[45%] p-6 sm:p-12 lg:p-16 flex flex-col items-center justify-center bg-[#F8FAFC]">
-                <div className="w-full max-w-md bg-white rounded-3xl p-8 sm:p-10 shadow-xl shadow-slate-200/50 border border-[#E2E8F0] space-y-6">
-                    
-                    {/* Header Logo & Welcome text */}
-                    <div className="text-center space-y-2">
-                        <div className="flex justify-center mb-3">
-                            <img src={sapLogo} alt="SAP Logo" className="h-12 w-auto object-contain rounded-xl shadow-xs" />
+            {/* RIGHT SIDE — LOGIN CARD */}
+            <div className="w-full lg:w-[44%] bg-[#F7F9FC] relative flex flex-col items-center justify-center p-5 sm:p-10 lg:p-12 min-h-screen overflow-y-auto">
+                {/* Subtle Dotted Matrix Pattern & Decorative Background Flares */}
+                <div className="absolute inset-0 bg-[radial-gradient(#CBD5E1_1px,transparent_1px)] [background-size:24px_24px] opacity-40 pointer-events-none z-0"></div>
+                <div className="absolute -top-24 -right-24 w-96 h-96 bg-blue-400/10 rounded-full blur-3xl pointer-events-none"></div>
+                <div className="absolute -bottom-24 -left-24 w-96 h-96 bg-indigo-400/10 rounded-full blur-3xl pointer-events-none"></div>
+
+                {/* Floating White Login Card */}
+                <div className="w-full max-w-[460px] bg-white rounded-3xl p-7 sm:p-10 shadow-[0_20px_60px_-15px_rgba(15,23,42,0.08)] border border-slate-100/90 relative z-10 my-auto">
+                    {/* Header */}
+                    <div className="flex flex-col items-center mb-8 text-center">
+                        <div className="w-14 h-14 rounded-2xl bg-[#081B33] p-2.5 flex items-center justify-center shadow-md mb-4 ring-4 ring-blue-500/10">
+                            <img src={sapLogo} alt="SAP Logo" className="w-full h-full object-contain filter brightness-125" />
                         </div>
                         <h2 className="text-2xl sm:text-3xl font-extrabold text-[#0F172A] tracking-tight">
                             Welcome Back
                         </h2>
-                        <p className="text-xs sm:text-sm font-semibold text-[#64748B]">
-                            Enter your credentials to access your workspace.
+                        <p className="mt-1.5 text-xs sm:text-sm font-medium text-slate-500">
+                            Sign in to access your workspace
                         </p>
                     </div>
 
-                    {/* Alert Banners */}
+                    {/* Feedback Alerts */}
                     {error && (
-                        <div className="flex items-start gap-3 rounded-2xl border border-[#FECACA] bg-[#FEECEC] p-4 text-xs sm:text-sm font-semibold text-[#DC2626] animate-fade-in">
-                            <AlertCircle size={18} className="mt-0.5 shrink-0 text-[#DC2626]" />
+                        <div className="mb-6 flex items-start gap-3 rounded-xl border border-red-200 bg-red-50/80 px-4 py-3 text-xs sm:text-sm font-semibold text-red-600 animate-fade-in">
+                            <AlertCircle size={17} className="mt-0.5 shrink-0 text-red-500" />
                             <span>{error}</span>
                         </div>
                     )}
 
                     {success && (
-                        <div className="flex items-start gap-3 rounded-2xl border border-[#D5F2E9] bg-[#E8F8F3] p-4 text-xs sm:text-sm font-semibold text-[#087F72] animate-fade-in">
-                            <CheckCircle size={18} className="mt-0.5 shrink-0 text-[#087F72]" />
+                        <div className="mb-6 flex items-start gap-3 rounded-xl border border-emerald-200 bg-emerald-50/80 px-4 py-3 text-xs sm:text-sm font-semibold text-emerald-700 animate-fade-in">
+                            <CheckCircle size={17} className="mt-0.5 shrink-0 text-emerald-600" />
                             <span>{success}</span>
                         </div>
                     )}
 
                     {/* Login Form */}
                     <form onSubmit={handleLogin} className="space-y-5">
-                        <div className="space-y-2">
-                            <label className="text-xs font-bold uppercase tracking-wider text-[#334155]">
-                                Email Address
+                        {/* Email Input */}
+                        <div>
+                            <label className="text-[11px] font-bold text-slate-600 tracking-wider uppercase mb-2 block">
+                                EMAIL ADDRESS
                             </label>
                             <div className="relative flex items-center">
-                                <span className="absolute left-4 text-[#94A3B8] pointer-events-none">
-                                    <User size={18} />
-                                </span>
+                                <Mail size={18} className="absolute left-3.5 text-slate-400 pointer-events-none" />
                                 <input
                                     type="email"
-                                    className="w-full bg-white border border-[#D8E0EA] focus:border-[#2563EB] focus:ring-3 focus:ring-blue-500/15 text-[#0F172A] pl-11 pr-4 py-3 rounded-xl text-sm font-medium outline-none transition-all placeholder:text-[#94A3B8]"
+                                    required
                                     placeholder="name@company.com"
                                     value={username}
                                     onChange={(e) => setUsername(e.target.value)}
-                                    required
+                                    className="w-full pl-11 pr-4 py-3 rounded-xl border border-slate-200 text-sm font-medium text-slate-800 placeholder-slate-400 bg-white focus:outline-none focus:border-blue-600 focus:ring-4 focus:ring-blue-500/10 transition-all"
                                 />
                             </div>
                         </div>
 
-                        <div className="space-y-2">
-                            <div className="flex items-center justify-between">
-                                <label className="text-xs font-bold uppercase tracking-wider text-[#334155]">
-                                    Password
+                        {/* Password Input */}
+                        <div>
+                            <div className="flex items-center justify-between mb-2">
+                                <label className="text-[11px] font-bold text-slate-600 tracking-wider uppercase block">
+                                    PASSWORD
                                 </label>
-                                <a href="#" className="text-xs font-bold text-[#2563EB] hover:text-[#1D4ED8] transition-colors">
-                                    Forgot password?
-                                </a>
                             </div>
                             <div className="relative flex items-center">
-                                <span className="absolute left-4 text-[#94A3B8] pointer-events-none">
-                                    <Lock size={18} />
-                                </span>
+                                <Lock size={18} className="absolute left-3.5 text-slate-400 pointer-events-none" />
                                 <input
                                     type={showPassword ? "text" : "password"}
-                                    className="w-full bg-white border border-[#D8E0EA] focus:border-[#2563EB] focus:ring-3 focus:ring-blue-500/15 text-[#0F172A] pl-11 pr-12 py-3 rounded-xl text-sm font-medium outline-none transition-all placeholder:text-[#94A3B8]"
+                                    required
                                     placeholder="••••••••"
                                     value={password}
                                     onChange={(e) => setPassword(e.target.value)}
-                                    required
+                                    className="w-full pl-11 pr-11 py-3 rounded-xl border border-slate-200 text-sm font-medium text-slate-800 placeholder-slate-400 bg-white focus:outline-none focus:border-blue-600 focus:ring-4 focus:ring-blue-500/10 transition-all"
                                 />
                                 <button
                                     type="button"
                                     onClick={() => setShowPassword(!showPassword)}
-                                    className="absolute right-4 text-[#94A3B8] hover:text-[#0F172A] transition-colors cursor-pointer"
+                                    className="absolute right-3.5 text-slate-400 hover:text-slate-600 p-1 cursor-pointer transition-colors"
                                     title={showPassword ? "Hide password" : "Show password"}
                                 >
                                     {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
@@ -200,15 +308,16 @@ function Login() {
                             </div>
                         </div>
 
+                        {/* Submit Button */}
                         <button
                             type="submit"
-                            className="w-full bg-[#2563EB] hover:bg-[#1D4ED8] active:scale-[0.99] text-white font-bold py-3.5 px-4 rounded-xl text-sm shadow-md shadow-blue-500/20 transition-all cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed mt-2"
                             disabled={loading}
+                            className="w-full py-3.5 px-6 rounded-xl bg-blue-600 hover:bg-blue-700 active:bg-blue-800 text-white font-bold text-sm shadow-lg shadow-blue-500/25 flex items-center justify-center gap-2 transition-all cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed group mt-2"
                         >
-                            {loading ? "Signing In..." : "Sign In"}
+                            <span>{loading ? "Signing in..." : "Sign In"}</span>
+                            <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />
                         </button>
                     </form>
-
                 </div>
             </div>
         </div>
