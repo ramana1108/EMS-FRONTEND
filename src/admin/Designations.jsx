@@ -14,6 +14,7 @@ import {
     X,
     Search
 } from "lucide-react";
+import PredictiveSearchBar from "../components/PredictiveSearchBar";
 
 export default function Designations() {
     const location = useLocation();
@@ -248,7 +249,7 @@ export default function Designations() {
     return (
         <div className="p-2 sm:p-6">
             {/* Page Title & View Toggle */}
-            <div className="page-header mb-6 gap-4">
+            <div className="page-header flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6">
                 <div>
                     <h1 className="dashboard-title">
                         {activeView === "departments" ? "Departments" : "Designations"}
@@ -259,6 +260,7 @@ export default function Designations() {
                             : "Manage and assign organizational job designations."}
                     </p>
                 </div>
+                <PredictiveSearchBar placeholder="Search Employees, Notices, Departments..." />
                 <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 w-full sm:w-auto">
                     <div style={{ position: "relative", display: "flex", alignItems: "center" }}>
                         <Search size={16} style={{ position: "absolute", left: "12px", color: "#64748b" }} />

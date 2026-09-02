@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { User, Lock, Eye, EyeOff, CheckCircle, AlertCircle, Briefcase } from "lucide-react";
-import loginImage from "../assets/login-image.png";
+import { User, Lock, Eye, EyeOff, CheckCircle, AlertCircle } from "lucide-react";
+import sapLogo from "../assets/image.png";
 
 // Use a Vite-friendly env var and proxy it to the backend during development.
 const API_BASE_URL = import.meta.env.VITE_API_URL || "https://ems-backend-zby7.onrender.com";
@@ -101,108 +101,114 @@ function Login() {
     };
 
     return (
-        <div className="login-split-container">
-            {/* Left Decorative/Branding Panel */}
-            <div className="login-left-panel">
-                <div className="login-left-branding">
-                    <span className="text-sm font-black tracking-[0.25em] uppercase text-white/90">EMS PORTAL</span>
-                </div>
-                <div className="login-left-content">
-                    <div className="mb-6">
-                        <img src={loginImage} alt="SAP Employee Management System" className="w-full max-w-md h-auto object-contain rounded-2xl" />
-                    </div>
-                    {/* <h1 className="login-left-title">Employment Management System</h1> */}
-                    <p className="login-left-desc">
-                        A unified, premium-grade solution for team scheduling, role configuration, access controls, and real-time employee analytics.
-                    </p>
-                </div>
-                <div className="text-xs text-white/50 font-bold tracking-wider">
-                    © 2026 EMS Corporate. All rights reserved.
-                </div>
+        <div className="min-h-screen w-full flex flex-col lg:flex-row bg-[#F8FAFC]">
+            {/* Left Section: Dark Navy Background with ONLY image.png */}
+            <div className="w-full lg:w-[55%] bg-[#0B1D33] p-6 sm:p-12 flex items-center justify-center min-h-[300px] lg:min-h-screen relative overflow-hidden">
+                <img
+                    src={sapLogo}
+                    alt="SAP"
+                    className="w-full max-w-lg sm:max-w-xl max-h-[85vh] object-contain rounded-3xl"
+                    style={{
+                        maskImage: "radial-gradient(ellipse at center, black 60%, transparent 98%)",
+                        WebkitMaskImage: "radial-gradient(ellipse at center, black 60%, transparent 98%)"
+                    }}
+                />
             </div>
 
-            {/* Right Authentication Panel */}
-            <div className="login-right-panel">
-                <div className="login-right-inner">
-                    <div className="card">
-                        <div className="mb-8 text-center">
-                            <div className="mx-auto mb-4 flex items-center justify-center">
-                                <img src={loginImage} alt="Logo" className="h-14 max-w-[200px] object-contain" />
+            {/* Right Section: Intact Authentication Form Panel */}
+            <div className="w-full lg:w-[45%] p-6 sm:p-12 lg:p-16 flex flex-col items-center justify-center bg-[#F8FAFC]">
+                <div className="w-full max-w-md bg-white rounded-3xl p-8 sm:p-10 shadow-xl shadow-slate-200/50 border border-[#E2E8F0] space-y-6">
+                    
+                    {/* Header Logo & Welcome text */}
+                    <div className="text-center space-y-2">
+                        <div className="flex justify-center mb-3">
+                            <img src={sapLogo} alt="SAP Logo" className="h-12 w-auto object-contain rounded-xl shadow-xs" />
+                        </div>
+                        <h2 className="text-2xl sm:text-3xl font-extrabold text-[#0F172A] tracking-tight">
+                            Welcome Back
+                        </h2>
+                        <p className="text-xs sm:text-sm font-semibold text-[#64748B]">
+                            Enter your credentials to access your workspace.
+                        </p>
+                    </div>
+
+                    {/* Alert Banners */}
+                    {error && (
+                        <div className="flex items-start gap-3 rounded-2xl border border-[#FECACA] bg-[#FEECEC] p-4 text-xs sm:text-sm font-semibold text-[#DC2626] animate-fade-in">
+                            <AlertCircle size={18} className="mt-0.5 shrink-0 text-[#DC2626]" />
+                            <span>{error}</span>
+                        </div>
+                    )}
+
+                    {success && (
+                        <div className="flex items-start gap-3 rounded-2xl border border-[#D5F2E9] bg-[#E8F8F3] p-4 text-xs sm:text-sm font-semibold text-[#087F72] animate-fade-in">
+                            <CheckCircle size={18} className="mt-0.5 shrink-0 text-[#087F72]" />
+                            <span>{success}</span>
+                        </div>
+                    )}
+
+                    {/* Login Form */}
+                    <form onSubmit={handleLogin} className="space-y-5">
+                        <div className="space-y-2">
+                            <label className="text-xs font-bold uppercase tracking-wider text-[#334155]">
+                                Email Address
+                            </label>
+                            <div className="relative flex items-center">
+                                <span className="absolute left-4 text-[#94A3B8] pointer-events-none">
+                                    <User size={18} />
+                                </span>
+                                <input
+                                    type="email"
+                                    className="w-full bg-white border border-[#D8E0EA] focus:border-[#2563EB] focus:ring-3 focus:ring-blue-500/15 text-[#0F172A] pl-11 pr-4 py-3 rounded-xl text-sm font-medium outline-none transition-all placeholder:text-[#94A3B8]"
+                                    placeholder="name@company.com"
+                                    value={username}
+                                    onChange={(e) => setUsername(e.target.value)}
+                                    required
+                                />
                             </div>
-                            <h2 className="text-2xl font-extrabold text-[#172033] tracking-tight">
-                                Welcome Back
-                            </h2>
-                            <p className="mt-2 text-xs font-semibold text-[#64748B]">Enter your credentials to access your workspace.</p>
                         </div>
 
-                        {error && (
-                            <div className="mb-5 flex items-start gap-3 rounded-xl border border-[#FECACA] bg-[#FEECEC] px-4 py-3 text-xs md:text-sm font-semibold text-[#DC2626]">
-                                <AlertCircle size={16} className="mt-0.5 shrink-0 text-[#DC2626]" />
-                                <span>{error}</span>
+                        <div className="space-y-2">
+                            <div className="flex items-center justify-between">
+                                <label className="text-xs font-bold uppercase tracking-wider text-[#334155]">
+                                    Password
+                                </label>
+                                <a href="#" className="text-xs font-bold text-[#2563EB] hover:text-[#1D4ED8] transition-colors">
+                                    Forgot password?
+                                </a>
                             </div>
-                        )}
-
-                        {success && (
-                            <div className="mb-5 flex items-start gap-3 rounded-xl border border-[#D5F2E9] bg-[#E8F8F3] px-4 py-3 text-xs md:text-sm font-semibold text-[#087F72]">
-                                <CheckCircle size={16} className="mt-0.5 shrink-0 text-[#087F72]" />
-                                <span>{success}</span>
+                            <div className="relative flex items-center">
+                                <span className="absolute left-4 text-[#94A3B8] pointer-events-none">
+                                    <Lock size={18} />
+                                </span>
+                                <input
+                                    type={showPassword ? "text" : "password"}
+                                    className="w-full bg-white border border-[#D8E0EA] focus:border-[#2563EB] focus:ring-3 focus:ring-blue-500/15 text-[#0F172A] pl-11 pr-12 py-3 rounded-xl text-sm font-medium outline-none transition-all placeholder:text-[#94A3B8]"
+                                    placeholder="••••••••"
+                                    value={password}
+                                    onChange={(e) => setPassword(e.target.value)}
+                                    required
+                                />
+                                <button
+                                    type="button"
+                                    onClick={() => setShowPassword(!showPassword)}
+                                    className="absolute right-4 text-[#94A3B8] hover:text-[#0F172A] transition-colors cursor-pointer"
+                                    title={showPassword ? "Hide password" : "Show password"}
+                                >
+                                    {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                                </button>
                             </div>
-                        )}
+                        </div>
 
-                        <form onSubmit={handleLogin} className="space-y-4">
-                            <div className="form-group">
-                                <label className="form-label">Email Address</label>
-                                <div className="input-container">
-                                    <span className="input-icon">
-                                        <User size={16} />
-                                    </span>
-                                    <input
-                                        type="email"
-                                        className="form-input"
-                                        placeholder="name@company.com"
-                                        value={username}
-                                        onChange={(e) => setUsername(e.target.value)}
-                                        required
-                                    />
-                                </div>
-                            </div>
+                        <button
+                            type="submit"
+                            className="w-full bg-[#2563EB] hover:bg-[#1D4ED8] active:scale-[0.99] text-white font-bold py-3.5 px-4 rounded-xl text-sm shadow-md shadow-blue-500/20 transition-all cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed mt-2"
+                            disabled={loading}
+                        >
+                            {loading ? "Signing In..." : "Sign In"}
+                        </button>
+                    </form>
 
-                            <div className="form-group">
-                                <div className="mb-2 flex items-center justify-between">
-                                    <label className="form-label mb-0!">Password</label>
-                                    <a href="#" className="text-xs text-[#2563EB] hover:text-[#1D4ED8] font-bold transition-all">Forgot password?</a>
-                                </div>
-                                <div className="input-container">
-                                    <span className="input-icon">
-                                        <Lock size={16} />
-                                    </span>
-                                    <input
-                                        type={showPassword ? "text" : "password"}
-                                        className="form-input pr-12"
-                                        placeholder="••••••••"
-                                        value={password}
-                                        onChange={(e) => setPassword(e.target.value)}
-                                        required
-                                    />
-                                    <button
-                                        type="button"
-                                        onClick={() => setShowPassword(!showPassword)}
-                                        className="absolute right-3.5 top-1/2 -translate-y-1/2 text-[#64748B] hover:text-[#94A3B8] cursor-pointer"
-                                    >
-                                        {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
-                                    </button>
-                                </div>
-                            </div>
-
-                            <button
-                                type="submit"
-                                className="btn btn-primary mt-2 cursor-pointer w-full bg-[#2563EB] text-white rounded-xl py-3 text-sm font-bold shadow-md hover:bg-[#1D4ED8] disabled:opacity-50"
-                                disabled={loading}
-                            >
-                                {loading ? "Signing In..." : "Sign In"}
-                            </button>
-                        </form>
-                    </div>
                 </div>
             </div>
         </div>

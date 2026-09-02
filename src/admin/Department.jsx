@@ -13,6 +13,7 @@ import {
   Loader
 } from "lucide-react";
 import api from "../api";
+import PredictiveSearchBar from "../components/PredictiveSearchBar";
 
 // Initial Demo Data matching your exact layout
 const INITIAL_DEMO_DATA = [
@@ -235,13 +236,14 @@ export default function Departments() {
   return (
     <div className="departments-page-container">
       {/* Page Heading */}
-      <div className="page-header flex justify-between items-center" style={{ marginBottom: "24px" }}>
+      <div className="page-header flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6">
         <div>
           <h1 className="page-title" style={{ color: "#172033" }}>Departments</h1>
           <p className="page-subtitle" style={{ color: "#64748B", fontSize: "14px" }}>
             Manage department structures, leadership, and team allocations.
           </p>
         </div>
+        <PredictiveSearchBar placeholder="Search Employees, Notices, Departments..." />
         <button className="btn-add-dept" onClick={handleOpenAddModal} style={{ display: "flex", alignItems: "center", gap: "6px" }}>
           <Plus size={16} />
           <span>Add Department</span>

@@ -12,7 +12,11 @@ import {
 } from "lucide-react";
 import api from "../api";
 
-export default function PredictiveSearchBar({ searchTerm, setSearchTerm, placeholder = "Search Employees, Notices, Departments..." }) {
+export default function PredictiveSearchBar({ searchTerm: propSearchTerm, setSearchTerm: propSetSearchTerm, placeholder = "Search Employees, Notices, Departments..." }) {
+  const [internalSearchTerm, setInternalSearchTerm] = useState("");
+  const searchTerm = propSearchTerm !== undefined ? propSearchTerm : internalSearchTerm;
+  const setSearchTerm = propSetSearchTerm || setInternalSearchTerm;
+
   const [isOpen, setIsOpen] = useState(false);
   const [data, setData] = useState({ employees: [], notices: [], departments: [] });
   const [loading, setLoading] = useState(false);
