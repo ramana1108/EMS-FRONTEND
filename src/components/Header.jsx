@@ -2,7 +2,6 @@ import React from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { User, Settings, ChevronRight } from "lucide-react";
 import NotificationBell from "./NotificationBell";
-import PredictiveSearchBar from "./PredictiveSearchBar";
 import sapLogo from "../assets/image.png";
 
 export default function Header() {

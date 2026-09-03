@@ -13,7 +13,6 @@ import {
   Loader
 } from "lucide-react";
 import api from "../api";
-import PredictiveSearchBar from "../components/PredictiveSearchBar";
 
 // Initial Demo Data matching your exact layout
 const INITIAL_DEMO_DATA = [
@@ -243,7 +242,6 @@ export default function Departments() {
             Manage department structures, leadership, and team allocations.
           </p>
         </div>
-        <PredictiveSearchBar placeholder="Search Employees, Notices, Departments..." />
         <button className="btn-add-dept" onClick={handleOpenAddModal} style={{ display: "flex", alignItems: "center", gap: "6px" }}>
           <Plus size={16} />
           <span>Add Department</span>

@@ -173,28 +173,6 @@ export default function Notice() {
                     <p className="dashboard-subtitle">Broadcasting corporate announcements and regulatory notifications.</p>
                 </div>
                 <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 w-full sm:w-auto">
-                    <div style={{ position: "relative", display: "flex", alignItems: "center" }}>
-                        <Search size={16} style={{ position: "absolute", left: "12px", color: "#64748b" }} />
-                        <input
-                            type="text"
-                            placeholder="Search notices..."
-                            value={searchTerm}
-                            onChange={(e) => {
-                                setSearchTerm(e.target.value);
-                                setCurrentPage(1);
-                            }}
-                            style={{
-                                padding: "8px 14px 8px 36px",
-                                borderRadius: "8px",
-                                border: "1px solid #cbd5e1",
-                                fontSize: "14px",
-                                backgroundColor: "#ffffff",
-                                color: "#0f172a",
-                                outline: "none",
-                                width: "220px"
-                            }}
-                        />
-                    </div>
                     <button
                         className="btn-add-dept"
                         onClick={() => {

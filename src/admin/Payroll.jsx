@@ -331,27 +331,6 @@ export default function Payroll() {
 
                         {/* Local Filter controls */}
                         <div style={{ display: "flex", gap: "8px", alignItems: "center" }}>
-                            <div style={{ position: "relative", display: "flex", alignItems: "center" }}>
-                                <Search size={14} style={{ position: "absolute", left: "10px", color: "#64748b" }} />
-                                <input
-                                    type="text"
-                                    placeholder="Search Employee, ID..."
-                                    value={searchTerm}
-                                    onChange={(e) => {
-                                        setSearchTerm(e.target.value);
-                                        setCurrentPage(1);
-                                    }}
-                                    style={{
-                                        padding: "6px 12px 6px 30px",
-                                        borderRadius: "6px",
-                                        border: "1px solid #cbd5e1",
-                                        fontSize: "13px",
-                                        backgroundColor: "#ffffff",
-                                        color: "#1e293b",
-                                        outline: "none"
-                                    }}
-                                />
-                            </div>
                             <select
                                 value={searchYear}
                                 onChange={(e) => {
