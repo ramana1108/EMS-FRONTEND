@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import api from "../api";
+// import api from "../api";
 import FooterNavigation from "../components/FooterNavigation";
 import Header from "../components/Header";
 import PredictiveSearchBar from "../components/PredictiveSearchBar";
