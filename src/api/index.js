@@ -8,27 +8,37 @@ function authHeaders() {
 }
 
 async function request(endpoint, options = {}) {
-  const res = await fetch(`${API_BASE_URL}${endpoint}`, {
-    ...options,
-    headers: {
-      ...authHeaders(),
-      ...(options.headers || {}),
-    },
-  });
+  try {
+    const res = await fetch(`${API_BASE_URL}${endpoint}`, {
+      ...options,
+      headers: {
+        ...authHeaders(),
+        ...(options.headers || {}),
+      },
+    });
 
-  if (res.status === 401) {
-    localStorage.removeItem("token");
-    localStorage.removeItem("user");
-    if (
-      typeof window !== "undefined" &&
-      window.location.pathname !== "/" &&
-      !window.location.pathname.startsWith("/login")
-    ) {
-      window.location.href = "/";
+    if (res.status === 401) {
+      localStorage.removeItem("token");
+      localStorage.removeItem("user");
+      if (
+        typeof window !== "undefined" &&
+        window.location.pathname !== "/" &&
+        !window.location.pathname.startsWith("/login")
+      ) {
+        window.location.href = "/";
+      }
     }
-  }
 
-  return res.json();
+    const data = await res.json().catch(() => ({}));
+    if (!res.ok) {
+      return { success: false, status: res.status, message: data.message || `Server error (${res.status})` };
+    }
+
+    return data;
+  } catch (err) {
+    console.error(`API Request Error [${endpoint}]:`, err);
+    return { success: false, message: err.message || "Network error" };
+  }
 }
 
 export async function getAdminDashboard() {

@@ -1,13 +1,18 @@
 import React from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { User, Settings, ChevronRight } from "lucide-react";
 import NotificationBell from "./NotificationBell";
 import sapLogo from "../assets/image.png";
 
 export default function Header() {
   const navigate = useNavigate();
+  const location = useLocation();
   const user = typeof window !== "undefined" ? JSON.parse(localStorage.getItem("user") || "{}") : {};
   const userName = user.name || user.firstName || "Admin";
+
+  const isProfileOrSettings = 
+    location.pathname.toLowerCase().includes("settings") || 
+    location.pathname.toLowerCase().includes("profile");
 
   const getRoleText = (role) => {
     if (!role) return "ADMIN";
@@ -37,7 +42,7 @@ export default function Header() {
   return (
     <header className="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-[#E2E8F0] px-4 sm:px-8 py-2.5 shadow-[0_2px_15px_rgba(0,0,0,0.03)] flex items-center justify-between gap-4 transition-all">
       {/* EMS PORTAL Branding */}
-      <div className="flex items-center gap-3 cursor-pointer" onClick={() => navigate("/")}>
+      <div className="flex items-center gap-3 cursor-pointer shrink-0" onClick={() => navigate("/")}>
         <img
           src={sapLogo}
           alt="SAP Logo"
@@ -48,8 +53,10 @@ export default function Header() {
         </span>
       </div>
 
+
+
       {/* Header Right Actions */}
-      <div className="flex items-center gap-3">
+      <div className="flex items-center gap-3 shrink-0">
         <NotificationBell />
 
         <div className="h-6 w-[1px] bg-[#E2E8F0] mx-0.5 hidden sm:block" />

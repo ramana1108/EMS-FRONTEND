@@ -2,7 +2,6 @@
 import React, { useState, useEffect } from "react";
 import Header from "../components/Header";
 import FooterNavigation from "../components/FooterNavigation";
-import PredictiveSearchBar from "../components/PredictiveSearchBar";
 import Pagination from "../components/Pagination";
 import {
     Search,
@@ -167,7 +166,6 @@ export default function Announcements() {
                             <h1 className="dashboard-title text-2xl sm:text-3xl font-extrabold m-0">Announcements</h1>
                             <p className="dashboard-subtitle text-sm mt-1">Stay updated with company news and announcements</p>
                         </div>
-                        <PredictiveSearchBar searchTerm={searchTerm} setSearchTerm={setSearchTerm} placeholder="Search Announcements..." />
                     </div>
 
                     {/* List display */}

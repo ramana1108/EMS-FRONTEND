@@ -401,17 +401,6 @@ export default function Roles() {
               <h2 className="dashboard-title" style={{ fontSize: "20px", fontWeight: "700", color: "#172033" }}>Employees</h2>
               <p className="dashboard-subtitle" style={{ margin: "4px 0 0 0", color: "#64748B" }}>View all employees and their role access.</p>
             </div>
-
-            <div className="search-box" style={{ margin: 0, width: "300px", display: "flex", alignItems: "center", gap: "8px" }}>
-              <Search size={18} color="#64748B" />
-              <input
-                type="text"
-                placeholder="Search employees..."
-                style={{ border: "none", outline: "none", width: "100%", background: "transparent", fontSize: "13px", color: "#172033" }}
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-              />
-            </div>
           </div>
 
           <div className="table-responsive">

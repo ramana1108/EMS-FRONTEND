@@ -1021,24 +1021,28 @@ body{
 }
 
 @utility btn-add-dept {
-  @apply px-4 py-2.5 rounded-xl font-bold text-xs md:text-sm shadow-xs transition-all cursor-pointer inline-flex items-center gap-2;
+  @apply px-5 py-2.5 rounded-2xl font-black text-xs md:text-sm shadow-md shadow-blue-500/20 transition-all cursor-pointer inline-flex items-center gap-2 active:scale-95;
   background-color: #2563EB !important;
   color: #FFFFFF !important;
   border: 1px solid #2563EB !important;
 
   &:hover {
     background-color: #1D4ED8 !important;
+    border-color: #1D4ED8 !important;
+    box-shadow: 0 4px 14px rgba(37, 99, 235, 0.35) !important;
   }
 }
 
 @utility btn-enroll-employee {
-  @apply px-4 py-2.5 rounded-xl font-bold text-xs md:text-sm shadow-xs transition-all cursor-pointer inline-flex items-center gap-2;
+  @apply px-5 py-2.5 rounded-2xl font-black text-xs md:text-sm shadow-md shadow-blue-500/20 transition-all cursor-pointer inline-flex items-center gap-2 active:scale-95;
   background-color: #2563EB !important;
   color: #FFFFFF !important;
   border: 1px solid #2563EB !important;
 
   &:hover {
     background-color: #1D4ED8 !important;
+    border-color: #1D4ED8 !important;
+    box-shadow: 0 4px 14px rgba(37, 99, 235, 0.35) !important;
   }
 }
 

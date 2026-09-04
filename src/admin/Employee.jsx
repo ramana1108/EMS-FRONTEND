@@ -921,58 +921,57 @@ export default function Employee() {
 
             {/* ================= VIEW EMPLOYEE DETAILS MODAL ================= */}
             {isViewModalOpen && viewingEmployee && (
-                <div className="fixed inset-0 z-[9999] flex items-center justify-center p-3 sm:p-6 bg-slate-900/40 backdrop-blur-xs animate-fade-in">
-                    <div className="relative w-full max-w-2xl max-h-[calc(100vh-2.5rem)] sm:max-h-[86vh] bg-white rounded-2xl sm:rounded-3xl shadow-2xl shadow-slate-900/10 overflow-hidden border border-[#E2E8F0] flex flex-col animate-scale-up my-auto">
+                <div className="fixed inset-0 z-[9999] flex items-center justify-center p-3 sm:p-6 bg-slate-900/50 backdrop-blur-sm animate-fade-in">
+                    <div className="relative w-full max-w-2xl max-h-[calc(100vh-2rem)] sm:max-h-[88vh] bg-white rounded-3xl shadow-2xl shadow-slate-900/20 overflow-hidden border border-slate-200/80 flex flex-col animate-scale-up my-auto">
                         
-                        {/* Header Banner - Clean SAP Blue Theme */}
-                        <div className="relative bg-gradient-to-r from-[#1E3A8A] to-[#2563EB] p-5 sm:p-6 text-white flex-shrink-0">
-                            {/* Decorative background shapes */}
-                            <div className="absolute top-0 right-0 -mt-8 -mr-8 w-36 h-36 rounded-full bg-white/5 blur-2xl pointer-events-none" />
-                            <div className="absolute bottom-0 left-1/3 -mb-10 w-44 h-44 rounded-full bg-blue-400/10 blur-3xl pointer-events-none" />
-
+                        {/* Header Banner - Solid 70% Light Blue Theme */}
+                        <div 
+                            className="relative p-6 sm:p-7 flex-shrink-0 border-b border-[#93C5FD]" 
+                            style={{ backgroundColor: "rgba(191, 219, 254, 0.7)" }}
+                        >
                             {/* Top Header Row */}
-                            <div className="flex items-center justify-between mb-4 relative z-10">
-                                <div className="flex items-center gap-2">
-                                    <span className="bg-white/15 p-1.5 rounded-lg text-white">
+                            <div className="flex items-center justify-between mb-5 relative z-10">
+                                <div className="flex items-center gap-2.5">
+                                    <span className="bg-white p-2 rounded-xl text-[#1E40AF] border border-[#93C5FD] shadow-2xs">
                                         <Users size={16} />
                                     </span>
-                                    <span className="text-xs font-bold uppercase tracking-wider text-blue-100">Employee Details</span>
+                                    <span className="text-xs font-black uppercase tracking-widest text-[#1E3A8A]">Employee Profile Details</span>
                                 </div>
                                 <button
-                                    className="p-1.5 rounded-full bg-white/10 hover:bg-white/20 text-white transition-all cursor-pointer active:scale-95"
+                                    className="p-2 rounded-full bg-white hover:bg-blue-50 text-slate-600 hover:text-slate-900 border border-slate-300 transition-all cursor-pointer active:scale-95 shadow-2xs"
                                     onClick={() => setIsViewModalOpen(false)}
-                                    title="Close"
+                                    title="Close Profile"
                                 >
                                     <X size={18} />
                                 </button>
                             </div>
 
                             {/* Employee Profile Header Row */}
-                            <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 relative z-10">
-                                <div className="w-16 h-16 sm:w-18 sm:h-18 rounded-2xl bg-white/20 border border-white/30 text-white font-black text-xl flex items-center justify-center shadow-md flex-shrink-0">
+                            <div className="flex flex-col sm:flex-row items-start sm:items-center gap-5 relative z-10">
+                                <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-2xl bg-gradient-to-tr from-[#2563EB] to-[#3B82F6] text-white font-black text-2xl flex items-center justify-center shadow-md flex-shrink-0 tracking-wider ring-4 ring-white">
                                     {getInitials(viewingEmployee.name)}
                                 </div>
-                                <div className="space-y-1 flex-1 min-w-0">
-                                    <div className="flex items-center gap-2.5 flex-wrap">
-                                        <h2 className="text-xl sm:text-2xl font-black text-white tracking-tight leading-tight truncate">
+                                <div className="space-y-1.5 flex-1 min-w-0">
+                                    <div className="flex items-center gap-3 flex-wrap">
+                                        <h2 className="text-2xl sm:text-3xl font-black text-[#0F172A] tracking-wide leading-relaxed truncate" style={{ color: "#0F172A" }}>
                                             {viewingEmployee.name}
                                         </h2>
-                                        <span className={`inline-flex items-center gap-1.5 px-3 py-0.5 rounded-full text-xs font-bold ${
+                                        <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-extrabold tracking-wide ${
                                             viewingEmployee.status?.toLowerCase() === "active" 
-                                                ? "bg-emerald-500/20 text-emerald-100 border border-emerald-400/30" 
-                                                : "bg-amber-500/20 text-amber-100 border border-amber-400/30"
+                                                ? "bg-emerald-100 text-emerald-800 border border-emerald-300" 
+                                                : "bg-amber-100 text-amber-800 border border-amber-300"
                                         }`}>
-                                            <span className={`w-2 h-2 rounded-full ${viewingEmployee.status?.toLowerCase() === "active" ? "bg-emerald-400" : "bg-amber-400"}`} />
+                                            <span className={`w-2 h-2 rounded-full ${viewingEmployee.status?.toLowerCase() === "active" ? "bg-emerald-500" : "bg-amber-500"}`} />
                                             {viewingEmployee.status || "Active"}
                                         </span>
                                     </div>
-                                    <p className="text-blue-100 text-xs sm:text-sm font-medium flex items-center gap-2 flex-wrap">
-                                        <span>{viewingEmployee.employmentType || viewingEmployee.role || "Employee"}</span>
-                                        <span className="w-1.5 h-1.5 rounded-full bg-blue-300/60 hidden sm:inline-block" />
-                                        <span>{viewingEmployee.department || viewingEmployee.departmentId || "General"}</span>
+                                    <p className="text-slate-700 text-xs sm:text-sm font-semibold flex items-center gap-2.5 flex-wrap tracking-wide leading-relaxed">
+                                        <span className="text-[#1D4ED8] font-bold">{viewingEmployee.employmentType || viewingEmployee.role || "Employee"}</span>
+                                        <span className="w-1.5 h-1.5 rounded-full bg-slate-400 hidden sm:inline-block" />
+                                        <span className="text-slate-800">{viewingEmployee.department || viewingEmployee.departmentId || "General"}</span>
                                     </p>
-                                    <div className="pt-0.5 flex items-center gap-2 text-xs">
-                                        <span className="bg-white/15 px-2.5 py-0.5 rounded-md font-mono font-bold text-white">
+                                    <div className="pt-1 flex items-center gap-2">
+                                        <span className="bg-white border border-[#93C5FD] px-3 py-0.5 rounded-lg font-mono font-bold text-xs text-[#1D4ED8] tracking-wider shadow-2xs">
                                             {viewingEmployee.employeeId}
                                         </span>
                                     </div>
@@ -981,61 +980,61 @@ export default function Employee() {
                         </div>
 
                         {/* Scrollable Body Content */}
-                        <div className="p-4 sm:p-6 space-y-5 overflow-y-auto flex-1 bg-[#F8FAFC]">
+                        <div className="p-5 sm:p-7 space-y-6 overflow-y-auto flex-1 bg-slate-50/70">
                             
                             {/* Personal & Contact Details */}
                             <div>
-                                <h3 className="text-xs font-extrabold uppercase tracking-wider text-[#2563EB] mb-2.5 flex items-center gap-2 mb-4">
+                                <h3 className="text-xs font-extrabold uppercase tracking-widest text-blue-600 mb-3.5 flex items-center gap-2.5 pb-1 border-b border-slate-200/80">
                                     <User size={15} /> Personal & Contact Details
                                 </h3>
-                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 mt-3">
+                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5 mt-3">
                                     {/* Email */}
-                                    <div className="bg-white border border-[#E2E8F0] rounded-xl p-3 shadow-2xs flex items-center gap-3">
-                                        <div className="w-9 h-9 rounded-lg bg-[#EFF6FF] text-[#2563EB] flex items-center justify-center flex-shrink-0">
-                                            <Mail size={17} />
+                                    <div className="bg-white border border-slate-200/80 rounded-2xl p-4 shadow-[0_2px_8px_rgba(15,23,42,0.03)] hover:border-blue-200 hover:shadow-md transition-all duration-200 flex items-center gap-3.5">
+                                        <div className="w-10 h-10 rounded-xl bg-blue-50 text-blue-600 border border-blue-100 flex items-center justify-center flex-shrink-0">
+                                            <Mail size={18} />
                                         </div>
                                         <div className="min-w-0 flex-1">
-                                            <p className="text-[10px] font-bold text-[#64748B] uppercase tracking-wider">Email Address</p>
-                                            <p className="text-xs sm:text-sm font-bold text-[#0F172A] truncate" title={viewingEmployee.email}>
+                                            <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest leading-normal mb-0.5">Email Address</p>
+                                            <p className="text-xs sm:text-sm font-extrabold text-slate-800 tracking-wide leading-relaxed truncate" title={viewingEmployee.email}>
                                                 {viewingEmployee.email || "N/A"}
                                             </p>
                                         </div>
                                     </div>
 
                                     {/* Phone */}
-                                    <div className="bg-white border border-[#E2E8F0] rounded-xl p-3 shadow-2xs flex items-center gap-3">
-                                        <div className="w-9 h-9 rounded-lg bg-[#EFF6FF] text-[#2563EB] flex items-center justify-center flex-shrink-0">
-                                            <Phone size={17} />
+                                    <div className="bg-white border border-slate-200/80 rounded-2xl p-4 shadow-[0_2px_8px_rgba(15,23,42,0.03)] hover:border-blue-200 hover:shadow-md transition-all duration-200 flex items-center gap-3.5">
+                                        <div className="w-10 h-10 rounded-xl bg-blue-50 text-blue-600 border border-blue-100 flex items-center justify-center flex-shrink-0">
+                                            <Phone size={18} />
                                         </div>
                                         <div className="min-w-0 flex-1">
-                                            <p className="text-[10px] font-bold text-[#64748B] uppercase tracking-wider">Phone Number</p>
-                                            <p className="text-xs sm:text-sm font-bold text-[#0F172A]">
+                                            <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest leading-normal mb-0.5">Phone Number</p>
+                                            <p className="text-xs sm:text-sm font-extrabold text-slate-800 tracking-wide leading-relaxed">
                                                 {viewingEmployee.phone || "N/A"}
                                             </p>
                                         </div>
                                     </div>
 
                                     {/* Gender */}
-                                    <div className="bg-white border border-[#E2E8F0] rounded-xl p-3 shadow-2xs flex items-center gap-3">
-                                        <div className="w-9 h-9 rounded-lg bg-[#EFF6FF] text-[#2563EB] flex items-center justify-center flex-shrink-0">
-                                            <User size={17} />
+                                    <div className="bg-white border border-slate-200/80 rounded-2xl p-4 shadow-[0_2px_8px_rgba(15,23,42,0.03)] hover:border-blue-200 hover:shadow-md transition-all duration-200 flex items-center gap-3.5">
+                                        <div className="w-10 h-10 rounded-xl bg-blue-50 text-blue-600 border border-blue-100 flex items-center justify-center flex-shrink-0">
+                                            <User size={18} />
                                         </div>
                                         <div className="min-w-0 flex-1">
-                                            <p className="text-[10px] font-bold text-[#64748B] uppercase tracking-wider">Gender</p>
-                                            <p className="text-xs sm:text-sm font-bold text-[#0F172A]">
+                                            <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest leading-normal mb-0.5">Gender</p>
+                                            <p className="text-xs sm:text-sm font-extrabold text-slate-800 tracking-wide leading-relaxed">
                                                 {viewingEmployee.gender || "N/A"}
                                             </p>
                                         </div>
                                     </div>
 
                                     {/* Date of Birth */}
-                                    <div className="bg-white border border-[#E2E8F0] rounded-xl p-3 shadow-2xs flex items-center gap-3">
-                                        <div className="w-9 h-9 rounded-lg bg-[#EFF6FF] text-[#2563EB] flex items-center justify-center flex-shrink-0">
-                                            <Calendar size={17} />
+                                    <div className="bg-white border border-slate-200/80 rounded-2xl p-4 shadow-[0_2px_8px_rgba(15,23,42,0.03)] hover:border-blue-200 hover:shadow-md transition-all duration-200 flex items-center gap-3.5">
+                                        <div className="w-10 h-10 rounded-xl bg-blue-50 text-blue-600 border border-blue-100 flex items-center justify-center flex-shrink-0">
+                                            <Calendar size={18} />
                                         </div>
                                         <div className="min-w-0 flex-1">
-                                            <p className="text-[10px] font-bold text-[#64748B] uppercase tracking-wider">Date of Birth</p>
-                                            <p className="text-xs sm:text-sm font-bold text-[#0F172A]">
+                                            <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest leading-normal mb-0.5">Date of Birth</p>
+                                            <p className="text-xs sm:text-sm font-extrabold text-slate-800 tracking-wide leading-relaxed">
                                                 {formatDate(viewingEmployee.dob)}
                                             </p>
                                         </div>
@@ -1045,57 +1044,57 @@ export default function Employee() {
 
                             {/* Employment Details */}
                             <div>
-                                <h3 className="text-xs font-extrabold uppercase tracking-wider text-[#2563EB] mb-2.5 flex items-center gap-2">
+                                <h3 className="text-xs font-extrabold uppercase tracking-widest text-blue-600 mb-3.5 flex items-center gap-2.5 pb-1 border-b border-slate-200/80">
                                     <Briefcase size={15} /> Employment Details
                                 </h3>
-                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 mt-3">
+                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5 mt-3">
                                     {/* Department */}
-                                    <div className="bg-white border border-[#E2E8F0] rounded-xl p-3 shadow-2xs flex items-center gap-3">
-                                        <div className="w-9 h-9 rounded-lg bg-[#EFF6FF] text-[#2563EB] flex items-center justify-center flex-shrink-0">
-                                            <Building2 size={17} />
+                                    <div className="bg-white border border-slate-200/80 rounded-2xl p-4 shadow-[0_2px_8px_rgba(15,23,42,0.03)] hover:border-blue-200 hover:shadow-md transition-all duration-200 flex items-center gap-3.5">
+                                        <div className="w-10 h-10 rounded-xl bg-blue-50 text-blue-600 border border-blue-100 flex items-center justify-center flex-shrink-0">
+                                            <Building2 size={18} />
                                         </div>
                                         <div className="min-w-0 flex-1">
-                                            <p className="text-[10px] font-bold text-[#64748B] uppercase tracking-wider">Department</p>
-                                            <p className="text-xs sm:text-sm font-bold text-[#0F172A]">
+                                            <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest leading-normal mb-0.5">Department</p>
+                                            <p className="text-xs sm:text-sm font-extrabold text-slate-800 tracking-wide leading-relaxed">
                                                 {viewingEmployee.department || viewingEmployee.departmentId || "IT"}
                                             </p>
                                         </div>
                                     </div>
 
                                     {/* Employment Type */}
-                                    <div className="bg-white border border-[#E2E8F0] rounded-xl p-3 shadow-2xs flex items-center gap-3">
-                                        <div className="w-9 h-9 rounded-lg bg-[#EFF6FF] text-[#2563EB] flex items-center justify-center flex-shrink-0">
-                                            <Briefcase size={17} />
+                                    <div className="bg-white border border-slate-200/80 rounded-2xl p-4 shadow-[0_2px_8px_rgba(15,23,42,0.03)] hover:border-blue-200 hover:shadow-md transition-all duration-200 flex items-center gap-3.5">
+                                        <div className="w-10 h-10 rounded-xl bg-blue-50 text-blue-600 border border-blue-100 flex items-center justify-center flex-shrink-0">
+                                            <Briefcase size={18} />
                                         </div>
                                         <div className="min-w-0 flex-1">
-                                            <p className="text-[10px] font-bold text-[#64748B] uppercase tracking-wider">Employment Type</p>
-                                            <p className="text-xs sm:text-sm font-bold text-[#0F172A]">
+                                            <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest leading-normal mb-0.5">Employment Type</p>
+                                            <p className="text-xs sm:text-sm font-extrabold text-slate-800 tracking-wide leading-relaxed">
                                                 {viewingEmployee.employmentType || viewingEmployee.role || "Full-time"}
                                             </p>
                                         </div>
                                     </div>
 
                                     {/* Joining Date */}
-                                    <div className="bg-white border border-[#E2E8F0] rounded-xl p-3 shadow-2xs flex items-center gap-3">
-                                        <div className="w-9 h-9 rounded-lg bg-[#EFF6FF] text-[#2563EB] flex items-center justify-center flex-shrink-0">
-                                            <Clock size={17} />
+                                    <div className="bg-white border border-slate-200/80 rounded-2xl p-4 shadow-[0_2px_8px_rgba(15,23,42,0.03)] hover:border-blue-200 hover:shadow-md transition-all duration-200 flex items-center gap-3.5">
+                                        <div className="w-10 h-10 rounded-xl bg-blue-50 text-blue-600 border border-blue-100 flex items-center justify-center flex-shrink-0">
+                                            <Clock size={18} />
                                         </div>
                                         <div className="min-w-0 flex-1">
-                                            <p className="text-[10px] font-bold text-[#64748B] uppercase tracking-wider">Joining Date</p>
-                                            <p className="text-xs sm:text-sm font-bold text-[#0F172A]">
+                                            <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest leading-normal mb-0.5">Joining Date</p>
+                                            <p className="text-xs sm:text-sm font-extrabold text-slate-800 tracking-wide leading-relaxed">
                                                 {formatDate(viewingEmployee.joiningDate)}
                                             </p>
                                         </div>
                                     </div>
 
                                     {/* Salary */}
-                                    <div className="bg-white border border-[#E2E8F0] rounded-xl p-3 shadow-2xs flex items-center gap-3">
-                                        <div className="w-9 h-9 rounded-lg bg-[#EFF6FF] text-[#2563EB] flex items-center justify-center flex-shrink-0">
-                                            <DollarSign size={17} />
+                                    <div className="bg-white border border-slate-200/80 rounded-2xl p-4 shadow-[0_2px_8px_rgba(15,23,42,0.03)] hover:border-blue-200 hover:shadow-md transition-all duration-200 flex items-center gap-3.5">
+                                        <div className="w-10 h-10 rounded-xl bg-blue-50 text-blue-600 border border-blue-100 flex items-center justify-center flex-shrink-0">
+                                            <DollarSign size={18} />
                                         </div>
                                         <div className="min-w-0 flex-1">
-                                            <p className="text-[10px] font-bold text-[#64748B] uppercase tracking-wider">Annual Salary</p>
-                                            <p className="text-xs sm:text-sm font-bold text-[#0F172A]">
+                                            <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest leading-normal mb-0.5">Annual Salary</p>
+                                            <p className="text-xs sm:text-sm font-extrabold text-slate-800 tracking-wide leading-relaxed">
                                                 {viewingEmployee.salary ? `$${Number(viewingEmployee.salary).toLocaleString()}` : "N/A"}
                                             </p>
                                         </div>
@@ -1105,43 +1104,43 @@ export default function Employee() {
 
                             {/* Residential Address */}
                             <div>
-                                <h3 className="text-xs font-extrabold uppercase tracking-wider text-[#2563EB] mb-2.5 flex items-center gap-2">
+                                <h3 className="text-xs font-extrabold uppercase tracking-widest text-blue-600 mb-3.5 flex items-center gap-2.5 pb-1 border-b border-slate-200/80">
                                     <MapPin size={15} /> Residential Address
                                 </h3>
-                                <div className="bg-white border border-[#E2E8F0] rounded-xl p-3.5 shadow-2xs flex items-start gap-3 mt-3">
-                                    <div className="w-9 h-9 rounded-lg bg-[#EFF6FF] text-[#2563EB] flex items-center justify-center flex-shrink-0 mt-0.5">
-                                        <MapPin size={17} />
+                                <div className="bg-white border border-slate-200/80 rounded-2xl p-4 shadow-[0_2px_8px_rgba(15,23,42,0.03)] hover:border-blue-200 hover:shadow-md transition-all duration-200 flex items-start gap-3.5 mt-3">
+                                    <div className="w-10 h-10 rounded-xl bg-blue-50 text-blue-600 border border-blue-100 flex items-center justify-center flex-shrink-0 mt-0.5">
+                                        <MapPin size={18} />
                                     </div>
-                                    <div>
-                                        <p className="text-[10px] font-bold text-[#64748B] uppercase tracking-wider">Address</p>
-                                        <p className="text-xs sm:text-sm font-bold text-[#0F172A] leading-relaxed mt-0.5">
+                                    <div className="min-w-0 flex-1">
+                                        <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest leading-normal mb-0.5">Address</p>
+                                        <p className="text-xs sm:text-sm font-extrabold text-slate-800 tracking-wide leading-relaxed mt-0.5">
                                             {viewingEmployee.address || "N/A"}
                                         </p>
                                     </div>
                                 </div>
                             </div>
 
-                            {/* Metadata */}
-                            <div className="pt-2 border-t border-[#E2E8F0] flex items-center justify-between text-[11px] text-[#64748B]">
-                                <span className="flex items-center gap-1.5">
-                                    <ShieldCheck size={14} className="text-[#2563EB]" />
-                                    Enrolled by: <strong className="text-[#0F172A]">{viewingEmployee.createdBy?.name || viewingEmployee.createdBy || "Admin"}</strong>
+                            {/* Metadata Footer */}
+                            <div className="pt-3 border-t border-slate-200/80 flex flex-col sm:flex-row sm:items-center justify-between gap-2 text-[11px] text-slate-500 tracking-wide leading-relaxed">
+                                <span className="flex items-center gap-2">
+                                    <ShieldCheck size={15} className="text-blue-600" />
+                                    Enrolled by: <strong className="text-slate-800 font-extrabold">{viewingEmployee.createdBy?.name || viewingEmployee.createdBy || "Admin"}</strong>
                                 </span>
-                                <span>System Record ID: {viewingEmployee._id || viewingEmployee.employeeId}</span>
+                                <span className="font-mono text-slate-400">System Record ID: {viewingEmployee._id || viewingEmployee.employeeId}</span>
                             </div>
 
                         </div>
 
                         {/* Modal Fixed Footer Actions */}
-                        <div className="p-3.5 sm:p-4 bg-white border-t border-[#E2E8F0] flex items-center justify-between gap-3 flex-shrink-0">
+                        <div className="p-4 sm:p-5 bg-white border-t border-slate-200/80 flex items-center justify-between gap-4 flex-shrink-0">
                             <button
-                                className="px-4 py-2 rounded-xl border border-[#E2E8F0] bg-[#F1F5F9] text-[#334155] hover:bg-[#E2E8F0] hover:text-[#0F172A] font-bold text-xs sm:text-sm transition-all cursor-pointer active:scale-95"
+                                className="px-5 py-2.5 rounded-2xl border border-slate-200 bg-slate-100/90 hover:bg-slate-200 text-slate-700 font-extrabold text-xs sm:text-sm tracking-wide leading-relaxed transition-all cursor-pointer active:scale-95 shadow-2xs"
                                 onClick={() => setIsViewModalOpen(false)}
                             >
                                 Close Profile
                             </button>
                             <button
-                                className="px-4 py-2 rounded-xl bg-[#2563EB] hover:bg-[#1D4ED8] text-white font-bold text-xs sm:text-sm shadow-sm shadow-blue-500/20 transition-all cursor-pointer flex items-center gap-2 active:scale-95"
+                                className="px-5 py-2.5 rounded-2xl bg-[#2563EB] hover:bg-[#1D4ED8] text-white font-black text-xs sm:text-sm tracking-wide leading-relaxed shadow-md shadow-blue-500/20 hover:shadow-blue-500/30 transition-all cursor-pointer flex items-center gap-2 active:scale-95"
                                 onClick={() => {
                                     setIsViewModalOpen(false);
                                     handleEditClick(viewingEmployee);
