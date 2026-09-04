@@ -985,10 +985,10 @@ export default function Employee() {
                             
                             {/* Personal & Contact Details */}
                             <div>
-                                <h3 className="text-xs font-extrabold uppercase tracking-wider text-[#2563EB] mb-2.5 flex items-center gap-2">
+                                <h3 className="text-xs font-extrabold uppercase tracking-wider text-[#2563EB] mb-2.5 flex items-center gap-2 mb-4">
                                     <User size={15} /> Personal & Contact Details
                                 </h3>
-                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 mt-3">
                                     {/* Email */}
                                     <div className="bg-white border border-[#E2E8F0] rounded-xl p-3 shadow-2xs flex items-center gap-3">
                                         <div className="w-9 h-9 rounded-lg bg-[#EFF6FF] text-[#2563EB] flex items-center justify-center flex-shrink-0">
@@ -1048,7 +1048,7 @@ export default function Employee() {
                                 <h3 className="text-xs font-extrabold uppercase tracking-wider text-[#2563EB] mb-2.5 flex items-center gap-2">
                                     <Briefcase size={15} /> Employment Details
                                 </h3>
-                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 mt-3">
                                     {/* Department */}
                                     <div className="bg-white border border-[#E2E8F0] rounded-xl p-3 shadow-2xs flex items-center gap-3">
                                         <div className="w-9 h-9 rounded-lg bg-[#EFF6FF] text-[#2563EB] flex items-center justify-center flex-shrink-0">
@@ -1108,7 +1108,7 @@ export default function Employee() {
                                 <h3 className="text-xs font-extrabold uppercase tracking-wider text-[#2563EB] mb-2.5 flex items-center gap-2">
                                     <MapPin size={15} /> Residential Address
                                 </h3>
-                                <div className="bg-white border border-[#E2E8F0] rounded-xl p-3.5 shadow-2xs flex items-start gap-3">
+                                <div className="bg-white border border-[#E2E8F0] rounded-xl p-3.5 shadow-2xs flex items-start gap-3 mt-3">
                                     <div className="w-9 h-9 rounded-lg bg-[#EFF6FF] text-[#2563EB] flex items-center justify-center flex-shrink-0 mt-0.5">
                                         <MapPin size={17} />
                                     </div>

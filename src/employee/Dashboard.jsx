@@ -4,10 +4,13 @@ import { useNavigate } from "react-router-dom";
 import FooterNavigation from "../components/FooterNavigation";
 import Header from "../components/Header";
 import PredictiveSearchBar from "../components/PredictiveSearchBar";
+import { TrendingUp, Calendar, DollarSign, Megaphone } from "lucide-react";
+import api from "../api";
 
 export default function EmployeeDashboard() {
   const [activeTab, setActiveTab] = useState("Dashboard");
   const [dashboard, setDashboard] = useState(null);
+  const [notices, setNotices] = useState([]);
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
@@ -16,14 +19,25 @@ export default function EmployeeDashboard() {
     const load = async () => {
       setLoading(true);
       try {
-        const res = await api.getCurrentEmployeeDashboard();
-        if (mounted && res?.success) {
-          setDashboard(res.dashboard);
+        const [dashRes, noticeRes] = await Promise.allSettled([
+          api.getCurrentEmployeeDashboard(),
+          api.getNotices()
+        ]);
+
+        if (mounted) {
+          if (dashRes.status === "fulfilled" && dashRes.value?.dashboard) {
+            setDashboard(dashRes.value.dashboard);
+          }
+          if (noticeRes.status === "fulfilled") {
+            const noticeData = noticeRes.value;
+            const list = noticeData?.notices || (Array.isArray(noticeData) ? noticeData : []);
+            setNotices(list);
+          }
         }
       } catch (err) {
-        console.error("Failed to load employee dashboard:", err);
+        console.error("Failed to load employee dashboard data:", err);
       } finally {
-        setLoading(false);
+        if (mounted) setLoading(false);
       }
     };
     load();
@@ -50,7 +64,11 @@ export default function EmployeeDashboard() {
 
   const [searchTerm, setSearchTerm] = useState("");
 
-  const filteredNotices = (dashboard?.recentNotices || []).filter((notice) => {
+  const noticeList = (dashboard?.recentNotices && dashboard.recentNotices.length > 0)
+    ? dashboard.recentNotices
+    : notices;
+
+  const filteredNotices = noticeList.filter((notice) => {
     if (!searchTerm.trim()) return true;
     const q = searchTerm.toLowerCase();
     const text = (notice.title || notice.description || "").toLowerCase();
@@ -121,7 +139,7 @@ export default function EmployeeDashboard() {
                     <span className="emp-stat-title">Recent Alerts</span>
                   </div>
                   <p className="emp-stat-value">
-                    {dashboard.recentNotices?.length ?? 0}
+                    {noticeList.length}
                   </p>
                   <span className="emp-stat-subtext">Latest notices</span>
                 </div>
