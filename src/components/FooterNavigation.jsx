@@ -58,15 +58,19 @@ export default function FooterNavigation({ activeTab, setActiveTab }) {
             : ["dashboard"];
     const permissions = rawPermissions.length > 0 ? rawPermissions : defaultPermissions;
     const userRole = String(user.role || "ADMIN").toLowerCase();
+    const hasPermission = (permission) => permissions.some((grantedPermission) => {
+        const normalized = String(grantedPermission).trim().toLowerCase();
+        return normalized === permission || normalized.startsWith(`${permission}:`);
+    });
 
     const isEmployeeRole = ["employee"].includes(userRole);
     const visibleMenuItems = isEmployeeRole
         ? (permissions.length === 0
             ? employeeMenuItems
-            : employeeMenuItems.filter((item) => !item.permission || permissions.includes(item.permission)))
+            : employeeMenuItems.filter((item) => !item.permission || hasPermission(item.permission)))
         : (permissions.length === 0
             ? adminMenuItems
-            : adminMenuItems.filter((item) => !item.permission || permissions.includes(item.permission)));
+            : adminMenuItems.filter((item) => !item.permission || hasPermission(item.permission)));
 
     const handleLogout = () => {
         localStorage.removeItem("token");
@@ -108,7 +112,7 @@ export default function FooterNavigation({ activeTab, setActiveTab }) {
     return (
         <nav
             className="fixed bottom-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-md border-t border-[#E2E8F0] shadow-[0_-4px_25px_rgba(0,0,0,0.08)] py-2 sm:py-2.5 px-2 sm:px-4 w-full max-w-full flex items-center justify-center"
-            style={{ paddingBottom: "calc(0.5rem + env(safe-area-inset-bottom, 0px))" }}
+            style={{ paddingBottom: "calc(0.5rem + var(--safe-area-bottom))", paddingLeft: "max(0.5rem, var(--safe-area-left))", paddingRight: "max(0.5rem, var(--safe-area-right))" }}
             aria-label="Bottom Navigation"
         >
             <div className="w-full max-w-full flex items-center justify-start sm:justify-center gap-1.5 sm:gap-3.5 md:gap-4 overflow-x-auto scrollbar-none snap-x snap-mandatory touch-pan-x py-1 px-1 sm:px-2">

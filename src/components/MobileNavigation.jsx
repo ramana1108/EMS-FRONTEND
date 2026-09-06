@@ -95,6 +95,7 @@ export default function MobileNavigation() {
         className={`fixed bottom-0 left-0 right-0 bg-slate-900 text-white rounded-t-2xl z-50 transform transition-transform duration-300 ease-in-out md:hidden ${
           isMoreOpen ? 'translate-y-0' : 'translate-y-full'
         }`}
+        style={{ paddingBottom: "var(--safe-area-bottom)" }}
       >
         {/* Drawer Header & Profile Card */}
         <div className="p-4 border-b border-slate-800 relative">
@@ -130,7 +131,7 @@ export default function MobileNavigation() {
         </div>
 
         {/* Secondary Links List */}
-        <div className="p-4 space-y-1 max-h-[60vh] overflow-y-auto pb-24">
+        <div className="p-4 space-y-1 max-h-[60dvh] overflow-y-auto pb-24">
           <p className="text-xs font-semibold text-slate-400 px-3 pb-2 uppercase tracking-wider">
             Management & System
           </p>
@@ -156,7 +157,7 @@ export default function MobileNavigation() {
       </div>
 
       {/* Persistent Bottom Bar */}
-      <nav className="fixed bottom-0 left-0 right-0 bg-slate-900 border-t border-slate-800 z-30 md:hidden px-2 py-1.5">
+      <nav className="fixed bottom-0 left-0 right-0 bg-slate-900 border-t border-slate-800 z-30 md:hidden px-2 py-1.5" style={{ paddingBottom: "calc(0.375rem + var(--safe-area-bottom))" }}>
         <div className="flex items-center justify-around">
           {primaryNav.map((item) => {
             const Icon = item.icon;

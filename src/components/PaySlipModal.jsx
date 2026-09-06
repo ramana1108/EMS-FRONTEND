@@ -100,7 +100,7 @@ export default function PaySlipModal({ payroll, user, isOpen, onClose }) {
       justifyContent: "center",
       backgroundColor: "rgba(15, 23, 42, 0.6)",
       backdropFilter: "blur(6px)",
-      padding: "16px"
+      padding: "max(12px, var(--safe-area-top)) max(12px, var(--safe-area-right)) max(12px, var(--safe-area-bottom)) max(12px, var(--safe-area-left))"
     }}>
       <style>{`
         @media (max-width: 640px) {
@@ -139,8 +139,8 @@ export default function PaySlipModal({ payroll, user, isOpen, onClose }) {
         borderRadius: "20px",
         border: "1px solid #e2e8f0",
         width: "680px",
-        maxWidth: "95vw",
-        maxHeight: "90vh",
+        maxWidth: "calc(100vw - var(--safe-area-left) - var(--safe-area-right) - 24px)",
+        maxHeight: "calc(100dvh - var(--safe-area-top) - var(--safe-area-bottom) - 24px)",
         display: "flex",
         flexDirection: "column",
         boxShadow: "0 25px 50px -12px rgba(0, 0, 0, 0.25)",

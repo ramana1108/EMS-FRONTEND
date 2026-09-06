@@ -921,8 +921,8 @@ export default function Employee() {
 
             {/* ================= VIEW EMPLOYEE DETAILS MODAL ================= */}
             {isViewModalOpen && viewingEmployee && (
-                <div className="fixed inset-0 z-[9999] flex items-center justify-center p-3 sm:p-6 bg-slate-900/50 backdrop-blur-sm animate-fade-in">
-                    <div className="relative w-full max-w-2xl max-h-[calc(100vh-2rem)] sm:max-h-[88vh] bg-white rounded-3xl shadow-2xl shadow-slate-900/20 overflow-hidden border border-slate-200/80 flex flex-col animate-scale-up my-auto">
+                <div className="modal-backdrop bg-slate-900/50 animate-fade-in">
+                    <div className="app-modal-dialog animate-scale-up">
                         
                         {/* Header Banner - Solid 70% Light Blue Theme */}
                         <div 

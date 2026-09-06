@@ -40,7 +40,7 @@ export default function Header() {
   };
 
   return (
-    <header className="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-[#E2E8F0] px-4 sm:px-8 py-2.5 shadow-[0_2px_15px_rgba(0,0,0,0.03)] flex items-center justify-between gap-4 transition-all">
+    <header className="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-[#E2E8F0] px-4 sm:px-8 py-2.5 shadow-[0_2px_15px_rgba(0,0,0,0.03)] flex items-center justify-between gap-4 transition-all" style={{ paddingTop: "max(0.625rem, var(--safe-area-top))", paddingLeft: "max(1rem, var(--safe-area-left))", paddingRight: "max(1rem, var(--safe-area-right))" }}>
       {/* EMS PORTAL Branding */}
       <div className="flex items-center gap-3 cursor-pointer shrink-0" onClick={() => navigate("/")}>
         <img

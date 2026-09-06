@@ -351,8 +351,8 @@ export default function Leavemanagement() {
                 {/* Modal: Apply Leave */}
                 {
                     showApplyModal && (
-                        <div className="fixed inset-0 z-999 flex items-center justify-center bg-slate-900/40 backdrop-blur-sm p-4">
-                            <div className="bg-white rounded-3xl w-full max-w-xl max-h-[92vh] overflow-y-auto p-8 shadow-2xl border border-[#E2E8F0]">
+                        <div className="modal-backdrop bg-slate-900/40">
+                            <div className="app-modal-dialog max-w-xl overflow-y-auto p-8">
                                 <div className="flex justify-between items-center mb-6">
                                     <h3 className="text-xl font-extrabold text-[#172033] m-0">Apply for Leave</h3>
                                     <button onClick={() => setShowApplyModal(false)} className="bg-transparent border-0 cursor-pointer text-[#64748B] hover:text-[#172033]">

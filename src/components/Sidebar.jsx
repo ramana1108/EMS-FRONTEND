@@ -58,15 +58,19 @@ export default function Sidebar({ activeTab, setActiveTab, isOpen, setIsOpen }) 
             : ["dashboard"];
     const permissions = rawPermissions.length > 0 ? rawPermissions : defaultPermissions;
     const userRole = String(user.role || "ADMIN").toLowerCase();
+    const hasPermission = (permission) => permissions.some((grantedPermission) => {
+        const normalized = String(grantedPermission).trim().toLowerCase();
+        return normalized === permission || normalized.startsWith(`${permission}:`);
+    });
 
     const isEmployeeRole = ["employee"].includes(userRole);
     const visibleMenuItems = isEmployeeRole
         ? (permissions.length === 0
             ? employeeMenuItems
-            : employeeMenuItems.filter((item) => !item.permission || permissions.includes(item.permission)))
+            : employeeMenuItems.filter((item) => !item.permission || hasPermission(item.permission)))
         : (permissions.length === 0
             ? menuItems
-            : menuItems.filter((item) => !item.permission || permissions.includes(item.permission)));
+            : menuItems.filter((item) => !item.permission || hasPermission(item.permission)));
 
     const handleLogout = () => {
         localStorage.removeItem("token");
