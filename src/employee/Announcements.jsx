@@ -20,6 +20,7 @@ import NotificationBell from "../components/NotificationBell";
 export default function Announcements() {
     const [activeTab, setActiveTab] = useState("Announcements");
     const [isOpen, setIsOpen] = useState(false);
+    const [selectedNotice, setSelectedNotice] = useState(null);
     const [notices, setNotices] = useState([]);
     const [filteredNotices, setFilteredNotices] = useState([]);
     const [loading, setLoading] = useState(false);
@@ -156,6 +157,14 @@ export default function Announcements() {
         return name.split(" ").map((n) => n[0]).join("").toUpperCase().slice(0, 2);
     };
 
+    const openNoticeDetail = (notice) => {
+        setSelectedNotice(notice);
+    };
+
+    const closeNoticeDetail = () => {
+        setSelectedNotice(null);
+    };
+
     return (
         <div className="min-h-screen w-full max-w-full overflow-x-hidden bg-[#F8FAFC] text-[#172033] flex flex-col">
             <Header />
@@ -184,6 +193,15 @@ export default function Announcements() {
                                         <div
                                             key={notice._id}
                                             className="announcement-item"
+                                            onClick={() => openNoticeDetail(notice)}
+                                            onKeyDown={(event) => {
+                                                if (event.key === "Enter" || event.key === " ") {
+                                                    event.preventDefault();
+                                                    openNoticeDetail(notice);
+                                                }
+                                            }}
+                                            role="button"
+                                            tabIndex={0}
                                             style={{
                                                 display: "flex",
                                                 flexDirection: "column",
@@ -193,7 +211,9 @@ export default function Announcements() {
                                                 backgroundColor: "#FFFFFF",
                                                 border: "1px solid #E2E8F0",
                                                 boxShadow: "0 8px 20px -16px rgba(15, 23, 42, 0.24)",
-                                                transition: "box-shadow 0.2s ease"
+                                                transition: "box-shadow 0.2s ease",
+                                                cursor: "pointer",
+                                                outline: "none"
                                             }}
                                         >
                                             <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: "12px" }}>
@@ -302,6 +322,26 @@ export default function Announcements() {
                                                     </span>
                                                 )}
                                             </div>
+                                            <button
+                                                type="button"
+                                                onClick={(event) => {
+                                                    event.stopPropagation();
+                                                    openNoticeDetail(notice);
+                                                }}
+                                                style={{
+                                                    alignSelf: "flex-start",
+                                                    border: "1px solid #DBEAFE",
+                                                    background: "#EFF6FF",
+                                                    color: "#1D4ED8",
+                                                    padding: "8px 12px",
+                                                    borderRadius: "999px",
+                                                    fontSize: "12px",
+                                                    fontWeight: "700",
+                                                    cursor: "pointer"
+                                                }}
+                                            >
+                                                Read details
+                                            </button>
                                         </div>
                                     );
                                 })
@@ -317,6 +357,67 @@ export default function Announcements() {
                         />
                     </div>
             </div>
+
+                {selectedNotice && (
+                    <div className="modal-backdrop" onClick={closeNoticeDetail}>
+                        <div
+                            className="modal-content-card-wide"
+                            onClick={(event) => event.stopPropagation()}
+                            style={{ maxWidth: "760px" }}
+                        >
+                            <div className="modal-header">
+                                <div>
+                                    <h2>{selectedNotice.title}</h2>
+                                    <p className="modal-subtitle">Announcement details</p>
+                                </div>
+                                <button
+                                    type="button"
+                                    className="btn-close"
+                                    onClick={closeNoticeDetail}
+                                    aria-label="Close announcement"
+                                >
+                                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M18 6 6 18" /><path d="m6 6 12 12" /></svg>
+                                </button>
+                            </div>
+
+                            <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
+                                <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: "12px", flexWrap: "wrap" }}>
+                                    <span
+                                        style={{
+                                            display: "inline-flex",
+                                            alignItems: "center",
+                                            backgroundColor: getAnnouncementMeta(selectedNotice.title || "").bgColor,
+                                            color: getAnnouncementMeta(selectedNotice.title || "").textColor,
+                                            border: `1px solid ${getAnnouncementMeta(selectedNotice.title || "").borderColor}`,
+                                            padding: "6px 10px",
+                                            borderRadius: "999px",
+                                            fontSize: "11px",
+                                            fontWeight: "700"
+                                        }}
+                                    >
+                                        {getAnnouncementMeta(selectedNotice.title || "").category}
+                                    </span>
+                                    <span style={{ fontSize: "12px", color: "#64748B", fontWeight: "600" }}>
+                                        {formatDate(selectedNotice.createdAt)}
+                                    </span>
+                                </div>
+
+                                <div style={{ display: "flex", alignItems: "center", gap: "10px", color: "#475569", fontSize: "13px", fontWeight: "600" }}>
+                                    <div style={{ width: "28px", height: "28px", borderRadius: "50%", background: "#EAF2FF", display: "flex", alignItems: "center", justifyContent: "center", color: "#2563EB", fontWeight: "800", fontSize: "11px" }}>
+                                        {getInitials(selectedNotice.postedBy?.employeeName || selectedNotice.postedBy || "System")}
+                                    </div>
+                                    <span>
+                                        {selectedNotice.postedBy?.employeeName || selectedNotice.postedBy || "System Administrator"}
+                                    </span>
+                                </div>
+
+                                <div style={{ color: "#172033", fontSize: "15px", lineHeight: "1.8", whiteSpace: "pre-line" }}>
+                                    {selectedNotice.description}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                )}
 
             <FooterNavigation activeTab={activeTab} setActiveTab={setActiveTab} />
         </div>
