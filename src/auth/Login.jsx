@@ -115,7 +115,7 @@ function Login() {
     };
 
     return (
-        <div className="w-full min-h-screen flex flex-col lg:flex-row bg-[#F7F9FC] font-sans antialiased overflow-x-hidden">
+        <div className="login-shell w-full min-h-screen flex flex-col lg:flex-row bg-[#F7F9FC] font-sans antialiased overflow-hidden">
             {/* LEFT SIDE — BRANDING / PRODUCT INTRO */}
             <div className="w-full lg:w-[56%] bg-[#061A35] relative flex flex-col justify-between p-6 sm:p-10 lg:p-12 text-white overflow-hidden select-none min-h-[480px] lg:min-h-screen">
                 {/* Ambient Decorative Background Waves & Glow */}
@@ -224,14 +224,14 @@ function Login() {
             </div>
 
             {/* RIGHT SIDE — LOGIN CARD */}
-            <div className="w-full lg:w-[44%] bg-[#F7F9FC] relative flex flex-col items-center justify-center p-5 sm:p-10 lg:p-12 min-h-screen overflow-y-auto">
+            <div className="login-right-panel w-full lg:w-[44%] bg-[#F7F9FC] relative flex flex-col items-center justify-center p-5 sm:p-10 lg:p-12 min-h-screen overflow-hidden">
                 {/* Subtle Dotted Matrix Pattern & Decorative Background Flares */}
                 <div className="absolute inset-0 bg-[radial-gradient(#CBD5E1_1px,transparent_1px)] [background-size:24px_24px] opacity-40 pointer-events-none z-0"></div>
                 <div className="absolute -top-24 -right-24 w-96 h-96 bg-blue-400/10 rounded-full blur-3xl pointer-events-none"></div>
                 <div className="absolute -bottom-24 -left-24 w-96 h-96 bg-indigo-400/10 rounded-full blur-3xl pointer-events-none"></div>
 
                 {/* Floating White Login Card */}
-                <div className="w-full max-w-[460px] bg-white rounded-3xl p-7 sm:p-10 shadow-[0_20px_60px_-15px_rgba(15,23,42,0.08)] border border-slate-100/90 relative z-10 my-auto">
+                <div className="login-card w-full max-w-[460px] mx-auto bg-white rounded-3xl p-7 sm:p-10 shadow-[0_20px_60px_-15px_rgba(15,23,42,0.08)] border border-slate-100/90 relative z-10 my-auto">
                     {/* Header */}
                     <div className="flex flex-col items-center mb-8 text-center">
                         <div className="w-14 h-14 rounded-2xl bg-[#081B33] p-2.5 flex items-center justify-center shadow-md mb-4 ring-4 ring-blue-500/10">

@@ -1,13 +1,14 @@
 /* App.css - Clean White Business Dashboard + Pastel Palette Theme */
-body{
-  background-color: black
-}
 
 @reference "tailwindcss";
 
 /* Modals & Dialogs */
 @utility modal-backdrop {
-  @apply fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-6 overflow-y-auto;
+  @apply fixed inset-0 flex items-center justify-center overflow-y-auto;
+  z-index: 100;
+  min-height: 100svh;
+  min-height: 100dvh;
+  padding: max(0.75rem, var(--safe-area-top)) max(0.75rem, var(--safe-area-right)) max(0.75rem, var(--safe-area-bottom)) max(0.75rem, var(--safe-area-left));
   background-color: rgba(15, 23, 42, 0.4) !important;
   backdrop-filter: blur(4px);
 }
@@ -17,8 +18,9 @@ body{
   border: 1px solid #E2E8F0 !important;
   color: #172033 !important;
   @apply rounded-2xl w-full max-w-5xl p-4 sm:p-8 shadow-xl transition-all duration-200;
-  max-height: 90vh;
+  max-height: calc(100dvh - var(--safe-area-top) - var(--safe-area-bottom) - 1.5rem);
   overflow-y: auto;
+  overscroll-behavior: contain;
 }
 
 @utility modal-content-card-wide {
@@ -26,8 +28,9 @@ body{
   border: 1px solid #E2E8F0 !important;
   color: #172033 !important;
   @apply rounded-2xl w-full max-w-6xl p-4 sm:p-8 shadow-xl transition-all duration-200;
-  max-height: 90vh;
+  max-height: calc(100dvh - var(--safe-area-top) - var(--safe-area-bottom) - 1.5rem);
   overflow-y: auto;
+  overscroll-behavior: contain;
 }
 
 @utility modal-box {
@@ -35,8 +38,24 @@ body{
   border: 1px solid #E2E8F0 !important;
   color: #172033 !important;
   @apply rounded-2xl w-full max-w-2xl p-4 sm:p-8 shadow-xl transition-all duration-200;
-  max-height: 90vh;
+  max-height: calc(100dvh - var(--safe-area-top) - var(--safe-area-bottom) - 1.5rem);
   overflow-y: auto;
+  overscroll-behavior: contain;
+}
+
+.app-modal-dialog {
+  position: relative;
+  width: 100%;
+  max-width: 42rem;
+  max-height: calc(100dvh - var(--safe-area-top) - var(--safe-area-bottom) - 1.5rem);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  margin: auto;
+  background: #FFFFFF !important;
+  border: 1px solid #E2E8F0 !important;
+  border-radius: 1.5rem;
+  box-shadow: 0 25px 50px -12px rgba(15, 23, 42, 0.2);
 }
 
 @utility password-input-wrap {
@@ -280,13 +299,13 @@ body{
 
 /* Page Layout Wrappers */
 @utility main-content {
-  @apply flex-1 p-6 md:p-10 overflow-y-auto;
+  @apply flex-1 p-6 md:p-10;
   background-color: #F8FAFC !important;
   color: #172033 !important;
 }
 
 @utility emp-main-content {
-  @apply flex-1 p-6 md:p-10 overflow-y-auto;
+  @apply flex-1 p-6 md:p-10;
   background-color: #F8FAFC !important;
   color: #172033 !important;
 }
@@ -1020,8 +1039,46 @@ body{
   }
 }
 
+@utility actions-dropdown-container {
+  @apply relative inline-flex items-center;
+}
+
+@utility action-dropdown-list {
+  @apply absolute right-0 top-full z-30 mt-2 min-w-[180px] rounded-xl border p-1.5 shadow-xl;
+  background-color: #FFFFFF !important;
+  border-color: #E2E8F0 !important;
+  box-shadow: 0 20px 40px -16px rgba(15, 23, 42, 0.18) !important;
+}
+
+@utility action-dropdown-btn {
+  @apply w-full flex items-center gap-2 rounded-lg px-3 py-2 text-left text-sm font-semibold transition-all cursor-pointer border border-transparent;
+  background-color: #FFFFFF !important;
+  color: #172033 !important;
+
+  &:hover {
+    background-color: #F8FAFC !important;
+    border-color: #E2E8F0 !important;
+    color: #172033 !important;
+  }
+}
+
+@utility action-dropdown-btn-danger {
+  @apply w-full flex items-center gap-2 rounded-lg px-3 py-2 text-left text-sm font-semibold transition-all cursor-pointer border border-transparent;
+  background-color: #FFF5F5 !important;
+  color: #B91C1C !important;
+
+  &:hover {
+    background-color: #FEE2E2 !important;
+    border-color: #FECACA !important;
+    color: #991B1B !important;
+  }
+}
+
 @utility btn-add-dept {
   @apply px-5 py-2.5 rounded-2xl font-black text-xs md:text-sm shadow-md shadow-blue-500/20 transition-all cursor-pointer inline-flex items-center gap-2 active:scale-95;
+  width: fit-content;
+  max-width: 100%;
+  min-height: 44px;
   background-color: #2563EB !important;
   color: #FFFFFF !important;
   border: 1px solid #2563EB !important;
@@ -1035,6 +1092,9 @@ body{
 
 @utility btn-enroll-employee {
   @apply px-5 py-2.5 rounded-2xl font-black text-xs md:text-sm shadow-md shadow-blue-500/20 transition-all cursor-pointer inline-flex items-center gap-2 active:scale-95;
+  width: fit-content;
+  max-width: 100%;
+  min-height: 44px;
   background-color: #2563EB !important;
   color: #FFFFFF !important;
   border: 1px solid #2563EB !important;
@@ -1148,6 +1208,9 @@ body{
   color: #FFFFFF !important;
   border: 1px solid #2563EB !important;
   @apply inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl text-xs md:text-sm font-bold shadow-xs cursor-pointer;
+  width: fit-content;
+  max-width: 100%;
+  min-height: 44px;
 
   &:hover {
     background: #1D4ED8 !important;
@@ -1159,6 +1222,9 @@ body{
   border: 1px solid #E2E8F0 !important;
   color: #475569 !important;
   @apply inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl text-xs md:text-sm font-semibold cursor-pointer;
+  width: fit-content;
+  max-width: 100%;
+  min-height: 44px;
 
   &:hover {
     background-color: #E2E8F0 !important;
