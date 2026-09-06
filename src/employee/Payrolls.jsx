@@ -112,7 +112,7 @@ export default function Payrolls() {
                             <h1 className="dashboard-title text-3xl font-extrabold m-0" style={{ color: "#172033" }}>Payrolls</h1>
                             <p className="dashboard-subtitle text-sm mt-1" style={{ color: "#64748B" }}>View your salary details and download payslips</p>
                         </div>
-                        <div>
+                        <div className="payroll-page-notification">
                             <NotificationBell />
                         </div>
                     </div>

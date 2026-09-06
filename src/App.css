@@ -1097,6 +1097,41 @@
 }
 
 @media (max-width: 640px) {
+  .payroll-page-notification {
+    display: none !important;
+  }
+
+  .announcement-item {
+    min-width: 0;
+    overflow: hidden;
+    border-left-width: 1px !important;
+    border-radius: 14px !important;
+    padding: 14px !important;
+  }
+
+  .announcement-item > div:first-child {
+    min-width: 0;
+  }
+
+  .announcement-item .announcement-date {
+    white-space: normal !important;
+    text-align: right;
+  }
+
+  .announcement-item .announcement-desc {
+    overflow-wrap: anywhere;
+    word-break: break-word;
+  }
+
+  .employee-directory-card .filters-row {
+    padding-left: 16px !important;
+    padding-right: 16px !important;
+  }
+
+  .employee-directory-card .action-icon-btn {
+    min-height: 36px;
+  }
+
   .btn-add-dept,
   .btn-save,
   .btn-cancel,
