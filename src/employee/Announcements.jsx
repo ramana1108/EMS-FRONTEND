@@ -24,6 +24,7 @@ export default function Announcements() {
     const [notices, setNotices] = useState([]);
     const [filteredNotices, setFilteredNotices] = useState([]);
     const [loading, setLoading] = useState(false);
+    const [loadError, setLoadError] = useState(false);
     const [searchTerm, setSearchTerm] = useState("");
     const [categoryFilter, setCategoryFilter] = useState("All");
     const [user, setUser] = useState(null);
@@ -44,17 +45,42 @@ export default function Announcements() {
 
         const loadNotices = async () => {
             setLoading(true);
+            setLoadError(false);
             try {
                 const res = await api.getNotices();
-                if (res?.notices && Array.isArray(res.notices)) {
-                    setNotices(res.notices);
-                    setFilteredNotices(res.notices);
-                } else if (Array.isArray(res)) {
-                    setNotices(res);
-                    setFilteredNotices(res);
+                const noticeList = Array.isArray(res?.notices)
+                    ? res.notices
+                    : Array.isArray(res)
+                        ? res
+                        : null;
+
+                if (res?.success === false || !noticeList) {
+                    throw new Error(res?.message || "Invalid announcements response");
                 }
+
+                const normalizedNotices = noticeList
+                    .filter((notice) => notice && typeof notice === "object" && !Array.isArray(notice))
+                    .map((notice) => ({
+                        ...notice,
+                        title: typeof notice.title === "string" && notice.title.trim()
+                            ? notice.title.trim()
+                            : "Untitled announcement",
+                        description: typeof notice.description === "string"
+                            ? notice.description
+                            : typeof notice.content === "string"
+                                ? notice.content
+                                : Array.isArray(notice.description)
+                                    ? notice.description.filter((part) => typeof part === "string").join("\n")
+                                    : "No announcement details available."
+                    }));
+
+                setNotices(normalizedNotices);
+                setFilteredNotices(normalizedNotices);
             } catch (err) {
                 console.error("Failed to load notices:", err);
+                setNotices([]);
+                setFilteredNotices([]);
+                setLoadError(true);
             } finally {
                 setLoading(false);
             }
@@ -63,7 +89,7 @@ export default function Announcements() {
     }, []);
 
     const getAnnouncementMeta = (title) => {
-        const t = title.toLowerCase();
+        const t = typeof title === "string" ? title.toLowerCase() : "";
         if (t.includes("office") || t.includes("closed") || t.includes("holiday")) {
             return {
                 category: "Company News",
@@ -127,8 +153,8 @@ export default function Announcements() {
         if (searchTerm) {
             result = result.filter(
                 (n) =>
-                    n.title?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                    n.description?.toLowerCase().includes(searchTerm.toLowerCase())
+                    (typeof n.title === "string" && n.title.toLowerCase().includes(searchTerm.toLowerCase())) ||
+                    (typeof n.description === "string" && n.description.toLowerCase().includes(searchTerm.toLowerCase()))
             );
         }
 
@@ -153,8 +179,24 @@ export default function Announcements() {
     };
 
     const getInitials = (name) => {
-        if (!name) return "U";
-        return name.split(" ").map((n) => n[0]).join("").toUpperCase().slice(0, 2);
+        if (typeof name !== "string" || !name.trim()) return "U";
+        return name.trim().split(/\s+/).map((part) => part[0]).join("").toUpperCase().slice(0, 2);
+    };
+
+    const getPostedByName = (postedBy) => {
+        if (typeof postedBy === "string" && postedBy.trim()) return postedBy.trim();
+        if (Array.isArray(postedBy)) {
+            return postedBy.filter((part) => typeof part === "string" && part.trim()).join(", ") || "System Administrator";
+        }
+        if (postedBy && typeof postedBy === "object") {
+            const fullName = [postedBy.firstName, postedBy.lastName]
+                .filter((part) => typeof part === "string" && part.trim())
+                .join(" ");
+            if (fullName) return fullName;
+            if (typeof postedBy.employeeName === "string" && postedBy.employeeName.trim()) return postedBy.employeeName.trim();
+            if (typeof postedBy.name === "string" && postedBy.name.trim()) return postedBy.name.trim();
+        }
+        return "System Administrator";
     };
 
     const openNoticeDetail = (notice) => {
@@ -182,8 +224,10 @@ export default function Announcements() {
                         <div className="announcement-list" style={{ overflow: "visible" }}>
                             {loading ? (
                                 <div style={{ textAlign: "center", color: "#64748b", padding: "40px" }}>Loading announcements...</div>
+                            ) : loadError ? (
+                                <div style={{ textAlign: "center", color: "#b91c1c", padding: "40px" }}>Unable to load announcements. Please try again.</div>
                             ) : filteredNotices.length === 0 ? (
-                                <div style={{ textAlign: "center", color: "#64748b", padding: "40px" }}>No announcements found matching the criteria.</div>
+                                <div style={{ textAlign: "center", color: "#64748b", padding: "40px" }}>No announcements available</div>
                             ) : (
                                 paginatedNotices.map((notice) => {
                                     const meta = getAnnouncementMeta(notice.title || "");
@@ -310,13 +354,13 @@ export default function Announcements() {
                                             >
                                                 <div style={{ display: "flex", alignItems: "center", gap: "8px", minWidth: 0 }}>
                                                     <div style={{ width: "24px", height: "24px", borderRadius: "50%", background: "#EAF2FF", display: "flex", alignItems: "center", justifyContent: "center", color: "#2563EB", fontWeight: "800", fontSize: "10px" }}>
-                                                        {getInitials(notice.postedBy?.employeeName || notice.postedBy || "System")}
+                                                        {getInitials(getPostedByName(notice.postedBy))}
                                                     </div>
                                                     <span style={{ fontWeight: "600", color: "#475569" }}>
-                                                        {notice.postedBy?.employeeName || notice.postedBy || "System Administrator"}
+                                                        {getPostedByName(notice.postedBy)}
                                                     </span>
                                                 </div>
-                                                {notice.postedBy?.employeeId && (
+                                                {notice.postedBy && typeof notice.postedBy === "object" && !Array.isArray(notice.postedBy) && notice.postedBy.employeeId && (
                                                     <span style={{ fontWeight: "700", color: "#64748B" }}>
                                                         #{notice.postedBy.employeeId}
                                                     </span>
@@ -404,10 +448,10 @@ export default function Announcements() {
 
                                 <div style={{ display: "flex", alignItems: "center", gap: "10px", color: "#475569", fontSize: "13px", fontWeight: "600" }}>
                                     <div style={{ width: "28px", height: "28px", borderRadius: "50%", background: "#EAF2FF", display: "flex", alignItems: "center", justifyContent: "center", color: "#2563EB", fontWeight: "800", fontSize: "11px" }}>
-                                        {getInitials(selectedNotice.postedBy?.employeeName || selectedNotice.postedBy || "System")}
+                                        {getInitials(getPostedByName(selectedNotice.postedBy))}
                                     </div>
                                     <span>
-                                        {selectedNotice.postedBy?.employeeName || selectedNotice.postedBy || "System Administrator"}
+                                        {getPostedByName(selectedNotice.postedBy)}
                                     </span>
                                 </div>
 
