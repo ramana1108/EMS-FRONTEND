@@ -100,7 +100,8 @@ export default function PaySlipModal({ payroll, user, isOpen, onClose }) {
       justifyContent: "center",
       backgroundColor: "rgba(15, 23, 42, 0.6)",
       backdropFilter: "blur(6px)",
-      padding: "max(12px, var(--safe-area-top)) max(12px, var(--safe-area-right)) max(12px, var(--safe-area-bottom)) max(12px, var(--safe-area-left))"
+      padding: "12px",
+      overflowY: "auto"
     }}>
       <style>{`
         @media (max-width: 640px) {
@@ -110,6 +111,14 @@ export default function PaySlipModal({ payroll, user, isOpen, onClose }) {
           .header-flex {
             flex-direction: column !important;
             gap: 12px !important;
+          }
+          .pay-slip-footer {
+            flex-direction: column !important;
+            align-items: stretch !important;
+          }
+          .pay-slip-action {
+            width: 100% !important;
+            justify-content: center !important;
           }
         }
         @media print {
@@ -138,13 +147,14 @@ export default function PaySlipModal({ payroll, user, isOpen, onClose }) {
         backgroundColor: "#ffffff",
         borderRadius: "20px",
         border: "1px solid #e2e8f0",
-        width: "680px",
-        maxWidth: "calc(100vw - var(--safe-area-left) - var(--safe-area-right) - 24px)",
-        maxHeight: "calc(100dvh - var(--safe-area-top) - var(--safe-area-bottom) - 24px)",
+        width: "min(680px, calc(100vw - 24px))",
+        maxWidth: "calc(100vw - 24px)",
+        maxHeight: "calc(var(--app-vh, 100dvh) - 24px)",
         display: "flex",
         flexDirection: "column",
         boxShadow: "0 25px 50px -12px rgba(0, 0, 0, 0.25)",
-        overflow: "hidden"
+        overflow: "hidden",
+        margin: "auto"
       }}>
 
         {/* Modal Top Header Bar */}
@@ -154,7 +164,10 @@ export default function PaySlipModal({ payroll, user, isOpen, onClose }) {
           alignItems: "center",
           padding: "18px 24px",
           borderBottom: "1px solid #f1f5f9",
-          backgroundColor: "#f8fafc"
+          backgroundColor: "#f8fafc",
+          position: "sticky",
+          top: 0,
+          zIndex: 2
         }}>
           <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
             <div style={{
@@ -199,7 +212,7 @@ export default function PaySlipModal({ payroll, user, isOpen, onClose }) {
         </div>
 
         {/* Modal Scrollable Body */}
-        <div style={{ flex: 1, overflowY: "auto", padding: "24px" }}>
+        <div style={{ flex: 1, overflowY: "auto", padding: "16px 16px 8px", WebkitOverflowScrolling: "touch" }}>
           
           {/* Payslip Document Card Reference for PDF & Print */}
           <div
@@ -210,8 +223,11 @@ export default function PaySlipModal({ payroll, user, isOpen, onClose }) {
               backgroundColor: "#ffffff",
               borderRadius: "12px",
               border: "1px solid #e2e8f0",
-              padding: "24px",
-              boxShadow: "0 1px 3px 0 rgba(0, 0, 0, 0.05)"
+              padding: "18px",
+              boxShadow: "0 1px 3px 0 rgba(0, 0, 0, 0.05)",
+              maxWidth: "100%",
+              overflowWrap: "anywhere",
+              wordBreak: "break-word"
             }}
           >
             {/* Header Flex */}
@@ -245,13 +261,14 @@ export default function PaySlipModal({ payroll, user, isOpen, onClose }) {
             {/* Employee & Payment Info Grid */}
             <div className="info-grid" style={{
               display: "grid",
-              gridTemplateColumns: "1fr 1fr",
+              gridTemplateColumns: "repeat(2, minmax(0, 1fr))",
               gap: "16px",
               backgroundColor: "#f8fafc",
               padding: "16px",
               borderRadius: "8px",
               border: "1px solid #e2e8f0",
-              marginBottom: "20px"
+              marginBottom: "20px",
+              width: "100%"
             }}>
               <div>
                 <div style={{ marginBottom: "8px" }}>
@@ -302,54 +319,54 @@ export default function PaySlipModal({ payroll, user, isOpen, onClose }) {
             </div>
 
             {/* Calculations Breakdown Table */}
-            <table className="calc-table" style={{ width: "100%", borderCollapse: "collapse", marginBottom: "20px" }}>
-              <thead>
-                <tr>
-                  <th style={{ backgroundColor: "#f1f5f9", padding: "10px 12px", fontSize: "11px", fontWeight: "800", color: "#334155", textTransform: "uppercase", textAlign: "left", borderBottom: "1px solid #cbd5e1" }}>Earnings Description</th>
-                  <th style={{ backgroundColor: "#f1f5f9", padding: "10px 12px", fontSize: "11px", fontWeight: "800", color: "#334155", textTransform: "uppercase", textAlign: "right", borderBottom: "1px solid #cbd5e1" }}>Amount (₹)</th>
-                  <th style={{ backgroundColor: "#f1f5f9", padding: "10px 12px", fontSize: "11px", fontWeight: "800", color: "#334155", textTransform: "uppercase", textAlign: "left", borderBottom: "1px solid #cbd5e1" }}>Deductions Description</th>
-                  <th style={{ backgroundColor: "#f1f5f9", padding: "10px 12px", fontSize: "11px", fontWeight: "800", color: "#334155", textTransform: "uppercase", textAlign: "right", borderBottom: "1px solid #cbd5e1" }}>Amount (₹)</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td style={{ padding: "10px 12px", fontSize: "13px", borderBottom: "1px solid #e2e8f0" , color:"black" }}>Basic Salary</td>
-                  <td style={{ padding: "10px 12px", fontSize: "13px", borderBottom: "1px solid #e2e8f0", textAlign: "right", fontWeight: "700", color: "#1e293b" }}>{formatCurrency(basic)}</td>
-                  <td style={{ padding: "10px 12px", fontSize: "13px", borderBottom: "1px solid #e2e8f0", color:"black" }}>PF & Deductions</td>
-                  <td style={{ padding: "10px 12px", fontSize: "13px", borderBottom: "1px solid #e2e8f0", textAlign: "right", fontWeight: "700", color: "#dc2626" }}>{formatCurrency(deductions)}</td>
-                </tr>
-                <tr>
-                  <td style={{ padding: "10px 12px", fontSize: "13px", borderBottom: "1px solid #e2e8f0", color:"black" }}>HRA & Allowances</td>
-                  <td style={{ padding: "10px 12px", fontSize: "13px", borderBottom: "1px solid #e2e8f0", textAlign: "right", fontWeight: "700", color: "#059669" }}>{formatCurrency(allowance)}</td>
-                  <td style={{ padding: "10px 12px", fontSize: "13px", borderBottom: "1px solid #e2e8f0", color:"black" }}>Income Tax</td>
-                  <td style={{ padding: "10px 12px", fontSize: "13px", borderBottom: "1px solid #e2e8f0", textAlign: "right", fontWeight: "700", color: "#dc2626" }}>{formatCurrency(tax)}</td>
-                </tr>
-                <tr>
-                  <td style={{ padding: "10px 12px", fontSize: "13px", borderBottom: "1px solid #e2e8f0", color:"black" }}>Performance Bonus</td>
-                  <td style={{ padding: "10px 12px", fontSize: "13px", borderBottom: "1px solid #e2e8f0", textAlign: "right", fontWeight: "700", color: "#059669" }}>{formatCurrency(bonus)}</td>
-                  <td style={{ padding: "10px 12px", fontSize: "13px", borderBottom: "1px solid #e2e8f0", color:"black" }}>—</td>
-                  <td style={{ padding: "10px 12px", fontSize: "13px", borderBottom: "1px solid #e2e8f0", textAlign: "right" }}>—</td>
-                </tr>
+            <div style={{ width: "100%", overflowX: "auto", WebkitOverflowScrolling: "touch", marginBottom: "20px", borderRadius: "10px", border: "1px solid #e2e8f0" }}>
+              <table className="calc-table" style={{ width: "100%", minWidth: "520px", borderCollapse: "collapse", margin: 0 }}>
+                <thead>
+                  <tr>
+                    <th style={{ backgroundColor: "#f1f5f9", padding: "10px 12px", fontSize: "11px", fontWeight: "800", color: "#334155", textTransform: "uppercase", textAlign: "left", borderBottom: "1px solid #cbd5e1" }}>Earnings Description</th>
+                    <th style={{ backgroundColor: "#f1f5f9", padding: "10px 12px", fontSize: "11px", fontWeight: "800", color: "#334155", textTransform: "uppercase", textAlign: "right", borderBottom: "1px solid #cbd5e1" }}>Amount (₹)</th>
+                    <th style={{ backgroundColor: "#f1f5f9", padding: "10px 12px", fontSize: "11px", fontWeight: "800", color: "#334155", textTransform: "uppercase", textAlign: "left", borderBottom: "1px solid #cbd5e1" }}>Deductions Description</th>
+                    <th style={{ backgroundColor: "#f1f5f9", padding: "10px 12px", fontSize: "11px", fontWeight: "800", color: "#334155", textTransform: "uppercase", textAlign: "right", borderBottom: "1px solid #cbd5e1" }}>Amount (₹)</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td style={{ padding: "10px 12px", fontSize: "13px", borderBottom: "1px solid #e2e8f0", color: "#0f172a" }}>Basic Salary</td>
+                    <td style={{ padding: "10px 12px", fontSize: "13px", borderBottom: "1px solid #e2e8f0", textAlign: "right", fontWeight: "700", color: "#1e293b" }}>{formatCurrency(basic)}</td>
+                    <td style={{ padding: "10px 12px", fontSize: "13px", borderBottom: "1px solid #e2e8f0", color: "#0f172a" }}>PF & Deductions</td>
+                    <td style={{ padding: "10px 12px", fontSize: "13px", borderBottom: "1px solid #e2e8f0", textAlign: "right", fontWeight: "700", color: "#dc2626" }}>{formatCurrency(deductions)}</td>
+                  </tr>
+                  <tr>
+                    <td style={{ padding: "10px 12px", fontSize: "13px", borderBottom: "1px solid #e2e8f0", color: "#0f172a" }}>HRA & Allowances</td>
+                    <td style={{ padding: "10px 12px", fontSize: "13px", borderBottom: "1px solid #e2e8f0", textAlign: "right", fontWeight: "700", color: "#059669" }}>{formatCurrency(allowance)}</td>
+                    <td style={{ padding: "10px 12px", fontSize: "13px", borderBottom: "1px solid #e2e8f0", color: "#0f172a" }}>Income Tax</td>
+                    <td style={{ padding: "10px 12px", fontSize: "13px", borderBottom: "1px solid #e2e8f0", textAlign: "right", fontWeight: "700", color: "#dc2626" }}>{formatCurrency(tax)}</td>
+                  </tr>
+                  <tr>
+                    <td style={{ padding: "10px 12px", fontSize: "13px", borderBottom: "1px solid #e2e8f0", color: "#0f172a" }}>Performance Bonus</td>
+                    <td style={{ padding: "10px 12px", fontSize: "13px", borderBottom: "1px solid #e2e8f0", textAlign: "right", fontWeight: "700", color: "#059669" }}>{formatCurrency(bonus)}</td>
+                    <td style={{ padding: "10px 12px", fontSize: "13px", borderBottom: "1px solid #e2e8f0", color: "#0f172a" }}>—</td>
+                    <td style={{ padding: "10px 12px", fontSize: "13px", borderBottom: "1px solid #e2e8f0", textAlign: "right" }}>—</td>
+                  </tr>
 
-                {/* Subtotals */}
-                <tr style={{ backgroundColor: "#f8fafc" }}>
-                  <td style={{ padding: "8px 12px", fontSize: "12px", fontWeight: "800", color: "#475569" }}>Total Gross Earnings</td>
-                  <td style={{ padding: "8px 12px", fontSize: "12px", fontWeight: "800", color: "#059669", textAlign: "right" }}>{formatCurrency(totalEarnings)}</td>
-                  <td style={{ padding: "8px 12px", fontSize: "12px", fontWeight: "800", color: "#475569" }}>Total Deductions</td>
-                  <td style={{ padding: "8px 12px", fontSize: "12px", fontWeight: "800", color: "#dc2626", textAlign: "right" }}>{formatCurrency(totalDeductions)}</td>
-                </tr>
+                  <tr style={{ backgroundColor: "#f8fafc" }}>
+                    <td style={{ padding: "8px 12px", fontSize: "12px", fontWeight: "800", color: "#475569" }}>Total Gross Earnings</td>
+                    <td style={{ padding: "8px 12px", fontSize: "12px", fontWeight: "800", color: "#059669", textAlign: "right" }}>{formatCurrency(totalEarnings)}</td>
+                    <td style={{ padding: "8px 12px", fontSize: "12px", fontWeight: "800", color: "#475569" }}>Total Deductions</td>
+                    <td style={{ padding: "8px 12px", fontSize: "12px", fontWeight: "800", color: "#dc2626", textAlign: "right" }}>{formatCurrency(totalDeductions)}</td>
+                  </tr>
 
-                {/* Highlighted Net Disbursed Salary Row */}
-                <tr className="total-row" style={{ backgroundColor: "#ecfdf5" }}>
-                  <td colSpan="2" style={{ padding: "12px", fontSize: "14px", fontWeight: "800", color: "#043e30", borderTop: "2px solid #10b981", borderBottom: "2px solid #10b981" }}>
-                    NET TAKE-HOME DISBURSED SALARY
-                  </td>
-                  <td colSpan="2" style={{ padding: "12px", fontSize: "16px", fontWeight: "800", color: "#043e30", textAlign: "right", borderTop: "2px solid #10b981", borderBottom: "2px solid #10b981" }}>
-                    {formatCurrency(netSalary)}
-                  </td>
-                </tr>
-              </tbody>
-            </table>
+                  <tr className="total-row" style={{ backgroundColor: "#ecfdf5" }}>
+                    <td colSpan="2" style={{ padding: "12px", fontSize: "14px", fontWeight: "800", color: "#043e30", borderTop: "2px solid #10b981", borderBottom: "2px solid #10b981" }}>
+                      NET TAKE-HOME DISBURSED SALARY
+                    </td>
+                    <td colSpan="2" style={{ padding: "12px", fontSize: "16px", fontWeight: "800", color: "#043e30", textAlign: "right", borderTop: "2px solid #10b981", borderBottom: "2px solid #10b981" }}>
+                      {formatCurrency(netSalary)}
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
 
             {/* Footer Verification Note */}
             <div className="footer-note" style={{ textAlign: "center", marginTop: "20px", paddingTop: "14px", borderTop: "1px dashed #cbd5e1", fontSize: "11px", color: "#64748b" }}>
@@ -361,17 +378,20 @@ export default function PaySlipModal({ payroll, user, isOpen, onClose }) {
         </div>
 
         {/* Modal Footer Actions */}
-        <div style={{
+        <div className="pay-slip-footer" style={{
           display: "flex",
-          justify: "flex-end",
+          justifyContent: "flex-end",
+          alignItems: "center",
           gap: "12px",
           padding: "16px 24px",
           borderTop: "1px solid #f1f5f9",
-          backgroundColor: "#f8fafc"
+          backgroundColor: "#f8fafc",
+          flexWrap: "wrap"
         }}>
           <button
             type="button"
             onClick={onClose}
+            className="pay-slip-action"
             style={{
               padding: "9px 18px",
               border: "1px solid #cbd5e1",
@@ -380,7 +400,12 @@ export default function PaySlipModal({ payroll, user, isOpen, onClose }) {
               color: "#475569",
               fontSize: "13px",
               fontWeight: "700",
-              cursor: "pointer"
+              cursor: "pointer",
+              display: "inline-flex",
+              alignItems: "center",
+              justifyContent: "center",
+              flex: "1 1 140px",
+              minWidth: "120px"
             }}
           >
             Close
@@ -389,6 +414,7 @@ export default function PaySlipModal({ payroll, user, isOpen, onClose }) {
           <button
             type="button"
             onClick={handlePrint}
+            className="pay-slip-action"
             style={{
               padding: "9px 18px",
               border: "1px solid #043e30",
@@ -398,9 +424,12 @@ export default function PaySlipModal({ payroll, user, isOpen, onClose }) {
               fontSize: "13px",
               fontWeight: "700",
               cursor: "pointer",
-              display: "flex",
+              display: "inline-flex",
               alignItems: "center",
-              gap: "6px"
+              justifyContent: "center",
+              gap: "6px",
+              flex: "1 1 160px",
+              minWidth: "120px"
             }}
           >
             <Printer size={16} />
@@ -411,6 +440,7 @@ export default function PaySlipModal({ payroll, user, isOpen, onClose }) {
             type="button"
             onClick={handleDownloadPDF}
             disabled={downloading}
+            className="pay-slip-action"
             style={{
               padding: "9px 18px",
               border: "none",
@@ -420,10 +450,13 @@ export default function PaySlipModal({ payroll, user, isOpen, onClose }) {
               fontSize: "13px",
               fontWeight: "700",
               cursor: downloading ? "wait" : "pointer",
-              display: "flex",
+              display: "inline-flex",
               alignItems: "center",
+              justifyContent: "center",
               gap: "6px",
-              opacity: downloading ? 0.8 : 1
+              opacity: downloading ? 0.8 : 1,
+              flex: "1 1 180px",
+              minWidth: "120px"
             }}
           >
             <Download size={16} />

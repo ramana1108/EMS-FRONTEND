@@ -101,7 +101,7 @@ export default function Payrolls() {
 
     return (
         <div className="min-h-screen bg-[#F8FAFC] text-[#172033] flex flex-col">
-            <Header />
+            <Header showNotifications={false} />
 
             <div className="flex-1 flex flex-col px-4 py-6 sm:px-8 lg:px-10" style={{ paddingBottom: "calc(5.5rem + env(safe-area-inset-bottom, 0px))" }}>
 

@@ -949,7 +949,7 @@
 @utility employee-table {
   @apply border-collapse text-left;
   width: 100%;
-  min-width: 750px;
+  min-width: 640px;
   background: #FFFFFF !important;
   table-layout: auto;
 
@@ -1093,6 +1093,25 @@
     background-color: #1D4ED8 !important;
     border-color: #1D4ED8 !important;
     box-shadow: 0 4px 14px rgba(37, 99, 235, 0.35) !important;
+  }
+}
+
+@media (max-width: 640px) {
+  .btn-add-dept,
+  .btn-save,
+  .btn-cancel,
+  .btn-enroll-employee {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .table-responsive {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .employee-table {
+    min-width: 620px;
   }
 }
 

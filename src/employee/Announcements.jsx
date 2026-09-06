@@ -181,68 +181,126 @@ export default function Announcements() {
                                     const IconComponent = meta.icon;
 
                                     return (
-                                         <div
+                                        <div
                                             key={notice._id}
                                             className="announcement-item"
                                             style={{
                                                 display: "flex",
-                                                alignItems: "flex-start",
-                                                gap: "16px",
-                                                padding: "16px",
-                                                borderRadius: "12px",
+                                                flexDirection: "column",
+                                                gap: "12px",
+                                                padding: "18px",
+                                                borderRadius: "18px",
                                                 backgroundColor: "#FFFFFF",
                                                 border: "1px solid #E2E8F0",
-                                                transition: "box-shadow 0.2s"
+                                                boxShadow: "0 8px 20px -16px rgba(15, 23, 42, 0.24)",
+                                                transition: "box-shadow 0.2s ease"
                                             }}
                                         >
-                                            {/* Left Icon Pill */}
-                                            <div
-                                                className="announcement-icon"
-                                                style={{
-                                                    backgroundColor: meta.bgColor,
-                                                    color: meta.color,
-                                                    padding: "12px",
-                                                    borderRadius: "50%",
-                                                    display: "flex",
-                                                    alignItems: "center",
-                                                    justifyContent: "center",
-                                                    height: "44px",
-                                                    width: "44px",
-                                                    flexShrink: 0
-                                                }}
-                                            >
-                                                <IconComponent size={20} />
-                                            </div>
-
-                                            {/* Content */}
-                                            <div style={{ flex: 1 }}>
-                                                <h3 className="announcement-title" style={{ fontSize: "16px", fontWeight: "700", color: "#172033", margin: "0" }}>
-                                                    {notice.title}
-                                                </h3>
-                                                <p className="announcement-desc" style={{ fontSize: "14px", color: "#64748B", margin: "6px 0 0 0", lineHeight: "1.5" }}>
-                                                    {notice.description}
-                                                </p>
-                                            </div>
-
-                                            {/* Right Meta Column */}
-                                            <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-end", gap: "8px", flexShrink: 0 }}>
+                                            <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: "12px" }}>
+                                                <div style={{ display: "flex", alignItems: "flex-start", gap: "12px", minWidth: 0, flex: 1 }}>
+                                                    <div
+                                                        style={{
+                                                            backgroundColor: meta.bgColor,
+                                                            color: meta.color,
+                                                            padding: "12px",
+                                                            borderRadius: "14px",
+                                                            display: "flex",
+                                                            alignItems: "center",
+                                                            justifyContent: "center",
+                                                            height: "44px",
+                                                            width: "44px",
+                                                            flexShrink: 0,
+                                                            border: `1px solid ${meta.borderColor}`
+                                                        }}
+                                                    >
+                                                        <IconComponent size={20} />
+                                                    </div>
+                                                    <div style={{ minWidth: 0, flex: 1 }}>
+                                                        <span
+                                                            style={{
+                                                                display: "inline-flex",
+                                                                alignItems: "center",
+                                                                backgroundColor: meta.bgColor,
+                                                                color: meta.textColor,
+                                                                border: `1px solid ${meta.borderColor}`,
+                                                                padding: "4px 10px",
+                                                                borderRadius: "999px",
+                                                                fontSize: "11px",
+                                                                fontWeight: "700",
+                                                                marginBottom: "10px"
+                                                            }}
+                                                        >
+                                                            {meta.category}
+                                                        </span>
+                                                        <h3
+                                                            className="announcement-title"
+                                                            style={{
+                                                                fontSize: "16px",
+                                                                fontWeight: "800",
+                                                                color: "#172033",
+                                                                margin: 0,
+                                                                lineHeight: 1.35,
+                                                                overflowWrap: "anywhere"
+                                                            }}
+                                                        >
+                                                            {notice.title}
+                                                        </h3>
+                                                    </div>
+                                                </div>
                                                 <span
-                                                    className="employee-status-badge"
+                                                    className="announcement-date"
                                                     style={{
-                                                        backgroundColor: meta.bgColor,
-                                                        color: meta.textColor,
-                                                        border: `1px solid ${meta.borderColor}`,
-                                                        padding: "4px 10px",
-                                                        borderRadius: "8px",
-                                                        fontSize: "11px",
-                                                        fontWeight: "700"
+                                                        fontSize: "12px",
+                                                        fontWeight: "700",
+                                                        color: "#64748b",
+                                                        whiteSpace: "nowrap",
+                                                        flexShrink: 0
                                                     }}
                                                 >
-                                                    {meta.category}
-                                                </span>
-                                                <span className="announcement-date" style={{ fontSize: "12px", fontWeight: "600", color: "#64748b" }}>
                                                     {formatDate(notice.createdAt)}
                                                 </span>
+                                            </div>
+
+                                            <p
+                                                className="announcement-desc"
+                                                style={{
+                                                    fontSize: "14px",
+                                                    color: "#64748B",
+                                                    margin: 0,
+                                                    lineHeight: "1.65",
+                                                    overflowWrap: "anywhere",
+                                                    whiteSpace: "pre-line"
+                                                }}
+                                            >
+                                                {notice.description}
+                                            </p>
+
+                                            <div
+                                                style={{
+                                                    display: "flex",
+                                                    justifyContent: "space-between",
+                                                    alignItems: "center",
+                                                    gap: "12px",
+                                                    borderTop: "1px solid #E2E8F0",
+                                                    paddingTop: "12px",
+                                                    fontSize: "12px",
+                                                    color: "#64748B",
+                                                    flexWrap: "wrap"
+                                                }}
+                                            >
+                                                <div style={{ display: "flex", alignItems: "center", gap: "8px", minWidth: 0 }}>
+                                                    <div style={{ width: "24px", height: "24px", borderRadius: "50%", background: "#EAF2FF", display: "flex", alignItems: "center", justifyContent: "center", color: "#2563EB", fontWeight: "800", fontSize: "10px" }}>
+                                                        {getInitials(notice.postedBy?.employeeName || notice.postedBy || "System")}
+                                                    </div>
+                                                    <span style={{ fontWeight: "600", color: "#475569" }}>
+                                                        {notice.postedBy?.employeeName || notice.postedBy || "System Administrator"}
+                                                    </span>
+                                                </div>
+                                                {notice.postedBy?.employeeId && (
+                                                    <span style={{ fontWeight: "700", color: "#64748B" }}>
+                                                        #{notice.postedBy.employeeId}
+                                                    </span>
+                                                )}
                                             </div>
                                         </div>
                                     );

@@ -4,11 +4,20 @@ import { User, Settings, ChevronRight } from "lucide-react";
 import NotificationBell from "./NotificationBell";
 import sapLogo from "../assets/image.png";
 
-export default function Header() {
+export default function Header({ showNotifications = true }) {
   const navigate = useNavigate();
   const location = useLocation();
+  const [isMobile, setIsMobile] = React.useState(typeof window !== "undefined" ? window.innerWidth < 640 : false);
   const user = typeof window !== "undefined" ? JSON.parse(localStorage.getItem("user") || "{}") : {};
   const userName = user.name || user.firstName || "Admin";
+
+  React.useEffect(() => {
+    if (typeof window === "undefined") return;
+    const updateViewportMode = () => setIsMobile(window.innerWidth < 640);
+    updateViewportMode();
+    window.addEventListener("resize", updateViewportMode);
+    return () => window.removeEventListener("resize", updateViewportMode);
+  }, []);
 
   const isProfileOrSettings = 
     location.pathname.toLowerCase().includes("settings") || 
@@ -57,7 +66,7 @@ export default function Header() {
 
       {/* Header Right Actions */}
       <div className="flex items-center gap-3 shrink-0">
-        <NotificationBell />
+        {showNotifications && !isMobile && <NotificationBell />}
 
         <div className="h-6 w-[1px] bg-[#E2E8F0] mx-0.5 hidden sm:block" />
 
