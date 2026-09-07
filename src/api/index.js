@@ -85,6 +85,10 @@ export async function getDepartments() {
   return request("/departments");
 }
 
+export async function getDepartmentById(id) {
+  return request(`/departments/${id}`);
+}
+
 export async function createDepartment(payload) {
   return request("/departments", {
     method: "POST",
@@ -262,6 +266,7 @@ export default {
   updateEmployee,
   deleteEmployee,
   getDepartments,
+  getDepartmentById,
   createDepartment,
   updateDepartment,
   deleteDepartment,

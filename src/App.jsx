@@ -92,7 +92,7 @@ function AppContent() {
   );
 
   React.useEffect(() => {
-    const tab = routeToTab[location.pathname];
+    const tab = routeToTab[location.pathname] || (location.pathname.startsWith("/admin/departments/") ? "Departments" : null);
     if (tab) {
       setActiveTab(tab);
     }
@@ -235,7 +235,26 @@ function AppContent() {
       <Route path="/settings" element={<Navigate to="/admin/settings" replace />} />
 
       {/* Department Employees */}
-      <Route path="/departments/:id" element={<DepartmentEmployees />} />
+      <Route
+        path="/admin/departments/:id/employees"
+        element={
+          <RequireRole allowedRoles={["admin"]}>
+            <AdminLayout activeTab={activeTab} setActiveTab={setActiveTab}>
+              <DepartmentEmployees />
+            </AdminLayout>
+          </RequireRole>
+        }
+      />
+      <Route
+        path="/departments/:id"
+        element={
+          <RequireRole allowedRoles={["admin"]}>
+            <AdminLayout activeTab={activeTab} setActiveTab={setActiveTab}>
+              <DepartmentEmployees />
+            </AdminLayout>
+          </RequireRole>
+        }
+      />
 
       {/* Employee Dashboard */}
       <Route

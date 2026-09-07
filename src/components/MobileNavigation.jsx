@@ -6,7 +6,6 @@ import {
   Award,
   Users,
   MoreHorizontal,
-  Shield,
   Clock,
   CreditCard,
   Bell,
@@ -46,7 +45,6 @@ export default function MobileNavigation() {
   ];
 
   const secondaryNav = [
-    { id: 'roles', label: 'Roles', icon: Shield, path: '/admin/roles' },
     { id: 'attendance', label: 'Attendance', icon: Clock, path: '/admin/attendance' },
     { id: 'payroll', label: 'Payroll', icon: CreditCard, path: '/admin/payroll' },
     { id: 'notices', label: 'Notices', icon: Bell, path: '/admin/notices' },

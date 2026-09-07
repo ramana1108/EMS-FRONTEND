@@ -802,19 +802,9 @@ export default function Employee() {
                                         required
                                     >
                                         <option value="">Select department</option>
-                                        {departmentsOptions && departmentsOptions.length > 0 ? (
-                                            departmentsOptions.map((d) => (
-                                                <option key={d._id} value={d._id}>{d.departmentName}</option>
-                                            ))
-                                        ) : (
-                                            <>
-                                                <option value="IT">IT</option>
-                                                <option value="Sales">Sales</option>
-                                                <option value="Production">Production</option>
-                                                <option value="Admin">Admin</option>
-                                                <option value="HR">HR</option>
-                                            </>
-                                        )}
+                                        {departmentsOptions.map((d) => (
+                                            <option key={d._id} value={d._id}>{d.departmentName}</option>
+                                        ))}
                                     </select>
                                     {formErrors.departmentId && <div className="field-error">{formErrors.departmentId}</div>}
                                     <label style={{ marginTop: 8 }}>Designation</label>

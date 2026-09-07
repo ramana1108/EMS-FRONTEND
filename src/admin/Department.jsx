@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import {
-  Search,
-  Bell,
   Building2,
   Users,
   Briefcase,
@@ -10,7 +9,6 @@ import {
   Trash2,
   X,
   Plus,
-  Loader
 } from "lucide-react";
 import api from "../api";
 
@@ -51,6 +49,7 @@ const INITIAL_DEMO_DATA = [
 ];
 
 export default function Departments() {
+  const navigate = useNavigate();
   const [departments, setDepartments] = useState(INITIAL_DEMO_DATA);
   const [searchQuery, setSearchQuery] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -58,17 +57,12 @@ export default function Departments() {
   const [errorMsg, setErrorMsg] = useState("");
   const [backendTotalDepartments, setBackendTotalDepartments] = useState(null);
   const [backendTotalEmployees, setBackendTotalEmployees] = useState(null);
-  const [selectedDepartment, setSelectedDepartment] = useState(null);
-  const [selectedDepartmentEmployees, setSelectedDepartmentEmployees] = useState([]);
-  const [employeesLoading, setEmployeesLoading] = useState(false);
-  const [employeesError, setEmployeesError] = useState("");
 
   // Form State corresponding to departmentController.js fields
   const [formData, setFormData] = useState({
     departmentName: "",
     headName: "",
     headDesignation: "",
-    employeeCount: 0,
     description: "",
   });
 
@@ -92,29 +86,40 @@ export default function Departments() {
 
   const fetchDepartments = async () => {
     try {
-      const data = await api.getDepartments();
-      if (data) setDepartments(data.departments || data.data || []);
+      const [departmentResponse, employeeResponse] = await Promise.all([
+        api.getDepartments(),
+        api.getAllEmployees(),
+      ]);
+      const departmentList = departmentResponse?.departments || departmentResponse?.data || [];
+      const employeeList = employeeResponse?.employees || employeeResponse?.data || [];
+
+      const departmentsWithActualCounts = departmentList.map((department) => {
+        const departmentId = String(department._id || department.id || "");
+        const departmentName = String(department.departmentName || "").trim().toLowerCase();
+        const employeeCount = employeeList.filter((employee) => {
+          const employeeDepartment = employee.departmentId;
+          const employeeDepartmentId = String(
+            typeof employeeDepartment === "object"
+              ? employeeDepartment?._id || employeeDepartment?.id || ""
+              : employeeDepartment || ""
+          );
+          const employeeDepartmentName = String(
+            typeof employeeDepartment === "object"
+              ? employeeDepartment?.departmentName || employeeDepartment?.name || ""
+              : employee.department || ""
+          ).trim().toLowerCase();
+
+          return employeeDepartmentId === departmentId || (
+            !employeeDepartmentId && employeeDepartmentName === departmentName
+          );
+        }).length;
+
+        return { ...department, employeeCount };
+      });
+
+      setDepartments(departmentsWithActualCounts);
     } catch (error) {
       console.warn("Backend API offline. Using local demo state.", error);
-    }
-  };
-
-  const fetchDepartmentEmployees = async (department) => {
-    if (!department?._id) return;
-
-    setEmployeesLoading(true);
-    setEmployeesError("");
-    setSelectedDepartment(department);
-
-    try {
-      const data = await api.getDepartmentEmployees(department._id);
-      setSelectedDepartmentEmployees(data.employees || data.data || []);
-    } catch (error) {
-      console.warn(error);
-      setEmployeesError("Could not load department employees.");
-      setSelectedDepartmentEmployees([]);
-    } finally {
-      setEmployeesLoading(false);
     }
   };
 
@@ -152,7 +157,6 @@ export default function Departments() {
       departmentName: "",
       headName: "",
       headDesignation: "",
-      employeeCount: 0,
       description: "",
     });
     setErrorMsg("");
@@ -165,7 +169,6 @@ export default function Departments() {
       departmentName: dept.departmentName || "",
       headName: dept.headName || "",
       headDesignation: dept.headDesignation || "",
-      employeeCount: dept.employeeCount || 0,
       description: dept.description || "",
     });
     setErrorMsg("");
@@ -293,7 +296,17 @@ export default function Departments() {
       {/* Main Table Card */}
       <div className="table-card" style={{ padding: "24px" }}>
         <div className="table-header flex justify-between items-center mb-4">
-          <h3 style={{ margin: 0, color: "#172033", fontSize: "18px", fontWeight: "700" }}>All Departments List</h3>
+          <div className="flex min-w-0 flex-1 items-center gap-4">
+            <h3 style={{ margin: 0, color: "#172033", fontSize: "18px", fontWeight: "700" }}>All Departments List</h3>
+            <label className="relative hidden max-w-xs flex-1 md:block">
+              <input
+                value={searchQuery}
+                onChange={(event) => setSearchQuery(event.target.value)}
+                placeholder="Search departments..."
+                className="w-full rounded-lg border border-[#E2E8F0] bg-[#F8FAFC] px-3 py-2 text-sm outline-none focus:border-[#2563EB]"
+              />
+            </label>
+          </div>
           <span className="badge-dept-count" style={{ padding: "4px 10px", borderRadius: "12px", backgroundColor: "#EAF2FF", color: "#2563EB", fontSize: "12px", fontWeight: "700", border: "1px solid #D7E7FF" }}>
             {displayedTotalDepartments} Departments
           </span>
@@ -360,7 +373,7 @@ export default function Departments() {
                           </button>
                           <button
                             className="btn-action view"
-                            onClick={() => fetchDepartmentEmployees(dept)}
+                            onClick={() => navigate(`/admin/departments/${dept._id}/employees`)}
                             title="View Department Employees"
                             style={{ padding: "6px", display: "inline-flex", alignItems: "center", justifyContent: "center" }}
                           >
@@ -376,55 +389,6 @@ export default function Departments() {
           </table>
         </div>
       </div>
-
-      {selectedDepartment && (
-        <div className="department-employees-panel" style={{ marginTop: "24px" }}>
-          <div className="panel-header" style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "16px" }}>
-            <h3 style={{ margin: 0 }}>Employees in {selectedDepartment.departmentName}</h3>
-            <span className="badge-employee-count" style={{ padding: "4px 10px", borderRadius: "12px", backgroundColor: "#ecfdf5", color: "#065f46", fontSize: "12px", fontWeight: "700" }}>
-              {selectedDepartmentEmployees.length} employee
-              {selectedDepartmentEmployees.length === 1 ? "" : "s"}
-            </span>
-          </div>
-
-          {employeesLoading ? (
-            <div style={{ display: "flex", justifyContent: "center", alignItems: "center", padding: "30px" }}>
-              <Loader className="animate-spin" size={20} color="#0f766e" />
-            </div>
-          ) : employeesError ? (
-            <p className="error-message" style={{ color: "#b91c1c", backgroundColor: "#fef2f2", padding: "10px", borderRadius: "6px" }}>{employeesError}</p>
-          ) : selectedDepartmentEmployees.length === 0 ? (
-            <p className="empty-row" style={{ textAlign: "center", padding: "20px 0", color: "#64748b" }}>
-              No employees assigned to this department.
-            </p>
-          ) : (
-            <div className="employees-table-wrapper">
-              <table className="employees-table">
-                <thead>
-                  <tr>
-                    <th style={{ padding: "4px 8px" }}>Name</th>
-                    <th style={{ padding: "4px 8px" }}>Email</th>
-                    <th style={{ padding: "4px 8px" }}>Phone</th>
-                    <th style={{ padding: "4px 8px" }}>Designation</th>
-                    <th style={{ padding: "4px 8px" }}>Status</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {selectedDepartmentEmployees.map((employee) => (
-                    <tr key={employee._id}>
-                      <td style={{ padding: "4px 8px" }}>{`${employee.firstName || ""} ${employee.lastName || ""}`.trim() || "—"}</td>
-                      <td style={{ padding: "4px 8px" }}>{employee.email || "—"}</td>
-                      <td style={{ padding: "4px 8px" }}>{employee.phone || "—"}</td>
-                      <td style={{ padding: "4px 8px" }}>{employee.designationId?.name || employee.designationId || "—"}</td>
-                      <td style={{ padding: "4px 8px" }}>{employee.status || "—"}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          )}
-        </div>
-      )}
 
       {/* Add / Edit Department Modal Dialog */}
       {isModalOpen && (
@@ -450,32 +414,18 @@ export default function Departments() {
             )}
 
             <form onSubmit={handleSubmit} className="enroll-form">
-              <div className="form-grid-2">
-                <div className="form-group">
-                  <label>
-                    Department Name <span className="req">*</span>
-                  </label>
-                  <input
-                    type="text"
-                    name="departmentName"
-                    value={formData.departmentName}
-                    onChange={handleInputChange}
-                    placeholder="e.g. Production, Sales, IT"
-                    required
-                  />
-                </div>
-
-                <div className="form-group">
-                  <label>Number of Employees</label>
-                  <input
-                    type="number"
-                    name="employeeCount"
-                    value={formData.employeeCount}
-                    onChange={handleInputChange}
-                    min="0"
-                    placeholder="0"
-                  />
-                </div>
+              <div className="form-group">
+                <label>
+                  Department Name <span className="req">*</span>
+                </label>
+                <input
+                  type="text"
+                  name="departmentName"
+                  value={formData.departmentName}
+                  onChange={handleInputChange}
+                  placeholder="e.g. Production, Sales, IT"
+                  required
+                />
               </div>
 
               <div className="form-grid-2">
