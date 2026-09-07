@@ -101,7 +101,7 @@ export default function Payrolls() {
 
     return (
         <div className="min-h-screen bg-[#F8FAFC] text-[#172033] flex flex-col">
-            <Header />
+            <Header showNotifications={false} />
 
             <div className="flex-1 flex flex-col px-4 py-6 sm:px-8 lg:px-10" style={{ paddingBottom: "calc(5.5rem + env(safe-area-inset-bottom, 0px))" }}>
 
@@ -112,7 +112,7 @@ export default function Payrolls() {
                             <h1 className="dashboard-title text-3xl font-extrabold m-0" style={{ color: "#172033" }}>Payrolls</h1>
                             <p className="dashboard-subtitle text-sm mt-1" style={{ color: "#64748B" }}>View your salary details and download payslips</p>
                         </div>
-                        <div>
+                        <div className="payroll-page-notification">
                             <NotificationBell />
                         </div>
                     </div>

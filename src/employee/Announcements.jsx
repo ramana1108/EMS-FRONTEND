@@ -20,9 +20,11 @@ import NotificationBell from "../components/NotificationBell";
 export default function Announcements() {
     const [activeTab, setActiveTab] = useState("Announcements");
     const [isOpen, setIsOpen] = useState(false);
+    const [selectedNotice, setSelectedNotice] = useState(null);
     const [notices, setNotices] = useState([]);
     const [filteredNotices, setFilteredNotices] = useState([]);
     const [loading, setLoading] = useState(false);
+    const [loadError, setLoadError] = useState(false);
     const [searchTerm, setSearchTerm] = useState("");
     const [categoryFilter, setCategoryFilter] = useState("All");
     const [user, setUser] = useState(null);
@@ -43,17 +45,42 @@ export default function Announcements() {
 
         const loadNotices = async () => {
             setLoading(true);
+            setLoadError(false);
             try {
                 const res = await api.getNotices();
-                if (res?.notices && Array.isArray(res.notices)) {
-                    setNotices(res.notices);
-                    setFilteredNotices(res.notices);
-                } else if (Array.isArray(res)) {
-                    setNotices(res);
-                    setFilteredNotices(res);
+                const noticeList = Array.isArray(res?.notices)
+                    ? res.notices
+                    : Array.isArray(res)
+                        ? res
+                        : null;
+
+                if (res?.success === false || !noticeList) {
+                    throw new Error(res?.message || "Invalid announcements response");
                 }
+
+                const normalizedNotices = noticeList
+                    .filter((notice) => notice && typeof notice === "object" && !Array.isArray(notice))
+                    .map((notice) => ({
+                        ...notice,
+                        title: typeof notice.title === "string" && notice.title.trim()
+                            ? notice.title.trim()
+                            : "Untitled announcement",
+                        description: typeof notice.description === "string"
+                            ? notice.description
+                            : typeof notice.content === "string"
+                                ? notice.content
+                                : Array.isArray(notice.description)
+                                    ? notice.description.filter((part) => typeof part === "string").join("\n")
+                                    : "No announcement details available."
+                    }));
+
+                setNotices(normalizedNotices);
+                setFilteredNotices(normalizedNotices);
             } catch (err) {
                 console.error("Failed to load notices:", err);
+                setNotices([]);
+                setFilteredNotices([]);
+                setLoadError(true);
             } finally {
                 setLoading(false);
             }
@@ -62,7 +89,7 @@ export default function Announcements() {
     }, []);
 
     const getAnnouncementMeta = (title) => {
-        const t = title.toLowerCase();
+        const t = typeof title === "string" ? title.toLowerCase() : "";
         if (t.includes("office") || t.includes("closed") || t.includes("holiday")) {
             return {
                 category: "Company News",
@@ -126,8 +153,8 @@ export default function Announcements() {
         if (searchTerm) {
             result = result.filter(
                 (n) =>
-                    n.title?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                    n.description?.toLowerCase().includes(searchTerm.toLowerCase())
+                    (typeof n.title === "string" && n.title.toLowerCase().includes(searchTerm.toLowerCase())) ||
+                    (typeof n.description === "string" && n.description.toLowerCase().includes(searchTerm.toLowerCase()))
             );
         }
 
@@ -152,8 +179,32 @@ export default function Announcements() {
     };
 
     const getInitials = (name) => {
-        if (!name) return "U";
-        return name.split(" ").map((n) => n[0]).join("").toUpperCase().slice(0, 2);
+        if (typeof name !== "string" || !name.trim()) return "U";
+        return name.trim().split(/\s+/).map((part) => part[0]).join("").toUpperCase().slice(0, 2);
+    };
+
+    const getPostedByName = (postedBy) => {
+        if (typeof postedBy === "string" && postedBy.trim()) return postedBy.trim();
+        if (Array.isArray(postedBy)) {
+            return postedBy.filter((part) => typeof part === "string" && part.trim()).join(", ") || "System Administrator";
+        }
+        if (postedBy && typeof postedBy === "object") {
+            const fullName = [postedBy.firstName, postedBy.lastName]
+                .filter((part) => typeof part === "string" && part.trim())
+                .join(" ");
+            if (fullName) return fullName;
+            if (typeof postedBy.employeeName === "string" && postedBy.employeeName.trim()) return postedBy.employeeName.trim();
+            if (typeof postedBy.name === "string" && postedBy.name.trim()) return postedBy.name.trim();
+        }
+        return "System Administrator";
+    };
+
+    const openNoticeDetail = (notice) => {
+        setSelectedNotice(notice);
+    };
+
+    const closeNoticeDetail = () => {
+        setSelectedNotice(null);
     };
 
     return (
@@ -173,77 +224,168 @@ export default function Announcements() {
                         <div className="announcement-list" style={{ overflow: "visible" }}>
                             {loading ? (
                                 <div style={{ textAlign: "center", color: "#64748b", padding: "40px" }}>Loading announcements...</div>
+                            ) : loadError ? (
+                                <div style={{ textAlign: "center", color: "#b91c1c", padding: "40px" }}>Unable to load announcements. Please try again.</div>
                             ) : filteredNotices.length === 0 ? (
-                                <div style={{ textAlign: "center", color: "#64748b", padding: "40px" }}>No announcements found matching the criteria.</div>
+                                <div style={{ textAlign: "center", color: "#64748b", padding: "40px" }}>No announcements available</div>
                             ) : (
                                 paginatedNotices.map((notice) => {
                                     const meta = getAnnouncementMeta(notice.title || "");
                                     const IconComponent = meta.icon;
 
                                     return (
-                                         <div
+                                        <div
                                             key={notice._id}
                                             className="announcement-item"
+                                            onClick={() => openNoticeDetail(notice)}
+                                            onKeyDown={(event) => {
+                                                if (event.key === "Enter" || event.key === " ") {
+                                                    event.preventDefault();
+                                                    openNoticeDetail(notice);
+                                                }
+                                            }}
+                                            role="button"
+                                            tabIndex={0}
                                             style={{
                                                 display: "flex",
-                                                alignItems: "flex-start",
-                                                gap: "16px",
-                                                padding: "16px",
-                                                borderRadius: "12px",
+                                                flexDirection: "column",
+                                                gap: "12px",
+                                                padding: "18px",
+                                                borderRadius: "18px",
                                                 backgroundColor: "#FFFFFF",
                                                 border: "1px solid #E2E8F0",
-                                                transition: "box-shadow 0.2s"
+                                                boxShadow: "0 8px 20px -16px rgba(15, 23, 42, 0.24)",
+                                                transition: "box-shadow 0.2s ease",
+                                                cursor: "pointer",
+                                                outline: "none"
                                             }}
                                         >
-                                            {/* Left Icon Pill */}
-                                            <div
-                                                className="announcement-icon"
-                                                style={{
-                                                    backgroundColor: meta.bgColor,
-                                                    color: meta.color,
-                                                    padding: "12px",
-                                                    borderRadius: "50%",
-                                                    display: "flex",
-                                                    alignItems: "center",
-                                                    justifyContent: "center",
-                                                    height: "44px",
-                                                    width: "44px",
-                                                    flexShrink: 0
-                                                }}
-                                            >
-                                                <IconComponent size={20} />
-                                            </div>
-
-                                            {/* Content */}
-                                            <div style={{ flex: 1 }}>
-                                                <h3 className="announcement-title" style={{ fontSize: "16px", fontWeight: "700", color: "#172033", margin: "0" }}>
-                                                    {notice.title}
-                                                </h3>
-                                                <p className="announcement-desc" style={{ fontSize: "14px", color: "#64748B", margin: "6px 0 0 0", lineHeight: "1.5" }}>
-                                                    {notice.description}
-                                                </p>
-                                            </div>
-
-                                            {/* Right Meta Column */}
-                                            <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-end", gap: "8px", flexShrink: 0 }}>
+                                            <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: "12px" }}>
+                                                <div style={{ display: "flex", alignItems: "flex-start", gap: "12px", minWidth: 0, flex: 1 }}>
+                                                    <div
+                                                        style={{
+                                                            backgroundColor: meta.bgColor,
+                                                            color: meta.color,
+                                                            padding: "12px",
+                                                            borderRadius: "14px",
+                                                            display: "flex",
+                                                            alignItems: "center",
+                                                            justifyContent: "center",
+                                                            height: "44px",
+                                                            width: "44px",
+                                                            flexShrink: 0,
+                                                            border: `1px solid ${meta.borderColor}`
+                                                        }}
+                                                    >
+                                                        <IconComponent size={20} />
+                                                    </div>
+                                                    <div style={{ minWidth: 0, flex: 1 }}>
+                                                        <span
+                                                            style={{
+                                                                display: "inline-flex",
+                                                                alignItems: "center",
+                                                                backgroundColor: meta.bgColor,
+                                                                color: meta.textColor,
+                                                                border: `1px solid ${meta.borderColor}`,
+                                                                padding: "4px 10px",
+                                                                borderRadius: "999px",
+                                                                fontSize: "11px",
+                                                                fontWeight: "700",
+                                                                marginBottom: "10px"
+                                                            }}
+                                                        >
+                                                            {meta.category}
+                                                        </span>
+                                                        <h3
+                                                            className="announcement-title"
+                                                            style={{
+                                                                fontSize: "16px",
+                                                                fontWeight: "800",
+                                                                color: "#172033",
+                                                                margin: 0,
+                                                                lineHeight: 1.35,
+                                                                overflowWrap: "anywhere"
+                                                            }}
+                                                        >
+                                                            {notice.title}
+                                                        </h3>
+                                                    </div>
+                                                </div>
                                                 <span
-                                                    className="employee-status-badge"
+                                                    className="announcement-date"
                                                     style={{
-                                                        backgroundColor: meta.bgColor,
-                                                        color: meta.textColor,
-                                                        border: `1px solid ${meta.borderColor}`,
-                                                        padding: "4px 10px",
-                                                        borderRadius: "8px",
-                                                        fontSize: "11px",
-                                                        fontWeight: "700"
+                                                        fontSize: "12px",
+                                                        fontWeight: "700",
+                                                        color: "#64748b",
+                                                        whiteSpace: "nowrap",
+                                                        flexShrink: 0
                                                     }}
                                                 >
-                                                    {meta.category}
-                                                </span>
-                                                <span className="announcement-date" style={{ fontSize: "12px", fontWeight: "600", color: "#64748b" }}>
                                                     {formatDate(notice.createdAt)}
                                                 </span>
                                             </div>
+
+                                            <p
+                                                className="announcement-desc"
+                                                style={{
+                                                    fontSize: "14px",
+                                                    color: "#64748B",
+                                                    margin: 0,
+                                                    lineHeight: "1.65",
+                                                    overflowWrap: "anywhere",
+                                                    whiteSpace: "pre-line"
+                                                }}
+                                            >
+                                                {notice.description}
+                                            </p>
+
+                                            <div
+                                                style={{
+                                                    display: "flex",
+                                                    justifyContent: "space-between",
+                                                    alignItems: "center",
+                                                    gap: "12px",
+                                                    borderTop: "1px solid #E2E8F0",
+                                                    paddingTop: "12px",
+                                                    fontSize: "12px",
+                                                    color: "#64748B",
+                                                    flexWrap: "wrap"
+                                                }}
+                                            >
+                                                <div style={{ display: "flex", alignItems: "center", gap: "8px", minWidth: 0 }}>
+                                                    <div style={{ width: "24px", height: "24px", borderRadius: "50%", background: "#EAF2FF", display: "flex", alignItems: "center", justifyContent: "center", color: "#2563EB", fontWeight: "800", fontSize: "10px" }}>
+                                                        {getInitials(getPostedByName(notice.postedBy))}
+                                                    </div>
+                                                    <span style={{ fontWeight: "600", color: "#475569" }}>
+                                                        {getPostedByName(notice.postedBy)}
+                                                    </span>
+                                                </div>
+                                                {notice.postedBy && typeof notice.postedBy === "object" && !Array.isArray(notice.postedBy) && notice.postedBy.employeeId && (
+                                                    <span style={{ fontWeight: "700", color: "#64748B" }}>
+                                                        #{notice.postedBy.employeeId}
+                                                    </span>
+                                                )}
+                                            </div>
+                                            <button
+                                                type="button"
+                                                onClick={(event) => {
+                                                    event.stopPropagation();
+                                                    openNoticeDetail(notice);
+                                                }}
+                                                style={{
+                                                    alignSelf: "flex-start",
+                                                    border: "1px solid #DBEAFE",
+                                                    background: "#EFF6FF",
+                                                    color: "#1D4ED8",
+                                                    padding: "8px 12px",
+                                                    borderRadius: "999px",
+                                                    fontSize: "12px",
+                                                    fontWeight: "700",
+                                                    cursor: "pointer"
+                                                }}
+                                            >
+                                                Read details
+                                            </button>
                                         </div>
                                     );
                                 })
@@ -259,6 +401,67 @@ export default function Announcements() {
                         />
                     </div>
             </div>
+
+                {selectedNotice && (
+                    <div className="modal-backdrop" onClick={closeNoticeDetail}>
+                        <div
+                            className="modal-content-card-wide"
+                            onClick={(event) => event.stopPropagation()}
+                            style={{ maxWidth: "760px" }}
+                        >
+                            <div className="modal-header">
+                                <div>
+                                    <h2>{selectedNotice.title}</h2>
+                                    <p className="modal-subtitle">Announcement details</p>
+                                </div>
+                                <button
+                                    type="button"
+                                    className="btn-close"
+                                    onClick={closeNoticeDetail}
+                                    aria-label="Close announcement"
+                                >
+                                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M18 6 6 18" /><path d="m6 6 12 12" /></svg>
+                                </button>
+                            </div>
+
+                            <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
+                                <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: "12px", flexWrap: "wrap" }}>
+                                    <span
+                                        style={{
+                                            display: "inline-flex",
+                                            alignItems: "center",
+                                            backgroundColor: getAnnouncementMeta(selectedNotice.title || "").bgColor,
+                                            color: getAnnouncementMeta(selectedNotice.title || "").textColor,
+                                            border: `1px solid ${getAnnouncementMeta(selectedNotice.title || "").borderColor}`,
+                                            padding: "6px 10px",
+                                            borderRadius: "999px",
+                                            fontSize: "11px",
+                                            fontWeight: "700"
+                                        }}
+                                    >
+                                        {getAnnouncementMeta(selectedNotice.title || "").category}
+                                    </span>
+                                    <span style={{ fontSize: "12px", color: "#64748B", fontWeight: "600" }}>
+                                        {formatDate(selectedNotice.createdAt)}
+                                    </span>
+                                </div>
+
+                                <div style={{ display: "flex", alignItems: "center", gap: "10px", color: "#475569", fontSize: "13px", fontWeight: "600" }}>
+                                    <div style={{ width: "28px", height: "28px", borderRadius: "50%", background: "#EAF2FF", display: "flex", alignItems: "center", justifyContent: "center", color: "#2563EB", fontWeight: "800", fontSize: "11px" }}>
+                                        {getInitials(getPostedByName(selectedNotice.postedBy))}
+                                    </div>
+                                    <span>
+                                        {getPostedByName(selectedNotice.postedBy)}
+                                    </span>
+                                </div>
+
+                                <div style={{ color: "#172033", fontSize: "15px", lineHeight: "1.8", whiteSpace: "pre-line" }}>
+                                    {selectedNotice.description}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                )}
 
             <FooterNavigation activeTab={activeTab} setActiveTab={setActiveTab} />
         </div>

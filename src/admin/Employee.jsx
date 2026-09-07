@@ -921,8 +921,8 @@ export default function Employee() {
 
             {/* ================= VIEW EMPLOYEE DETAILS MODAL ================= */}
             {isViewModalOpen && viewingEmployee && (
-                <div className="fixed inset-0 z-[9999] flex items-center justify-center p-3 sm:p-6 bg-slate-900/50 backdrop-blur-sm animate-fade-in">
-                    <div className="relative w-full max-w-2xl max-h-[calc(100vh-2rem)] sm:max-h-[88vh] bg-white rounded-3xl shadow-2xl shadow-slate-900/20 overflow-hidden border border-slate-200/80 flex flex-col animate-scale-up my-auto">
+                <div className="modal-backdrop bg-slate-900/50 animate-fade-in">
+                    <div className="app-modal-dialog animate-scale-up">
                         
                         {/* Header Banner - Solid 70% Light Blue Theme */}
                         <div 
@@ -987,7 +987,7 @@ export default function Employee() {
                                 <h3 className="text-xs font-extrabold uppercase tracking-widest text-blue-600 mb-3.5 flex items-center gap-2.5 pb-1 border-b border-slate-200/80">
                                     <User size={15} /> Personal & Contact Details
                                 </h3>
-                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5 mt-3">
                                     {/* Email */}
                                     <div className="bg-white border border-slate-200/80 rounded-2xl p-4 shadow-[0_2px_8px_rgba(15,23,42,0.03)] hover:border-blue-200 hover:shadow-md transition-all duration-200 flex items-center gap-3.5">
                                         <div className="w-10 h-10 rounded-xl bg-blue-50 text-blue-600 border border-blue-100 flex items-center justify-center flex-shrink-0">
@@ -1047,7 +1047,7 @@ export default function Employee() {
                                 <h3 className="text-xs font-extrabold uppercase tracking-widest text-blue-600 mb-3.5 flex items-center gap-2.5 pb-1 border-b border-slate-200/80">
                                     <Briefcase size={15} /> Employment Details
                                 </h3>
-                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5 mt-3">
                                     {/* Department */}
                                     <div className="bg-white border border-slate-200/80 rounded-2xl p-4 shadow-[0_2px_8px_rgba(15,23,42,0.03)] hover:border-blue-200 hover:shadow-md transition-all duration-200 flex items-center gap-3.5">
                                         <div className="w-10 h-10 rounded-xl bg-blue-50 text-blue-600 border border-blue-100 flex items-center justify-center flex-shrink-0">
@@ -1107,7 +1107,7 @@ export default function Employee() {
                                 <h3 className="text-xs font-extrabold uppercase tracking-widest text-blue-600 mb-3.5 flex items-center gap-2.5 pb-1 border-b border-slate-200/80">
                                     <MapPin size={15} /> Residential Address
                                 </h3>
-                                <div className="bg-white border border-slate-200/80 rounded-2xl p-4 shadow-[0_2px_8px_rgba(15,23,42,0.03)] hover:border-blue-200 hover:shadow-md transition-all duration-200 flex items-start gap-3.5">
+                                <div className="bg-white border border-slate-200/80 rounded-2xl p-4 shadow-[0_2px_8px_rgba(15,23,42,0.03)] hover:border-blue-200 hover:shadow-md transition-all duration-200 flex items-start gap-3.5 mt-3">
                                     <div className="w-10 h-10 rounded-xl bg-blue-50 text-blue-600 border border-blue-100 flex items-center justify-center flex-shrink-0 mt-0.5">
                                         <MapPin size={18} />
                                     </div>

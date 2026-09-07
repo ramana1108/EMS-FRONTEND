@@ -8,8 +8,16 @@ export default function NotificationBell() {
   const [unreadCount, setUnreadCount] = useState(0);
   const [isOpen, setIsOpen] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [isMobile, setIsMobile] = useState(() => typeof window !== "undefined" ? window.innerWidth < 640 : false);
   const dropdownRef = useRef(null);
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const updateViewportMode = () => setIsMobile(window.innerWidth < 640);
+    updateViewportMode();
+    window.addEventListener("resize", updateViewportMode);
+    return () => window.removeEventListener("resize", updateViewportMode);
+  }, []);
 
   const fetchNotifications = async () => {
     try {
@@ -197,11 +205,14 @@ export default function NotificationBell() {
       {isOpen && (
         <div
           style={{
-            position: "absolute",
-            right: 0,
-            marginTop: "8px",
-            width: "340px",
-            maxWidth: "calc(100vw - 32px)",
+            position: isMobile ? "fixed" : "absolute",
+            top: isMobile ? "72px" : "calc(100% + 8px)",
+            left: isMobile ? "50%" : "auto",
+            right: isMobile ? "auto" : 0,
+            transform: isMobile ? "translateX(-50%)" : "none",
+            marginTop: isMobile ? 0 : "8px",
+            width: "min(360px, calc(100vw - 24px))",
+            maxWidth: "calc(100vw - 24px)",
             backgroundColor: "#ffffff",
             borderRadius: "16px",
             boxShadow: "0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1)",
