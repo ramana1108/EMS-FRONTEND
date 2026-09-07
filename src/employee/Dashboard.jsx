@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { TrendingUp, Calendar, DollarSign, Megaphone } from "lucide-react";
 import api from "../api";
 import FooterNavigation from "../components/FooterNavigation";
 import Header from "../components/Header";
