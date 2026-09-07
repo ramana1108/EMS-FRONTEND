@@ -70,7 +70,7 @@ export default function FooterNavigation({ activeTab, setActiveTab }) {
             : employeeMenuItems.filter((item) => !item.permission || hasPermission(item.permission)))
         : (permissions.length === 0
             ? adminMenuItems
-            : adminMenuItems.filter((item) => !item.permission || hasPermission(item.permission)));
+            : adminMenuItems.filter((item) => item.name === "Settings" || !item.permission || hasPermission(item.permission)));
 
     const handleLogout = () => {
         localStorage.removeItem("token");

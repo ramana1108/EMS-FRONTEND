@@ -5,8 +5,6 @@ import api from "../api";
 import FooterNavigation from "../components/FooterNavigation";
 import Header from "../components/Header";
 import PredictiveSearchBar from "../components/PredictiveSearchBar";
-import { TrendingUp, Calendar, DollarSign, Megaphone } from "lucide-react";
-import api from "../api";
 
 export default function EmployeeDashboard() {
   const [activeTab, setActiveTab] = useState("Dashboard");

@@ -7,9 +7,12 @@ import sapLogo from "../assets/image.png";
 export default function Header({ showNotifications = true }) {
   const navigate = useNavigate();
   const location = useLocation();
+  const profileMenuRef = React.useRef(null);
+  const [openProfilePath, setOpenProfilePath] = React.useState(null);
   const [isMobile, setIsMobile] = React.useState(typeof window !== "undefined" ? window.innerWidth < 640 : false);
   const user = typeof window !== "undefined" ? JSON.parse(localStorage.getItem("user") || "{}") : {};
   const userName = user.name || user.firstName || "Admin";
+  const isProfileMenuOpen = openProfilePath === location.pathname;
 
   React.useEffect(() => {
     if (typeof window === "undefined") return;
@@ -19,9 +22,16 @@ export default function Header({ showNotifications = true }) {
     return () => window.removeEventListener("resize", updateViewportMode);
   }, []);
 
-  const isProfileOrSettings = 
-    location.pathname.toLowerCase().includes("settings") || 
-    location.pathname.toLowerCase().includes("profile");
+  React.useEffect(() => {
+    const handleOutsideClick = (event) => {
+      if (profileMenuRef.current && !profileMenuRef.current.contains(event.target)) {
+        setOpenProfilePath(null);
+      }
+    };
+
+    document.addEventListener("mousedown", handleOutsideClick);
+    return () => document.removeEventListener("mousedown", handleOutsideClick);
+  }, []);
 
   const getRoleText = (role) => {
     if (!role) return "ADMIN";
@@ -39,13 +49,9 @@ export default function Header({ showNotifications = true }) {
     return parts[0][0].toUpperCase();
   };
 
-  const handleProfileClick = () => {
+  const getProfilePath = () => {
     const roleStr = getRoleText(user?.role).toLowerCase();
-    if (roleStr === "admin") {
-      navigate("/admin/settings");
-    } else {
-      navigate("/employee/profile");
-    }
+    return roleStr === "admin" ? "/admin/profile" : "/employee/profile";
   };
 
   return (
@@ -71,24 +77,54 @@ export default function Header({ showNotifications = true }) {
         <div className="h-6 w-[1px] bg-[#E2E8F0] mx-0.5 hidden sm:block" />
 
         {/* Interactive Profile Badge */}
-        <button
-          onClick={handleProfileClick}
-          title="Click to manage Profile & Settings"
-          className="group flex items-center gap-2.5 bg-gradient-to-r from-white via-slate-50 to-blue-50/40 hover:to-blue-100/50 border border-slate-200 hover:border-blue-300 p-1 pl-1.5 pr-3 rounded-full shadow-sm hover:shadow-md transition-all duration-300 cursor-pointer active:scale-95 text-left"
-        >
-          <div className="w-8 h-8 rounded-full bg-gradient-to-tr from-[#2563EB] via-indigo-600 to-[#3B82F6] text-white font-black text-xs flex items-center justify-center shadow-md ring-2 ring-blue-500/20 group-hover:ring-blue-500/40 flex-shrink-0 transition-all">
-            {getInitials(userName)}
-          </div>
-          <div className="hidden sm:flex flex-col text-left pr-1">
-            <span className="text-xs font-extrabold text-[#0F172A] group-hover:text-[#2563EB] transition-colors leading-tight">
-              {userName}
-            </span>
-            <span className="text-[9px] font-black text-[#2563EB] bg-[#EFF6FF] border border-[#BFDBFE] px-2 py-0.5 rounded-full uppercase tracking-wider leading-none mt-0.5 w-fit">
-              {getRoleText(user?.role)}
-            </span>
-          </div>
-          <ChevronRight size={14} className="text-slate-400 group-hover:text-[#2563EB] group-hover:translate-x-0.5 transition-all hidden sm:block" />
-        </button>
+        <div className="relative" ref={profileMenuRef}>
+          <button
+            onClick={() => setOpenProfilePath(isProfileMenuOpen ? null : location.pathname)}
+            title="Open profile menu"
+            aria-expanded={isProfileMenuOpen}
+            aria-haspopup="menu"
+            className="group flex items-center gap-2.5 bg-gradient-to-r from-white via-slate-50 to-blue-50/40 hover:to-blue-100/50 border border-slate-200 hover:border-blue-300 p-1 pl-1.5 pr-3 rounded-full shadow-sm hover:shadow-md transition-all duration-300 cursor-pointer active:scale-95 text-left"
+          >
+            <div className="w-8 h-8 rounded-full bg-gradient-to-tr from-[#2563EB] via-indigo-600 to-[#3B82F6] text-white font-black text-xs flex items-center justify-center shadow-md ring-2 ring-blue-500/20 group-hover:ring-blue-500/40 flex-shrink-0 transition-all">
+              {getInitials(userName)}
+            </div>
+            <div className="hidden sm:flex flex-col text-left pr-1">
+              <span className="text-xs font-extrabold text-[#0F172A] group-hover:text-[#2563EB] transition-colors leading-tight">
+                {userName}
+              </span>
+              <span className="text-[9px] font-black text-[#2563EB] bg-[#EFF6FF] border border-[#BFDBFE] px-2 py-0.5 rounded-full uppercase tracking-wider leading-none mt-0.5 w-fit">
+                {getRoleText(user?.role)}
+              </span>
+            </div>
+            <ChevronRight size={14} className="text-slate-400 group-hover:text-[#2563EB] group-hover:translate-x-0.5 transition-all hidden sm:block" />
+          </button>
+
+          {isProfileMenuOpen && (
+            <div
+              role="menu"
+              className="absolute right-0 top-full z-50 mt-2 w-48 rounded-xl border border-[#E2E8F0] bg-white p-1.5 shadow-[0_12px_30px_rgba(15,23,42,0.14)]"
+            >
+              <button
+                role="menuitem"
+                onClick={() => navigate(getProfilePath())}
+                className="flex w-full items-center gap-2 rounded-lg px-3 py-2.5 text-left text-sm font-bold text-[#172033] transition-colors hover:bg-[#EFF6FF] hover:text-[#2563EB]"
+              >
+                <User size={16} />
+                View Profile
+              </button>
+              {getRoleText(user?.role).toLowerCase() === "admin" && (
+                <button
+                  role="menuitem"
+                  onClick={() => navigate("/admin/settings")}
+                  className="flex w-full items-center gap-2 rounded-lg px-3 py-2.5 text-left text-sm font-bold text-[#172033] transition-colors hover:bg-[#EFF6FF] hover:text-[#2563EB]"
+                >
+                  <Settings size={16} />
+                  Settings
+                </button>
+              )}
+            </div>
+          )}
+        </div>
       </div>
     </header>
   );

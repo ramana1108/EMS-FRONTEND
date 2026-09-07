@@ -213,6 +213,16 @@ function AppContent() {
         }
       />
 
+      {/* Admin Profile */}
+      <Route
+        path="/admin/profile"
+        element={
+          <RequireRole allowedRoles={["admin"]}>
+            <EmployeeProfile />
+          </RequireRole>
+        }
+      />
+
       {/* Shorthand Alias Routes */}
       <Route path="/dashboard" element={<Navigate to="/admin/dashboard" replace />} />
       <Route path="/departments" element={<Navigate to="/admin/departments" replace />} />
